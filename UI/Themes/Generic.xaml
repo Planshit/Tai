@@ -6,6 +6,7 @@
         <ResourceDictionary Source="/Tai;component/Themes/Navigation/NavigationItem.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Navigation/Navigation.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Base/Icon.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/PageContainer.xaml"/>
 
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

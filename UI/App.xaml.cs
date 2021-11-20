@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Resources;
 using UI.Controls.Window;
 using UI.ViewModels;
+using UI.Views;
 
 namespace UI
 {
@@ -105,6 +106,8 @@ namespace UI
 
             services.AddSingleton<MainViewModel>();
             services.AddTransient<MainWindow>();
+
+            services.AddTransient<IndexPage>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)

@@ -102,7 +102,7 @@ namespace UI.Controls
         public PageContainer()
         {
             DefaultStyleKey = typeof(PageContainer);
-            ProjectName = App.Current.GetType().Assembly.GetName().Name;
+            ProjectName = "UI";
             Historys = new List<string>();
             BackCommand = new Command(new Action<object>(OnBackCommand));
             NavigationCommands.BrowseBack.InputGestures.Clear();
@@ -132,10 +132,13 @@ namespace UI.Controls
                     var page = ServiceProvider.GetService(pageType) as Page;
                     if (page != null)
                     {
-                        var pageVM = ServiceProvider.GetService(pageVMType);
-                        if (pageVM != null)
+                        if (pageVMType != null)
                         {
-                            page.DataContext = pageVM;
+                            var pageVM = ServiceProvider.GetService(pageVMType);
+                            if (pageVM != null)
+                            {
+                                page.DataContext = pageVM;
+                            }
                         }
                         Content = page;
                         //处理历史记录

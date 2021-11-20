@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UI.Controls;
 using UI.Controls.Navigation.Models;
 using UI.Models;
+using UI.Views;
 
 namespace UI.ViewModels
 {
@@ -23,8 +24,7 @@ namespace UI.ViewModels
             this.serviceProvider = serviceProvider;
 
             ServiceProvider = serviceProvider;
-            Uri = "IndexPage";
-            Title = "Project Event";
+            Uri = nameof(IndexPage);
             OnSelectedCommand = new Command(new Action<object>(OnSelectedCommandHandle));
             GotoPageCommand = new Command(new Action<object>(OnGotoPageCommand));
 
@@ -40,10 +40,10 @@ namespace UI.ViewModels
         {
             if (e.PropertyName == nameof(Uri))
             {
-                //if (Uri == nameof(IndexPage))
-                //{
-                //    Data = null;
-                //}
+                if (Uri == nameof(IndexPage))
+                {
+                    Data = null;
+                }
             }
         }
 
@@ -72,6 +72,7 @@ namespace UI.ViewModels
             {
                 Icon = Controls.Base.IconTypes.AppIconDefaultList,
                 Title = "概览",
+                Uri = nameof(IndexPage),
                 ID = -1
 
             });
