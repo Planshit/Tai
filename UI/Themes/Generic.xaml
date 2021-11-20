@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Tai;component/Themes/Window/HideWindow.xaml" />
+        <ResourceDictionary Source="/Tai;component/Themes/Window/DefaultWindow.xaml" />
+        <ResourceDictionary Source="/Tai;component/Themes/Navigation/NavigationItem.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Navigation/Navigation.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Base/Icon.xaml"/>
+
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

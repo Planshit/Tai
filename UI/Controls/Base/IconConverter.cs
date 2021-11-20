@@ -1,0 +1,130 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace UI.Controls.Base
+{
+    public class IconConverter
+    {
+        private static Dictionary<IconTypes, string> iconUnicodes = new Dictionary<IconTypes, string>()
+        {
+            {IconTypes.None,""},
+            {IconTypes.Back,"\xE72B"},
+            {IconTypes.Calendar,"\xE787"},
+            {IconTypes.ChevronDown,"\xE70D"},
+            {IconTypes.CheckMark,"\xE73E"},
+            {IconTypes.CompletedSolid,"\xEC61"},
+            {IconTypes.RadioBtnOn,"\xECCB"},
+            {IconTypes.StatusCircleOuter,"\xF136"},
+            {IconTypes.AcceptMedium,"\xF78C"},
+            {IconTypes.Accept,"\xE8FB"},
+            {IconTypes.Timer,"\xE91E"},
+            {IconTypes.StatusCircleQuestionMark,"\xF142"},
+            {IconTypes.ProjectDocument,"\xF759"},
+            {IconTypes.AutomateFlow,"\xE3F5"},
+            {IconTypes.FlashAuto,"\xE95C"},
+            {IconTypes.ProductVariant,"\xEE30"},
+            {IconTypes.AppIconDefault,"\xECAA"},
+            {IconTypes.ChromeMinimize,"\xE921"},
+            {IconTypes.ChromeClose,"\xE8BB"},
+            {IconTypes.ChromeRestore,"\xE923"},
+            {IconTypes.CalculatorMultiply,"\xE947"},
+            {IconTypes.SquareShape,"\xF1A6"},
+            {IconTypes.More,"\xE712"},
+            {IconTypes.AppIconDefaultList,"\xEFDE"},
+            {IconTypes.ClipboardList,"\xF0E3"},
+            {IconTypes.Settings,"\xE713"},
+            {IconTypes.ChromeBack,"\xE830"},
+            {IconTypes.BulletedList,"\xE8FD"},
+            {IconTypes.CalculatorAddition,"\xE948"},
+            {IconTypes.DeviceRun,"\xE401"},
+            {IconTypes.ProcessingRun,"\xE404"},
+            {IconTypes.Product,"\xECDC"},
+            {IconTypes.FileTemplate,"\xF2E6"},
+            {IconTypes.DeviceOff,"\xE402"},
+            {IconTypes.FlowChart,"\xE9D4"},
+            {IconTypes.DownloadDocument,"\xF549"},
+            {IconTypes.Delete,"\xE74D"},
+            {IconTypes.EditStyle,"\xEF60"},
+            {IconTypes.OpenWithMirrored,"\xEA5C"},
+            {IconTypes.FileCode,"\xF30E"},
+            {IconTypes.BuildIssue,"\xF319"},
+            {IconTypes.WebEnvironment,"\xE3DB"},
+            {IconTypes.DesktopScreenshot,"\xF5D9"},
+            {IconTypes.MusicInCollectionFill,"\xEA36"},
+            {IconTypes.NetworkTower,"\xEC05"},
+            {IconTypes.KeyboardClassic,"\xE765"},
+            {IconTypes.FabricSyncFolder,"\xF0A7"},
+            {IconTypes.DateTime12,"\xF38F"},
+            {IconTypes.DateTime,"\xEC92"},
+            {IconTypes.MyNetwork,"\xEC27"},
+            {IconTypes.WifiEthernet,"\xEE77"},
+            {IconTypes.NormalWeight,"\xF4EF"},
+            {IconTypes.Message,"\xE8BD"},
+            {IconTypes.Download,"\xE896"},
+            {IconTypes.Storyboard,"\xF308"},
+            {IconTypes.HandsFree,"\xEAD0"},
+            {IconTypes.PlaybackRate1x,"\xEC57"},
+            {IconTypes.ProcessingCancel,"\xE403"},
+            {IconTypes.Volume2,"\xE994"},
+            {IconTypes.Game,"\xE7FC"},
+            {IconTypes.NewsSearch,"\xF4E9"},
+            {IconTypes.Share,"\xE72D"},
+            {IconTypes.PageCheckedin,"\xF104"},
+            {IconTypes.EntityExtraction,"\xE467"},
+            {IconTypes.RecycleBin,"\xEF87"},
+            {IconTypes.Ringer,"\xEA8F"},
+            {IconTypes.Rocket,"\xF3B3"},
+            {IconTypes.Robot,"\xE99A"},
+            {IconTypes.Puzzle,"\xEA86"},
+            {IconTypes.RainShowersDay,"\xE9C3"},
+            {IconTypes.Plug,"\xF300"},
+            {IconTypes.Pinned,"\xE840"},
+            {IconTypes.PlayerSettings,"\xEF58"},
+            {IconTypes.Permissions,"\xE8D7"},
+            {IconTypes.PasswordField,"\xF6AA"},
+            {IconTypes.OfficeStoreLogo,"\xEDCF"},
+            {IconTypes.NUIFace,"\xEB68"},
+            {IconTypes.MyMoviesTV,"\xEE6C"},
+            {IconTypes.MicrosoftTranslatorLogo,"\xF782"},
+            {IconTypes.Microphone,"\xE720"},
+            {IconTypes.MailAlert,"\xED80"},
+            {IconTypes.Lock,"\xE72E"},
+            {IconTypes.Lightbulb,"\xEA80"},
+            {IconTypes.LightningBolt,"\xE945"},
+            {IconTypes.Insights,"\xE3AF"},
+            {IconTypes.Home,"\xE80F"},
+            {IconTypes.Heart,"\xEB51"},
+            {IconTypes.HeartFill,"\xEB52"},
+            {IconTypes.Flower,"\xF54E"},
+            {IconTypes.FieldReadOnly,"\xF442"},
+            {IconTypes.FangBody,"\xECEB"},
+            {IconTypes.EventToDoLogo,"\xF869"},
+            {IconTypes.Emoji,"\xE899"},
+            {IconTypes.DrillDown,"\xF532"},
+            {IconTypes.Diamond,"\xED02"},
+            {IconTypes.Decimals,"\xF218"},
+            {IconTypes.Crown,"\xED01"},
+            {IconTypes.Color,"\xE790"},
+            {IconTypes.CloudSecure,"\xE4D5"},
+            {IconTypes.CloudImportExport,"\xEE55"},
+            {IconTypes.Cat,"\xED7F"},
+            {IconTypes.Car,"\xE804"},
+            {IconTypes.Bug,"\xEBE8"},
+            {IconTypes.ChevronUp,"\xE70E"},
+            {IconTypes.BIDashboard,"\xF543"},
+
+
+        };
+        public static string ToUnicode(IconTypes iconType)
+        {
+            return iconUnicodes[iconType];
+        }
+        public static IconTypes ToType(string unicode)
+        {
+            var type = iconUnicodes.Where(m => m.Value == unicode).Select(s => s.Key).FirstOrDefault();
+            return type;
+        }
+    }
+}

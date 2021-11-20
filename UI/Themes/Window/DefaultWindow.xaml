@@ -1,0 +1,219 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:w="clr-namespace:UI.Controls.Window">
+    <Style x:Key="WindowSystemButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="/Tai;component/Resources/Fonts/#Segoe MDL2 Assets"/>
+        <Setter Property="Foreground" Value="{DynamicResource StandardTextBrush}"/>
+        <!--<Setter Property="FontWeight" Value="Bold"/>-->
+        <Setter Property="FontSize" Value="10"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border 
+                        Background="{TemplateBinding Background}"
+                                        SnapsToDevicePixels="true">
+                        <ContentPresenter Name="Presenter" Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <!--<Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}"/>-->
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource StandardMouseHoverBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryColorBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource StandardMousePressedBrush}" />
+                            <!--<Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource ButtonTextPressed}"/>-->
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="true">
+                            <!--<Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}" />-->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type w:DefaultWindow}">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource StandardColorBrush}" />
+        <Setter Property="Background" Value="White" />
+        <!--<Setter Property="Logo" Value="{DynamicResource WindowLogo}" />-->
+        <Setter Property="Foreground" Value="{DynamicResource StandardTextBrush}" />
+
+        <Setter Property="ResizeMode" Value="CanResizeWithGrip" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome 
+                    CaptionHeight="32"
+                    CornerRadius="0" GlassFrameThickness="1" UseAeroCaptionButtons="False" NonClientFrameEdges="None" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type w:DefaultWindow}">
+                    <ControlTemplate.Resources>
+
+                        <Storyboard x:Key="Storyboardload">
+                            <DoubleAnimation Storyboard.TargetName="WindowBorder" Storyboard.TargetProperty="Opacity" Duration="00:00:0.1" From="0" To="1" >
+                            </DoubleAnimation>
+                        </Storyboard>
+
+                    </ControlTemplate.Resources>
+                    <Border x:Name="WindowBorder"
+                            Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
+                        <Border 
+                            
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="#f3f3f3"
+                                >
+                            <AdornerDecorator>
+                                <Grid x:Name="WindowContent">
+
+                                    <!--<Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+
+                                    </Grid.RowDefinitions>-->
+
+                                    <!--标题栏-->
+                                    <Grid 
+                                        x:Name="TitleBar"
+                                        Panel.ZIndex="999"
+                                        Height="{DynamicResource WindowTitleBarHeight}"
+                                        VerticalAlignment="Top">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid Grid.Column="0"
+                                              Panel.ZIndex="3">
+                                            <!--标题区域-->
+                                            <StackPanel Orientation="Horizontal" Margin="15,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <Image Source="{TemplateBinding Icon}" Stretch="Uniform" Width="18"/>
+                                                <TextBlock Text="{TemplateBinding Title}" IsEnabled="{TemplateBinding IsActive}" Foreground="#5c5c5c" Margin="15,0,0,0"/>
+                                            </StackPanel>
+                                            <!--<TextBlock Text="{TemplateBinding Title}" IsEnabled="{TemplateBinding IsActive}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="15,0,0,0"/>-->
+
+                                        </Grid>
+                                        <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                              WindowChrome.IsHitTestVisibleInChrome="True"
+                                              Panel.ZIndex="3">
+                                            <!--系统按钮区域-->
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <!--最小化-->
+                                                <Button
+                                                    ToolTip="最小化"
+                                                    Width="46"
+                                                    Height="32"
+                                                    Style="{StaticResource WindowSystemButton}"
+                                                    Content="&#xE921;"
+                                                    Command="{x:Static w:DefaultWindowCommands.MinimizeWindowCommand}"
+                                                    Visibility="{TemplateBinding MinimizeVisibility}"/>
+
+                                                <!--最大化-->
+                                                <Button
+                                                    x:Name="MaximizeButton"
+                                                    ToolTip="最大化"
+                                                    Width="46"
+                                                    Height="32"
+                                                    Style="{StaticResource WindowSystemButton}"
+                                                    Content="&#xE922;"
+                                                    Command="{x:Static w:DefaultWindowCommands.MaximizeWindowCommand}"
+                                                    Visibility="{TemplateBinding MaximizeVisibility}"/>
+                                                <!--还原-->
+                                                <Button
+                                                    x:Name="RestoreButton"
+                                                    ToolTip="向下还原"
+                                                    Width="46"
+                                                    Height="32"
+                                                    Style="{StaticResource WindowSystemButton}"
+                                                    Content="&#xE923;"
+                                                    Command="{x:Static w:DefaultWindowCommands.RestoreWindowCommand}"
+                                                    Visibility="Collapsed"/>
+                                                <!--关闭-->
+                                                <Button
+                                                    ToolTip="关闭"
+                                                    Width="46"
+                                                    Height="32"
+                                                    Style="{StaticResource WindowSystemButton}"
+                                                    Content="&#xE8BB;"
+                                                    Command="{x:Static w:DefaultWindowCommands.CloseWindowCommand}"
+                                                    Visibility="{TemplateBinding CloseVisibility}"/>
+
+                                            </StackPanel>
+
+
+                                        </Grid>
+                                    </Grid>
+
+
+
+                                    <!--窗体内容-->
+                                    <ContentPresenter Grid.Row="1"/>
+
+                                </Grid>
+                            </AdornerDecorator>
+                        </Border>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="WindowState" Value="Normal" />
+                                <Condition Property="MaximizeVisibility" Value="Visible" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="MaximizeButton" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="RestoreButton" Property="Visibility" Value="Collapsed" />
+                        </MultiTrigger>
+                        <Trigger Property="WindowState" Value="Maximized">
+                            <!--最大化时调整外边距，否则显示不完整-->
+                            <Setter TargetName="WindowContent" Property="Margin" Value="7"/>
+                            <Setter TargetName="MaximizeButton" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="RestoreButton" Property="Visibility" Value="Visible" />
+                        </Trigger>
+
+                        <!--<Trigger Property="WindowState" Value="Normal">
+                            <Setter TargetName="MaximizeButton" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="RestoreButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>-->
+                        <!--<EventTrigger RoutedEvent="Window.Loaded">
+                            -->
+                        <!--窗口载入动画-->
+                        <!--
+                            <BeginStoryboard Storyboard="{StaticResource Storyboardload}">
+                            </BeginStoryboard>
+
+                        </EventTrigger>-->
+                        <Trigger Property="WindowStyle" Value="None">
+                            <Setter TargetName="WindowBorder" Property="Margin" Value="0"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter TargetName="TitleBar" Property="Visibility" Value="Collapsed" />
+                            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                            <!--<Setter Property="BorderBrush" Value="Transparent" />-->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+
+</ResourceDictionary>
