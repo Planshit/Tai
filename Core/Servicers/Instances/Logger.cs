@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,17 +25,20 @@ namespace Core.Servicers.Instances
             loggerName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                          "Log", DateTime.Now.ToString("yyyy-MM-dd") + ".log");
         }
-        public void Info(string message)
+        public void Info(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
+            message = message + "\r\n[Caller Info] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
             Save(Fromat(LogLevel.Info, message));
         }
 
-        public void Warn(string message)
+        public void Warn(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
+            message = message + "\r\n[Caller Info] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
             Save(Fromat(LogLevel.Warn, message));
         }
-        public void Error(string message)
+        public void Error(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
+            message = message + "\r\n[Caller Info] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
             Save(Fromat(LogLevel.Error, message));
         }
 
