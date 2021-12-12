@@ -312,9 +312,14 @@ namespace UI.Controls.Navigation
             if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
             {
                 //左键选中
+                
                 SelectedItem = Data.Where(m => m.ID == navitem.ID).FirstOrDefault();
                 OnSelected?.Invoke(this, null);
-                ScrollToActive();
+
+                if (SelectedItem != null && SelectedItem.ID != navitem.ID)
+                {
+                    ScrollToActive();
+                }
             }
             if (e.ChangedButton == System.Windows.Input.MouseButton.Right)
             {

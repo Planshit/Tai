@@ -79,8 +79,9 @@ namespace UI.ViewModels
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
                 Icon = Controls.Base.IconTypes.BIDashboard,
-                Title = "统计",
-                ID = 1
+                Title = "每日",
+                ID = 1,
+                Uri = nameof(DataPage),
 
             });
             NavSelectedItem = Items[0];

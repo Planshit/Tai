@@ -137,6 +137,7 @@ namespace UI.Controls.Base
         Cat,
         Car,
         Bug,
-        BIDashboard
+        BIDashboard,
+        Preview
     }
 }

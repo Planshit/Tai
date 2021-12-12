@@ -21,7 +21,7 @@
                             </Grid.RowDefinitions>
                             <ContentPresenter Content="{TemplateBinding TopExtContent}"/>
                             <Grid  Grid.Row="1" Background="Transparent" x:Name="MenuGrid">
-                                <Border x:Name="ActiveBlock" Width="5" Height="25" CornerRadius="2" Background="#0067c0" HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="9" RenderTransformOrigin="0,0">
+                                <Border x:Name="ActiveBlock" Width="5" Height="25" CornerRadius="2" Background="#2b20d9" HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="9" RenderTransformOrigin="0,0">
                                     <Border.RenderTransform>
                                         <TransformGroup>
                                             <TranslateTransform X="0" Y="0"></TranslateTransform>

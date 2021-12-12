@@ -114,6 +114,7 @@ namespace UI.Controls.Base
             {IconTypes.Bug,"\xEBE8"},
             {IconTypes.ChevronUp,"\xE70E"},
             {IconTypes.BIDashboard,"\xF543"},
+            {IconTypes.Preview,"\xE8FF"},
 
 
         };

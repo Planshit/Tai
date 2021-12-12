@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace UI
     public partial class App : Application
     {
         private readonly ServiceProvider serviceProvider;
+        private System.Threading.Mutex mutex;
 
         //  状态栏图标
         private System.Windows.Forms.NotifyIcon statusBarIcon;
@@ -32,13 +34,33 @@ namespace UI
 
         //  状态栏图标菜单
         private ContextMenu contextMenu;
+
+        private DefaultWindow mainWindow;
         public App()
         {
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             serviceProvider = serviceCollection.BuildServiceProvider();
-
         }
+
+        #region 获取当前程序是否已运行
+        /// <summary>
+        /// 获取当前程序是否已运行
+        /// </summary>
+        private bool IsRuned()
+        {
+            bool ret;
+            mutex = new System.Threading.Mutex(true, System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name, out ret);
+            if (!ret)
+            {
+#if !DEBUG
+                return true;
+
+#endif
+            }
+            return false;
+        }
+        #endregion
 
         #region 状态栏图标
         /// <summary>
@@ -49,9 +71,8 @@ namespace UI
             CreateStatusBarIconMenu();
 
             statusBarIcon = new System.Windows.Forms.NotifyIcon();
-
-            statusBarIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(
-             System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name);
+            statusBarIcon.Text = "Tai!";
+            statusBarIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name);
 
             statusBarIcon.Visible = true;
             statusBarIcon.MouseClick += NotifyIcon_MouseClick;
@@ -89,8 +110,18 @@ namespace UI
             var mainWindowMenuItem = new MenuItem();
             mainWindowMenuItem.Header = "主界面";
             mainWindowMenuItem.Click += MainWindowMenuItem_Click;
+            var exitMenuItem = new MenuItem();
+            exitMenuItem.Header = "退出";
+            exitMenuItem.Click += ExitMenuItem_Click; ;
 
             contextMenu.Items.Add(mainWindowMenuItem);
+            contextMenu.Items.Add(exitMenuItem);
+
+        }
+
+        private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Shutdown();
         }
 
         private void MainWindowMenuItem_Click(object sender, RoutedEventArgs e)
@@ -101,17 +132,43 @@ namespace UI
 
         private void ConfigureServices(IServiceCollection services)
         {
+            //  核心服务
             services.AddSingleton<IObserver, Observer>();
             services.AddSingleton<IMain, Main>();
+            services.AddSingleton<IData, Data>();
+            services.AddSingleton<ISleepdiscover, Sleepdiscover>();
+            services.AddSingleton<IAppConfig, AppConfig>();
+            services.AddSingleton<IDateObserver, DateObserver>();
 
+            //  主窗口
             services.AddSingleton<MainViewModel>();
             services.AddTransient<MainWindow>();
 
+            //  首页
             services.AddTransient<IndexPage>();
+            services.AddTransient<IndexPageVM>();
+
+            //  数据页
+            services.AddTransient<DataPage>();
+            services.AddTransient<DataPageVM>();
+
+            //  设置页
+            services.AddTransient<SettingPage>();
+            services.AddTransient<SettingPageVM>();
+
+            //  详情页
+            services.AddTransient<DetailPage>();
+            services.AddTransient<DetailPageVM>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
         {
+            //  阻止多开进程
+            if (IsRuned())
+            {
+                Shutdown();
+            }
+
             var main = serviceProvider.GetService<IMain>();
             main.Run();
 
@@ -128,12 +185,20 @@ namespace UI
 
         private void ShowMainWindow()
         {
-            var mainWindow = serviceProvider.GetService<MainWindow>();
             var dataContext = serviceProvider.GetService<MainViewModel>();
-            mainWindow.DataContext = dataContext;
-            dataContext.SelectGroup(-1);
-            ////dataContext.Uri = nameof(IndexPage);
+
+
+            if (mainWindow == null || mainWindow.IsWindowClosed)
+            {
+                mainWindow = serviceProvider.GetService<MainWindow>();
+
+                mainWindow.DataContext = dataContext;
+                dataContext.SelectGroup(-1);
+                dataContext.Uri = nameof(IndexPage);
+            }
+
             mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            mainWindow.WindowState = WindowState.Normal;
             mainWindow.Show();
             mainWindow.Activate();
         }

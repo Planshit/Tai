@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Event;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,10 @@ namespace Core.Servicers.Interfaces
         /// 停止观察
         /// </summary>
         void Stop();
+
+        /// <summary>
+        /// 切换活跃APP时发生
+        /// </summary>
+        event ObserverEventHandler OnAppActive;
     }
 }

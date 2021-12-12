@@ -79,7 +79,7 @@
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <!--<Setter Property="Background" Value="White"/>-->
-                            <Setter TargetName="Title" Property="Foreground" Value="#0067c0"/>
+                            <Setter TargetName="Title" Property="Foreground" Value="#2b20d9"/>
                             <Setter TargetName="Title" Property="Visibility" Value="Collapsed"/>
 
                             <!--<Setter Property="Visibility" TargetName="CheckMark" Value="Visible"/>-->

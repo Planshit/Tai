@@ -8,48 +8,45 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Servicers.Instances
+namespace Core.Librarys
 {
-    public class Logger : ILogger
+    public class Logger
     {
         private static readonly object writeLock = new object();
-        private string loggerName;
+        private static string loggerName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                         "Log", DateTime.Now.ToString("yyyy-MM-dd") + ".log");
         private enum LogLevel
         {
             Info,
             Warn,
             Error,
         }
-        public Logger()
-        {
-            loggerName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                         "Log", DateTime.Now.ToString("yyyy-MM-dd") + ".log");
-        }
-        public void Info(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
+
+        public static void Info(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
             message = message + "\r\n[Caller Info] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
             Save(Fromat(LogLevel.Info, message));
         }
 
-        public void Warn(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
+        public static void Warn(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
             message = message + "\r\n[Caller Info] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
             Save(Fromat(LogLevel.Warn, message));
         }
-        public void Error(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
+        public static void Error(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
             message = message + "\r\n[Caller Info] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
             Save(Fromat(LogLevel.Error, message));
         }
 
-        private string Fromat(LogLevel logLevel, string message)
+        private static string Fromat(LogLevel logLevel, string message)
         {
             string logText = $"[{logLevel.ToString()}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] \r\n{message}\r\n------------------------\r\n\r\n";
             Debug.WriteLine(logText);
             return logText;
         }
 
-        private void Save(string message)
+        private static void Save(string message)
         {
             lock (writeLock)
             {

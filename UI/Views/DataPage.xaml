@@ -1,0 +1,40 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:UI.Views"
+      xmlns:Charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:DatePickerBar="clr-namespace:UI.Controls.DatePickerBar" x:Class="UI.Views.DataPage"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="IndexPage">
+
+    <Grid>
+        <StackPanel Margin="20">
+            <TextBlock Text="每日" FontSize="18" Margin="0,5,0,20"/>
+
+            <!--<Border Width="60" Height="60"  HorizontalAlignment="Left" RenderTransformOrigin="1,0.5">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="4" ShadowDepth="0" Direction="0" Opacity="1"/>
+                </Border.Effect>
+                <Border.Background>
+                    <LinearGradientBrush EndPoint="2,1" StartPoint="-2,0">
+                        <GradientStop Color="#FFEE0357"/>
+                        <GradientStop Color="#FF2B20D9" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+
+            </Border>-->
+            <!--<TextBlock Text="按月统计" FontSize="18" Margin="0,5,0,10"/>-->
+            <DatePickerBar:DatePickerBar SelectedDate="{Binding Date,Mode=TwoWay}"/>
+
+            <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+
+
+
+
+
+
+        </StackPanel>
+    </Grid>
+</Page>

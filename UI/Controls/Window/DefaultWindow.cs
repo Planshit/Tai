@@ -90,6 +90,12 @@ namespace UI.Controls.Window
         #endregion
         #endregion
 
+        private bool IsWindowClosed_ = false;
+        /// <summary>
+        /// 指示当前窗口是否已被关闭
+        /// </summary>
+        public bool IsWindowClosed { get { return IsWindowClosed_; } }
+
         #region 3.初始化
         public DefaultWindow()
         {
@@ -177,6 +183,11 @@ namespace UI.Controls.Window
         }
         #endregion
 
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            IsWindowClosed_ = true;
+        }
         #region 5.命令
 
         private void OnCloseWindowCommand(object sender, ExecutedRoutedEventArgs e)

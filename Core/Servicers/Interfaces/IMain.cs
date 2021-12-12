@@ -19,5 +19,10 @@ namespace Core.Servicers.Interfaces
         /// 退出服务
         /// </summary>
         void Exit();
+
+        /// <summary>
+        /// 更新某个进程时间时发生
+        /// </summary>
+        event EventHandler OnUpdateTime;
     }
 }

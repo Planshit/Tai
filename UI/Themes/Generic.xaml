@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Tai;component/Themes/Window/HideWindow.xaml" />
@@ -6,7 +6,28 @@
         <ResourceDictionary Source="/Tai;component/Themes/Navigation/NavigationItem.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Navigation/Navigation.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Base/Icon.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Base/Placeholder.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Base/EmptyData.xaml"/>
+
         <ResourceDictionary Source="/Tai;component/Themes/PageContainer.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Charts/Charts.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeA.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeCard.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeMonth.xaml"/>
+
+        <ResourceDictionary Source="/Tai;component/Themes/Tabbar/Tabbar.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/DatePickerBar/DatePickerBar.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/DatePickerBar/DatePickerBarItem.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/SettingPanel/SettingPanel.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Toggle/Toggle.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/SettingPanel/SettingPanelItem.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/SettingPanel/SettingPanelMultiItem.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Input/InputBox.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Button/IconButton.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Button/Button.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/List/BaseList.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/List/BaseListItem.xaml"/>
 
     </ResourceDictionary.MergedDictionaries>
+
 </ResourceDictionary>
