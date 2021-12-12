@@ -23,7 +23,7 @@ namespace UI.Librays
                 }
                 else
                 {
-                    double hours = (double)seconds / 60;
+                    double hours = (double)minutes / 60;
                     if (hours != (int)hours)
                     {
                         double pointNumber = hours - (int)hours;
