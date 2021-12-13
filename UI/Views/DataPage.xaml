@@ -15,27 +15,40 @@
 
             <Tabbar:Tabbar Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
 
-            <!--<TextBlock Text="每日" FontSize="18" Margin="0,5,0,20"/>-->
 
-            <!--<Border Width="60" Height="60"  HorizontalAlignment="Left" RenderTransformOrigin="1,0.5">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="4" ShadowDepth="0" Direction="0" Opacity="1"/>
-                </Border.Effect>
-                <Border.Background>
-                    <LinearGradientBrush EndPoint="2,1" StartPoint="-2,0">
-                        <GradientStop Color="#FFEE0357"/>
-                        <GradientStop Color="#FF2B20D9" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
+            <TabControl 
+                SelectedIndex="{Binding TabbarSelectedIndex}"
+                BorderThickness="0"
+                Margin="0"
+                Padding="0"
+                Background="Transparent"
+                >
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
 
-            </Border>-->
-            <!--<TextBlock Text="按月统计" FontSize="18" Margin="0,5,0,10"/>-->
-            <DatePickerBar:DatePickerBar SelectedDate="{Binding Date,Mode=TwoWay}" ShowType="{Binding DatePickerType}"/>
+                </TabControl.Resources>
+                <TabItem>
+                    <StackPanel>
+                        <DatePickerBar:DatePickerBar SelectedDate="{Binding DayDate,Mode=TwoWay}" ShowType="Day"/>
 
-            <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                        <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    </StackPanel>
+                </TabItem>
+                <TabItem>
+                    <StackPanel>
+                        <DatePickerBar:DatePickerBar SelectedDate="{Binding MonthDate,Mode=TwoWay}" ShowType="Month"/>
 
-
-
+                        <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
 
 
 

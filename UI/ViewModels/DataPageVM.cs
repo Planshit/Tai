@@ -35,7 +35,7 @@ namespace UI.ViewModels
 
         private void Init()
         {
-            LoadData(DateTime.Now.Date);
+            //LoadData(DateTime.Now.Date);
             PropertyChanged += DataPageVM_PropertyChanged;
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
@@ -44,7 +44,6 @@ namespace UI.ViewModels
             };
 
             TabbarSelectedIndex = 0;
-            DatePickerType = Controls.DatePickerBar.DatePickerShowType.Day;
         }
 
         private void OnTodetailCommand(object obj)
@@ -60,20 +59,32 @@ namespace UI.ViewModels
 
         private void DataPageVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Date))
+            if (e.PropertyName == nameof(DayDate))
             {
-                LoadData(Date);
+                LoadData(DayDate);
+            }
+
+            if (e.PropertyName == nameof(MonthDate))
+            {
+                LoadData(MonthDate);
             }
 
             if (e.PropertyName == nameof(TabbarSelectedIndex))
             {
                 if (TabbarSelectedIndex == 0)
                 {
-                    DatePickerType = Controls.DatePickerBar.DatePickerShowType.Day;
+                    if (DayDate == DateTime.MinValue)
+                    {
+                        DayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                    }
+
                 }
                 else
                 {
-                    DatePickerType = Controls.DatePickerBar.DatePickerShowType.Month;
+                    if (MonthDate == DateTime.MinValue)
+                    {
+                        MonthDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    }
                 }
             }
         }
@@ -87,11 +98,18 @@ namespace UI.ViewModels
 
         private void LoadData(DateTime date)
         {
+            Debug.WriteLine("load data:" + date.ToString());
             DateTime dateStart = date, dateEnd = date;
             if (TabbarSelectedIndex == 1)
             {
                 dateStart = new DateTime(date.Year, date.Month, 1);
                 dateEnd = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+            }
+            else
+            {
+                dateStart = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+                dateEnd = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59);
+
             }
             var list = data.GetDateRangelogList(dateStart, dateEnd);
             Data = MapToChartsData(list);

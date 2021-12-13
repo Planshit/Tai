@@ -45,17 +45,24 @@ namespace UI.Models
             set { Data_ = value; OnPropertyChanged(); }
         }
 
-        private DateTime Date_;
+        private DateTime DayDate_;
         /// <summary>
         ///  date
         /// </summary>
-        public DateTime Date
+        public DateTime DayDate
         {
-            get { return Date_; }
-            set { Date_ = value; OnPropertyChanged(); }
+            get { return DayDate_; }
+            set { DayDate_ = value; OnPropertyChanged(); }
         }
 
-        private DatePickerShowType DatePickerType_;
-        public DatePickerShowType DatePickerType { get { return DatePickerType_; } set { DatePickerType_ = value; OnPropertyChanged(); } }
+        private DateTime MonthDate_;
+        /// <summary>
+        ///  date
+        /// </summary>
+        public DateTime MonthDate
+        {
+            get { return MonthDate_; }
+            set { MonthDate_ = value; OnPropertyChanged(); }
+        }
     }
 }
