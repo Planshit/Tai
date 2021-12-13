@@ -22,7 +22,7 @@ namespace UI.Controls.DatePickerBar
             set { SetValue(ShowTypeProperty, value); }
         }
         public static readonly DependencyProperty ShowTypeProperty =
-            DependencyProperty.Register("ShowType", typeof(DatePickerShowType), typeof(DatePickerBar), new PropertyMetadata(DatePickerShowType.Day,new PropertyChangedCallback(OnShowTypeChanged)));
+            DependencyProperty.Register("ShowType", typeof(DatePickerShowType), typeof(DatePickerBar), new PropertyMetadata(DatePickerShowType.Day, new PropertyChangedCallback(OnShowTypeChanged)));
 
         private static void OnShowTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -64,6 +64,8 @@ namespace UI.Controls.DatePickerBar
         private Dictionary<DateTime, DatePickerBarItem> ItemsDictionary;
         private List<DateTime> DateList;
 
+        private int dataCount = 0;
+        private int renderIndex = 0;
         //  选中标记块
         private Border ActiveBlock;
         //  动画
@@ -85,7 +87,10 @@ namespace UI.Controls.DatePickerBar
             ActiveBlock = GetTemplateChild("ActiveBlock") as Border;
             ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
             Render();
+
+
         }
+
 
 
         private void AddItem(DateTime date)
@@ -96,7 +101,7 @@ namespace UI.Controls.DatePickerBar
                 {
                     return;
                 }
-
+                renderIndex++;
                 var control = new DatePickerBarItem();
                 control.Title = date.Day.ToString();
                 control.Date = date;
@@ -108,14 +113,26 @@ namespace UI.Controls.DatePickerBar
                     }
                     ScrollToActive(date);
                 };
-                control.Loaded += (e, c) =>
-                {
-                    if (date == DateTime.Now.Date)
-                    {
-                        SelectedDate = DateTime.Now.Date;
-                    }
-                };
 
+                if (renderIndex == dataCount)
+                {
+
+                    control.Loaded += (e, c) =>
+                    {
+
+                        if (SelectedDate == DateTime.MinValue)
+                        {
+                            if (date == DateTime.Now.Date)
+                            {
+                                SelectedDate = DateTime.Now.Date;
+                            }
+                        }
+                        else
+                        {
+                            ScrollToActive(SelectedDate);
+                        }
+                    };
+                }
                 //  后一天
                 int next = DateList.IndexOf(date.AddDays(+1));
 
@@ -152,18 +169,23 @@ namespace UI.Controls.DatePickerBar
 
         private void Render()
         {
-            if(Container == null)
+            if (Container == null)
             {
                 return;
             }
+            dataCount = 0;
+            renderIndex = 0;
+
             DateList.Clear();
             ItemsDictionary.Clear();
             Container.Children.Clear();
 
             if (ShowType == DatePickerShowType.Day)
             {
+                dataCount = 41;
+
                 //  前30天
-                for (int i = 1; i < 30; i++)
+                for (int i = 1; i < 31; i++)
                 {
                     AddItem(DateTime.Now.Date.AddDays(-i));
                 }
@@ -171,15 +193,16 @@ namespace UI.Controls.DatePickerBar
                 AddItem(DateTime.Now.Date);
 
                 //  后十天
-                for (int i = 1; i < 10; i++)
+                for (int i = 1; i < 11; i++)
                 {
                     AddItem(DateTime.Now.Date.AddDays(+i));
                 }
-
             }
 
             if (ShowType == DatePickerShowType.Month)
             {
+                dataCount = 12;
+
                 var nowDate = DateTime.Now;
                 for (int i = 1; i < 13; i++)
                 {
@@ -201,6 +224,7 @@ namespace UI.Controls.DatePickerBar
                 {
                     return;
                 }
+                renderIndex++;
 
                 var control = new DatePickerBarItem();
                 control.Title = date.Month.ToString();
@@ -213,34 +237,65 @@ namespace UI.Controls.DatePickerBar
                     }
                     ScrollToActive(date);
                 };
-                control.Loaded += (e, c) =>
+
+                if (renderIndex == dataCount)
                 {
-                    if (date.Year == DateTime.Now.Date.Year
-                    && date.Month == DateTime.Now.Date.Month)
+                    control.Loaded += (e, c) =>
                     {
-                        SelectedDate = date;
-                    }
-                };
+                        if (SelectedDate == DateTime.MinValue)
+                        {
+                            if (date.Year == DateTime.Now.Date.Year
+                            && date.Month == DateTime.Now.Date.Month)
+                            {
+                                SelectedDate = date;
+                            }
+                        }
+                        else
+                        {
+                            ScrollToActive(SelectedDate);
+                        }
+                    };
+                }
 
 
                 DateList.Add(date);
                 ItemsDictionary.Add(date, control);
                 Container.Children.Add(control);
-
             }
         }
 
         private void ScrollToActive(DateTime date)
         {
-            if (ItemsDictionary.ContainsKey(SelectedDate))
-            {
-                ItemsDictionary[SelectedDate].IsSelected = false;
-            }
-            else
+           
+            if (ItemsDictionary.Count == 0)
             {
                 return;
             }
-            SelectedDate = date;
+            if (ShowType == DatePickerShowType.Month)
+            {
+                date = new DateTime(date.Year, date.Month, 1);
+            }
+            else
+            {
+                date = new DateTime(date.Year, date.Month, date.Day);
+            }
+
+            if (!ItemsDictionary.ContainsKey(date))
+            {
+                return;
+            }
+            if (ItemsDictionary.ContainsKey(SelectedDate))
+            {
+                //  如果存在旧的选中，先取消
+                ItemsDictionary[SelectedDate].IsSelected = false;
+            }
+
+            if (date != SelectedDate)
+            {
+                SelectedDate = date;
+            }
+
+            
             ItemsDictionary[date].IsSelected = true;
 
 
