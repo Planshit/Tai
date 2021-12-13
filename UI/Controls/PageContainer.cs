@@ -13,6 +13,14 @@ namespace UI.Controls
     public class PageContainer : Control
     {
         #region 依赖属性
+        public List<string> IndexUriList
+        {
+            get { return (List<string>)GetValue(IndexUriListProperty); }
+            set { SetValue(IndexUriListProperty, value); }
+        }
+        public static readonly DependencyProperty IndexUriListProperty =
+            DependencyProperty.Register("IndexUriList", typeof(List<string>), typeof(PageContainer));
+
         public string Title
         {
             get { return (string)GetValue(TitleProperty); }
@@ -93,12 +101,22 @@ namespace UI.Controls
             DependencyProperty.Register("BackCommand",
                 typeof(Command),
                 typeof(PageContainer));
+
+
+        public PageContainer Instance { get { return (PageContainer)GetValue(InstanceProperty); } set { SetValue(InstanceProperty, value); } }
+
+        public static readonly DependencyProperty InstanceProperty = DependencyProperty.Register("Instance", typeof(PageContainer), typeof(PageContainer));
         #endregion
+
+        /// <summary>
+        /// 加载页面完成后发生
+        /// </summary>
+        public event EventHandler OnLoadPaged;
 
         private readonly string ProjectName;
         private List<string> Historys;
-        private int Index = -1, OldIndex = -1;
-        private Frame Frame;
+        public int Index = 0, OldIndex = 0;
+        private Dictionary<string, object> PageCache;
         public PageContainer()
         {
             DefaultStyleKey = typeof(PageContainer);
@@ -107,40 +125,97 @@ namespace UI.Controls
             BackCommand = new Command(new Action<object>(OnBackCommand));
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
+            PageCache = new Dictionary<string, object>();
+        }
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+
+            Loaded += PageContainer_Loaded;
+        }
+
+        private void PageContainer_Loaded(object sender, RoutedEventArgs e)
+        {
+            Instance = this;
         }
 
         private void OnBackCommand(object obj)
+        {
+            Back();
+        }
+
+        public void Back()
         {
             if (Index - 1 >= 0)
             {
                 OldIndex = Index;
                 Index--;
-                Uri = Historys[Index];
-                Historys.RemoveRange(Index + 1, Historys.Count - (Index + 1));
+                string uri = Historys[Index];
+
+                int preIndex = Index + 1;
+                int count = Historys.Count - (Index + 1);
+                //  从缓存中移除之前的页面
+                for (int i = preIndex; i < count; i++)
+                {
+                    var pageUri = Historys[i];
+                    if (PageCache.ContainsKey(pageUri))
+                    {
+                        var page = PageCache[pageUri];
+                        page = null;
+                        PageCache.Remove(pageUri);
+                    }
+                }
+
+                //  历史记录中移除
+                Historys.RemoveRange(preIndex, count);
+
+                Uri = uri;
+
+
+
             }
         }
 
+        public void ClearHistorys()
+        {
+            Historys.Clear();
+        }
         private void LoadPage()
         {
             if (Uri != string.Empty)
             {
-
+                Page page = null;
+                var pageVM = GetPageVM(Uri);
                 Type pageType = Type.GetType(ProjectName + ".Views." + Uri);
-                Type pageVMType = Type.GetType(ProjectName + ".ViewModels." + Uri + "VM");
                 if (pageType != null && ServiceProvider != null)
                 {
-                    var page = ServiceProvider.GetService(pageType) as Page;
+                    page = ServiceProvider.GetService(pageType) as Page;
                     if (page != null)
                     {
-                        if (pageVMType != null)
-                        {
-                            var pageVM = ServiceProvider.GetService(pageVMType);
-                            if (pageVM != null)
-                            {
-                                page.DataContext = pageVM;
-                            }
-                        }
-                        Content = page;
+
+                        page.DataContext = pageVM;
+
+                    }
+
+                }
+
+                if (page != null)
+                {
+
+                    Content = page;
+
+
+
+                    if (IndexUriList != null && IndexUriList.Contains(Uri))
+                    {
+                        Historys.Clear();
+                        Index = 0;
+                        OldIndex = 0;
+                        Historys.Add(Uri);
+                        PageCache.Clear();
+                    }
+                    else
+                    {
                         //处理历史记录
                         if (OldIndex == Index)
                         {
@@ -150,13 +225,42 @@ namespace UI.Controls
                         }
                         OldIndex = Index;
                     }
-                    else
-                    {
-                        Debug.WriteLine("找不到Page：" + Uri + "，请确认已被注入");
-                    }
 
+                    //  加入缓存
+                    PageCache.Add(Uri, pageVM);
+
+                    OnLoadPaged?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    Debug.WriteLine("找不到Page：" + Uri + "，请确认已被注入");
                 }
 
+
+            }
+        }
+
+
+        private object GetPageVM(string uri)
+        {
+            if (PageCache.ContainsKey(uri))
+            {
+                return PageCache[uri];
+            }
+            else
+            {
+                Type pageVMType = Type.GetType(ProjectName + ".ViewModels." + Uri + "VM");
+                if (ServiceProvider != null && pageVMType != null)
+                {
+
+                    var pageVM = ServiceProvider.GetService(pageVMType);
+
+                    return pageVM;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
     }

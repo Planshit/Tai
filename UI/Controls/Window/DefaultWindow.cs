@@ -18,10 +18,28 @@ namespace UI.Controls.Window
     {
         #region 1.依赖属性
 
-
+        public static readonly DependencyProperty PageContainerProperty = DependencyProperty.Register("PageContainer", typeof(PageContainer), typeof(DefaultWindow), new PropertyMetadata(null, new PropertyChangedCallback(OnPageContainerChanged)));
+        public PageContainer PageContainer { get { return (PageContainer)GetValue(PageContainerProperty); } set { SetValue(PageContainerProperty, value); } }
         #region 最小化按钮显示状态
 
         public static readonly DependencyProperty MinimizeVisibilityProperty = DependencyProperty.Register("MinimizeVisibility", typeof(Visibility), typeof(DefaultWindow));
+
+        private static void OnPageContainerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var that = (DefaultWindow)d;
+            if (that != null)
+            {
+                if (e.NewValue != null)
+                {
+                    that.IsCanBack = that.PageContainer.Index >= 1;
+
+                    that.PageContainer.OnLoadPaged += (s, v) =>
+                    {
+                        that.IsCanBack = that.PageContainer.Index >= 1;
+                    };
+                }
+            }
+        }
 
         /// <summary>
         /// 最小化按钮显示状态
@@ -88,6 +106,30 @@ namespace UI.Controls.Window
             set { SetValue(IsThruWindowProperty, value); }
         }
         #endregion
+
+
+        public static readonly DependencyProperty IsCanBackProperty = DependencyProperty.Register("IsCanBack", typeof(bool), typeof(DefaultWindow), new PropertyMetadata(false,new PropertyChangedCallback(OnIsCanBackChanged)));
+
+        private static void OnIsCanBackChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var that=d as DefaultWindow;
+            if (that != null)
+            {
+                if (that.IsCanBack)
+                {
+                    VisualStateManager.GoToState(that, "CanBackState", true);
+                }
+                else
+                {
+                    VisualStateManager.GoToState(that, "Normal", true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 是否可以返回
+        /// </summary>
+        public bool IsCanBack { get { return (bool)GetValue(IsCanBackProperty); } set { SetValue(IsCanBackProperty, value); } }
         #endregion
 
         private bool IsWindowClosed_ = false;
@@ -107,6 +149,7 @@ namespace UI.Controls.Window
             this.CommandBindings.Add(new CommandBinding(DefaultWindowCommands.MaximizeWindowCommand, OnMaximizeWindowCommand));
             this.CommandBindings.Add(new CommandBinding(DefaultWindowCommands.RestoreWindowCommand, OnRestoreWindowCommand));
             this.CommandBindings.Add(new CommandBinding(DefaultWindowCommands.CloseWindowCommand, OnCloseWindowCommand));
+            this.CommandBindings.Add(new CommandBinding(DefaultWindowCommands.BackCommand, OnBackCommand));
 
             //  获取程序图标
             if (Icon == null)
@@ -116,8 +159,18 @@ namespace UI.Controls.Window
             }
 
             Loaded += new RoutedEventHandler(window_Loaded);
+        }
 
-
+        private void OnBackCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (PageContainer != null)
+            {
+                PageContainer.Back();
+                if (PageContainer.Index == 0)
+                {
+                    IsCanBack = false;
+                }
+            }
         }
 
         [DllImport("gdi32.dll", SetLastError = true)]

@@ -68,6 +68,11 @@ namespace UI.ViewModels
 
         private void InitNavigation()
         {
+            IndexUriList = new List<string>();
+            IndexUriList.Add(nameof(IndexPage));
+            IndexUriList.Add(nameof(DataPage));
+
+
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
                 Icon = Controls.Base.IconTypes.AppIconDefaultList,

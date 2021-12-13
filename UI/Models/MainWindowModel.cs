@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UI.Controls;
 using UI.Controls.Navigation.Models;
 
 namespace UI.Models
@@ -70,5 +71,11 @@ namespace UI.Models
             get { return NavSelectedItem_; }
             set { NavSelectedItem_ = value; OnPropertyChanged(); }
         }
+
+        private PageContainer PageContainer_;
+        public PageContainer PageContainer { get { return PageContainer_; } set { PageContainer_ = value; OnPropertyChanged(); } }
+
+        private List<string> IndexUriList_;
+        public List<string> IndexUriList { get { return IndexUriList_; } set { IndexUriList_ = value; OnPropertyChanged(); } }
     }
 }

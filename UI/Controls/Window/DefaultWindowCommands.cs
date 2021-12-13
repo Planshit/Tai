@@ -15,5 +15,7 @@ namespace UI.Controls.Window
         public static RoutedUICommand CloseWindowCommand { get; } = new RoutedUICommand("", "CloseWindowCommand", typeof(DefaultWindowCommands));
 
         public static RoutedUICommand LogoButtonClickCommand { get; } = new RoutedUICommand("", "LogoButtonClickCommand", typeof(DefaultWindowCommands));
+        public static RoutedUICommand BackCommand { get; } = new RoutedUICommand("", "BackCommand", typeof(DefaultWindowCommands));
+
     }
 }

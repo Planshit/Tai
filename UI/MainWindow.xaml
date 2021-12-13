@@ -10,7 +10,9 @@
                   xmlns:control="clr-namespace:UI.Controls"
                   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                   xmlns:Navigation="clr-namespace:UI.Controls.Navigation"
-                  x:Name="Window">
+                  x:Name="Window"
+                  PageContainer="{Binding PageContainer}"
+                  Icon="/Resources/Icons/tai32.ico">
     <Grid>
         <!--主要功能-->
         <Grid>
@@ -33,12 +35,12 @@
                 <Navigation:Navigation.BottomExtContent>
                     <Navigation:NavigationItem Icon="Settings" Title="设置" Uri="SettingsPage" Command="{Binding GotoPageCommand}" CommandParameter="SettingPage"/>
                 </Navigation:Navigation.BottomExtContent>
-                
+
             </Navigation:Navigation>
 
             <Border Grid.Column="1" Background="#f9f9f9" Margin="0,40,10,10" CornerRadius="5" BorderThickness="1,1,1,1" BorderBrush="#ccc">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <control:PageContainer  ServiceProvider="{Binding ServiceProvider}" Uri="{Binding Uri,Mode=TwoWay}" Title="{Binding Title}" IsShowTilteBar="{Binding IsShowTitleBar,Mode=TwoWay}"/>
+                    <control:PageContainer IndexUriList="{Binding IndexUriList}" Instance="{Binding PageContainer,Mode=TwoWay}" ServiceProvider="{Binding ServiceProvider}" Uri="{Binding Uri,Mode=TwoWay}" Title="{Binding Title}" IsShowTilteBar="{Binding IsShowTitleBar,Mode=TwoWay}"/>
                 </ScrollViewer>
             </Border>
 
