@@ -14,16 +14,18 @@
                 <ControlTemplate TargetType="{x:Type local:ChartsItemTypeCard}">
                     <Grid >
                         <Grid x:Name="Normal">
-                            <Border   CornerRadius="12">
-                                <!--<Border.Effect>
-                                <DropShadowEffect BlurRadius="14" ShadowDepth="0" Direction="0" Opacity="0.05"/>
-                            </Border.Effect>-->
-                                <Border Margin="0" Background="White"  CornerRadius="12"  Width="150" Height="150" >
+                            <Border x:Name="ShadowBorder" CornerRadius="12">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#2b20d9" BlurRadius="17" Direction="0" ShadowDepth="0" Opacity="0"/>
+                                </Border.Effect>
+                                <Border x:Name="Border" BorderBrush="Transparent" BorderThickness="2" Margin="0" Background="White"  CornerRadius="12"  Width="150" Height="150" >
 
                                     <Border.Clip>
                                         <RectangleGeometry RadiusX="12" RadiusY="12" Rect="0,0,150,150"/>
                                     </Border.Clip>
-
+                                    <!--<Border.RenderTransform>
+                                        
+                                    </Border.RenderTransform>-->
                                     <Grid>
                                         <Rectangle
                             x:Name="ValueBlockObj"
@@ -66,6 +68,44 @@
                         <Grid x:Name="Loading" Visibility="Collapsed">
                             <base:Placeholder CornerRadius="12"  Width="150" Height="150"/>
                         </Grid>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:.3" />
+                                    <VisualTransition GeneratedDuration="0"
+                                  To="Pressed" />
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="NormalState" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard >
+                                        <ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Border" To="#2b20d9" >
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+
+                                        <DoubleAnimation Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.Opacity)"
+                                                Storyboard.TargetName="ShadowBorder" To="0.3" >
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <!--<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Bg" >
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="#192B20D9"/>
+                                            
+                                        </ColorAnimationUsingKeyFrames>-->
+
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsLoading" Value="True">

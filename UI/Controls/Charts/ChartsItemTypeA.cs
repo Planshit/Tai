@@ -117,5 +117,16 @@ namespace UI.Controls.Charts
                 ValueBlockObj.Width = (Data.Value / MaxValue) * (ValueContainer.ActualWidth * 0.95 - ValueTextObj.ActualWidth);
             };
         }
+
+        protected override void OnMouseEnter(MouseEventArgs e)
+        {
+            base.OnMouseEnter(e);
+            VisualStateManager.GoToState(this, "MouseOver", true);
+        }
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+            VisualStateManager.GoToState(this, "NormalState", true);
+        }
     }
 }

@@ -72,6 +72,36 @@
                                 </StackPanel>
                             </Grid>
                         </Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:.3" />
+                                    <VisualTransition GeneratedDuration="0"
+                                  To="Pressed" />
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="NormalState" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard >
+                                        <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="ValueBlockObj" To="#2b20d9" >
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                        <!--<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Bg" >
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="#192B20D9"/>
+                                            
+                                        </ColorAnimationUsingKeyFrames>-->
+
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                     </Border>
 
                     <ControlTemplate.Triggers>
