@@ -79,7 +79,7 @@ namespace UI.ViewModels
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
                 Icon = Controls.Base.IconTypes.BIDashboard,
-                Title = "每日",
+                Title = "详细",
                 ID = 1,
                 Uri = nameof(DataPage),
 

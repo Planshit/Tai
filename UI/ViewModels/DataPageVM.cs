@@ -37,6 +37,14 @@ namespace UI.ViewModels
         {
             LoadData(DateTime.Now.Date);
             PropertyChanged += DataPageVM_PropertyChanged;
+
+            TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
+            {
+                "按天查看","按月查看"
+            };
+
+            TabbarSelectedIndex = 0;
+            DatePickerType = Controls.DatePickerBar.DatePickerShowType.Day;
         }
 
         private void OnTodetailCommand(object obj)
@@ -56,6 +64,18 @@ namespace UI.ViewModels
             {
                 LoadData(Date);
             }
+
+            if (e.PropertyName == nameof(TabbarSelectedIndex))
+            {
+                if (TabbarSelectedIndex == 0)
+                {
+                    DatePickerType = Controls.DatePickerBar.DatePickerShowType.Day;
+                }
+                else
+                {
+                    DatePickerType = Controls.DatePickerBar.DatePickerShowType.Month;
+                }
+            }
         }
 
 
@@ -67,7 +87,13 @@ namespace UI.ViewModels
 
         private void LoadData(DateTime date)
         {
-            var list = data.GetDateRangelogList(date, date);
+            DateTime dateStart = date, dateEnd = date;
+            if (TabbarSelectedIndex == 1)
+            {
+                dateStart = new DateTime(date.Year, date.Month, 1);
+                dateEnd = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+            }
+            var list = data.GetDateRangelogList(dateStart, dateEnd);
             Data = MapToChartsData(list);
         }
 

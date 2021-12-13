@@ -11,7 +11,11 @@
 
     <Grid>
         <StackPanel Margin="20">
-            <TextBlock Text="每日" FontSize="18" Margin="0,5,0,20"/>
+            <TextBlock Text="详细" FontSize="18" Margin="0,5,0,20"/>
+
+            <Tabbar:Tabbar Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
+
+            <!--<TextBlock Text="每日" FontSize="18" Margin="0,5,0,20"/>-->
 
             <!--<Border Width="60" Height="60"  HorizontalAlignment="Left" RenderTransformOrigin="1,0.5">
                 <Border.Effect>
@@ -26,7 +30,7 @@
 
             </Border>-->
             <!--<TextBlock Text="按月统计" FontSize="18" Margin="0,5,0,10"/>-->
-            <DatePickerBar:DatePickerBar SelectedDate="{Binding Date,Mode=TwoWay}"/>
+            <DatePickerBar:DatePickerBar SelectedDate="{Binding Date,Mode=TwoWay}" ShowType="{Binding DatePickerType}"/>
 
             <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
 
