@@ -22,8 +22,16 @@ namespace UI.Controls.DatePickerBar
             set { SetValue(ShowTypeProperty, value); }
         }
         public static readonly DependencyProperty ShowTypeProperty =
-            DependencyProperty.Register("ShowType", typeof(DatePickerShowType), typeof(DatePickerBar), new PropertyMetadata(DatePickerShowType.Day));
+            DependencyProperty.Register("ShowType", typeof(DatePickerShowType), typeof(DatePickerBar), new PropertyMetadata(DatePickerShowType.Day,new PropertyChangedCallback(OnShowTypeChanged)));
 
+        private static void OnShowTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as DatePickerBar;
+            if (e.NewValue != e.OldValue)
+            {
+                control.Render();
+            }
+        }
 
         public DateTime SelectedDate
         {
@@ -144,6 +152,14 @@ namespace UI.Controls.DatePickerBar
 
         private void Render()
         {
+            if(Container == null)
+            {
+                return;
+            }
+            DateList.Clear();
+            ItemsDictionary.Clear();
+            Container.Children.Clear();
+
             if (ShowType == DatePickerShowType.Day)
             {
                 //  前30天
