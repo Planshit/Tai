@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -72,7 +73,9 @@ namespace UI
 
             statusBarIcon = new System.Windows.Forms.NotifyIcon();
             statusBarIcon.Text = "Tai!";
-            statusBarIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name);
+            Stream iconStream = GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/tai32.ico")).Stream;
+            statusBarIcon.Icon = new Icon(iconStream);
+            //statusBarIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name);
 
             statusBarIcon.Visible = true;
             statusBarIcon.MouseClick += NotifyIcon_MouseClick;
