@@ -13,6 +13,7 @@
 
     <Grid Margin="20">
         <StackPanel>
+          
             <TextBlock Text="设置" FontSize="18" Margin="0,5,0,20"/>
             <Tabbar:Tabbar Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
 
@@ -48,7 +49,12 @@
                             <TextBlock Margin="0,20,0,0">
                                 <Run Text="Tai "/><Run Text="{Binding Version}"/>
                             </TextBlock>
-
+                            <TextBlock Margin="0,5,0,0">
+                                <Run Text="开源 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai">https://github.com/Planshit/Tai</Hyperlink>
+                            </TextBlock>
+                            <TextBlock Margin="0,5,0,0">
+                                <Run Text="讨论 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai/discussions">https://github.com/Planshit/Tai/discussions</Hyperlink>
+                            </TextBlock>
                             <TextBlock Margin="0,30,0,0">
                                 <Run Text="外部资源声明 "/>
                             </TextBlock>

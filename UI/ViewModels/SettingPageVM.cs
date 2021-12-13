@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using UI.Controls;
 using UI.Models;
 
 namespace UI.ViewModels
@@ -16,13 +17,20 @@ namespace UI.ViewModels
     {
         private ConfigModel config;
         private readonly IAppConfig appConfig;
+        public Command OpenURL { get; set; }
         public SettingPageVM(IAppConfig appConfig)
         {
             this.appConfig = appConfig;
 
+            OpenURL = new Command(new Action<object>(OnOpenURL));
 
             Init();
 
+        }
+
+        private void OnOpenURL(object obj)
+        {
+            Process.Start(new ProcessStartInfo(obj.ToString()));
         }
 
         private void Init()
