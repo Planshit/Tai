@@ -8,6 +8,8 @@
           Value="true" />
         <Setter Property="Width" Value="35"/>
         <Setter Property="Height" Value="35"/>
+        <Setter Property="FontSize" Value="16"/>
+
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -15,7 +17,7 @@
                     <Border Background="{TemplateBinding Background}"  x:Name="Border">
 
                         <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Padding="5" Background="Transparent">
-                            <base:Icon x:Name="Icon" IconType="{TemplateBinding Icon}" Foreground="#5c5c5c" VerticalAlignment="Center"  FontSize="16" >
+                            <base:Icon x:Name="Icon" IconType="{TemplateBinding Icon}" Foreground="#5c5c5c" VerticalAlignment="Center"  FontSize="{TemplateBinding FontSize}" >
 
                             </base:Icon>
                         </Border>

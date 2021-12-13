@@ -12,14 +12,14 @@ namespace UI.Controls.Button
 {
     public class IconButton : Control
     {
-        public Command Command
+        public ICommand Command
         {
-            get { return (Command)GetValue(CommandProperty); }
+            get { return (ICommand)GetValue(CommandProperty); }
             set { SetValue(CommandProperty, value); }
         }
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register("Command",
-                typeof(Command),
+                typeof(ICommand),
                 typeof(IconButton));
         public IconTypes Icon
         {
