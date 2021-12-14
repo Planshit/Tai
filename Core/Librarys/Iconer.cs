@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Xml.Serialization;
+using Windows.Storage;
 
 namespace Core.Librarys
 {
@@ -21,7 +22,7 @@ namespace Core.Librarys
         public static string Get(string processname, string desc)
         {
             string iconName = (processname + desc).Replace(" ", "") + ".png";
-            string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+            string iconPath = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path,
                          "AppIcons", iconName);
             if (!File.Exists(iconPath))
             {
@@ -41,7 +42,7 @@ namespace Core.Librarys
             try
             {
                 string iconName = (processname + desc).Replace(" ", "") + ".png";
-                string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                string iconPath = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path,
                              "AppIcons", iconName);
                 if (isCheck && File.Exists(iconPath))
                 {

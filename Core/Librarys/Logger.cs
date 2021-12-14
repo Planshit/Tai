@@ -7,13 +7,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Core.Librarys
 {
     public class Logger
     {
         private static readonly object writeLock = new object();
-        private static string loggerName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+        private static string loggerName = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path,
                          "Log", DateTime.Now.ToString("yyyy-MM-dd") + ".log");
         private enum LogLevel
         {
@@ -50,7 +51,7 @@ namespace Core.Librarys
         {
             lock (writeLock)
             {
-                string dir = Path.GetDirectoryName(loggerName);
+                string dir = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path,"Log");
                 if (!Directory.Exists(dir))
                 {
                     Directory.CreateDirectory(dir);

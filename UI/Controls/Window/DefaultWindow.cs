@@ -154,8 +154,7 @@ namespace UI.Controls.Window
             //  获取程序图标
             if (Icon == null)
             {
-                Icon = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(
-             System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name));
+                Icon = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().ManifestModule.FullyQualifiedName));
             }
 
             Loaded += new RoutedEventHandler(window_Loaded);

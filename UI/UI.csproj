@@ -358,5 +358,8 @@
   <ItemGroup>
     <Resource Include="Resources\Icons\tai32.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\UwpDesktop-Updated.10.0.17763.132\analyzers\dotnet\UwpDesktopAnalyzer.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

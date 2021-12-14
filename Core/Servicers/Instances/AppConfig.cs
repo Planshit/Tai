@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Core.Servicers.Instances
 {
@@ -22,7 +23,7 @@ namespace Core.Servicers.Instances
 
         public AppConfig()
         {
-            fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+            fileName = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path,
                 "Data",
                 "AppConfig.json");
         }
