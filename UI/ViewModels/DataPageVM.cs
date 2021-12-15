@@ -77,6 +77,10 @@ namespace UI.ViewModels
                     {
                         DayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                     }
+                    else
+                    {
+                        LoadData(DayDate);
+                    }
 
                 }
                 else
@@ -84,6 +88,10 @@ namespace UI.ViewModels
                     if (MonthDate == DateTime.MinValue)
                     {
                         MonthDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    }
+                    else
+                    {
+                        LoadData(MonthDate);
                     }
                 }
             }
