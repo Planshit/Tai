@@ -17,9 +17,11 @@
                     <Border Background="{TemplateBinding Background}" x:Name="Border">
 
                         <Grid>
-                            <StackPanel x:Name="Container">
+                            <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Hidden">
+                                <StackPanel x:Name="Container">
 
-                            </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
                         </Grid>
 
                     </Border>
