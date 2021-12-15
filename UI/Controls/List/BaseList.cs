@@ -26,13 +26,27 @@ namespace UI.Controls.List
         }
 
         public string SelectedItem { get { return (string)GetValue(SelectedItemProperty); } set { SetValue(SelectedItemProperty, value); } }
-        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(string), typeof(BaseList));
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(string), typeof(BaseList), new PropertyMetadata(new PropertyChangedCallback(OnSelectedItemChanged)));
+
+        private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var that = (BaseList)d;
+            if (e.NewValue != e.OldValue)
+            {
+                that.OnSelect();
+            }
+        }
 
         private StackPanel Container;
 
         //private Dictionary<int, BaseListItem> ItemsMap;
         private List<BaseListItem> ItemsMap;
+        private ScrollViewer ScrollViewer;
 
+        /// <summary>
+        /// 选择项更改后发生
+        /// </summary>
+        public event EventHandler SelectedItemChanged;
         public BaseList()
         {
             DefaultStyleKey = typeof(BaseList);
@@ -64,6 +78,8 @@ namespace UI.Controls.List
         {
             base.OnApplyTemplate();
             Container = GetTemplateChild("Container") as StackPanel;
+            ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
+
             Render();
         }
 
@@ -96,6 +112,23 @@ namespace UI.Controls.List
             itemControl.Text = item;
             itemControl.MouseLeftButtonUp += ItemClick;
             itemControl.MouseRightButtonUp += ItemClick;
+            bool isHandleSelected = false;
+            if (SelectedItem == item)
+            {
+                itemControl.IsSelected = true;
+
+                itemControl.Loaded += (e, c) =>
+                {
+                    if (isHandleSelected)
+                    {
+                        return;
+                    }
+                    isHandleSelected = true;
+                    ScrollViewer.ScrollToVerticalOffset(itemControl.TransformToAncestor(Container)
+                              .Transform(new Point(0, 0)).Y);
+                };
+            }
+
             ItemsMap.Add(itemControl);
             Container.Children.Add(itemControl);
         }
@@ -118,6 +151,7 @@ namespace UI.Controls.List
             ClearSelectedItems();
             (sender as BaseListItem).IsSelected = true;
             SelectedItem = (sender as BaseListItem).Text;
+            SelectedItemChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void ClearSelectedItems()
@@ -125,6 +159,17 @@ namespace UI.Controls.List
             foreach (var item in ItemsMap)
             {
                 item.IsSelected = false;
+            }
+        }
+
+
+        private void OnSelect()
+        {
+            ClearSelectedItems();
+            var control = ItemsMap.Where(m => m.Text == SelectedItem).FirstOrDefault();
+            if (control != null)
+            {
+                control.IsSelected = true;
             }
         }
     }
