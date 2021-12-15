@@ -7,9 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using UI.Controls.List;
 using UI.Controls.Navigation.Models;
 
 namespace UI.Controls.DatePickerBar
@@ -29,7 +31,7 @@ namespace UI.Controls.DatePickerBar
             var control = d as DatePickerBar;
             if (e.NewValue != e.OldValue)
             {
-                control.Render();
+                control.Render(control.SelectedDate);
             }
         }
 
@@ -59,6 +61,21 @@ namespace UI.Controls.DatePickerBar
         public static readonly DependencyProperty SelectedDateStringProperty =
             DependencyProperty.Register("SelectedDateString", typeof(string), typeof(DatePickerBar));
 
+        /// <summary>
+        /// 是否显示日期选择弹出层
+        /// </summary>
+        public bool IsShowDatePickerPopup
+        {
+            get { return (bool)GetValue(IsShowDatePickerPopupProperty); }
+            set { SetValue(IsShowDatePickerPopupProperty, value); }
+        }
+        public static readonly DependencyProperty IsShowDatePickerPopupProperty =
+            DependencyProperty.Register("IsShowDatePickerPopup", typeof(bool), typeof(DatePickerBar));
+
+
+
+
+
         private StackPanel Container;
         private ScrollViewer ScrollViewer;
         private Dictionary<DateTime, DatePickerBarItem> ItemsDictionary;
@@ -70,6 +87,12 @@ namespace UI.Controls.DatePickerBar
         private Border ActiveBlock;
         //  动画
         Storyboard storyboard;
+        //  日期选择弹出层
+        private Popup DatePickerPopup;
+        private BaseList YearsList, MonthsList;
+        private Border Date;
+        private ScrollViewer YearsListScrollViewer;
+        private StackPanel MonthSelect;
         public DatePickerBar()
         {
             DefaultStyleKey = typeof(DatePickerBar);
@@ -86,12 +109,86 @@ namespace UI.Controls.DatePickerBar
             Container = GetTemplateChild("Container") as StackPanel;
             ActiveBlock = GetTemplateChild("ActiveBlock") as Border;
             ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
-            Render();
+            DatePickerPopup = GetTemplateChild("DatePickerPopup") as Popup;
+            Date = GetTemplateChild("Date") as Border;
+            YearsList = GetTemplateChild("YearsList") as BaseList;
+            MonthsList = GetTemplateChild("MonthsList") as BaseList;
+            YearsListScrollViewer = GetTemplateChild("YearsListScrollViewer") as ScrollViewer;
+            MonthSelect = GetTemplateChild("MonthSelect") as StackPanel;
+
+            Init();
+
+            //  渲染日期
+            Render(DateTime.Now);
 
 
         }
 
+        /// <summary>
+        /// 初始化控件数据
+        /// </summary>
+        private void Init()
+        {
+            DatePickerPopup.Closed += (e, c) =>
+            {
+                IsShowDatePickerPopup = false;
+                VisualStateManager.GoToState(this, "Normal", true);
+            };
 
+            Date.MouseEnter += (e, c) =>
+              {
+                  VisualStateManager.GoToState(this, "DateMouseOver", true);
+              };
+            Date.MouseLeave += (e, c) =>
+            {
+                VisualStateManager.GoToState(this, "Normal", true);
+            };
+            Date.MouseLeftButtonUp += (e, c) =>
+            {
+                IsShowDatePickerPopup = true;
+                VisualStateManager.GoToState(this, "ShowPopup", true);
+            };
+
+            //  填充年份数据
+            YearsList.SelectedItem = DateTime.Now.Year.ToString();
+            //YearsList.SelectedItem = "2073";
+
+            for (int i = 2021; i <= DateTime.Now.Year; i++)
+            {
+                YearsList.Items.Add(i.ToString());
+            }
+            YearsList.SelectedItemChanged += DateChanged;
+
+            if (ShowType == DatePickerShowType.Day)
+            {
+                //  填充月份数据
+                MonthSelect.Visibility = Visibility.Visible;
+
+                MonthsList.SelectedItem = DateTime.Now.Month.ToString();
+                //MonthsList.SelectedItem = "1";
+
+                for (int i = 1; i <= 12; i++)
+                {
+                    MonthsList.Items.Add(i.ToString());
+                }
+
+                MonthsList.SelectedItemChanged += DateChanged;
+
+            }
+        }
+
+        private void DateChanged(object sender, EventArgs e)
+        {
+            if (ShowType == DatePickerShowType.Day)
+            {
+                SelectedDate = new DateTime(int.Parse(YearsList.SelectedItem), int.Parse(MonthsList.SelectedItem), 1);
+            }
+            else
+            {
+                SelectedDate = new DateTime(int.Parse(YearsList.SelectedItem), 1, 1);
+            }
+            Render(SelectedDate);
+        }
 
         private void AddItem(DateTime date)
         {
@@ -167,7 +264,7 @@ namespace UI.Controls.DatePickerBar
 
 
 
-        private void Render()
+        private void Render(DateTime date)
         {
             if (Container == null)
             {
@@ -182,32 +279,34 @@ namespace UI.Controls.DatePickerBar
 
             if (ShowType == DatePickerShowType.Day)
             {
-                dataCount = 41;
+                dataCount = DateTime.DaysInMonth(date.Year, date.Month);
 
-                //  前30天
-                for (int i = 1; i < 31; i++)
+                ////  前30天
+                //for (int i = 1; i < 31; i++)
+                //{
+                //    AddItem(date.Date.AddDays(-i));
+                //}
+
+                //AddItem(date.Date);
+                for (int i = 1; i <= dataCount; i++)
                 {
-                    AddItem(DateTime.Now.Date.AddDays(-i));
+                    AddItem(new DateTime(date.Year, date.Month, i));
                 }
-
-                AddItem(DateTime.Now.Date);
-
-                //  后十天
-                for (int i = 1; i < 11; i++)
-                {
-                    AddItem(DateTime.Now.Date.AddDays(+i));
-                }
+                ////  后十天
+                //for (int i = 1; i < 11; i++)
+                //{
+                //    AddItem(DateTime.Now.Date.AddDays(+i));
+                //}
             }
 
             if (ShowType == DatePickerShowType.Month)
             {
                 dataCount = 12;
 
-                var nowDate = DateTime.Now;
                 for (int i = 1; i < 13; i++)
                 {
-                    var date = new DateTime(nowDate.Year, i, 1);
-                    AddMonthItem(date);
+                    var data = new DateTime(date.Year, i, 1);
+                    AddMonthItem(data);
                 }
             }
 
@@ -266,7 +365,7 @@ namespace UI.Controls.DatePickerBar
 
         private void ScrollToActive(DateTime date)
         {
-           
+
             if (ItemsDictionary.Count == 0)
             {
                 return;
@@ -295,7 +394,7 @@ namespace UI.Controls.DatePickerBar
                 SelectedDate = date;
             }
 
-            
+
             ItemsDictionary[date].IsSelected = true;
 
 
