@@ -87,8 +87,6 @@ namespace UI
             {
                 //右键单击弹出托盘菜单
                 contextMenu.IsOpen = true;
-                //激活主窗口，用于处理关闭托盘菜单
-                App.Current.MainWindow.Activate();
             }
         }
         private void NotifyIcon_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -173,15 +171,16 @@ namespace UI
             }
 
             var main = serviceProvider.GetService<IMain>();
+            var observer = serviceProvider.GetService<IObserver>();
+
             main.Run();
 
+            observer.OnAppActive += (p, d, f) =>
+            {
+                contextMenu.IsOpen = false;
+            };
             //  创建保活窗口
             keepaliveWindow = new HideWindow();
-            keepaliveWindow.Title = "Tai Keepalive";
-            keepaliveWindow.ShowInTaskbar = false;
-            keepaliveWindow.WindowStyle = WindowStyle.None;
-            keepaliveWindow.OverridesDefaultStyle = true;
-            keepaliveWindow.Show();
 
             InitStatusBarIcon();
         }
