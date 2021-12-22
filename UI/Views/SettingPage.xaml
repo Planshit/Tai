@@ -42,6 +42,9 @@
                     <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" Margin="0,0,0,10"/>
                 </TabItem>
                 <TabItem>
+                    <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" Margin="0,0,0,0"/>
+                </TabItem>
+                <TabItem>
                     <!--关于-->
                     <Border Background="White" Padding="20" CornerRadius="6">
                     <StackPanel HorizontalAlignment="Left">
@@ -62,6 +65,7 @@
                         </StackPanel>
                     </Border>
                 </TabItem>
+               
             </TabControl>
         </StackPanel>
 

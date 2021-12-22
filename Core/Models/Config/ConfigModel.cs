@@ -21,5 +21,11 @@ namespace Core.Models.Config
         /// 常规
         /// </summary>
         public GeneralModel General { get; set; }
+
+        /// <summary>
+        /// 行为
+        /// </summary>
+        public BehaviorModel Behavior { get; set; }
+
     }
 }

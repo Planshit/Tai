@@ -138,9 +138,10 @@ namespace Core.Servicers.Instances
                 UpdateTime();
             }
 
-            if (!IgnoreProcess.Contains(processName)
+            if (!config.Behavior.IgnoreProcessList.Contains(processName)
                 && file != string.Empty
-                && sleepStatus != SleepStatus.Sleep)
+                && sleepStatus != SleepStatus.Sleep
+                && !IgnoreProcess.Contains(processName))
             {
                 activeProcess = processName;
                 activeProcessDescription = description;

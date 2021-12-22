@@ -1,10 +1,12 @@
 ﻿using Core.Librarys;
+using Core.Models.Config;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.Librays;
 using UI.Models;
@@ -15,13 +17,26 @@ namespace UI.ViewModels
     {
         private readonly IData data;
         private readonly MainViewModel main;
+        private readonly IAppConfig appConfig;
+
+        private ConfigModel config;
+        public Command BlockActionCommand { get; set; }
+        public Command ClearSelectMonthDataCommand { get; set; }
+
         public DetailPageVM(
-            IData data, MainViewModel main)
+            IData data, MainViewModel main, IAppConfig appConfig)
         {
             this.data = data;
             this.main = main;
+            this.appConfig = appConfig;
+
+            BlockActionCommand = new Command(new Action<object>(OnBlockActionCommand));
+            ClearSelectMonthDataCommand = new Command(new Action<object>(OnClearSelectMonthDataCommand));
+
             Init();
         }
+
+
 
         private async void Init()
         {
@@ -31,9 +46,35 @@ namespace UI.ViewModels
 
             PropertyChanged += DetailPageVM_PropertyChanged;
 
+            config = appConfig.GetConfig();
+
             await LoadData();
 
             await LoadInfo();
+
+        }
+
+        private async void OnClearSelectMonthDataCommand(object obj)
+        {
+            await Clear();
+        }
+
+        private void OnBlockActionCommand(object obj)
+        {
+            if (obj.ToString() == "block")
+            {
+                config.Behavior.IgnoreProcessList.Add(ProcessName);
+                IsIgnore = true;
+                main.Toast("进程已忽略");
+            }
+            else
+            {
+                config.Behavior.IgnoreProcessList.Remove(ProcessName);
+                IsIgnore = false;
+                main.Toast("进程已取消忽略");
+            }
+
+            appConfig.Save();
         }
 
         private async void DetailPageVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -54,7 +95,8 @@ namespace UI.ViewModels
                     if (info != null)
                     {
                         ProcessName = info.ProcessName;
-
+                        //  判断是否是忽略的进程
+                        IsIgnore = config.Behavior.IgnoreProcessList.Contains(ProcessName);
                     }
                 }
             }
@@ -67,6 +109,7 @@ namespace UI.ViewModels
             {
                 if (Process != null)
                 {
+
                     var monthData = data.GetProcessMonthLogList(Process.PopupText, Date);
                     int monthTotal = monthData.Sum(m => m.Time);
                     Total = Timer.Fromat(monthTotal);
@@ -104,6 +147,23 @@ namespace UI.ViewModels
                 }
             });
         }
+
+        private async Task Clear()
+        {
+            await Task.Run(async () =>
+            {
+                if (Process != null)
+                {
+                    main.Toast("正在处理");
+                    data.Clear(ProcessName, Process.PopupText, Date);
+
+                    await LoadData();
+                    main.Toast("已清空");
+                }
+            }
+            );
+        }
+
 
         private List<ChartsDataModel> MapToChartsData(List<Core.Models.DailyLogModel> list)
         {

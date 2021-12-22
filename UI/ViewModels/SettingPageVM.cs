@@ -41,7 +41,7 @@ namespace UI.ViewModels
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "常规","关联","关于"
+                "常规","关联","行为","关于"
             };
 
             PropertyChanged += SettingPageVM_PropertyChanged;
@@ -73,6 +73,10 @@ namespace UI.ViewModels
                     }
 
                 }
+                else if (TabbarSelectedIndex == 2)
+                {
+                    config.Behavior = Data as BehaviorModel;
+                }
 
                 appConfig.Save();
             }
@@ -88,6 +92,11 @@ namespace UI.ViewModels
                 {
                     //  关联
                     Data = config.Links;
+                }
+                else if (TabbarSelectedIndex == 2)
+                {
+                    //  行为
+                    Data = config.Behavior;
                 }
             }
         }
