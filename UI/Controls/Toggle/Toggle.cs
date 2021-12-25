@@ -23,10 +23,7 @@ namespace UI.Controls.Toggle
         private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as Toggle;
-            if (e.OldValue != e.NewValue)
-            {
-                control.Text = control.IsChecked ? control.OnText : control.OffText;
-            }
+          
             VisualStateManager.GoToState(control, control.IsChecked ? "On" : "Off", true);
         }
 
@@ -50,7 +47,7 @@ namespace UI.Controls.Toggle
             set { SetValue(TextProperty, value); }
         }
         public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(Toggle), new PropertyMetadata("关"));
+            DependencyProperty.Register("Text", typeof(string), typeof(Toggle));
 
         public Toggle()
         {
@@ -66,7 +63,6 @@ namespace UI.Controls.Toggle
             base.OnMouseLeftButtonUp(e);
             IsChecked = !IsChecked;
             ToggleChanged?.Invoke(this, EventArgs.Empty);
-            VisualStateManager.GoToState(this, IsChecked ? "On" : "Off", true);
         }
     }
 }
