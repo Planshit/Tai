@@ -5,8 +5,10 @@ using Core.Servicers.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,6 +47,8 @@ namespace Core.Servicers.Instances
                 }
 
                 CopyToOldConfig();
+
+                CheckOption(config);
             }
             catch (JsonSerializationException ex)
             {
@@ -82,6 +86,9 @@ namespace Core.Servicers.Instances
 
             config.General = new GeneralModel();
             config.General.IsStartatboot = false;
+
+            config.Behavior = new BehaviorModel();
+            config.Behavior.IgnoreProcessList.Add("Test");
         }
 
         public ConfigModel GetConfig()
@@ -109,6 +116,32 @@ namespace Core.Servicers.Instances
             catch (Exception ex)
             {
                 Logger.Error(ex.Message);
+            }
+        }
+
+        private void CheckOption(object obj)
+        {
+            System.Reflection.PropertyInfo[] properties = obj.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+            foreach (System.Reflection.PropertyInfo item in properties)
+            {
+                string name = item.Name;
+                object value = item.GetValue(obj, null);
+                if (value == null)
+                {
+                    //配置项不存在时创建
+                    Type[] types = new Type[0];
+                    object[] objs = new object[0];
+
+                    ConstructorInfo ctor = item.PropertyType.GetConstructor(types);
+                    if (ctor != null)
+                    {
+                        object instance = ctor.Invoke(objs);
+                        item.SetValue(obj, instance);
+                    }
+                }
+
+                Debug.WriteLine(string.Format("{0}:{1},", name, value));
             }
         }
     }

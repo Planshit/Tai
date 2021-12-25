@@ -21,10 +21,13 @@ namespace Core.Models.Config
         public string Group;
         public int Index;
         public bool IsName;
+        public string Placeholder;
+        public bool IsCanRepeat;
         public ConfigAttribute()
         {
             ToggleTrueText = "开";
             ToggleFalseText = "关";
+            IsCanRepeat = true;
             Index = 0;
             IsName = false;
         }

@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using UI.Controls.Input;
+using UI.Controls.List;
 
 namespace UI.Controls.SettingPanel
 {
@@ -39,9 +41,11 @@ namespace UI.Controls.SettingPanel
         private object configData;
         private readonly string nosetGroupKey = "noset_group";
         private Dictionary<string, List<Config>> configList;
+        public Dictionary<string, List<string>> SettingData { get; set; }
         public SettingPanel()
         {
             DefaultStyleKey = typeof(SettingPanel);
+            SettingData = new Dictionary<string, List<string>>();
         }
         public override void OnApplyTemplate()
         {
@@ -141,6 +145,7 @@ namespace UI.Controls.SettingPanel
             var panel = new SettingPanelMultiItem();
             panel.Data = data;
             panel.Tag = id;
+            panel.SettingData = SettingData;
             panel.DataChanged += (e, c) =>
             {
                 int pid = (int)panel.Tag;
@@ -299,6 +304,10 @@ namespace UI.Controls.SettingPanel
             {
                 uIElement = RenderBooleanConfigControl(attribute, pi);
             }
+            else if (pi.PropertyType == typeof(List<string>))
+            {
+                uIElement = RenderListStringConfigControl(attribute, pi);
+            }
 
             return uIElement;
         }
@@ -321,6 +330,108 @@ namespace UI.Controls.SettingPanel
             item.Content = inputControl;
 
             return item;
+        }
+
+        private UIElement RenderListStringConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
+        {
+            var list = pi.GetValue(Data) as List<string>;
+
+            var listControl = new BaseList();
+            listControl.MaxHeight = 200;
+            listControl.Loaded += (sender, args) =>
+            {
+                listControl.Items.CollectionChanged += (o, e) =>
+                {
+                    var newData = new List<string>();
+                    foreach (var item in listControl.Items)
+                    {
+                        newData.Add(item.ToString());
+                    }
+                    pi.SetValue(configData, newData);
+                    Data = configData;
+                };
+            };
+            listControl.Margin = new Thickness(15, 0, 15, 10);
+
+            if (list != null)
+            {
+                foreach (string item in list)
+                {
+                    listControl.Items.Add(item);
+                }
+            }
+            else
+            {
+                list = new List<string>();
+            }
+            var contextMenu = new ContextMenu();
+
+            var contextMenuItemDel = new MenuItem();
+            contextMenuItemDel.Header = "移除";
+            contextMenuItemDel.Click += (e, c) =>
+            {
+                listControl.Items.Remove(listControl.SelectedItem);
+            };
+            contextMenu.Items.Add(contextMenuItemDel);
+            listControl.ContextMenu = contextMenu;
+
+
+            //  添加输入框
+            var addInputBox = new InputBox();
+            addInputBox.Placeholder = configAttribute.Placeholder;
+            addInputBox.Margin = new Thickness(0, 0, 10, 0);
+
+            var addBtn = new Button.Button();
+            //addBtn.Margin = new Thickness(15, 0, 15, 10);
+            addBtn.Content = "添加";
+
+            addBtn.Click += (e, c) =>
+            {
+                if (addInputBox.Text == String.Empty || list.Contains(addInputBox.Text))
+                {
+                    addInputBox.Error = configAttribute.Name + (addInputBox.Text == String.Empty ? "不能为空" : "已存在");
+                    addInputBox.ShowError();
+                    return;
+                }
+                //list.Add(addInputBox.Text);
+                listControl.Items.Add(addInputBox.Text);
+                addInputBox.Text = String.Empty;
+
+
+
+            };
+            pi.SetValue(configData, list);
+
+            var inputPanel = new Grid();
+            inputPanel.ColumnDefinitions.Add(
+                new ColumnDefinition()
+                {
+                    Width = new GridLength(10, GridUnitType.Star)
+                });
+            inputPanel.ColumnDefinitions.Add(
+               new ColumnDefinition()
+               {
+                   Width = new GridLength(2, GridUnitType.Star)
+               });
+            inputPanel.Margin = new Thickness(15, 10, 15, 10);
+            Grid.SetColumn(addInputBox, 0);
+            Grid.SetColumn(addBtn, 1);
+            inputPanel.Children.Add(addInputBox);
+            inputPanel.Children.Add(addBtn);
+
+
+            //  标题和说明
+
+            var description = new TextBlock();
+            description.Text = configAttribute.Description;
+            description.Margin = new Thickness(10, 10, 10, 0);
+            description.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#989CA1"));
+            var container = new StackPanel();
+
+            container.Children.Add(description);
+            container.Children.Add(inputPanel);
+            container.Children.Add(listControl);
+            return container;
         }
     }
 }

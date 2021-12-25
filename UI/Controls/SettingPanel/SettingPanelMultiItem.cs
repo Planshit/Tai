@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +20,11 @@ namespace UI.Controls.SettingPanel
 {
     public class SettingPanelMultiItem : Control
     {
+        /// <summary>
+        /// 所有设置数据
+        /// </summary>
+        public Dictionary<string, List<string>> SettingData { get { return (Dictionary<string, List<string>>)GetValue(SettingDataProperty); } set { SetValue(SettingDataProperty, value); } }
+        public static readonly DependencyProperty SettingDataProperty = DependencyProperty.Register("SettingData", typeof(Dictionary<string, List<string>>), typeof(SettingPanelMultiItem));
         public bool Fold { get { return (bool)GetValue(FoldProperty); } set { SetValue(FoldProperty, value); } }
         public static readonly DependencyProperty FoldProperty = DependencyProperty.Register("Fold", typeof(bool), typeof(SettingPanelMultiItem), new PropertyMetadata(false));
 
@@ -39,6 +45,11 @@ namespace UI.Controls.SettingPanel
         public SettingPanelMultiItem()
         {
             DefaultStyleKey = typeof(SettingPanelMultiItem);
+
+            if (SettingData == null)
+            {
+                SettingData = new Dictionary<string, List<string>>();
+            }
         }
         public override void OnApplyTemplate()
         {
@@ -113,6 +124,15 @@ namespace UI.Controls.SettingPanel
 
             var list = pi.GetValue(Data) as List<string>;
 
+            if (SettingData.ContainsKey(pi.Name))
+            {
+                SettingData[pi.Name] = SettingData[pi.Name].Concat(list).ToList();
+            }
+            else
+            {
+                SettingData.Add(pi.Name, list);
+            }
+
             var listControl = new BaseList();
 
             listControl.Loaded += (sender, args) =>
@@ -175,10 +195,21 @@ namespace UI.Controls.SettingPanel
 
             addBtn.Click += (e, c) =>
             {
+                addInputBox.Error = attribute.Name + (addInputBox.Text == String.Empty ? "不能为空" : "已存在");
+
                 if (addInputBox.Text == String.Empty || list.Contains(addInputBox.Text))
                 {
+                    addInputBox.ShowError();
                     return;
                 }
+
+                //  判断重复
+                if (!attribute.IsCanRepeat && SettingData[pi.Name].Contains(addInputBox.Text))
+                {
+                    addInputBox.ShowError();
+                    return;
+                }
+
                 //list.Add(addInputBox.Text);
                 listControl.Items.Add(addInputBox.Text);
                 addInputBox.Text = String.Empty;
@@ -211,9 +242,10 @@ namespace UI.Controls.SettingPanel
         }
         private void RenderTextBox(ConfigAttribute attribute, PropertyInfo pi)
         {
+            string value = (string)pi.GetValue(Data);
 
             var textBox = new InputBox();
-            textBox.Text = (string)pi.GetValue(Data);
+            textBox.Text = value;
             textBox.Placeholder = attribute.Name;
             textBox.Width = 125;
             textBox.LostFocus += (e, c) =>
