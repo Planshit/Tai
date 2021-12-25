@@ -63,5 +63,19 @@ namespace Core.Servicers.Interfaces
         /// <returns></returns>
         DailyLogModel GetLast(string file);
 
+        /// <summary>
+        /// 清空指定进程某月的数据
+        /// </summary>
+        /// <param name="processName"></param>
+        /// <param name="file"></param>
+        void Clear(string processName, string file, DateTime month);
+
+        /// <summary>
+        /// 获取指定进程某天的数据
+        /// </summary>
+        /// <param name="processName"></param>
+        /// <param name="day"></param>
+        /// <returns></returns>
+        DailyLogModel GetProcess(string processName, DateTime day);
     }
 }

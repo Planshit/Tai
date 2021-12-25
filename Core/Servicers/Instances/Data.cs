@@ -160,5 +160,44 @@ namespace Core.Servicers.Instances
                 return null;
             }
         }
+
+        public void Clear(string processName, string file, DateTime month)
+        {
+            if (string.IsNullOrEmpty(processName) || string.IsNullOrEmpty(file))
+            {
+                return;
+            }
+            using (var db = new StatisticContext())
+            {
+
+                db.DailyLog.RemoveRange(
+                    db.DailyLog.Where(m =>
+                    m.ProcessName == processName
+                    && m.File == file
+                    && m.Date.Year == month.Year
+                    && m.Date.Month == month.Month));
+
+                db.SaveChanges();
+            }
+        }
+
+        public DailyLogModel GetProcess(string processName, DateTime day)
+        {
+            using (var db = new StatisticContext())
+            {
+
+
+                var res = db.DailyLog.Where(m =>
+                m.ProcessName == processName
+                && m.Date.Year == day.Year
+                && m.Date.Month == day.Month
+                && m.Date.Day == day.Day);
+                if (res != null)
+                {
+                    return res.FirstOrDefault();
+                }
+                return null;
+            }
+        }
     }
 }
