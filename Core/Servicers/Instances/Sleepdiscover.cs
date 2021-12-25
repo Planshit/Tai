@@ -2,6 +2,7 @@
 using Core.Event;
 using Core.Librarys;
 using Core.Servicers.Interfaces;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,6 +33,30 @@ namespace Core.Servicers.Instances
         {
             this.observer = observer;
             observer.OnAppActive += Observer_OnAppActive;
+            SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(OnPowerModeChanged);
+        }
+
+        private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            switch (e.Mode)
+            {
+                case PowerModes.Suspend:
+                    //电脑休眠
+                    if (status == SleepStatus.Wake)
+                    {
+                        status = SleepStatus.Sleep;
+                        SleepStatusChanged?.Invoke(status);
+                    }
+                    break;
+                case PowerModes.Resume:
+                    //电脑恢复
+                    if (status == SleepStatus.Sleep)
+                    {
+                        status = SleepStatus.Wake;
+                        SleepStatusChanged?.Invoke(status);
+                    }
+                    break;
+            }
         }
 
         private void Observer_OnAppActive(string processName, string description, string file)
