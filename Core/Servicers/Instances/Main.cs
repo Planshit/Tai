@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Threading;
 
 namespace Core.Servicers.Instances
 {
@@ -42,7 +44,7 @@ namespace Core.Servicers.Instances
         /// <summary>
         /// 活动计时器
         /// </summary>
-        private Stopwatch activeWatcher;
+        private Timer activeTimer;
         /// <summary>
         /// 睡眠状态
         /// </summary>
@@ -54,7 +56,10 @@ namespace Core.Servicers.Instances
         private ConfigModel config;
 
         public event EventHandler OnUpdateTime;
-
+        /// <summary>
+        /// 当前焦点使用时长（秒）
+        /// </summary>
+        private int activeSeconds = 0;
         public Main(
             IObserver observer,
             IData data,
@@ -69,10 +74,24 @@ namespace Core.Servicers.Instances
 
             observer.OnAppActive += Observer_OnAppActive;
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
-            activeWatcher = new Stopwatch();
+            activeTimer = new Timer();
+            activeTimer.Interval = 1000;
+            activeTimer.Elapsed += ActiveTimer_Elapsed;
+            activeTimer.Disposed += ActiveTimer_Disposed;
             appConfig.ConfigChanged += AppConfig_ConfigChanged;
             dateObserver.OnDateChanging += DateObserver_OnDateChanging;
 
+        }
+
+        private void ActiveTimer_Disposed(object sender, EventArgs e)
+        {
+            Debug.WriteLine("disposed!timer");
+        }
+
+        private void ActiveTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            activeSeconds++;
+            Debug.WriteLine(activeSeconds.ToString());
         }
 
         private void DateObserver_OnDateChanging(object sender, EventArgs e)
@@ -126,7 +145,7 @@ namespace Core.Servicers.Instances
 
                 activeProcess = null;
 
-                activeWatcher.Stop();
+                activeTimer.Stop();
             }
         }
 
@@ -148,7 +167,12 @@ namespace Core.Servicers.Instances
                 activeProcessFile = file;
 
                 //activeStartTime = DateTime.Now;
-                activeWatcher.Restart();
+
+                activeSeconds = 0;
+                if (!activeTimer.Enabled)
+                {
+                    activeTimer.Start();
+                }
 
                 //  提取icon
                 Iconer.ExtractFromFile(file, processName, description);
@@ -156,7 +180,8 @@ namespace Core.Servicers.Instances
             else
             {
                 activeProcess = null;
-                activeWatcher.Stop();
+                activeSeconds = 0;
+                activeTimer.Stop();
             }
         }
 
@@ -214,7 +239,7 @@ namespace Core.Servicers.Instances
             {
                 //  更新计时
 
-                int seconds = (int)activeWatcher.Elapsed.TotalSeconds;
+                int seconds = activeSeconds;
 
                 Debug.WriteLine(sleepStatus + " 进程：" + activeProcess + " 更新时间：" + seconds);
                 if (seconds <= 0)
