@@ -3,9 +3,11 @@ using Core.Models.Config;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.Librays;
@@ -22,7 +24,7 @@ namespace UI.ViewModels
         private ConfigModel config;
         public Command BlockActionCommand { get; set; }
         public Command ClearSelectMonthDataCommand { get; set; }
-
+        public Command InfoMenuActionCommand { get; set; }
         public DetailPageVM(
             IData data, MainViewModel main, IAppConfig appConfig)
         {
@@ -32,7 +34,7 @@ namespace UI.ViewModels
 
             BlockActionCommand = new Command(new Action<object>(OnBlockActionCommand));
             ClearSelectMonthDataCommand = new Command(new Action<object>(OnClearSelectMonthDataCommand));
-
+            InfoMenuActionCommand = new Command(new Action<object>(OnInfoMenuActionCommand));
             Init();
         }
 
@@ -52,6 +54,29 @@ namespace UI.ViewModels
 
             await LoadInfo();
 
+        }
+        private void OnInfoMenuActionCommand(object obj)
+        {
+            switch (obj.ToString())
+            {
+                case "copy processname":
+                    Clipboard.SetText(ProcessName);
+
+                    break;
+                case "copy process file":
+                    Clipboard.SetText(Process.PopupText);
+                    break;
+                case "open dir":
+                    if (File.Exists(Process.PopupText))
+                    {
+                        System.Diagnostics.Process.Start("explorer.exe", "/select, " + Process.PopupText);
+                    }
+                    else
+                    {
+                        main.Toast("进程文件似乎不存在", Controls.Base.IconTypes.Blocked);
+                    }
+                    break;
+            }
         }
 
         private async void OnClearSelectMonthDataCommand(object obj)
@@ -97,6 +122,48 @@ namespace UI.ViewModels
                         ProcessName = info.ProcessName;
                         //  判断是否是忽略的进程
                         IsIgnore = config.Behavior.IgnoreProcessList.Contains(ProcessName);
+                    }
+
+                    var today = data.GetProcess(ProcessName, DateTime.Now);
+                    var yesterday = data.GetProcess(ProcessName, DateTime.Now.AddDays(-1));
+
+                    if (today != null)
+                    {
+                        TodayTime = Timer.Fromat(today.Time);
+                    }
+                    else
+                    {
+                        TodayTime = "暂无数据";
+                    }
+
+                    if (yesterday != null)
+                    {
+                        int diffseconds = today != null ? today.Time - yesterday.Time : yesterday.Time;
+
+                        string diffText = string.Empty;
+                        if (diffseconds != yesterday.Time)
+                        {
+                            if (diffseconds == 0)
+                            {
+                                //  无变化
+                                diffText = "持平";
+                            }
+                            else if (diffseconds > 0)
+                            {
+                                //  增加
+                                diffText = "增加了" + Timer.Fromat(diffseconds);
+                            }
+                            else
+                            {
+                                //  减少
+                                diffText = "减少了" + Timer.Fromat(Math.Abs(diffseconds));
+                            }
+                        }
+                        Yesterday = diffseconds == yesterday.Time ? "减少100%" : diffText;
+                    }
+                    else
+                    {
+                        Yesterday = "昨日未使用";
                     }
                 }
             }
@@ -158,6 +225,7 @@ namespace UI.ViewModels
                     data.Clear(ProcessName, Process.PopupText, Date);
 
                     await LoadData();
+                    await LoadInfo();
                     main.Toast("已清空");
                 }
             }

@@ -67,5 +67,17 @@ namespace UI.Models
 
         private Visibility CancelBlockBtnVisibility_ = Visibility.Collapsed;
         public Visibility CancelBlockBtnVisibility { get { return CancelBlockBtnVisibility_; } set { CancelBlockBtnVisibility_ = value; OnPropertyChanged(); } }
+
+        private string TodayTime_;
+        /// <summary>
+        /// 今日使用时长
+        /// </summary>
+        public string TodayTime { get { return TodayTime_; } set { TodayTime_ = value; OnPropertyChanged(); } }
+
+        private string Yesterday_;
+        /// <summary>
+        /// 相比昨日
+        /// </summary>
+        public string Yesterday { get { return Yesterday_; } set { Yesterday_ = value; OnPropertyChanged(); } }
     }
 }

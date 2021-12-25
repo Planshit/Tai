@@ -19,6 +19,13 @@
                 Background="White"
                 CornerRadius="12"
                 Padding="0,20">
+                <Border.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制进程名称"/>
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制进程路径"/>
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开进程所在目录"/> 
+                    </ContextMenu>
+                </Border.ContextMenu>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
@@ -51,12 +58,35 @@
                     </StackPanel>
                 </Grid>
             </Border>
+            <TextBlock Text="今日数据" FontSize="14" Margin="0,20,0,0"/>
 
             <Border
                 Background="White"
                 CornerRadius="12"
                 Padding="20,20"
-                Margin="0,20,0,0">
+                Margin="0,10,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" ToolTip="今日使用总时长">
+                        <base:Icon IconType="Timer" VerticalAlignment="Center" Foreground="Gray"/>
+                        <TextBlock Text="{Binding TodayTime}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <base:Icon IconType="Chart" VerticalAlignment="Center" Foreground="Gray"/>
+                        <TextBlock Text="相比昨日" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <TextBlock Text="{Binding Yesterday}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+
+                    </StackPanel>
+
+                </StackPanel>
+            </Border>
+           
+            <TextBlock Text="月份数据"  FontSize="14" Margin="0,20,0,0"/>
+
+            <Border
+                Background="White"
+                CornerRadius="12"
+                Padding="20,20"
+                Margin="0,10,0,0">
                 <StackPanel>
                     <Grid>
                         <DatePickerBar:DatePickerBar ShowType="Month" HorizontalAlignment="Left" SelectedDate="{Binding Date,Mode=TwoWay}"/>
