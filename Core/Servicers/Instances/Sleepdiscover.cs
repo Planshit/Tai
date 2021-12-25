@@ -25,6 +25,24 @@ namespace Core.Servicers.Instances
 
         //  播放声音开始时间
         private DateTime playSoundStartTime;
+
+        private readonly IObserver observer;
+
+        public Sleepdiscover(IObserver observer)
+        {
+            this.observer = observer;
+            observer.OnAppActive += Observer_OnAppActive;
+        }
+
+        private void Observer_OnAppActive(string processName, string description, string file)
+        {
+            if (status == SleepStatus.Sleep)
+            {
+                status = SleepStatus.Wake;
+                SleepStatusChanged?.Invoke(status);
+            }
+        }
+
         public void Start()
         {
             timer = new DispatcherTimer();
