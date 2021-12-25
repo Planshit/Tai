@@ -26,7 +26,40 @@
                                 </Grid>
 
                             </Border>
+                            <Popup
+                                    x:Name="ErrorPopup"
+                                    AllowsTransparency="True"
+                                    IsOpen="{TemplateBinding IsShowError}"
+                                    Placement="Bottom"
+                                    PlacementTarget="{Binding ElementName=BoxBorder}"
+                                    PopupAnimation="Slide"
+                                    StaysOpen="False">
+                                <Border
+                                        Background="Red"
+                                        CornerRadius="12"
+                                        Padding="10"
+                                        Margin="10">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Direction="0" Color="Gray" Opacity=".2"/>
+                                    </Border.Effect>
 
+                                    <Grid>
+                                        <Path 
+                      Width="15"
+                      Height="15"
+                      SnapsToDevicePixels="False"
+                      Data="M 0 15 L 7.5 7.5 L 15 15" Fill="Red"
+                                        Stroke="Red"
+                                        StrokeThickness="1"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Left"
+                                        Margin="0,-25,0,0"
+                                        />
+                                        <TextBlock Foreground="White" Text="{TemplateBinding Error}"/>
+                                    </Grid>
+
+                                </Border>
+                            </Popup>
 
                         </Grid>
                         <VisualStateManager.VisualStateGroups>
