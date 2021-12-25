@@ -175,6 +175,10 @@ namespace UI.Controls.DatePickerBar
                 MonthsList.SelectedItemChanged += DateChanged;
 
             }
+            if(ShowType== DatePickerShowType.Year)
+            {
+                SelectedDateString = SelectedDate.ToString("yyyy");
+            }
         }
 
         private void DateChanged(object sender, EventArgs e)

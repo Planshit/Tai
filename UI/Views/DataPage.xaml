@@ -48,6 +48,13 @@
                         <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                     </StackPanel>
                 </TabItem>
+                <TabItem>
+                    <StackPanel>
+                        <DatePickerBar:DatePickerBar SelectedDate="{Binding YearDate,Mode=TwoWay}" ShowType="Year"/>
+
+                        <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    </StackPanel>
+                </TabItem>
             </TabControl>
 
 

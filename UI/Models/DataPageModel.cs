@@ -64,5 +64,15 @@ namespace UI.Models
             get { return MonthDate_; }
             set { MonthDate_ = value; OnPropertyChanged(); }
         }
+
+        private DateTime YearDate_;
+        /// <summary>
+        ///  date
+        /// </summary>
+        public DateTime YearDate
+        {
+            get { return YearDate_; }
+            set { YearDate_ = value; OnPropertyChanged(); }
+        }
     }
 }

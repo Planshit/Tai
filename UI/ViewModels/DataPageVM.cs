@@ -40,7 +40,7 @@ namespace UI.ViewModels
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "按天查看","按月查看"
+                "按天查看","按月查看","按年查看"
             };
 
             TabbarSelectedIndex = 0;
@@ -83,7 +83,7 @@ namespace UI.ViewModels
                     }
 
                 }
-                else
+                else if (TabbarSelectedIndex == 1)
                 {
                     if (MonthDate == DateTime.MinValue)
                     {
@@ -92,6 +92,17 @@ namespace UI.ViewModels
                     else
                     {
                         LoadData(MonthDate);
+                    }
+                }
+                else if (TabbarSelectedIndex == 2)
+                {
+                    if (YearDate == DateTime.MinValue)
+                    {
+                        YearDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    }
+                    else
+                    {
+                        LoadData(YearDate);
                     }
                 }
             }
@@ -113,11 +124,15 @@ namespace UI.ViewModels
                 dateStart = new DateTime(date.Year, date.Month, 1);
                 dateEnd = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
             }
-            else
+            else if (TabbarSelectedIndex == 0)
             {
                 dateStart = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
                 dateEnd = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59);
-
+            }
+            else if (TabbarSelectedIndex == 2)
+            {
+                dateStart = new DateTime(date.Year, 1, 1, 0, 0, 0);
+                dateEnd = new DateTime(date.Year, 12, DateTime.DaysInMonth(date.Year, 12), 23, 59, 59);
             }
             var list = data.GetDateRangelogList(dateStart, dateEnd);
             Data = MapToChartsData(list);

@@ -19,5 +19,9 @@ namespace UI.Controls.DatePickerBar
         /// 月
         /// </summary>
         Month,
+        /// <summary>
+        /// 年
+        /// </summary>
+        Year,
     }
 }
