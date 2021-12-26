@@ -1,4 +1,5 @@
-﻿using Core.Servicers.Instances;
+﻿using Core.Librarys;
+using Core.Servicers.Instances;
 using Core.Servicers.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -39,9 +40,26 @@ namespace UI
         private DefaultWindow mainWindow;
         public App()
         {
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             serviceProvider = serviceCollection.BuildServiceProvider();
+        }
+
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            //  记录崩溃错误
+            Logger.Error("[程序崩溃异常] " + e.Exception.Message);
+
+            e.Handled = true;
+
+            Shutdown();
+
+            //  显示崩溃弹窗
+            string taiBugPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                "TaiBug.exe");
+            ProcessHelper.Run(taiBugPath, new string[] { string.Empty });
         }
 
         #region 获取当前程序是否已运行
