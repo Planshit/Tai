@@ -13,8 +13,7 @@ namespace Core.Librarys
     public class Logger
     {
         private static readonly object writeLock = new object();
-        private static string loggerName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                         "Log", DateTime.Now.ToString("yyyy-MM-dd") + ".log");
+
         private enum LogLevel
         {
             Info,
@@ -48,6 +47,8 @@ namespace Core.Librarys
 
         private static void Save(string message)
         {
+            string loggerName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                         "Log", DateTime.Now.ToString("yyyy-MM-dd") + ".log");
             lock (writeLock)
             {
                 string dir = Path.GetDirectoryName(loggerName);
