@@ -47,6 +47,11 @@ namespace UI
             serviceProvider = serviceCollection.BuildServiceProvider();
         }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            statusBarIcon.Visible = false;
+        }
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             //  记录崩溃错误
