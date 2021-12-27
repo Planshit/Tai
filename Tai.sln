@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{2427
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaiBug", "TaiBug\TaiBug.csproj", "{758D59B2-C438-4DE4-B135-7FF0614FE4B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{7A2F2592-3079-441C-8704-E71CE75BC593}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,14 @@ Global
 		{758D59B2-C438-4DE4-B135-7FF0614FE4B7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{758D59B2-C438-4DE4-B135-7FF0614FE4B7}.Release|x64.ActiveCfg = Release|Any CPU
 		{758D59B2-C438-4DE4-B135-7FF0614FE4B7}.Release|x64.Build.0 = Release|Any CPU
+		{7A2F2592-3079-441C-8704-E71CE75BC593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A2F2592-3079-441C-8704-E71CE75BC593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A2F2592-3079-441C-8704-E71CE75BC593}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7A2F2592-3079-441C-8704-E71CE75BC593}.Debug|x64.Build.0 = Debug|Any CPU
+		{7A2F2592-3079-441C-8704-E71CE75BC593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A2F2592-3079-441C-8704-E71CE75BC593}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A2F2592-3079-441C-8704-E71CE75BC593}.Release|x64.ActiveCfg = Release|Any CPU
+		{7A2F2592-3079-441C-8704-E71CE75BC593}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

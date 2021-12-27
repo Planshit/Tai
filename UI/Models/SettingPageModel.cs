@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace UI.Models
 {
@@ -29,7 +30,10 @@ namespace UI.Models
         /// <summary>
         /// 软件版本号
         /// </summary>
-        public string Version{ get { return version; } set { version = value; OnPropertyChanged(); } }
+        public string Version { get { return version; } set { version = value; OnPropertyChanged(); } }
+
+        private Visibility CheckUpdateBtnVisibility_= Visibility.Visible;
+        public Visibility CheckUpdateBtnVisibility { get { return CheckUpdateBtnVisibility_; } set { CheckUpdateBtnVisibility_ = value; OnPropertyChanged(); } }
 
     }
 }

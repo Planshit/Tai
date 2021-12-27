@@ -13,7 +13,7 @@
 
     <Grid Margin="20">
         <StackPanel>
-          
+
             <TextBlock Text="设置" FontSize="18" Margin="0,5,0,20"/>
             <Tabbar:Tabbar Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
 
@@ -47,25 +47,28 @@
                 <TabItem>
                     <!--关于-->
                     <Border Background="White" Padding="20" CornerRadius="6">
-                    <StackPanel HorizontalAlignment="Left">
-                        <Image Width="25" Source="/Resources/Icons/tai.ico" HorizontalAlignment="Left"/>
-                            <TextBlock Margin="0,20,0,0">
-                                <Run Text="Tai "/><Run Text="{Binding Version}"/>
-                            </TextBlock>
-                            <TextBlock Margin="0,5,0,0">
+                        <StackPanel HorizontalAlignment="Left">
+                            <Image Width="25" Source="/Resources/Icons/tai.ico" HorizontalAlignment="Left"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <TextBlock VerticalAlignment="Center">
+                                <Run Text="Tai版本号 "/><Run Text="{Binding Version}"/>
+                                </TextBlock>
+                                <Btn:Button Visibility="{Binding CheckUpdateBtnVisibility}" Command="{Binding CheckUpdate}" Margin="20,0,0,0" VerticalAlignment="Center" Width="120" Icon="CloudImportExport" Content="检查更新"/>
+                            </StackPanel>
+                            <TextBlock Margin="0,30,0,0">
                                 <Run Text="开源 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai">https://github.com/Planshit/Tai</Hyperlink>
                             </TextBlock>
                             <TextBlock Margin="0,5,0,0">
                                 <Run Text="讨论 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai/discussions">https://github.com/Planshit/Tai/discussions</Hyperlink>
                             </TextBlock>
-                            <TextBlock Margin="0,30,0,0">
+                            <TextBlock Margin="0,10,0,0">
                                 <Run Text="外部资源声明 "/>
                             </TextBlock>
-                            <TextBlock Margin="0,5,0,0" Text="Icon 来自微软 Emoji"/>
+                            <TextBlock Foreground="Gray" Margin="0,5,0,0" Text="Icon 来自微软 Emoji"/>
                         </StackPanel>
                     </Border>
                 </TabItem>
-               
+
             </TabControl>
         </StackPanel>
 
