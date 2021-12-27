@@ -54,8 +54,9 @@ namespace Core.Servicers.Instances
                     Debug.WriteLine("The last Win32 Error was: " + error);
 
                 }
-                var buffer = new StringBuilder(4096);
-                Win32API.GetModuleFileNameExA(processHandle, IntPtr.Zero, buffer, buffer.Capacity);
+                int MaxPathLength = 4096;
+                var buffer = new StringBuilder(MaxPathLength);
+                Win32API.QueryFullProcessImageName(processHandle, 0, buffer, ref MaxPathLength);
                 processFileName = buffer.ToString();
 
                 //  handle uwp app
