@@ -10,6 +10,8 @@ namespace Core.Librarys
 {
     public static class Win32API
     {
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
         public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
           IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
         [DllImport("user32.dll")]
@@ -25,6 +27,8 @@ namespace Core.Librarys
 
         [DllImport("psapi.dll", SetLastError = true)]
         public static extern int GetModuleFileNameExA(IntPtr hProcess, IntPtr hModule, StringBuilder lpFilename, int nSize);
+        //[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        //static extern bool QueryFullProcessImageName(IntPtr hProcess, uint dwFlags, [Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpExeName, ref uint lpdwSize);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
@@ -49,7 +53,7 @@ namespace Core.Librarys
 
 
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool QueryFullProcessImageName([In] IntPtr hProcess, [In] int dwFlags, [Out] StringBuilder lpExeName, ref int lpdwSize);
 
 
@@ -74,7 +78,10 @@ namespace Core.Librarys
             EnumChildWindows(hWnd, lpEnumFunc, pWindowinfo);
 
             windowinfo = (WINDOWINFO)Marshal.PtrToStructure(pWindowinfo, typeof(WINDOWINFO));
-
+            if (windowinfo.childpid == windowinfo.ownerpid)
+            {
+                return null;
+            }
             IntPtr proc;
             if ((proc = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, (int)windowinfo.childpid)) == IntPtr.Zero) return null;
 
