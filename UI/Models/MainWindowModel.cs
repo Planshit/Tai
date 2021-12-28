@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UI.Controls;
+using UI.Controls.Base;
 using UI.Controls.Navigation.Models;
 
 namespace UI.Models
@@ -77,5 +78,14 @@ namespace UI.Models
 
         private List<string> IndexUriList_;
         public List<string> IndexUriList { get { return IndexUriList_; } set { IndexUriList_ = value; OnPropertyChanged(); } }
+
+
+        private string ToastContent_;
+        public string ToastContent { get { return ToastContent_; } set { ToastContent_ = value; OnPropertyChanged(); } }
+
+        private bool IsShowToast_ = false;
+        public bool IsShowToast { get { return IsShowToast_; } set { IsShowToast_ = value; OnPropertyChanged(); } }
+        private IconTypes ToastIcon_;
+        public IconTypes ToastIcon { get { return ToastIcon_; } set { ToastIcon_ = value; OnPropertyChanged(); } }
     }
 }

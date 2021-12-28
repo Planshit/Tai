@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UI.Controls;
+using UI.Controls.Base;
 using UI.Controls.Navigation.Models;
 using UI.Models;
 using UI.Views;
@@ -90,6 +91,13 @@ namespace UI.ViewModels
 
             });
             NavSelectedItem = Items[0];
+        }
+
+        public void Toast(string content, IconTypes icon = IconTypes.Accept)
+        {
+            ToastContent = content;
+            ToastIcon = icon;
+            IsShowToast = true;
         }
     }
 }

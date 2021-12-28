@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:w="clr-namespace:UI.Controls.Window" xmlns:button="clr-namespace:UI.Controls.Button">
+                    xmlns:w="clr-namespace:UI.Controls.Window" xmlns:button="clr-namespace:UI.Controls.Button"
+                    xmlns:base="clr-namespace:UI.Controls.Base">
     <Style x:Key="WindowSystemButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -108,7 +109,7 @@
                                             <StackPanel Orientation="Horizontal" Margin="15,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
 
                                                 <button:IconButton Width="0" VerticalAlignment="Center" ToolTip="返回" FontSize="10" x:Name="BackBtn" Icon="Back"  WindowChrome.IsHitTestVisibleInChrome="True" Command="{x:Static w:DefaultWindowCommands.BackCommand}"/>
-                                                
+
                                                 <Image Source="{TemplateBinding Icon}" VerticalAlignment="Center" Stretch="Uniform" Width="18"/>
                                                 <TextBlock VerticalAlignment="Center" Text="{TemplateBinding Title}" IsEnabled="{TemplateBinding IsActive}" Foreground="#5c5c5c" Margin="15,0,0,0"/>
                                             </StackPanel>
@@ -171,7 +172,35 @@
 
                                     <!--窗体内容-->
                                     <ContentPresenter Grid.Row="1"/>
+                                    <!--提醒框-->
+                                    <Grid Panel.ZIndex="999" x:Name="ToastGrid" Visibility="Collapsed">
+                                        <!--内容-->
+                                        <Border 
+                                            Padding="15,15"
+                                            CornerRadius="6"
+                                            MaxWidth="320"
+                                            x:Name="ToastBorder" Background="White" HorizontalAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="1000">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <TranslateTransform Y="-150"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="10" Color="Black" Opacity=".5"/>
+                                            </Border.Effect>
+                                            <Grid >
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="30"/>
+                                                    <ColumnDefinition Width="*"/>
 
+                                                </Grid.ColumnDefinitions>
+                                                <base:Icon IconType="{TemplateBinding ToastIcon}" VerticalAlignment="Top" Margin="0,0,10,0"/>
+                                                <TextBlock Grid.Column="1" Text="{TemplateBinding ToastContent}" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"/>
+                                            </Grid>
+                                        </Border>
+                                        <!--遮罩层-->
+                                        <Border x:Name="Masklayer" Background="Black" Opacity="0"></Border>
+                                    </Grid>
                                 </Grid>
                             </AdornerDecorator>
                         </Border>
@@ -190,7 +219,7 @@
                                         </DoubleAnimation>
                                     </Storyboard>
                                 </VisualState>
-                               
+
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                     </Border>
@@ -211,7 +240,7 @@
                         </Trigger>
                         <!--<Trigger Property="IsCanBack" Value="True">
                             <Setter TargetName="BackBtn" Property="Visibility" Value="Visible" />
-                        </Trigger>--> 
+                        </Trigger>-->
                         <!--<Trigger Property="WindowState" Value="Normal">
                             <Setter TargetName="MaximizeButton" Property="Visibility" Value="Visible" />
                             <Setter TargetName="RestoreButton" Property="Visibility" Value="Collapsed" />

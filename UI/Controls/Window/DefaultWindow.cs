@@ -7,16 +7,55 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace UI.Controls.Window
 {
     public class DefaultWindow : System.Windows.Window
     {
         #region 1.依赖属性
+        public static readonly DependencyProperty IsShowToastDeproperty = DependencyProperty.Register("IsShowToast", typeof(bool), typeof(DefaultWindow), new PropertyMetadata(false, new PropertyChangedCallback(OnIsShowToastChanged)));
+        public bool IsShowToast { get { return (bool)GetValue(IsShowToastDeproperty); } set { SetValue(IsShowToastDeproperty, value); } }
+        private static void OnIsShowToastChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var that = d as DefaultWindow;
+            if (that != null)
+            {
+                if (that.IsShowToast)
+                {
+                    that.ShowToast();
+                }
+                else
+                {
+                    that.HideToast();
+                }
+            }
+        }
+
+        public static readonly DependencyProperty ToastIconProperty = DependencyProperty.Register("ToastIcon", typeof(Base.IconTypes), typeof(DefaultWindow));
+        public Base.IconTypes ToastIcon
+        {
+            get
+            {
+                return (Base.IconTypes)GetValue(ToastIconProperty);
+            }
+            set { SetValue(ToastIconProperty, value); }
+        }
+        public static readonly DependencyProperty ToastContentProperty = DependencyProperty.Register("ToastContent", typeof(string), typeof(DefaultWindow));
+        /// <summary>
+        /// toast content
+        /// </summary>
+        public string ToastContent
+        {
+            get { return (string)GetValue(ToastContentProperty); }
+            set { SetValue(ToastContentProperty, value); }
+        }
 
         public static readonly DependencyProperty PageContainerProperty = DependencyProperty.Register("PageContainer", typeof(PageContainer), typeof(DefaultWindow), new PropertyMetadata(null, new PropertyChangedCallback(OnPageContainerChanged)));
         public PageContainer PageContainer { get { return (PageContainer)GetValue(PageContainerProperty); } set { SetValue(PageContainerProperty, value); } }
@@ -108,11 +147,11 @@ namespace UI.Controls.Window
         #endregion
 
 
-        public static readonly DependencyProperty IsCanBackProperty = DependencyProperty.Register("IsCanBack", typeof(bool), typeof(DefaultWindow), new PropertyMetadata(false,new PropertyChangedCallback(OnIsCanBackChanged)));
+        public static readonly DependencyProperty IsCanBackProperty = DependencyProperty.Register("IsCanBack", typeof(bool), typeof(DefaultWindow), new PropertyMetadata(false, new PropertyChangedCallback(OnIsCanBackChanged)));
 
         private static void OnIsCanBackChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var that=d as DefaultWindow;
+            var that = d as DefaultWindow;
             if (that != null)
             {
                 if (that.IsCanBack)
@@ -138,6 +177,9 @@ namespace UI.Controls.Window
         /// </summary>
         public bool IsWindowClosed { get { return IsWindowClosed_; } }
 
+        private Border ToastBorder, Masklayer;
+        private Grid ToastGrid;
+        private DispatcherTimer toastTimer;
         #region 3.初始化
         public DefaultWindow()
         {
@@ -159,6 +201,14 @@ namespace UI.Controls.Window
             }
 
             Loaded += new RoutedEventHandler(window_Loaded);
+
+            toastTimer = new DispatcherTimer();
+            toastTimer.Tick += (s, e) =>
+            {
+                toastTimer.Stop();
+                IsShowToast = false;
+            };
+            toastTimer.Interval = new TimeSpan(0, 0, 3);
         }
 
         private void OnBackCommand(object sender, ExecutedRoutedEventArgs e)
@@ -206,6 +256,10 @@ namespace UI.Controls.Window
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+
+            ToastBorder = GetTemplateChild("ToastBorder") as Border;
+            Masklayer = GetTemplateChild("Masklayer") as Border;
+            ToastGrid = GetTemplateChild("ToastGrid") as Grid;
         }
 
 
@@ -264,6 +318,72 @@ namespace UI.Controls.Window
         }
 
         #endregion
+
+        private void ShowToast()
+        {
+            ToastGrid.Visibility = Visibility.Visible;
+
+            Storyboard storyboard = new Storyboard();
+
+            DoubleAnimation scrollAnimation = new DoubleAnimation();
+            scrollAnimation.From = -150;
+            scrollAnimation.To = 0;
+
+            scrollAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
+            Storyboard.SetTarget(scrollAnimation, ToastBorder);
+            Storyboard.SetTargetProperty(scrollAnimation, new PropertyPath("RenderTransform.Children[0].Y"));
+            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.35));
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation();
+            opacityAnimation.To = 0.6;
+            opacityAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
+            Storyboard.SetTarget(opacityAnimation, Masklayer);
+            Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath("Opacity"));
+            opacityAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.25));
+            storyboard.Completed += (e, c) =>
+            {
+                toastTimer.Start();
+                ToastGrid.MouseLeftButtonDown += ToastGrid_MouseLeftButtonDown;
+            };
+            storyboard.Children.Add(scrollAnimation);
+            storyboard.Children.Add(opacityAnimation);
+            storyboard.Begin();
+        }
+
+        private void ToastGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            toastTimer.Stop();
+            IsShowToast = false;
+            ToastGrid.MouseLeftButtonDown -= ToastGrid_MouseLeftButtonDown;
+        }
+
+        private void HideToast()
+        {
+            Storyboard storyboard = new Storyboard();
+
+            DoubleAnimation scrollAnimation = new DoubleAnimation();
+            scrollAnimation.To = -150;
+
+            scrollAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
+            Storyboard.SetTarget(scrollAnimation, ToastBorder);
+            Storyboard.SetTargetProperty(scrollAnimation, new PropertyPath("RenderTransform.Children[0].Y"));
+            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.35));
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation();
+            opacityAnimation.To = 0;
+            opacityAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
+            Storyboard.SetTarget(opacityAnimation, Masklayer);
+            Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath("Opacity"));
+            opacityAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.25));
+
+            storyboard.Children.Add(scrollAnimation);
+            storyboard.Children.Add(opacityAnimation);
+            storyboard.Completed += (e, c) =>
+            {
+                ToastGrid.Visibility = Visibility.Collapsed;
+            };
+            storyboard.Begin();
+        }
 
         #region 6.事件
 

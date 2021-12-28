@@ -6,13 +6,16 @@
         xmlns:local="clr-namespace:UI"
         mc:Ignorable="d"
         xmlns:ui="clr-namespace:UI.Controls.Window"
-        Title="Tai" Height="585" Width="814" MinHeight="585" MinWidth="814"
+        Title="Tai" Height="585" Width="815" MinHeight="585" MinWidth="814"
                   xmlns:control="clr-namespace:UI.Controls"
                   xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                   xmlns:Navigation="clr-namespace:UI.Controls.Navigation"
                   x:Name="Window"
                   PageContainer="{Binding PageContainer}"
-                  Icon="/Resources/Icons/tai32.ico">
+                  Icon="/Resources/Icons/tai32.ico"
+                  IsShowToast="{Binding IsShowToast,Mode=TwoWay}"
+                  ToastContent="{Binding ToastContent,Mode=TwoWay}"
+                  ToastIcon="{Binding ToastIcon}">
     <Grid>
         <!--主要功能-->
         <Grid>
