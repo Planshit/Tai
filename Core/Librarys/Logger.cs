@@ -40,6 +40,7 @@ namespace Core.Librarys
 
         private static string Fromat(LogLevel logLevel, string message)
         {
+            message = HandleMessage(message);
             string logText = $"[{logLevel.ToString()}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] \r\n{message}\r\n------------------------\r\n\r\n";
             Debug.WriteLine(logText);
             return logText;
@@ -58,6 +59,12 @@ namespace Core.Librarys
                 }
                 File.AppendAllText(loggerName, message);
             }
+        }
+
+        private static string HandleMessage(string message)
+        {
+            message = message.Replace("\\u", "\\\\u");
+            return message;
         }
     }
 }
