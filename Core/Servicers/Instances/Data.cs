@@ -39,6 +39,32 @@ namespace Core.Servicers.Instances
                 {
                     res.Time += seconds;
                 }
+
+                //  分时段记录数据
+
+                //  当前时段
+                var nowtime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
+                var hourslog = db.HoursLog.SingleOrDefault(
+                    m =>
+                    m.DataTime == nowtime
+                    && m.ProcessName == processName
+                    && m.File == file);
+                if (hourslog == null)
+                {
+                    //  没有时创建
+                    db.HoursLog.Add(new Models.HoursLogModel()
+                    {
+                        DataTime = nowtime,
+                        ProcessName = processName,
+                        File = file,
+                        Time = seconds
+                    });
+                }
+                else
+                {
+                    hourslog.Time += seconds;
+                }
+
                 db.SaveChanges();
             }
         }
@@ -117,8 +143,21 @@ namespace Core.Servicers.Instances
                 if (res != null)
                 {
                     res.Time += seconds;
-                    db.SaveChanges();
                 }
+
+                //  分时段记录数据
+
+                //  当前时段
+                var nowtime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
+                var hourslog = db.HoursLog.SingleOrDefault(
+                    m =>
+                    m.DataTime == nowtime
+                    && m.ProcessName == processName);
+                if (hourslog != null)
+                {
+                    hourslog.Time += seconds;
+                }
+                db.SaveChanges();
 
             }
         }

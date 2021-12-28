@@ -15,6 +15,10 @@ namespace Core.Librarys.SQLite
         /// 每日数据
         /// </summary>
         public DbSet<DailyLogModel> DailyLog { get; set; }
+        /// <summary>
+        /// 时段数据
+        /// </summary>
+        public DbSet<HoursLogModel> HoursLog { get; set; }
 
         // public StatisticContext(string n)
         //: base("StatisticContext")
