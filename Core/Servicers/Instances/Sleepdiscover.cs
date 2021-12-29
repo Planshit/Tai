@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,16 +25,48 @@ namespace Core.Servicers.Instances
 
         private SleepStatus status = SleepStatus.Wake;
 
-        //  播放声音开始时间
+        /// <summary>
+        /// 播放声音开始时间
+        /// </summary>
         private DateTime playSoundStartTime;
 
+        /// <summary>
+        /// 最后一次按键时间
+        /// </summary>
+        private DateTime pressKeyboardLastTime;
+
         private readonly IObserver observer;
+
+        private Win32API.LowLevelKeyboardProc keyboardProc;
+        private static IntPtr hookKeyboardID = IntPtr.Zero;
 
         public Sleepdiscover(IObserver observer)
         {
             this.observer = observer;
             observer.OnAppActive += Observer_OnAppActive;
             SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(OnPowerModeChanged);
+
+            keyboardProc = HookCallback;
+        }
+
+        private IntPtr HookCallback(
+           int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode >= 0 && wParam == (IntPtr)Win32API.WM_KEYDOWN)
+            {
+                int vkCode = Marshal.ReadInt32(lParam);
+
+                if (status == SleepStatus.Sleep)
+                {
+                    status = SleepStatus.Wake;
+                    SleepStatusChanged?.Invoke(status);
+                }
+                else
+                {
+                    pressKeyboardLastTime = DateTime.Now;
+                }
+            }
+            return Win32API.CallNextHookEx(hookKeyboardID, nCode, wParam, lParam);
         }
 
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
@@ -72,19 +105,26 @@ namespace Core.Servicers.Instances
         {
             timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 2, 0);
+#if DEBUG
+            timer.Interval = new TimeSpan(0, 0, 10);
+#endif
             timer.Tick += Timer_Tick;
             timer.Start();
 
             Win32API.GetCursorPos(out lastPoint);
 
             playSoundStartTime = DateTime.MinValue;
+
+            pressKeyboardLastTime = DateTime.Now;
+
+            //  设置键盘钩子
+            Win32API.SetKeyboardHook(keyboardProc);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
             Point point;
             Win32API.GetCursorPos(out point);
-
             if (point == null)
             {
                 return;
@@ -118,7 +158,7 @@ namespace Core.Servicers.Instances
                             //  判断声音时间是否超过2个小时
                             TimeSpan timeSpan = DateTime.Now - playSoundStartTime;
 
-                            if (timeSpan.TotalHours >= 2)
+                            if (timeSpan.TotalHours >= 2 && IsPressKeyboardOuttime())
                             {
                                 //  超过表示可能睡着了，切换状态
                                 status = SleepStatus.Sleep;
@@ -131,9 +171,12 @@ namespace Core.Servicers.Instances
                     }
                     else
                     {
-                        //  没有播放声音切换状态
-                        status = SleepStatus.Sleep;
-                        SleepStatusChanged?.Invoke(status);
+                        if (IsPressKeyboardOuttime())
+                        {
+                            //  没有播放声音且键盘休眠超时
+                            status = SleepStatus.Sleep;
+                            SleepStatusChanged?.Invoke(status);
+                        }
                     }
                 }
             }
@@ -147,8 +190,18 @@ namespace Core.Servicers.Instances
                     SleepStatusChanged?.Invoke(status);
                 }
             }
-
             Win32API.GetCursorPos(out lastPoint);
+        }
+
+
+        /// <summary>
+        /// 通过按键时间判断（超过5分钟未有键盘操作视为超时）
+        /// </summary>
+        /// <returns></returns>
+        private bool IsPressKeyboardOuttime()
+        {
+            TimeSpan timeSpan = DateTime.Now - pressKeyboardLastTime;
+            return timeSpan.TotalMinutes >= 5;
         }
     }
 }
