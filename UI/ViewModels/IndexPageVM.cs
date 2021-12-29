@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using UI.Controls;
 using UI.Controls.Charts.Model;
@@ -23,6 +24,7 @@ namespace UI.ViewModels
         private readonly IData data;
         private readonly MainViewModel main;
         private readonly IMain mainServicer;
+
         public IndexPageVM(
             IData data, MainViewModel main, IMain mainServicer)
         {
@@ -32,8 +34,15 @@ namespace UI.ViewModels
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
 
-            mainServicer.OnUpdateTime += MainServicer_OnUpdateTime;
             Init();
+        }
+
+
+        public override void Dispose()
+        {
+            mainServicer.OnUpdateTime -= MainServicer_OnUpdateTime;
+            PropertyChanged -= IndexPageVM_PropertyChanged;
+            base.Dispose();
         }
 
         private void MainServicer_OnUpdateTime(object sender, EventArgs e)
@@ -52,7 +61,10 @@ namespace UI.ViewModels
             };
 
             TabbarSelectedIndex = 1;
+
             PropertyChanged += IndexPageVM_PropertyChanged;
+            mainServicer.OnUpdateTime += MainServicer_OnUpdateTime;
+
             LoadThisWeekData();
         }
 

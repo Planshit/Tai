@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UI.Controls.Charts.Model;
+using UI.ViewModels;
 
 namespace UI.Views
 {
@@ -21,10 +22,11 @@ namespace UI.Views
     /// </summary>
     public partial class IndexPage : Page
     {
-        public IndexPage()
+        public IndexPage(IndexPageVM vm)
         {
             InitializeComponent();
-  
+ 
+            DataContext = vm;
         }
     }
 }

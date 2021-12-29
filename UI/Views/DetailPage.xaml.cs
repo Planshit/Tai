@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UI.ViewModels;
 
 namespace UI.Views
 {
@@ -20,9 +21,11 @@ namespace UI.Views
     /// </summary>
     public partial class DetailPage : Page
     {
-        public DetailPage()
+        public DetailPage(DetailPageVM vm)
         {
             InitializeComponent();
+            
+            DataContext = vm;
         }
     }
 }

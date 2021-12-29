@@ -8,7 +8,7 @@ using UI.Controls.Charts.Model;
 
 namespace UI.Models
 {
-    public class IndexPageModel : UINotifyPropertyChanged
+    public class IndexPageModel : ModelBase
     {
         private ObservableCollection<string> TabbarData_;
         /// <summary>

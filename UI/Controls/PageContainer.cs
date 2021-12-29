@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using UI.Models;
 
 namespace UI.Controls
 {
@@ -116,7 +117,8 @@ namespace UI.Controls
         private readonly string ProjectName;
         private List<string> Historys;
         public int Index = 0, OldIndex = 0;
-        private Dictionary<string, object> PageCache;
+        private Dictionary<string, Page> PageCache;
+        private bool IsBack = false;
         public PageContainer()
         {
             DefaultStyleKey = typeof(PageContainer);
@@ -125,13 +127,25 @@ namespace UI.Controls
             BackCommand = new Command(new Action<object>(OnBackCommand));
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
-            PageCache = new Dictionary<string, object>();
+            PageCache = new Dictionary<string, Page>();
         }
+
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
             Loaded += PageContainer_Loaded;
+            Unloaded += PageContainer_Unloaded;
+        }
+
+        private void PageContainer_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= PageContainer_Loaded;
+            Unloaded -= PageContainer_Unloaded;
+            ClearCache();
+            Content = null;
+            DataContext = null;
         }
 
         private void PageContainer_Loaded(object sender, RoutedEventArgs e)
@@ -153,25 +167,23 @@ namespace UI.Controls
                 string uri = Historys[Index];
 
                 int preIndex = Index + 1;
-                int count = Historys.Count - (Index + 1);
-                //  从缓存中移除之前的页面
-                for (int i = preIndex; i < count; i++)
-                {
-                    var pageUri = Historys[i];
-                    if (PageCache.ContainsKey(pageUri))
-                    {
-                        var page = PageCache[pageUri];
-                        page = null;
-                        PageCache.Remove(pageUri);
-                    }
-                }
 
-                //  历史记录中移除
-                Historys.RemoveRange(preIndex, count);
+                //  从缓存中移除上一页
+
+                var pageUri = Historys[preIndex];
+                if (PageCache.ContainsKey(pageUri))
+                {
+                    var page = PageCache[pageUri];
+                    var vm = page.DataContext as ModelBase;
+                    vm?.Dispose();
+                    page = null;
+                    PageCache.Remove(pageUri);
+                }
+                Historys.RemoveRange(preIndex, 1);
+
+                IsBack = true;
 
                 Uri = uri;
-
-
 
             }
         }
@@ -184,50 +196,41 @@ namespace UI.Controls
         {
             if (Uri != string.Empty)
             {
-                Page page = null;
-                var pageVM = GetPageVM(Uri);
-                Type pageType = Type.GetType(ProjectName + ".Views." + Uri);
-                if (pageType != null && ServiceProvider != null)
+                if (IndexUriList != null && IndexUriList.Contains(Uri))
                 {
-                    page = ServiceProvider.GetService(pageType) as Page;
-                    if (page != null)
+                    Historys.Clear();
+                    Index = 0;
+                    OldIndex = 0;
+                    Historys.Add(Uri);
+                    if (!IsBack)
                     {
-
-                        page.DataContext = pageVM;
-
+                        ClearCache();
                     }
 
                 }
+                else
+                {
+                    //处理历史记录
+                    if (OldIndex == Index)
+                    {
+                        //新开
+                        Historys.Add(Uri);
+                        Index++;
+                    }
+                    OldIndex = Index;
+                }
+                Page page = GetPage();
+
 
                 if (page != null)
                 {
-
                     Content = page;
 
-
-
-                    if (IndexUriList != null && IndexUriList.Contains(Uri))
-                    {
-                        Historys.Clear();
-                        Index = 0;
-                        OldIndex = 0;
-                        Historys.Add(Uri);
-                        PageCache.Clear();
-                    }
-                    else
-                    {
-                        //处理历史记录
-                        if (OldIndex == Index)
-                        {
-                            //新开
-                            Historys.Add(Uri);
-                            Index++;
-                        }
-                        OldIndex = Index;
-                    }
-
                     //  加入缓存
-                    PageCache.Add(Uri, pageVM);
+                    if (!PageCache.ContainsKey(Uri))
+                    {
+                        PageCache.Add(Uri, page);
+                    }
 
                     OnLoadPaged?.Invoke(this, EventArgs.Empty);
                 }
@@ -235,32 +238,46 @@ namespace UI.Controls
                 {
                     Debug.WriteLine("找不到Page：" + Uri + "，请确认已被注入");
                 }
-
-
             }
+            IsBack = false;
         }
 
-
-        private object GetPageVM(string uri)
+        private Page GetPage()
         {
-            if (PageCache.ContainsKey(uri))
+            Page page = null;
+            if (PageCache.ContainsKey(Uri))
             {
-                return PageCache[uri];
+                return PageCache[Uri];
             }
-            else
+            Type pageType = Type.GetType(ProjectName + ".Views." + Uri);
+            if (pageType != null && ServiceProvider != null)
             {
-                Type pageVMType = Type.GetType(ProjectName + ".ViewModels." + Uri + "VM");
-                if (ServiceProvider != null && pageVMType != null)
+                page = ServiceProvider.GetService(pageType) as Page;
+                if (page != null)
                 {
-
-                    var pageVM = ServiceProvider.GetService(pageVMType);
-
-                    return pageVM;
+                    page.Unloaded += Page_Unloaded;
                 }
-                else
+            }
+            return page;
+        }
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Page page = (Page)sender;
+           
+            page.Unloaded -= Page_Unloaded;
+        }
+
+        private void ClearCache()
+        {
+            if (PageCache != null)
+            {
+                foreach (var key in PageCache.Keys)
                 {
-                    return null;
+                    var page = PageCache[key];
+                    var vm = page.DataContext as ModelBase;
+                    vm?.Dispose();
                 }
+                PageCache.Clear();
             }
         }
     }
