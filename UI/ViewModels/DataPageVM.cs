@@ -22,7 +22,6 @@ namespace UI.ViewModels
         public Command ToDetailCommand { get; set; }
         private readonly IData data;
         private readonly MainViewModel main;
-
         public DataPageVM(IData data, MainViewModel main)
         {
             this.data = data;
@@ -33,6 +32,12 @@ namespace UI.ViewModels
             Init();
         }
 
+        public override void Dispose()
+        {
+            PropertyChanged -= DataPageVM_PropertyChanged;
+
+            base.Dispose();
+        }
         private void Init()
         {
             //LoadData(DateTime.Now.Date);
@@ -59,6 +64,7 @@ namespace UI.ViewModels
 
         private void DataPageVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+
             if (e.PropertyName == nameof(DayDate))
             {
                 LoadData(DayDate);
@@ -69,6 +75,11 @@ namespace UI.ViewModels
                 LoadData(MonthDate);
             }
 
+            if (e.PropertyName == nameof(YearDate))
+            {
+                LoadData(YearDate);
+            }
+
             if (e.PropertyName == nameof(TabbarSelectedIndex))
             {
                 if (TabbarSelectedIndex == 0)
@@ -77,10 +88,10 @@ namespace UI.ViewModels
                     {
                         DayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                     }
-                    else
-                    {
-                        LoadData(DayDate);
-                    }
+                    //else
+                    //{
+                    //    LoadData(DayDate);
+                    //}
 
                 }
                 else if (TabbarSelectedIndex == 1)
@@ -89,10 +100,10 @@ namespace UI.ViewModels
                     {
                         MonthDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     }
-                    else
-                    {
-                        LoadData(MonthDate);
-                    }
+                    //else
+                    //{
+                    //    LoadData(MonthDate);
+                    //}
                 }
                 else if (TabbarSelectedIndex == 2)
                 {
@@ -100,10 +111,10 @@ namespace UI.ViewModels
                     {
                         YearDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     }
-                    else
-                    {
-                        LoadData(YearDate);
-                    }
+                    //else
+                    //{
+                    //    LoadData(YearDate);
+                    //}
                 }
             }
         }
@@ -115,27 +126,44 @@ namespace UI.ViewModels
 
 
 
-        private void LoadData(DateTime date)
+        private async void LoadData(DateTime date)
         {
-            Debug.WriteLine("load data:" + date.ToString());
-            DateTime dateStart = date, dateEnd = date;
-            if (TabbarSelectedIndex == 1)
+
+            await Task.Run(() =>
             {
-                dateStart = new DateTime(date.Year, date.Month, 1);
-                dateEnd = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
-            }
-            else if (TabbarSelectedIndex == 0)
-            {
-                dateStart = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
-                dateEnd = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59);
-            }
-            else if (TabbarSelectedIndex == 2)
-            {
-                dateStart = new DateTime(date.Year, 1, 1, 0, 0, 0);
-                dateEnd = new DateTime(date.Year, 12, DateTime.DaysInMonth(date.Year, 12), 23, 59, 59);
-            }
-            var list = data.GetDateRangelogList(dateStart, dateEnd);
-            Data = MapToChartsData(list);
+                DateTime dateStart = date, dateEnd = date;
+                if (TabbarSelectedIndex == 1)
+                {
+                    dateStart = new DateTime(date.Year, date.Month, 1);
+                    dateEnd = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+                }
+                else if (TabbarSelectedIndex == 0)
+                {
+                    dateStart = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+                    dateEnd = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59);
+                }
+                else if (TabbarSelectedIndex == 2)
+                {
+                    dateStart = new DateTime(date.Year, 1, 1, 0, 0, 0);
+                    dateEnd = new DateTime(date.Year, 12, DateTime.DaysInMonth(date.Year, 12), 23, 59, 59);
+                }
+
+                var list = data.GetDateRangelogList(dateStart, dateEnd);
+
+                if (TabbarSelectedIndex == 0)
+                {
+                    Data = MapToChartsData(list);
+                }
+                else if (TabbarSelectedIndex == 1)
+                {
+                    MonthData = MapToChartsData(list);
+                }
+                else
+                {
+                    YearData = MapToChartsData(list);
+                }
+
+            });
         }
 
         #region 处理数据

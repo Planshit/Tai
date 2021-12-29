@@ -9,14 +9,21 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="IndexPage">
 
-    <Grid>
-        <StackPanel Margin="20">
+    <Grid x:Name="t2">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
             <TextBlock Text="详细" FontSize="18" Margin="0,5,0,20"/>
 
-            <Tabbar:Tabbar Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
+            <Tabbar:Tabbar Grid.Row="1" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
 
 
             <TabControl 
+                Grid.Row="2"
                 SelectedIndex="{Binding TabbarSelectedIndex}"
                 BorderThickness="0"
                 Margin="0"
@@ -35,30 +42,45 @@
 
                 </TabControl.Resources>
                 <TabItem>
-                    <StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+
+                        </Grid.RowDefinitions>
                         <DatePickerBar:DatePickerBar SelectedDate="{Binding DayDate,Mode=TwoWay}" ShowType="Day"/>
 
-                        <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
-                    </StackPanel>
+                        <Charts:Charts Grid.Row="1" Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    </Grid>
                 </TabItem>
                 <TabItem>
-                    <StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+
+                        </Grid.RowDefinitions>
                         <DatePickerBar:DatePickerBar SelectedDate="{Binding MonthDate,Mode=TwoWay}" ShowType="Month"/>
 
-                        <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
-                    </StackPanel>
+                        <Charts:Charts Grid.Row="1" Data="{Binding MonthData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    </Grid>
                 </TabItem>
                 <TabItem>
-                    <StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+
+                        </Grid.RowDefinitions>
                         <DatePickerBar:DatePickerBar SelectedDate="{Binding YearDate,Mode=TwoWay}" ShowType="Year"/>
 
-                        <Charts:Charts Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
-                    </StackPanel>
+                        <Charts:Charts Grid.Row="1" Data="{Binding YearData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    </Grid>
                 </TabItem>
             </TabControl>
 
 
 
-        </StackPanel>
+        </Grid>
     </Grid>
 </Page>

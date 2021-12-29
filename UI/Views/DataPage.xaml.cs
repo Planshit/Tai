@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using UI.Controls.Charts.Model;
+using UI.ViewModels;
 
 namespace UI.Views
 {
@@ -21,10 +24,12 @@ namespace UI.Views
     /// </summary>
     public partial class DataPage : Page
     {
-        public DataPage()
+        public DataPage(DataPageVM vm)
         {
             InitializeComponent();
-  
+ 
+            DataContext = vm;
         }
+
     }
 }

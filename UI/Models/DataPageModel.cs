@@ -9,7 +9,7 @@ using UI.Controls.DatePickerBar;
 
 namespace UI.Models
 {
-    public class DataPageModel : UINotifyPropertyChanged
+    public class DataPageModel : ModelBase
     {
         private ObservableCollection<string> TabbarData_;
         /// <summary>
@@ -43,6 +43,26 @@ namespace UI.Models
         {
             get { return Data_; }
             set { Data_ = value; OnPropertyChanged(); }
+        }
+
+        private List<ChartsDataModel> MonthData_;
+        /// <summary>
+        ///  MonthData
+        /// </summary>
+        public List<ChartsDataModel> MonthData
+        {
+            get { return MonthData_; }
+            set { MonthData_ = value; OnPropertyChanged(); }
+        }
+
+        private List<ChartsDataModel> YearData_;
+        /// <summary>
+        ///  YearData
+        /// </summary>
+        public List<ChartsDataModel> YearData
+        {
+            get { return YearData_; }
+            set { YearData_ = value; OnPropertyChanged(); }
         }
 
         private DateTime DayDate_;
