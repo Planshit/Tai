@@ -5,7 +5,6 @@
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
 
-
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Background" Value="Transparent"/>
 
@@ -14,9 +13,11 @@
                 <ControlTemplate TargetType="{x:Type local:Charts}">
                     <Border Background="{TemplateBinding Background}">
                         <Grid>
-                            <Grid x:Name="HorizontalA" Visibility="Collapsed">
-                                <StackPanel x:Name="Container">
-                                </StackPanel>
+                            <Grid x:Name="HorizontalA"  Visibility="Collapsed">
+                                <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" Height="{Binding ElementName=HorizontalA,Path=ActualHeight}" CanContentScroll="True">
+                                    <StackPanel x:Name="Container">
+                                    </StackPanel>
+                                </ScrollViewer>
                             </Grid>
                             <Grid x:Name="Card" Visibility="Collapsed">
                                 <WrapPanel x:Name="CardContainer">

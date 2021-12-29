@@ -20,11 +20,37 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid Margin="0,0,10,0">
-                                    <Border Background="#f3f3f3" CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
+                                    <Border x:Name="IconBorder" BorderBrush="Transparent" BorderThickness="2" Background="#f3f3f3" CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
                                         <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                 </Grid>
-                                <StackPanel  Grid.Column="1" x:Name="ValueContainer" VerticalAlignment="Center" >
+                                <!--<Grid  Grid.Column="1" x:Name="ValueContainer"  VerticalAlignment="Center" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+
+                                    </Grid.RowDefinitions>
+                                    <TextBlock x:Name="NameTextObj" Foreground="#5c5c5c" HorizontalAlignment="Left"/>
+                                    <Grid Grid.Row="1" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="auto"/>
+
+                                        </Grid.ColumnDefinitions>
+                                        <Rectangle
+                            x:Name="ValueBlockObj"
+                                RadiusX="4"
+                                RadiusY="4"
+                                Fill="#cccccc"
+                                Height="8"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                            />
+
+                                        <TextBlock Grid.Column="1" x:Name="ValueTextObj" VerticalAlignment="Center" Foreground="#5c5c5c" FontSize="12" Margin="5,0,0,0"/>
+                                    </Grid>
+                                </Grid>-->
+                                <StackPanel Grid.Column="1" x:Name="ValueContainer" VerticalAlignment="Center" >
                                     <TextBlock x:Name="NameTextObj" Foreground="#5c5c5c" HorizontalAlignment="Left"/>
                                     <StackPanel Orientation="Horizontal" >
                                         <Rectangle
@@ -88,13 +114,18 @@
                                                 <CubicEase EasingMode="EaseInOut"/>
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
-                                        <!--<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                Storyboard.TargetName="Bg" >
-                                            <EasingColorKeyFrame KeyTime="0"
-                                         Value="#192B20D9"/>
-                                            
-                                        </ColorAnimationUsingKeyFrames>-->
-
+                                        <ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="IconBorder" To="#2b20d9" >
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                        <ColorAnimation Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="IconBorder" To="#ffffff" >
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">

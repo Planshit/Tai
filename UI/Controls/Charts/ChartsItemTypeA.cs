@@ -73,6 +73,7 @@ namespace UI.Controls.Charts
         private TextBlock NameTextObj, ValueTextObj;
         private Rectangle ValueBlockObj;
         private StackPanel ValueContainer;
+        //private Grid ValueContainer;
         private Image IconObj;
         private bool isRendering = false;
         public ChartsItemTypeA()
@@ -85,6 +86,7 @@ namespace UI.Controls.Charts
             NameTextObj = GetTemplateChild("NameTextObj") as TextBlock;
             ValueTextObj = GetTemplateChild("ValueTextObj") as TextBlock;
             ValueBlockObj = GetTemplateChild("ValueBlockObj") as Rectangle;
+            //ValueContainer = GetTemplateChild("ValueContainer") as Grid;
             ValueContainer = GetTemplateChild("ValueContainer") as StackPanel;
 
             IconObj = GetTemplateChild("IconObj") as Image;
@@ -99,7 +101,7 @@ namespace UI.Controls.Charts
 
         private void Render()
         {
-            if (isRendering || Data==null)
+            if (isRendering || Data == null)
             {
                 return;
             }
@@ -114,8 +116,17 @@ namespace UI.Controls.Charts
                 {
                     return;
                 }
-                ValueBlockObj.Width = (Data.Value / MaxValue) * (ValueContainer.ActualWidth * 0.95 - ValueTextObj.ActualWidth);
+                UpdateValueBlockWidth();
             };
+        }
+
+        public void UpdateValueBlockWidth()
+        {
+            if (Data == null)
+            {
+                return;
+            }
+            ValueBlockObj.Width = (Data.Value / MaxValue) * (ValueContainer.ActualWidth * 0.95 - ValueTextObj.ActualWidth);
         }
 
         protected override void OnMouseEnter(MouseEventArgs e)

@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using UI.Controls.Base;
 using UI.Controls.Charts.Model;
 using UI.Extensions;
@@ -142,9 +143,8 @@ namespace UI.Controls.Charts
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var charts = (d as Charts);
-            if (e.Property == DataProperty)
+            if (e.Property == DataProperty && e.OldValue != e.NewValue)
             {
-                var dc = charts.ChartsType;
                 charts.Render();
             }
             if (e.Property == IsLoadingProperty)
@@ -171,7 +171,7 @@ namespace UI.Controls.Charts
         private StackPanel Container;
         private WrapPanel CardContainer;
         private Grid MonthContainer;
-
+        private ScrollViewer ScrollViewer;
         /// <summary>
         /// 是否在渲染中
         /// </summary>
@@ -180,6 +180,19 @@ namespace UI.Controls.Charts
         /// 计算最大值
         /// </summary>
         private double maxValue = 0;
+        /// <summary>
+        /// 是否启用懒加载
+        /// </summary>
+        private bool isLazyloading = false;
+        /// <summary>
+        /// 项目真实高度
+        /// </summary>
+        private double itemHeight = 0;
+        /// <summary>
+        /// 懒加载完成条数
+        /// </summary>
+        private int lazyloadedCount = 0;
+        private List<ChartsDataModel> lazyloadingData;
         public Charts()
         {
             DefaultStyleKey = typeof(Charts);
@@ -190,22 +203,15 @@ namespace UI.Controls.Charts
             Container = GetTemplateChild("Container") as StackPanel;
             CardContainer = GetTemplateChild("CardContainer") as WrapPanel;
             MonthContainer = GetTemplateChild("MonthContainer") as Grid;
+            ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
 
-            Loaded += Charts_Loaded;
-        }
-
-        private void Charts_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (Container != null)
+            if (IsLoading)
             {
-                if (IsLoading)
-                {
-                    RenderLoadingPlaceholder();
-                }
-                else
-                {
-                    Render();
-                }
+                RenderLoadingPlaceholder();
+            }
+            else
+            {
+                Render();
             }
         }
 
@@ -276,7 +282,6 @@ namespace UI.Controls.Charts
             }
 
             isRendering = true;
-
             switch (ChartsType)
             {
                 case ChartsType.HorizontalA:
@@ -289,31 +294,113 @@ namespace UI.Controls.Charts
                     RenderMonthStyle();
                     break;
             }
-        }
 
+        }
+       
         #region 渲染横向样式A
         private void RenderHorizontalAStyle()
         {
-           
+            lazyloadingData = null;
+            isLazyloading = false;
+            lazyloadedCount = 0;
+            ScrollViewer.ScrollToVerticalOffset(0);
+
             var data = Data.OrderByDescending(x => x.Value).ToList();
 
-            foreach (var item in data)
+            if (data.Count < 20)
             {
+                RenderTypeAItems(data, 0, data.Count);
+            }
+            else
+            {
+                isLazyloading = true;
+                RenderTypeAItems(data, 0, 20);
+                lazyloadingData = data;
+                ScrollViewer.ScrollChanged += ScrollViewer_ScrollChanged;
+            }
+            Container.SizeChanged -= Container_SizeChanged;
+            Container.SizeChanged += Container_SizeChanged;
+            isRendering = false;
+        }
+
+        private void Container_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            foreach (var item in Container.Children)
+            {
+                var control = item as ChartsItemTypeA;
+                if (control != null)
+                {
+                    control.UpdateValueBlockWidth();
+                }
+            }
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (ScrollViewer.VerticalOffset > 0 && e.VerticalChange > 0)
+            {
+                double a = ScrollViewer.VerticalOffset * itemHeight;
+                double b = itemHeight * lazyloadedCount;
+                if (b - a <= ScrollViewer.ActualHeight)
+                {
+                    RenderTypeAItems(lazyloadingData, lazyloadedCount, 20);
+                }
+            }
+
+            if (lazyloadedCount == Data.Count())
+            {
+                ScrollViewer.ScrollChanged -= ScrollViewer_ScrollChanged;
+            }
+        }
+
+        private void RenderTypeAItems(List<ChartsDataModel> data, int start, int count)
+        {
+            for (int i = start; i < start + count; i++)
+            {
+
+                if (i >= data.Count)
+                {
+                    break;
+                }
+                ChartsDataModel item = data[i];
                 var chartsItem = new ChartsItemTypeA();
                 chartsItem.Data = item;
                 chartsItem.ToolTip = item.PopupText;
                 chartsItem.MaxValue = maxValue;
-
+                if (i == 19 && isLazyloading)
+                {
+                    chartsItem.Loaded += ChartsItem_Loaded;
+                }
                 //  处理点击事件
                 HandleItemClick(chartsItem, item);
+                Container.Children.Insert(lazyloadedCount, chartsItem);
 
-                Container.Children.Add(chartsItem);
                 if (ShowLimit > 0 && Container.Children.Count == ShowLimit)
                 {
                     break;
                 }
+                lazyloadedCount++;
+                if (i >= 20)
+                {
+                    Container.Children.RemoveAt(Container.Children.Count - 1);
+                }
             }
-            isRendering = false;
+        }
+
+        private void ChartsItem_Loaded(object sender, RoutedEventArgs e)
+        {
+            var chartsItem = (ChartsItemTypeA)sender;
+            chartsItem.Loaded -= ChartsItem_Loaded;
+
+            int count = Data.Count() - 20;
+            for (int i = 0; i < count; i++)
+            {
+                var pl = new TextBlock();
+                pl.Height = chartsItem.ActualHeight;
+                Container.Children.Add(pl);
+            }
+
+            itemHeight = chartsItem.ActualHeight;
         }
         #endregion
         #region 渲染卡片样式Card
