@@ -49,6 +49,7 @@ namespace UI.Controls.DatePickerBar
             if (e.NewValue != e.OldValue)
             {
                 control.ScrollToActive(DateTime.Parse(e.NewValue.ToString()));
+                control.UpdateDateString();
             }
         }
 
@@ -175,10 +176,6 @@ namespace UI.Controls.DatePickerBar
                 MonthsList.SelectedItemChanged += DateChanged;
 
             }
-            if(ShowType== DatePickerShowType.Year)
-            {
-                SelectedDateString = SelectedDate.ToString("yyyy");
-            }
         }
 
         private void DateChanged(object sender, EventArgs e)
@@ -194,6 +191,17 @@ namespace UI.Controls.DatePickerBar
             Render(SelectedDate);
         }
 
+        private void UpdateDateString()
+        {
+            if (ShowType == DatePickerShowType.Day)
+            {
+                SelectedDateString = SelectedDate.ToString("yyyy/MM");
+            }
+            else
+            {
+                SelectedDateString = SelectedDate.ToString("yyyy");
+            }
+        }
         private void AddItem(DateTime date)
         {
             if (Container != null)
@@ -401,12 +409,6 @@ namespace UI.Controls.DatePickerBar
 
             ItemsDictionary[date].IsSelected = true;
 
-
-            SelectedDateString = SelectedDate.ToString("yyyy/MM");
-            if (ShowType == DatePickerShowType.Month)
-            {
-                SelectedDateString = SelectedDate.ToString("yyyy");
-            }
             var control = ItemsDictionary[SelectedDate];
 
             Point relativePoint = control.TransformToAncestor(Container).Transform(new Point(0, 0));
