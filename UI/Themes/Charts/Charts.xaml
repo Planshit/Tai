@@ -14,7 +14,7 @@
                     <Border Background="{TemplateBinding Background}">
                         <Grid>
                             <Grid x:Name="HorizontalA"  Visibility="Collapsed">
-                                <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" Height="{Binding ElementName=HorizontalA,Path=ActualHeight}" CanContentScroll="True">
+                                <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" Height="{Binding ElementName=HorizontalA,Path=ActualHeight}" CanContentScroll="False">
                                     <StackPanel x:Name="Container">
                                     </StackPanel>
                                 </ScrollViewer>
