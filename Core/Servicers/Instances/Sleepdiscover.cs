@@ -96,6 +96,16 @@ namespace Core.Servicers.Instances
         {
             if (status == SleepStatus.Sleep)
             {
+                TimeSpan timeSpan = DateTime.Now - pressKeyboardLastTime;
+               
+                Point point;
+                Win32API.GetCursorPos(out point);
+                if (lastPoint.ToString() == point.ToString() && timeSpan.TotalSeconds > 10)
+                {
+                    //  非鼠标或键盘激活
+                    return;
+                }
+
                 status = SleepStatus.Wake;
                 SleepStatusChanged?.Invoke(status);
             }
@@ -106,7 +116,7 @@ namespace Core.Servicers.Instances
             timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 2, 0);
 #if DEBUG
-            timer.Interval = new TimeSpan(0, 0, 10);
+            //timer.Interval = new TimeSpan(0, 0, 10);
 #endif
             timer.Tick += Timer_Tick;
             timer.Start();
