@@ -10,13 +10,13 @@
 
         <!--<Setter Property="MinWidth" Value="150"/>-->
         <Setter Property="Height" Value="35"/>
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="White"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Button}">
-                    <Border Background="{TemplateBinding Background}" x:Name="Border">
+                    <Border x:Name="Border">
 
-                        <Border BorderBrush="#f3f3f3" BorderThickness="1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="White">
+                        <Border BorderBrush="#f3f3f3" BorderThickness="1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="{TemplateBinding Background}">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="5" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
                             </Border.Effect>
@@ -70,7 +70,15 @@
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
+                                    <Storyboard>
 
+
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                               Storyboard.TargetName="BoxBorder">
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="#eaeaea"  />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
