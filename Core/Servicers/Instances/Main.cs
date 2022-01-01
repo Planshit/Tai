@@ -31,7 +31,16 @@ namespace Core.Servicers.Instances
             "ApplicationFrameHost",
             "StartMenuExperienceHost",
             "ShellExperienceHost",
-            "OpenWith"
+            "OpenWith",
+            "Updater",
+            "LockApp",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+
         };
 
         /// <summary>
@@ -39,12 +48,15 @@ namespace Core.Servicers.Instances
         /// </summary>
         private string activeProcess, activeProcessDescription, activeProcessFile = null;
 
-        //private DateTime activeStartTime = DateTime.Now;
-
         /// <summary>
-        /// 活动计时器
+        /// 焦点开始时间
         /// </summary>
-        private Timer activeTimer;
+        private DateTime activeStartTime = DateTime.Now;
+
+        ///// <summary>
+        ///// 活动计时器
+        ///// </summary>
+        //private Timer activeTimer;
         /// <summary>
         /// 睡眠状态
         /// </summary>
@@ -56,10 +68,10 @@ namespace Core.Servicers.Instances
         private ConfigModel config;
 
         public event EventHandler OnUpdateTime;
-        /// <summary>
-        /// 当前焦点使用时长（秒）
-        /// </summary>
-        private int activeSeconds = 0;
+        ///// <summary>
+        ///// 当前焦点使用时长（秒）
+        ///// </summary>
+        //private int activeSeconds = 0;
         public Main(
             IObserver observer,
             IData data,
@@ -74,30 +86,25 @@ namespace Core.Servicers.Instances
 
             observer.OnAppActive += Observer_OnAppActive;
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
-            activeTimer = new Timer();
-            activeTimer.Interval = 1000;
-            activeTimer.Elapsed += ActiveTimer_Elapsed;
-            activeTimer.Disposed += ActiveTimer_Disposed;
+            //activeTimer = new Timer();
+            //activeTimer.Interval = 1000;
+            //activeTimer.Elapsed += ActiveTimer_Elapsed;
             appConfig.ConfigChanged += AppConfig_ConfigChanged;
             dateObserver.OnDateChanging += DateObserver_OnDateChanging;
-
         }
 
-        private void ActiveTimer_Disposed(object sender, EventArgs e)
-        {
-            Debug.WriteLine("disposed!timer");
-        }
-
-        private void ActiveTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            activeSeconds++;
-            Debug.WriteLine(activeSeconds.ToString());
-        }
+        //private void ActiveTimer_Elapsed(object sender, ElapsedEventArgs e)
+        //{
+        //    activeSeconds++;
+        //}
 
         private void DateObserver_OnDateChanging(object sender, EventArgs e)
         {
-            Debug.WriteLine("日期变更前：" + DateTime.Now.ToString());
-            UpdateTime();
+            if (sleepStatus == SleepStatus.Wake)
+            {
+                Debug.WriteLine("日期变更前：" + DateTime.Now.ToString());
+                UpdateTime();
+            }
         }
 
         private void AppConfig_ConfigChanged(ConfigModel oldConfig, ConfigModel newConfig)
@@ -144,14 +151,13 @@ namespace Core.Servicers.Instances
                 UpdateTime();
 
                 activeProcess = null;
-
-                activeTimer.Stop();
+                //activeSeconds = 0;
+                //activeTimer.Stop();
             }
         }
 
         private void Observer_OnAppActive(string processName, string description, string file)
         {
-
             if (activeProcess != processName && activeProcessFile != file)
             {
                 UpdateTime();
@@ -166,13 +172,13 @@ namespace Core.Servicers.Instances
                 activeProcessDescription = description;
                 activeProcessFile = file;
 
-                //activeStartTime = DateTime.Now;
+                activeStartTime = DateTime.Now;
 
-                activeSeconds = 0;
-                if (!activeTimer.Enabled)
-                {
-                    activeTimer.Start();
-                }
+                //activeSeconds = 0;
+                //if (!activeTimer.Enabled)
+                //{
+                //    activeTimer.Start();
+                //}
 
                 //  提取icon
                 Iconer.ExtractFromFile(file, processName, description);
@@ -180,8 +186,8 @@ namespace Core.Servicers.Instances
             else
             {
                 activeProcess = null;
-                activeSeconds = 0;
-                activeTimer.Stop();
+                //activeSeconds = 0;
+                //activeTimer.Stop();
             }
         }
 
@@ -238,14 +244,25 @@ namespace Core.Servicers.Instances
             if (!string.IsNullOrEmpty(activeProcess))
             {
                 //  更新计时
+                TimeSpan timeSpan = DateTime.Now - activeStartTime;
 
-                int seconds = activeSeconds;
+                int seconds = (int)timeSpan.TotalSeconds;
 
-                Debug.WriteLine(sleepStatus + " 进程：" + activeProcess + " 更新时间：" + seconds);
+                //  如果是休眠状态要减去5分钟
+                if (sleepStatus == SleepStatus.Sleep)
+                {
+                    seconds -= 300;
+                }
+
                 if (seconds <= 0)
                 {
                     return;
                 }
+
+
+
+                Logger.Info(sleepStatus + " 进程：" + activeProcess + " 更新时间：" + seconds);
+
 
                 data.Set(activeProcess, activeProcessDescription, activeProcessFile, seconds);
 
