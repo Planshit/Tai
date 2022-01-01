@@ -88,7 +88,6 @@ namespace Core.Servicers.Instances
             config.General.IsStartatboot = false;
 
             config.Behavior = new BehaviorModel();
-            config.Behavior.IgnoreProcessList.Add("Test");
         }
 
         public ConfigModel GetConfig()
@@ -140,8 +139,6 @@ namespace Core.Servicers.Instances
                         item.SetValue(obj, instance);
                     }
                 }
-
-                Debug.WriteLine(string.Format("{0}:{1},", name, value));
             }
         }
     }
