@@ -138,6 +138,9 @@ namespace UI.Controls.Base
         Car,
         Bug,
         BIDashboard,
-        Preview
+        Preview,
+        Blocked,
+        Remove,
+        Chart
     }
 }

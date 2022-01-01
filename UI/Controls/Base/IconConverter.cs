@@ -115,6 +115,9 @@ namespace UI.Controls.Base
             {IconTypes.ChevronUp,"\xE70E"},
             {IconTypes.BIDashboard,"\xF543"},
             {IconTypes.Preview,"\xE8FF"},
+            {IconTypes.Blocked,"\xE733"},
+            {IconTypes.Remove,"\xE738"},
+            {IconTypes.Chart,"\xE999"},
 
 
         };
