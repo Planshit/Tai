@@ -52,7 +52,7 @@ namespace Core.Servicers.Instances
                           processFileName = Win32API.UWP_AppName(hwnd, (uint)processID);
                           if (processFileName == null)
                           {
-                              Thread.Sleep(500);
+                              Thread.Sleep(1500);
 
                               processFileName = Win32API.UWP_AppName(hwnd, (uint)processID);
                               processName = GetUWPAPPName(processFileName);
