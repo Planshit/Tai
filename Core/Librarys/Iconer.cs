@@ -18,9 +18,33 @@ namespace Core.Librarys
 {
     public class Iconer
     {
-        public static string Get(string processname, string desc)
+        /// <summary>
+        /// 格式化图标文件名称
+        /// </summary>
+        /// <param name="processname">进程名称</param>
+        /// <param name="desc">进程简介</param>
+        /// <returns>返回正确的文件名称</returns>
+        private static string FromatIconFileName(string processname, string desc)
         {
             string iconName = (processname + desc).Replace(" ", "") + ".png";
+
+            //  清除无效字符
+            iconName = iconName.Replace("/", "");
+            iconName = iconName.Replace("\\", "");
+            iconName = iconName.Replace(":", "");
+            iconName = iconName.Replace("*", "");
+            iconName = iconName.Replace("?", "");
+            iconName = iconName.Replace("\"", "");
+            iconName = iconName.Replace("'", "");
+            iconName = iconName.Replace("<", "");
+            iconName = iconName.Replace(">", "");
+            iconName = iconName.Replace("|", "");
+
+            return iconName;
+        }
+        public static string Get(string processname, string desc)
+        {
+            string iconName = FromatIconFileName(processname, desc);
             string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                          "AppIcons", iconName);
             if (!File.Exists(iconPath))
@@ -40,9 +64,11 @@ namespace Core.Librarys
         {
             try
             {
-                string iconName = (processname + desc).Replace(" ", "") + ".png";
+                string iconName = FromatIconFileName(processname, desc);
+
                 string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                              "AppIcons", iconName);
+
                 if (isCheck && File.Exists(iconPath))
                 {
                     return iconPath;
