@@ -124,7 +124,11 @@ namespace UI.Controls.Charts
             //{
             //    ValueBlockObj.Width = ValueBlockObj.Height = (Data.Value / MaxValue) * ActualWidth;
             //};
-            ValueBlockObj.Width = ValueBlockObj.Height = (Data.Value / MaxValue) * ActualWidth;
+
+            double size = (Data.Value / MaxValue) * ActualWidth;
+            if (size > 0 && size < 8) //防止历史数值太小界面无显示效果
+                size = 8;
+            ValueBlockObj.Width = ValueBlockObj.Height = size;
             ToolTip = Data.DateTime.ToString("yyyy年MM月dd日") + " " + (string.IsNullOrEmpty(Data.Tag) ? "无数据" : Data.Tag);
 
             if (Data.DateTime.Date == DateTime.Now.Date)
