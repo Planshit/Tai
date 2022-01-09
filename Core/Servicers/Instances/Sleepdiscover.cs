@@ -45,8 +45,22 @@ namespace Core.Servicers.Instances
             this.observer = observer;
             observer.OnAppActive += Observer_OnAppActive;
             SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(OnPowerModeChanged);
-
+            SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
             keyboardProc = HookCallback;
+        }
+
+        private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
+        {
+            if (e.Reason == SessionSwitchReason.RemoteDisconnect || e.Reason == SessionSwitchReason.ConsoleDisconnect)
+            {
+                //  与这台设备远程桌面连接断开
+                Debug.WriteLine("与这台设备远程桌面连接断开");
+                if (status == SleepStatus.Wake)
+                {
+                    status = SleepStatus.Sleep;
+                    SleepStatusChanged?.Invoke(status);
+                }
+            }
         }
 
         private IntPtr HookCallback(
@@ -97,7 +111,7 @@ namespace Core.Servicers.Instances
             if (status == SleepStatus.Sleep)
             {
                 TimeSpan timeSpan = DateTime.Now - pressKeyboardLastTime;
-               
+
                 Point point;
                 Win32API.GetCursorPos(out point);
                 if (lastPoint.ToString() == point.ToString() && timeSpan.TotalSeconds > 10)
