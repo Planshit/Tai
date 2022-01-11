@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -104,7 +105,15 @@ namespace UI.Controls.Charts
                 return;
             }
             isRendering = true;
+
+            //对部分程序未获取程序名的程序使用路径中名字作为程序名
             NameTextObj.Text = Data.Name;
+            if (Data.Name.Trim() == "" && Data.PopupText.Trim() != "")
+            {
+                FileInfo fi = new FileInfo(Data.PopupText);
+                NameTextObj.Text = fi.Name.Replace(fi.Extension,"");
+            }
+
             NameTextObj.SizeChanged += (e, c) =>
             {
                 //  处理文字过长显示
