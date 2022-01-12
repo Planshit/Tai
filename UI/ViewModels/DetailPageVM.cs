@@ -76,6 +76,16 @@ namespace UI.ViewModels
                         main.Toast("进程文件似乎不存在", Controls.Base.IconTypes.Blocked);
                     }
                     break;
+                case "open exe":
+                    if (File.Exists(Process.PopupText))
+                    {
+                        System.Diagnostics.Process.Start(Process.PopupText);
+                    }
+                    else
+                    {
+                        main.Toast("进程文件似乎不存在", Controls.Base.IconTypes.Blocked);
+                    }
+                    break;
             }
         }
 
