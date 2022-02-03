@@ -24,7 +24,7 @@
                                 </Button>
                                 <TextBlock Text="{TemplateBinding Title}" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0"/>
                             </StackPanel>-->
-                            <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto">
+                            <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="False">
                                 <Frame Grid.Row="1" Content="{TemplateBinding Content}" NavigationUIVisibility="Hidden"/>
                             </ScrollViewer>
                         </Grid>
