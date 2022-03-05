@@ -1,9 +1,11 @@
 ﻿using Core.Models.Config;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -381,6 +383,8 @@ namespace UI.Controls.SettingPanel
             addInputBox.Placeholder = configAttribute.Placeholder;
             addInputBox.Margin = new Thickness(0, 0, 10, 0);
 
+
+            //添加
             var addBtn = new Button.Button();
             //addBtn.Margin = new Thickness(15, 0, 15, 10);
             addBtn.Content = "添加";
@@ -402,6 +406,64 @@ namespace UI.Controls.SettingPanel
             };
             pi.SetValue(configData, list);
 
+            //导入
+            var importBtn = new Button.Button();
+            importBtn.Content = "导入";
+            importBtn.Click += (e, c) =>
+            {
+                Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+                ofd.Title = "选择文件";
+                ofd.Filter = "json(*.json)|*.json";
+                ofd.FileName = "TaiProcessIgnoreExport";
+
+                ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;//指定启动路径
+
+                bool? result = ofd.ShowDialog();
+                if (result == true)
+                {
+   
+                    BehaviorModel bm = JsonConvert.DeserializeObject<BehaviorModel>(File.ReadAllText(ofd.FileName));
+                    if (bm == null)
+                    {
+                        MessageBox.Show("文件格式有误或者数据为空，请选择有效的导出文件。");
+                    }
+                    else
+                    {
+                        if (MessageBox.Show("导入将覆盖现有设置，确定吗？", "注意", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                        {
+                            pi.SetValue(configData, bm.IgnoreProcessList);
+                            listControl.Items.Clear();
+                            foreach (string p in bm.IgnoreProcessList)
+                            {
+                                listControl.Items.Add(p);
+                            }
+                        }
+                    }
+                }
+
+            };
+
+            //导出
+            var exportBtn = new Button.Button();
+            exportBtn.Content = "导出";
+            exportBtn.Click += (e, c) =>
+            {
+                Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog();
+                sfd.Title = "选择文件";
+                sfd.Filter = "json(*.json)|*.json";
+                sfd.FileName = "TaiProcessIgnoreExport";
+
+                sfd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;//指定启动路径
+
+                bool? result = sfd.ShowDialog();
+                if (result == true)
+                {
+                    File.WriteAllText(sfd.FileName, JsonConvert.SerializeObject(configData));
+
+                }
+
+            };
+
             var inputPanel = new Grid();
             inputPanel.ColumnDefinitions.Add(
                 new ColumnDefinition()
@@ -413,12 +475,25 @@ namespace UI.Controls.SettingPanel
                {
                    Width = new GridLength(2, GridUnitType.Star)
                });
+            inputPanel.ColumnDefinitions.Add(
+                new ColumnDefinition()
+                {
+                    Width = new GridLength(2, GridUnitType.Star)
+                });
+            inputPanel.ColumnDefinitions.Add(
+                new ColumnDefinition()
+                {
+                    Width = new GridLength(2, GridUnitType.Star)
+                });
             inputPanel.Margin = new Thickness(15, 10, 15, 10);
             Grid.SetColumn(addInputBox, 0);
             Grid.SetColumn(addBtn, 1);
+            Grid.SetColumn(importBtn, 2);
+            Grid.SetColumn(exportBtn, 3);
             inputPanel.Children.Add(addInputBox);
             inputPanel.Children.Add(addBtn);
-
+            inputPanel.Children.Add(importBtn);
+            inputPanel.Children.Add(exportBtn);
 
             //  标题和说明
 
