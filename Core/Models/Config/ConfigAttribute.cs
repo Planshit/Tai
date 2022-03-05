@@ -23,6 +23,7 @@ namespace Core.Models.Config
         public bool IsName;
         public string Placeholder;
         public bool IsCanRepeat;
+        public bool IsCanImportExport;
         public ConfigAttribute()
         {
             ToggleTrueText = "开";
@@ -30,6 +31,7 @@ namespace Core.Models.Config
             IsCanRepeat = true;
             Index = 0;
             IsName = false;
+            IsCanImportExport = false;
         }
 
 

@@ -1,4 +1,5 @@
-﻿using Core.Models.Config;
+﻿using Core.Librarys;
+using Core.Models.Config;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using UI.Controls.Button;
 using UI.Controls.Input;
 using UI.Controls.List;
 
@@ -406,63 +408,98 @@ namespace UI.Controls.SettingPanel
             };
             pi.SetValue(configData, list);
 
-            //导入
-            var importBtn = new Button.Button();
-            importBtn.Content = "导入";
-            importBtn.Click += (e, c) =>
+            IconButton moreActionBtn = new IconButton();
+            moreActionBtn.VerticalAlignment = VerticalAlignment.Center;
+            moreActionBtn.HorizontalAlignment = HorizontalAlignment.Right;
+            moreActionBtn.Margin = new Thickness(0, 5, 5, 0);
+            moreActionBtn.Icon = Base.IconTypes.More;
+
+            var moreActionMenu = new ContextMenu();
+
+            moreActionBtn.MouseLeftButtonUp += (e, c) =>
             {
-                Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
-                ofd.Title = "选择文件";
-                ofd.Filter = "json(*.json)|*.json";
-                ofd.FileName = "TaiProcessIgnoreExport";
+                moreActionMenu.IsOpen = true;
+            };
+            bool isHasMoreAction = false;
+            if (configAttribute.IsCanImportExport)
+            {
+                //  允许导入导出
+                isHasMoreAction = true;
 
-                ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;//指定启动路径
-
-                bool? result = ofd.ShowDialog();
-                if (result == true)
+                //  导入操作
+                var importMenuItem = new MenuItem();
+                importMenuItem.Header = "导入";
+                importMenuItem.Click += (e, c) =>
                 {
-   
-                    BehaviorModel bm = JsonConvert.DeserializeObject<BehaviorModel>(File.ReadAllText(ofd.FileName));
-                    if (bm == null)
+                    Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+                    ofd.Title = "选择文件";
+                    ofd.Filter = "json(*.json)|*.json";
+                    ofd.FileName = configAttribute.Name;
+
+                    bool? result = ofd.ShowDialog();
+                    if (result == true)
                     {
-                        MessageBox.Show("文件格式有误或者数据为空，请选择有效的导出文件。");
-                    }
-                    else
-                    {
-                        if (MessageBox.Show("导入将覆盖现有设置，确定吗？", "注意", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                        try
                         {
-                            pi.SetValue(configData, bm.IgnoreProcessList);
-                            listControl.Items.Clear();
-                            foreach (string p in bm.IgnoreProcessList)
+                            List<string> data = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(ofd.FileName));
+                            if (data == null)
                             {
-                                listControl.Items.Add(p);
+                                MessageBox.Show("文件格式有误或者数据为空，请选择有效的导出文件。");
                             }
+                            else
+                            {
+                                if (MessageBox.Show("导入将覆盖现有配置，确定吗？", "注意", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                                {
+                                    pi.SetValue(configData, data);
+                                    listControl.Items.Clear();
+                                    foreach (string item in data)
+                                    {
+                                        listControl.Items.Add(item);
+                                    }
+                                    MessageBox.Show("导入完成！", "提示");
+                                }
+                            }
+                        }catch (Exception ex)
+                        {
+                            Logger.Error($"导入配置“{configAttribute.Name}”时失败：{ex.Message}");
+                            MessageBox.Show("导入失败！", "提示");
                         }
                     }
-                }
 
-            };
+                };
 
-            //导出
-            var exportBtn = new Button.Button();
-            exportBtn.Content = "导出";
-            exportBtn.Click += (e, c) =>
-            {
-                Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog();
-                sfd.Title = "选择文件";
-                sfd.Filter = "json(*.json)|*.json";
-                sfd.FileName = "TaiProcessIgnoreExport";
-
-                sfd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory;//指定启动路径
-
-                bool? result = sfd.ShowDialog();
-                if (result == true)
+                //  导出操作
+                var exportMenuItem = new MenuItem();
+                exportMenuItem.Header = "导出";
+                exportMenuItem.Click += (e, c) =>
                 {
-                    File.WriteAllText(sfd.FileName, JsonConvert.SerializeObject(configData));
+                    try
+                    {
+                        Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog();
+                        sfd.Title = "选择文件";
+                        sfd.Filter = "json(*.json)|*.json";
+                        sfd.FileName = configAttribute.Name + "导出配置";
 
-                }
+                        bool? result = sfd.ShowDialog();
+                        if (result == true)
+                        {
+                            File.WriteAllText(sfd.FileName, JsonConvert.SerializeObject(listControl.Items));
+                            MessageBox.Show("导出完成", "提示");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"导出配置“{configAttribute.Name}”时失败：{ex.Message}");
+                        MessageBox.Show("导出失败！", "提示");
+                    }
 
-            };
+                };
+
+
+                moreActionMenu.Items.Add(importMenuItem);
+                moreActionMenu.Items.Add(exportMenuItem);
+            }
+
 
             var inputPanel = new Grid();
             inputPanel.ColumnDefinitions.Add(
@@ -475,25 +512,13 @@ namespace UI.Controls.SettingPanel
                {
                    Width = new GridLength(2, GridUnitType.Star)
                });
-            inputPanel.ColumnDefinitions.Add(
-                new ColumnDefinition()
-                {
-                    Width = new GridLength(2, GridUnitType.Star)
-                });
-            inputPanel.ColumnDefinitions.Add(
-                new ColumnDefinition()
-                {
-                    Width = new GridLength(2, GridUnitType.Star)
-                });
+
             inputPanel.Margin = new Thickness(15, 10, 15, 10);
             Grid.SetColumn(addInputBox, 0);
             Grid.SetColumn(addBtn, 1);
-            Grid.SetColumn(importBtn, 2);
-            Grid.SetColumn(exportBtn, 3);
+
             inputPanel.Children.Add(addInputBox);
             inputPanel.Children.Add(addBtn);
-            inputPanel.Children.Add(importBtn);
-            inputPanel.Children.Add(exportBtn);
 
             //  标题和说明
 
@@ -503,7 +528,28 @@ namespace UI.Controls.SettingPanel
             description.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#989CA1"));
             var container = new StackPanel();
 
-            container.Children.Add(description);
+            var head = new Grid();
+            head.ColumnDefinitions.Add(
+                 new ColumnDefinition()
+                 {
+                     Width = new GridLength(10, GridUnitType.Star)
+                 });
+            head.ColumnDefinitions.Add(
+               new ColumnDefinition()
+               {
+                   Width = new GridLength(2, GridUnitType.Star)
+               });
+            Grid.SetColumn(description, 0);
+            head.Children.Add(description);
+
+            //  更多操作按钮
+            if (isHasMoreAction)
+            {
+                Grid.SetColumn(moreActionBtn, 1);
+                head.Children.Add(moreActionBtn);
+            }
+
+            container.Children.Add(head);
             container.Children.Add(inputPanel);
             container.Children.Add(listControl);
             return container;

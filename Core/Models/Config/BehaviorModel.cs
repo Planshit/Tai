@@ -11,7 +11,7 @@ namespace Core.Models.Config
     /// </summary>
     public class BehaviorModel
     {
-        [Config(Name = "忽略进程", Description = "忽略的进程将不进行时长统计", Group = "忽略进程", Placeholder ="进程名，不需要输入.exe")]
+        [Config(IsCanImportExport = true, Name = "忽略进程", Description = "忽略的进程将不进行时长统计", Group = "忽略进程", Placeholder = "进程名，不需要输入.exe")]
         /// <summary>
         /// 忽略的进程列表
         /// </summary>
