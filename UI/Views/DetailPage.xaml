@@ -24,7 +24,7 @@
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open exe"  Header="打开程序"/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制进程名称"/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制进程路径"/>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开进程所在目录"/> 
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开进程所在目录"/>
                     </ContextMenu>
                 </Border.ContextMenu>
                 <Grid>
@@ -37,17 +37,27 @@
                     <Image Source="{Binding Process.Icon}" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <StackPanel Orientation="Horizontal">
+                        <!--<StackPanel Orientation="Horizontal">
                             <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,4,0" VerticalAlignment="Center" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该进程将不再统计使用时长">
                                 <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
                                     <base:Icon IconType="Blocked" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
                                     <TextBlock Text="已被忽略" Foreground="White" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                 </StackPanel>
                             </Border>
-                            <TextBlock Text="{Binding Process.Name}" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Process.Name}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
                             <TextBlock ToolTip="进程名" Text="{Binding ProcessName}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
-                        </StackPanel>
+                        </StackPanel>-->
+                        <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该进程将不再统计使用时长">
+                            <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                                <base:Icon IconType="Blocked" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
+                                <TextBlock Text="已被忽略" Foreground="White" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock ToolTip="描述" Grid.Column="1" Text="{Binding Process.Name}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+
+                        <TextBlock ToolTip="进程名" Text="{Binding ProcessName}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
                         <TextBlock ToolTip="进程文件路径"  Foreground="Gray" Text="{Binding Process.PopupText}"  Margin="0,5,0,0" TextWrapping="WrapWithOverflow"/>
 
                     </StackPanel>
@@ -80,7 +90,7 @@
 
                 </StackPanel>
             </Border>
-           
+
             <TextBlock Text="月份数据"  FontSize="14" Margin="0,20,0,0"/>
 
             <Border
