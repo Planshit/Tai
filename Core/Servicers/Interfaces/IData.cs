@@ -51,24 +51,17 @@ namespace Core.Servicers.Interfaces
         /// <summary>
         /// 获取指定进程某个月的数据
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="processName"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        List<DailyLogModel> GetProcessMonthLogList(string file, DateTime month);
+        List<DailyLogModel> GetProcessMonthLogList(string processName, DateTime month);
 
-        /// <summary>
-        /// 获取一个进程最后一条记录
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        DailyLogModel GetLast(string file);
 
         /// <summary>
         /// 清空指定进程某月的数据
         /// </summary>
         /// <param name="processName"></param>
-        /// <param name="file"></param>
-        void Clear(string processName, string file, DateTime month);
+        void Clear(string processName, DateTime month);
 
         /// <summary>
         /// 获取指定进程某天的数据

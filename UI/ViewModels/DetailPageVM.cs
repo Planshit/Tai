@@ -1,4 +1,5 @@
 ﻿using Core.Librarys;
+using Core.Models;
 using Core.Models.Config;
 using Core.Servicers.Interfaces;
 using System;
@@ -126,7 +127,7 @@ namespace UI.ViewModels
             {
                 if (Process != null)
                 {
-                    var info = data.GetLast(Process.PopupText);
+                    var info = Process.Data as DailyLogModel;
                     if (info != null)
                     {
                         ProcessName = info.ProcessName;
@@ -186,8 +187,8 @@ namespace UI.ViewModels
             {
                 if (Process != null)
                 {
-
-                    var monthData = data.GetProcessMonthLogList(Process.PopupText, Date);
+                    var info = Process.Data as DailyLogModel;
+                    var monthData = data.GetProcessMonthLogList(info.ProcessName, Date);
                     int monthTotal = monthData.Sum(m => m.Time);
                     Total = Timer.Fromat(monthTotal);
 
@@ -232,7 +233,7 @@ namespace UI.ViewModels
                 if (Process != null)
                 {
                     main.Toast("正在处理");
-                    data.Clear(ProcessName, Process.PopupText, Date);
+                    data.Clear(ProcessName, Date);
 
                     await LoadData();
                     await LoadInfo();
@@ -250,6 +251,7 @@ namespace UI.ViewModels
             foreach (var item in list)
             {
                 var bindModel = new ChartsDataModel();
+                bindModel.Data = item;
                 bindModel.Name = string.IsNullOrEmpty(item.ProcessDescription) ? item.ProcessName : item.ProcessDescription;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);

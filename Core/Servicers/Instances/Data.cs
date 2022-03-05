@@ -1,5 +1,6 @@
 ﻿using Core.Librarys.SQLite;
 using Core.Models;
+using Core.Models.Config;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,9 @@ namespace Core.Servicers.Instances
 {
     public class Data : IData
     {
-
         public void Set(string processName, string processDescription, string file, int seconds)
         {
-            if (string.IsNullOrEmpty(processName) || string.IsNullOrEmpty(file) || seconds <= 0)
+            if (string.IsNullOrEmpty(processName) || seconds <= 0)
             {
                 return;
             }
@@ -22,7 +22,7 @@ namespace Core.Servicers.Instances
             using (var db = new StatisticContext())
             {
                 var today = DateTime.Now.Date;
-                var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.ProcessName == processName && m.ProcessDescription == processDescription && m.File == file);
+                var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.ProcessName == processName);
                 if (res == null)
                 {
                     //数据库中没有时则创建
@@ -48,7 +48,7 @@ namespace Core.Servicers.Instances
                     m =>
                     m.DataTime == nowtime
                     && m.ProcessName == processName
-                    && m.File == file);
+                    );
                 if (hourslog == null)
                 {
                     //  没有时创建
@@ -85,7 +85,7 @@ namespace Core.Servicers.Instances
             using (var db = new StatisticContext())
             {
                 var today = DateTime.Now.Date;
-                var res = db.DailyLog.SqlQuery("Select Sum(Time) as Time,ProcessName,File,ID,Date,ProcessDescription from DailyLogModels WHERE Date between '" + start.ToString("yyyy-MM-dd HH:mm:ss") + "' AND '" + end.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY ProcessName,File ").ToList();
+                var res = db.DailyLog.SqlQuery("Select Sum(Time) as Time,ProcessName,File,ID,Date,ProcessDescription from DailyLogModels WHERE Date between '" + start.ToString("yyyy-MM-dd HH:mm:ss") + "' AND '" + end.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY ProcessName ").ToList();
                 return res.ToList();
             }
         }
@@ -162,7 +162,7 @@ namespace Core.Servicers.Instances
             }
         }
 
-        public List<DailyLogModel> GetProcessMonthLogList(string file, DateTime month)
+        public List<DailyLogModel> GetProcessMonthLogList(string processName, DateTime month)
         {
             using (var db = new StatisticContext())
             {
@@ -171,9 +171,9 @@ namespace Core.Servicers.Instances
                     m =>
                     m.Date.Year == month.Year
                     && m.Date.Month == month.Month
-                    //&& m.ProcessName == processName
+                    && m.ProcessName == processName
                     //&& m.ProcessDescription == processDescription
-                    && m.File == file
+                    //&& m.File == file
                     );
                 if (res != null)
                 {
@@ -183,26 +183,10 @@ namespace Core.Servicers.Instances
             }
         }
 
-        public DailyLogModel GetLast(string file)
-        {
-            using (var db = new StatisticContext())
-            {
 
-                var res = db.DailyLog.Where(
-                    m =>
-                    m.File == file
-                    ).OrderByDescending(m => m.ID).Take(1);
-                if (res != null)
-                {
-                    return res.FirstOrDefault();
-                }
-                return null;
-            }
-        }
-
-        public void Clear(string processName, string file, DateTime month)
+        public void Clear(string processName, DateTime month)
         {
-            if (string.IsNullOrEmpty(processName) || string.IsNullOrEmpty(file))
+            if (string.IsNullOrEmpty(processName))
             {
                 return;
             }
@@ -212,10 +196,8 @@ namespace Core.Servicers.Instances
                 db.DailyLog.RemoveRange(
                     db.DailyLog.Where(m =>
                     m.ProcessName == processName
-                    && m.File == file
                     && m.Date.Year == month.Year
                     && m.Date.Month == month.Month));
-
                 db.SaveChanges();
             }
         }
