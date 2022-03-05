@@ -174,6 +174,7 @@ namespace UI.ViewModels
             foreach (var item in list)
             {
                 var bindModel = new ChartsDataModel();
+                bindModel.Data = item;
                 bindModel.Name = string.IsNullOrEmpty(item.ProcessDescription) ? item.ProcessName : item.ProcessDescription;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);

@@ -38,5 +38,10 @@ namespace UI.Controls.Charts.Model
         /// 时间（仅在类型为Month样式时有效）
         /// </summary>
         public DateTime DateTime { get; set; }
+
+        /// <summary>
+        /// 数据模型
+        /// </summary>
+        public object Data { get; set; }
     }
 }
