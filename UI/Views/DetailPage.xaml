@@ -21,6 +21,7 @@
                 Padding="0,20">
                 <Border.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open exe"  Header="打开程序"/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制进程名称"/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制进程路径"/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开进程所在目录"/> 
