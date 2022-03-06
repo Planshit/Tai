@@ -16,7 +16,7 @@
                         <Grid x:Name="Normal">
                             <Border x:Name="ShadowBorder" CornerRadius="12">
                                 <Border.Effect>
-                                    <DropShadowEffect Color="#2b20d9" BlurRadius="17" Direction="0" ShadowDepth="0" Opacity="0"/>
+                                    <DropShadowEffect RenderingBias="Performance" Color="#2b20d9" BlurRadius="17" Direction="0" ShadowDepth="0" Opacity="0"/>
                                 </Border.Effect>
                                 <Border x:Name="Border" BorderBrush="Transparent" BorderThickness="2" Margin="0" Background="White"  CornerRadius="12"  Width="150" Height="150" >
 
@@ -31,22 +31,29 @@
                             x:Name="ValueBlockObj"
                                 
                                
-                                HorizontalAlignment="Stretch"
+                                HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
+                                           Margin="0"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            Fill="#ff305b"
+                                            
                             >
-                                            <Rectangle.Effect>
-                                                <BlurEffect KernelType="Gaussian" Radius="100"/>
-                                            </Rectangle.Effect>
-                                            <Rectangle.Fill>
-                                                <LinearGradientBrush EndPoint="2,1" StartPoint="-2,0">
+                                            <!--<Rectangle.Effect>
+                                                <BlurEffect RenderOptions.BitmapScalingMode="LowQuality"  Radius="35" RenderingBias="Performance"/>
+                                            </Rectangle.Effect>-->
+                                            <!--<Rectangle.Fill>
+                                                <LinearGradientBrush RenderOptions.BitmapScalingMode="LowQuality" EndPoint="2,1" StartPoint="-2,0">
                                                     <GradientStop Color="White"/>
                                                     <GradientStop Color="#ff305b" Offset="1"/>
                                                 </LinearGradientBrush>
-                                            </Rectangle.Fill>
+                                            </Rectangle.Fill>-->
+                                            <Rectangle.RenderTransform>
+                                                <ScaleTransform ScaleX="3" ScaleY="3" CenterX="0" CenterY="0"/>
+                                            </Rectangle.RenderTransform>
                                         </Rectangle>
-                                        <Border VerticalAlignment="Center" HorizontalAlignment="Center">
-                                            <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
+                                        <!--<Border VerticalAlignment="Center" HorizontalAlignment="Center">-->
+                                        <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="LowQuality"/>
+                                        <!--</Border>-->
 
                                         <TextBlock x:Name="NameTextObj" Foreground="#5c5c5c" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10"/>
 
@@ -92,12 +99,7 @@
                                                 <CubicEase EasingMode="EaseInOut"/>
                                             </DoubleAnimation.EasingFunction>
                                         </DoubleAnimation>
-                                        <!--<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                Storyboard.TargetName="Bg" >
-                                            <EasingColorKeyFrame KeyTime="0"
-                                         Value="#192B20D9"/>
-                                            
-                                        </ColorAnimationUsingKeyFrames>-->
+
 
                                     </Storyboard>
                                 </VisualState>

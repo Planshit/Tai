@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -111,7 +112,7 @@ namespace UI.Controls.Charts
             if (Data.Name.Trim() == "" && Data.PopupText.Trim() != "")
             {
                 FileInfo fi = new FileInfo(Data.PopupText);
-                NameTextObj.Text = fi.Name.Replace(fi.Extension,"");
+                NameTextObj.Text = fi.Name.Replace(fi.Extension, "");
             }
 
             NameTextObj.SizeChanged += (e, c) =>
@@ -131,8 +132,17 @@ namespace UI.Controls.Charts
                 //{
                 //    return;
                 //}
-                ValueBlockObj.Width = ValueBlockObj.Height = (Data.Value / MaxValue) * ActualWidth;
+                double size = (Data.Value / MaxValue) * ActualWidth/3;
+                ValueBlockObj.Width = ValueBlockObj.Height = size;
+
+                ValueBlockObj.Effect = new BlurEffect()
+                {
+                    Radius = size,
+                    RenderingBias = RenderingBias.Performance
+                };
+                
             };
+
         }
 
         protected override void OnMouseEnter(MouseEventArgs e)
