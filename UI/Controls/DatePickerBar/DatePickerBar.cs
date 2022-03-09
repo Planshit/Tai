@@ -48,7 +48,11 @@ namespace UI.Controls.DatePickerBar
             var control = d as DatePickerBar;
             if (e.NewValue != e.OldValue)
             {
-                control.ScrollToActive(DateTime.Parse(e.NewValue.ToString()));
+                //DateTime newDateTime = DateTime.Now;
+
+                DateTime.TryParse(e.NewValue.ToString(), out DateTime newDateTime);
+
+                control.ScrollToActive(newDateTime);
                 control.UpdateDateString();
             }
         }
