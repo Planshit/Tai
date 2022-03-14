@@ -39,7 +39,7 @@ namespace Core.Servicers.Instances
 
         private Win32API.LowLevelKeyboardProc keyboardProc;
         private static IntPtr hookKeyboardID = IntPtr.Zero;
-
+        private int emptyPointNum = 0;
         public Sleepdiscover(IObserver observer)
         {
             this.observer = observer;
@@ -148,9 +148,20 @@ namespace Core.Servicers.Instances
         private void Timer_Tick(object sender, EventArgs e)
         {
             Point point;
+
             Win32API.GetCursorPos(out point);
-            if (point == null)
+
+            if (point.X + point.Y == 0)
             {
+                emptyPointNum++;
+
+                if (emptyPointNum == 2)
+                {
+                    emptyPointNum = 0;
+                    status = SleepStatus.Sleep;
+                    SleepStatusChanged?.Invoke(status);
+                    Logger.Info("empty point num:" + point.ToString());
+                }
                 return;
             }
 
@@ -216,9 +227,8 @@ namespace Core.Servicers.Instances
             }
 
             Logger.Info("【当前坐标】status：" + status + "，lastPoint：" + lastPoint.ToString() + "，now point：" + point.ToString());
-            Win32API.GetCursorPos(out lastPoint);
-            Logger.Info("【更新坐标】status：" + status + "，lastPoint：" + lastPoint.ToString() + "，now point：" + point.ToString());
-
+            lastPoint = point;
+            //Win32API.GetCursorPos(out lastPoint);
         }
 
 
