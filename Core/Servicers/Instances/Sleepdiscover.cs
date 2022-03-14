@@ -214,7 +214,11 @@ namespace Core.Servicers.Instances
                     SleepStatusChanged?.Invoke(status);
                 }
             }
+
+            Logger.Info("【当前坐标】status：" + status + "，lastPoint：" + lastPoint.ToString() + "，now point：" + point.ToString());
             Win32API.GetCursorPos(out lastPoint);
+            Logger.Info("【更新坐标】status：" + status + "，lastPoint：" + lastPoint.ToString() + "，now point：" + point.ToString());
+
         }
 
 

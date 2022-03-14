@@ -144,7 +144,7 @@ namespace Core.Servicers.Instances
             this.sleepStatus = sleepStatus;
 
             Debug.WriteLine("睡眠状态：" + sleepStatus);
-
+            Logger.Info("【" + sleepStatus + "】当前进程：" + activeProcess);
             if (sleepStatus == SleepStatus.Sleep)
             {
                 //  更新时间
@@ -153,6 +153,11 @@ namespace Core.Servicers.Instances
                 activeProcess = null;
                 //activeSeconds = 0;
                 //activeTimer.Stop();
+            }
+            else if (sleepStatus == SleepStatus.Wake)
+            {
+                //  唤醒时重置计时开始时间
+                activeStartTime = DateTime.Now;
             }
         }
 
@@ -261,7 +266,7 @@ namespace Core.Servicers.Instances
 
 
 
-                Logger.Info(sleepStatus + " 进程：" + activeProcess + " 更新时间：" + seconds);
+                Logger.Info("【"+sleepStatus + "】进程：" + activeProcess + " 更新时间：" + seconds + "，开始时间：" + activeStartTime.ToString() + "，当前时间：" + DateTime.Now.ToString());
 
 
                 data.Set(activeProcess, activeProcessDescription, activeProcessFile, seconds);
