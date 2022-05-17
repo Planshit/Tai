@@ -39,8 +39,3 @@
 - `报毒` 请别担心，因Tai的“Observer观察服务”会hook所有进程的event用来实现获取活动进程，“Sleepdiscover睡眠监测服务”会设置全局键盘钩子用来辅助实现唤醒、睡眠监测，所以会导致被安全软件报毒。
 - 根据部分用户的反馈来看，在笔记本电脑或平板设备上使用可能会出现UI卡顿、布局错乱的问题，目前暂时没有解决方案，非常抱歉。
 
-#### 👻 是否对你有帮助？
-
-如果有，请作者一杯☕续一下命吧 ╰(￣ω￣ｏ) 谢谢
-
-![](https://raw.githubusercontent.com/Planshit/ProjectEye/master/donate.jpg)
