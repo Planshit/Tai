@@ -17,42 +17,64 @@ namespace Core.Librarys.Image
     {
         public static BitmapImage Load(string filePath)
         {
-            if (filePath == null)
+            try
             {
-                return null;
-            }
+                if (filePath == null)
+                {
+                    return null;
+                }
 
-            var bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            if (filePath.IndexOf("pack://") != -1)
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                if (filePath.IndexOf("pack://") != -1)
+                {
+                    StreamResourceInfo info = Application.GetResourceStream(new Uri(filePath, UriKind.RelativeOrAbsolute));
+                    using (var st = info.Stream)
+                    {
+                        bitmap.StreamSource = st;
+                        bitmap.EndInit();
+                        bitmap.Freeze();
+                    }
+                }
+                else
+                {
+                    if (!File.Exists(filePath))
+                    {
+                        return null;
+                    }
+                    byte[] imageData;
+                    using (var fileStream = new FileStream(@filePath, FileMode.Open, FileAccess.Read))
+
+                    using (var binaryReader = new BinaryReader(fileStream))
+                    {
+                        imageData = binaryReader.ReadBytes((int)fileStream.Length);
+                        bitmap.StreamSource = new MemoryStream(imageData);
+                        bitmap.EndInit();
+                        bitmap.Freeze();
+                    }
+                }
+
+                return bitmap;
+            }
+            catch (Exception ec)
             {
-                StreamResourceInfo info = Application.GetResourceStream(new Uri(filePath, UriKind.RelativeOrAbsolute));
+                //  无法处理时返回默认图标
+
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+
+                StreamResourceInfo info = Application.GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png", UriKind.RelativeOrAbsolute));
                 using (var st = info.Stream)
                 {
                     bitmap.StreamSource = st;
                     bitmap.EndInit();
                     bitmap.Freeze();
                 }
-            }
-            else
-            {
-                if (!File.Exists(filePath))
-                {
-                    return null;
-                }
-                byte[] imageData;
-                using (var fileStream = new FileStream(@filePath, FileMode.Open, FileAccess.Read))
 
-                using (var binaryReader = new BinaryReader(fileStream))
-                {
-                    imageData = binaryReader.ReadBytes((int)fileStream.Length);
-                    bitmap.StreamSource = new MemoryStream(imageData);
-                    bitmap.EndInit();
-                    bitmap.Freeze();
-                }
-            }
+                Logger.Error(ec.Message);
 
-            return bitmap;
+                return bitmap;
+            }
         }
     }
 }
