@@ -14,10 +14,11 @@
                     <Border Background="{TemplateBinding Background}">
                         <Grid>
                             <Grid x:Name="HorizontalA"  Visibility="Collapsed">
-                                <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" Height="{Binding ElementName=HorizontalA,Path=ActualHeight}" CanContentScroll="False">
+                                <ScrollViewer Visibility="Collapsed" x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" Height="{Binding ElementName=HorizontalA,Path=ActualHeight}" CanContentScroll="False">
                                     <StackPanel x:Name="Container">
                                     </StackPanel>
                                 </ScrollViewer>
+                                <StackPanel Visibility="Collapsed" x:Name="NoScrollContainer"></StackPanel>
                             </Grid>
                             <Grid x:Name="Card" Visibility="Collapsed">
                                 <WrapPanel x:Name="CardContainer">

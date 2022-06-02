@@ -124,6 +124,24 @@ namespace UI.Controls.Charts
 
 
         #endregion
+
+        #region IsCanScroll 是否可以滚动
+        /// <summary>
+        /// 是否在加载中
+        /// </summary>
+        public bool IsCanScroll
+        {
+            get { return (bool)GetValue(IsCanScrollProperty); }
+            set { SetValue(IsCanScrollProperty, value); }
+        }
+        public static readonly DependencyProperty IsCanScrollProperty =
+            DependencyProperty.Register("IsCanScroll",
+                typeof(bool),
+                typeof(Charts),
+                new PropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
+
+
+        #endregion
         #region ClickCommand 点击命令
         /// <summary>
         /// 点击命令
@@ -149,7 +167,7 @@ namespace UI.Controls.Charts
             }
             if (e.Property == IsLoadingProperty)
             {
-                if (!charts.IsLoading)
+                if (!charts.IsLoading || e.Property == IsCanScrollProperty)
                 {
                     charts.Render();
                 }
@@ -169,6 +187,7 @@ namespace UI.Controls.Charts
         /// 容器
         /// </summary>
         private StackPanel Container;
+        private StackPanel NoScrollContainer;
         private WrapPanel CardContainer;
         private Grid MonthContainer;
         private ScrollViewer ScrollViewer;
@@ -204,6 +223,7 @@ namespace UI.Controls.Charts
             CardContainer = GetTemplateChild("CardContainer") as WrapPanel;
             MonthContainer = GetTemplateChild("MonthContainer") as Grid;
             ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
+            NoScrollContainer = GetTemplateChild("NoScrollContainer") as StackPanel;
 
             if (IsLoading)
             {
@@ -229,7 +249,14 @@ namespace UI.Controls.Charts
                         case ChartsType.HorizontalA:
                             var item = new ChartsItemTypeA();
                             item.IsLoading = true;
-                            Container.Children.Add(item);
+                            if (IsCanScroll)
+                            {
+                                Container.Children.Add(item);
+                            }
+                            else
+                            {
+                                NoScrollContainer.Children.Add(item);
+                            }
                             break;
                         case ChartsType.Card:
                             var card = new ChartsItemTypeCard();
@@ -269,14 +296,27 @@ namespace UI.Controls.Charts
             {
                 return;
             }
+
+            if (IsCanScroll)
+            {
+                ScrollViewer.Visibility = Visibility.Visible;
+                NoScrollContainer.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ScrollViewer.Visibility = Visibility.Collapsed;
+                NoScrollContainer.Visibility = Visibility.Visible;
+            }
             Calculate();
             Container.Children.Clear();
             CardContainer.Children.Clear();
             MonthContainer.Children.Clear();
+            NoScrollContainer.Children.Clear();
 
             if (Data == null || Data.Count() <= 0)
             {
                 Container.Children.Add(new EmptyData());
+                NoScrollContainer.Children.Add(new EmptyData());
                 CardContainer.Children.Add(new EmptyData());
                 return;
             }
@@ -296,7 +336,7 @@ namespace UI.Controls.Charts
             }
 
         }
-       
+
         #region 渲染横向样式A
         private void RenderHorizontalAStyle()
         {
@@ -318,8 +358,12 @@ namespace UI.Controls.Charts
                 lazyloadingData = data;
                 ScrollViewer.ScrollChanged += ScrollViewer_ScrollChanged;
             }
-            Container.SizeChanged -= Container_SizeChanged;
-            Container.SizeChanged += Container_SizeChanged;
+
+            if (IsCanScroll)
+            {
+                Container.SizeChanged -= Container_SizeChanged;
+                Container.SizeChanged += Container_SizeChanged;
+            }
             isRendering = false;
         }
 
@@ -355,6 +399,11 @@ namespace UI.Controls.Charts
 
         private void RenderTypeAItems(List<ChartsDataModel> data, int start, int count)
         {
+            StackPanel container = Container;
+            if (!IsCanScroll)
+            {
+                container = NoScrollContainer;
+            }
             for (int i = start; i < start + count; i++)
             {
 
@@ -373,7 +422,7 @@ namespace UI.Controls.Charts
                 }
                 //  处理点击事件
                 HandleItemClick(chartsItem, item);
-                Container.Children.Insert(lazyloadedCount, chartsItem);
+                container.Children.Insert(lazyloadedCount, chartsItem);
 
                 if (ShowLimit > 0 && Container.Children.Count == ShowLimit)
                 {
@@ -382,7 +431,7 @@ namespace UI.Controls.Charts
                 lazyloadedCount++;
                 if (i >= 20)
                 {
-                    Container.Children.RemoveAt(Container.Children.Count - 1);
+                    container.Children.RemoveAt(Container.Children.Count - 1);
                 }
             }
         }
