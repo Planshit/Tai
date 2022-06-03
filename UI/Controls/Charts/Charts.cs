@@ -241,7 +241,10 @@ namespace UI.Controls.Charts
             {
                 Container.Children.Clear();
                 CardContainer.Children.Clear();
-
+                if (!IsCanScroll)
+                {
+                    NoScrollContainer.Visibility = Visibility.Visible;
+                }
                 for (int i = 0; i < LoadingPlaceholderCount; i++)
                 {
                     switch (ChartsType)
