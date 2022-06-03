@@ -4,15 +4,40 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace Core.Librarys
 {
-    public class Logger
+    public static class Logger
     {
+        private static readonly int threshold = 50;
+
         private static readonly object writeLock = new object();
+
+        private static List<string> loggers = new List<string>();
+
+
+        static Logger()
+        {
+            //  创建计时器，定时保存log
+
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Interval = new TimeSpan(0, 5, 0);
+            dispatcherTimer.Tick += DispatcherTimer_Tick;
+            dispatcherTimer.Start();
+
+        }
+
+        private static void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            Save(true);
+        }
 
         private enum LogLevel
         {
@@ -23,31 +48,46 @@ namespace Core.Librarys
 
         public static void Info(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
-            message = message + "\r\n[Caller Info] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
-            Save(Fromat(LogLevel.Info, message));
+            message = message + "\r\n[ Caller Info ] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
+            message = Fromat(LogLevel.Info, message);
+
+            loggers.Add(message);
         }
 
         public static void Warn(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
-            message = message + "\r\n[Caller Info] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
-            Save(Fromat(LogLevel.Warn, message));
+            message = message + "\r\n[ Caller Info ] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
+            message = Fromat(LogLevel.Warn, message);
+
+            loggers.Add(message);
         }
         public static void Error(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
-            message = message + "\r\n[Caller Info] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
-            Save(Fromat(LogLevel.Error, message));
+            message = message + "\r\n[ Caller Info ] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
+            message = Fromat(LogLevel.Error, message);
+
+            loggers.Add(message);
         }
 
         private static string Fromat(LogLevel logLevel, string message)
         {
             message = HandleMessage(message);
-            string logText = $"[{logLevel.ToString()}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] \r\n{message}\r\n------------------------\r\n\r\n";
+            string logText = $"[ {logLevel.ToString()} ] [ {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} ] \r\n{message}\r\n------------------------\r\n\r\n";
             Debug.WriteLine(logText);
             return logText;
         }
 
-        private static void Save(string message)
+        /// <summary>
+        /// 将log写入文件
+        /// </summary>
+        /// <param name="isNow">是否强制立即写入</param>
+        public static void Save(bool isNow = false)
         {
+            if ((!isNow && loggers.Count < threshold) || loggers.Count == 0)
+            {
+                return;
+            }
+
             string loggerName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                          "Log", DateTime.Now.ToString("yyyy-MM-dd") + ".log");
             lock (writeLock)
@@ -57,8 +97,60 @@ namespace Core.Librarys
                 {
                     Directory.CreateDirectory(dir);
                 }
-                File.AppendAllText(loggerName, message);
+
+                if (!File.Exists(loggerName))
+                {
+                    List<string> clientInfo = new List<string>();
+
+                    //  记录客户端信息
+
+
+                    //  tai版本号
+                    clientInfo.Add(FromatItem("Tai Version", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+                    clientInfo.Add(FromatItem("WindowsOS Name", GetWindowsVersionName()));
+                    clientInfo.Add(FromatItem("Screen Size", GetScreenSize()));
+                    clientInfo.Add("\r\n++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\r\n");
+
+                    File.WriteAllText(loggerName, string.Join("\r\n", clientInfo.ToArray()));
+                }
+
+
+                File.AppendAllText(loggerName, string.Join("", loggers.ToArray()));
             }
+        }
+
+
+        private static string GetScreenSize()
+        {
+            return SystemInformation.VirtualScreen.Width + " × " + SystemInformation.VirtualScreen.Height;
+        }
+        private static string GetWindowsVersionName()
+        {
+            string name = string.Empty;
+            try
+            {
+                ManagementObjectSearcher managementObjectSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem");
+                foreach (ManagementObject obj in managementObjectSearcher.Get())
+                {
+                    name = obj["Name"].ToString();
+                }
+
+                if (!string.IsNullOrEmpty(name) && name.IndexOf("|") != -1)
+                {
+                    name = name.Split('|')[0];
+                }
+            }
+            catch
+            {
+                return "[无法获取系统版本]";
+            }
+
+            return name;
+        }
+
+        private static string FromatItem(string name, string text)
+        {
+            return $"[ {name} ]  {text};\r\n";
         }
 
         private static string HandleMessage(string message)
