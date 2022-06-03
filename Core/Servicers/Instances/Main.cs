@@ -24,6 +24,7 @@ namespace Core.Servicers.Instances
         private readonly ISleepdiscover sleepdiscover;
         private readonly IAppConfig appConfig;
         private readonly IDateObserver dateObserver;
+        private readonly IAppData appData;
         //  忽略的进程
         private readonly string[] IgnoreProcess = new string[] {
             "Tai",
@@ -77,13 +78,16 @@ namespace Core.Servicers.Instances
             IObserver observer,
             IData data,
             ISleepdiscover sleepdiscover,
-            IAppConfig appConfig, IDateObserver dateObserver)
+            IAppConfig appConfig,
+            IDateObserver dateObserver,
+            IAppData appData)
         {
             this.observer = observer;
             this.data = data;
             this.sleepdiscover = sleepdiscover;
             this.appConfig = appConfig;
             this.dateObserver = dateObserver;
+            this.appData = appData;
 
             observer.OnAppActive += Observer_OnAppActive;
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
@@ -117,34 +121,34 @@ namespace Core.Servicers.Instances
             }
         }
 
-        public void Run()
+        public async void Run()
         {
-            Task.Run(() =>
-            {
-                Debug.WriteLine("start");
-                //  数据库自检
-                using (var db = new StatisticContext())
-                {
-                    db.Database.ExecuteSqlCommand("select count(*) from sqlite_master where type='table' and name='tai'");
-                }
-                //  加载app信息
-                data.LoadAppList();
+            await Task.Run(() =>
+             {
+                 Debug.WriteLine("db self check start");
+                 //  数据库自检
+                 using (var db = new TaiDbContext())
+                 {
+                     db.SelfCheck();
+                 }
+                 Debug.WriteLine("db self check over!");
+             });
 
-                //  加载应用配置（确保配置文件最先加载
-                appConfig.Load();
-                config = appConfig.GetConfig();
+            //  加载app信息
+            appData.Load();
 
-                //  日期变化观察
-                dateObserver.Start();
+            //  加载应用配置（确保配置文件最先加载
+            appConfig.Load();
+            config = appConfig.GetConfig();
 
-                //  启动进程观察
-                observer.Start();
+            //  日期变化观察
+            dateObserver.Start();
 
-                //  启动睡眠监测
-                sleepdiscover.Start();
-                Debug.WriteLine("over!");
+            //  启动进程观察
+            observer.Start();
 
-            });
+            //  启动睡眠监测
+            sleepdiscover.Start();
 
         }
 
@@ -152,7 +156,7 @@ namespace Core.Servicers.Instances
         {
             observer?.Stop();
 
-            data.SaveAppChanges();
+            appData.SaveAppChanges();
         }
 
 
@@ -172,7 +176,7 @@ namespace Core.Servicers.Instances
                 //activeTimer.Stop();
 
                 //  更新app数据
-                data.SaveAppChanges();
+                appData.SaveAppChanges();
             }
             else if (sleepStatus == SleepStatus.Wake)
             {
@@ -199,13 +203,13 @@ namespace Core.Servicers.Instances
             if (!config.Behavior.IgnoreProcessList.Contains(processName)
                 && !IgnoreProcess.Contains(processName))
             {
-                AppModel app = data.GetApp(processName);
+                AppModel app = appData.GetApp(processName);
                 if (app == null)
                 {
                     //  提取icon
                     string iconFile = Iconer.ExtractFromFile(file, processName, description);
 
-                    data.AddApp(new AppModel()
+                    appData.AddApp(new AppModel()
                     {
                         Name = processName,
                         Description = description,

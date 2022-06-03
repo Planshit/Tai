@@ -130,7 +130,7 @@ namespace UI.ViewModels
                     var info = Process.Data as DailyLogModel;
                     if (info != null)
                     {
-                        ProcessName = info.ProcessName;
+                        ProcessName = info.AppModel?.Name;
                         //  判断是否是忽略的进程
                         IsIgnore = config.Behavior.IgnoreProcessList.Contains(ProcessName);
                     }
@@ -187,8 +187,9 @@ namespace UI.ViewModels
             {
                 if (Process != null)
                 {
+
                     var info = Process.Data as DailyLogModel;
-                    var monthData = data.GetProcessMonthLogList(info.ProcessName, Date);
+                    var monthData = data.GetProcessMonthLogList(info.AppModel.Name, Date);
                     int monthTotal = monthData.Sum(m => m.Time);
                     Total = Timer.Fromat(monthTotal);
 
@@ -252,11 +253,11 @@ namespace UI.ViewModels
             {
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = string.IsNullOrEmpty(item.ProcessDescription) ? item.ProcessName : item.ProcessDescription;
+                bindModel.Name =item.AppModel.Name;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);
-                bindModel.PopupText = item.File;
-                bindModel.Icon = Iconer.Get(item.ProcessName, item.ProcessDescription);
+                bindModel.PopupText = item.AppModel.File;
+                bindModel.Icon = item.AppModel.IconFile;
                 bindModel.DateTime = item.Date;
                 resData.Add(bindModel);
             }

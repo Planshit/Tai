@@ -1,17 +1,22 @@
 ﻿using Core.Librarys.SQLite;
 using Core.Models;
-using Core.Models.Config;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.Entity;
+using System.Windows.Threading;
 
 namespace Core.Servicers.Instances
 {
     public class Data : IData
     {
+        private readonly IAppData appData;
+        public Data(IAppData appData)
+        {
+            this.appData = appData;
+        }
         public void Set(string processName, string processDescription, string file, int seconds)
         {
             if (string.IsNullOrEmpty(processName) || seconds <= 0)
@@ -19,19 +24,26 @@ namespace Core.Servicers.Instances
                 return;
             }
             processDescription = processDescription == null ? string.Empty : processDescription;
-            using (var db = new StatisticContext())
+
+            AppModel app = appData.GetApp(processName);
+
+            if (app == null)
             {
-                var today = DateTime.Now.Date;
-                var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.ProcessName == processName);
+                return;
+            }
+
+
+            var today = DateTime.Now.Date;
+            using (var db = new TaiDbContext())
+            {
+                var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
                 if (res == null)
                 {
                     //数据库中没有时则创建
                     db.DailyLog.Add(new Models.DailyLogModel()
                     {
                         Date = today,
-                        File = file,
-                        ProcessDescription = processDescription,
-                        ProcessName = processName,
+                        AppModelID = app.ID,
                         Time = seconds,
                     });
                 }
@@ -47,7 +59,7 @@ namespace Core.Servicers.Instances
                 var hourslog = db.HoursLog.SingleOrDefault(
                     m =>
                     m.DataTime == nowtime
-                    && m.ProcessName == processName
+                    && m.AppModelID == app.ID
                     );
                 if (hourslog == null)
                 {
@@ -55,8 +67,7 @@ namespace Core.Servicers.Instances
                     db.HoursLog.Add(new Models.HoursLogModel()
                     {
                         DataTime = nowtime,
-                        ProcessName = processName,
-                        File = file,
+                        AppModelID = app.ID,
                         Time = seconds
                     });
                 }
@@ -65,32 +76,61 @@ namespace Core.Servicers.Instances
                     hourslog.Time += seconds;
                 }
 
+                //  统计使用时长
+                app.TotalTime += seconds;
+
+                appData.UpdateApp(app);
+
                 db.SaveChanges();
             }
         }
 
         public List<DailyLogModel> GetTodaylogList()
         {
-            using (var db = new StatisticContext())
+
+            //return null;
+
+            using (var db = new TaiDbContext())
             {
                 var today = DateTime.Now.Date;
-                var res = db.DailyLog.Where(m => m.Date == today);
+                var res = db.DailyLog.Where(m => m.Date == today && m.AppModelID != 0);
                 return res.ToList();
             }
         }
 
-        public List<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end)
+        public IEnumerable<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end)
         {
+            //using (var db = new StatisticContext())
+            //{
 
-            using (var db = new StatisticContext())
+
+            //    //var test = db.DailyLog.Include(m=>m.AppModel).Where(m => m.AppModelID != 0).Take(4).ToList();
+            //    //var res = db.DailyLog.Include(m => m.AppModel).SqlQuery("Select *,Sum(Time) as Time,DailyLogModels.ID,AppModelID,Date,AppModels.ID,AppModels.Name,AppModels.Description,AppModels.File,AppModels.CategoryID,AppModels.IconFile,AppModels.TotalTime from DailyLogModels  LEFT OUTER JOIN AppModels ON AppModels.ID=DailyLogModels.ID WHERE AppModelID<>0 AND Date between '" + start.ToString("yyyy-MM-dd HH:mm:ss") + "' AND '" + end.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY AppModelID ").ToList();
+            using (var db = new TaiDbContext())
             {
-                var today = DateTime.Now.Date;
-                var res = db.DailyLog.SqlQuery("Select Sum(Time) as Time,ProcessName,File,ID,Date,ProcessDescription from DailyLogModels WHERE Date between '" + start.ToString("yyyy-MM-dd HH:mm:ss") + "' AND '" + end.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY ProcessName ").ToList();
-                return res.ToList();
+                var res = db.DailyLog
+                .Include(m => m.AppModel)
+                .Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
+                .GroupBy(m => m.AppModelID)
+                .Select(m => new
+                {
+                    Time = m.Sum(a => a.Time),
+                    App = m.FirstOrDefault().AppModel,
+                    Date = m.FirstOrDefault().Date,
+                })
+                .ToList()
+                .Select(m => new DailyLogModel
+                {
+                    Time = m.Time,
+                    AppModel = m.App,
+                    Date = m.Date
+                });
+
+                return res;
             }
         }
 
-        public List<DailyLogModel> GetThisWeeklogList()
+        public IEnumerable<DailyLogModel> GetThisWeeklogList()
         {
             DateTime weekStartDate = DateTime.Now, weekEndDate = DateTime.Now;
             if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
@@ -113,7 +153,7 @@ namespace Core.Servicers.Instances
             return GetDateRangelogList(weekStartDate, weekEndDate);
         }
 
-        public List<DailyLogModel> GetLastWeeklogList()
+        public IEnumerable<DailyLogModel> GetLastWeeklogList()
         {
             DateTime weekStartDate = DateTime.Now, weekEndDate = DateTime.Now;
 
@@ -136,10 +176,17 @@ namespace Core.Servicers.Instances
             {
                 return;
             }
-            using (var db = new StatisticContext())
+
+            AppModel app = appData.GetApp(processName);
+            if (app == null)
+            {
+                return;
+            }
+
+            using (var db = new TaiDbContext())
             {
                 var today = DateTime.Now.Date;
-                var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.ProcessName == processName);
+                var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
                 if (res != null)
                 {
                     res.Time += seconds;
@@ -152,29 +199,41 @@ namespace Core.Servicers.Instances
                 var hourslog = db.HoursLog.SingleOrDefault(
                     m =>
                     m.DataTime == nowtime
-                    && m.ProcessName == processName);
+                    && m.AppModelID == app.ID);
                 if (hourslog != null)
                 {
                     hourslog.Time += seconds;
                 }
-                db.SaveChanges();
 
+
+                //  统计使用时长
+
+                app.TotalTime += seconds;
+
+                appData.UpdateApp(app);
+
+
+                db.SaveChanges();
             }
+
         }
 
         public List<DailyLogModel> GetProcessMonthLogList(string processName, DateTime month)
         {
-            using (var db = new StatisticContext())
+            var app = appData.GetApp(processName);
+            if (app == null)
+            {
+                return new List<DailyLogModel>();
+            }
+            using (var db = new TaiDbContext())
             {
 
-                var res = db.DailyLog.Where(
-                    m =>
-                    m.Date.Year == month.Year
-                    && m.Date.Month == month.Month
-                    && m.ProcessName == processName
-                    //&& m.ProcessDescription == processDescription
-                    //&& m.File == file
-                    );
+                var res = db.DailyLog.Include(m => m.AppModel).Where(
+                m =>
+                m.Date.Year == month.Year
+                && m.Date.Month == month.Month
+                && m.AppModelID == app.ID
+                );
                 if (res != null)
                 {
                     return res.ToList();
@@ -190,29 +249,42 @@ namespace Core.Servicers.Instances
             {
                 return;
             }
-            using (var db = new StatisticContext())
+
+            var app = appData.GetApp(processName);
+            if (app == null)
+            {
+                return;
+            }
+            using (var db = new TaiDbContext())
             {
 
                 db.DailyLog.RemoveRange(
-                    db.DailyLog.Where(m =>
-                    m.ProcessName == processName
-                    && m.Date.Year == month.Year
-                    && m.Date.Month == month.Month));
+                db.DailyLog.Where(m =>
+                m.AppModelID == app.ID
+                && m.Date.Year == month.Year
+                && m.Date.Month == month.Month));
                 db.SaveChanges();
             }
         }
 
         public DailyLogModel GetProcess(string processName, DateTime day)
         {
-            using (var db = new StatisticContext())
+            var app = appData.GetApp(processName);
+
+            if (app == null)
+            {
+                return null;
+            }
+
+            using (var db = new TaiDbContext())
             {
 
 
                 var res = db.DailyLog.Where(m =>
-                m.ProcessName == processName
-                && m.Date.Year == day.Year
-                && m.Date.Month == day.Month
-                && m.Date.Day == day.Day);
+            m.AppModelID == app.ID
+            && m.Date.Year == day.Year
+            && m.Date.Month == day.Month
+            && m.Date.Day == day.Day);
                 if (res != null)
                 {
                     return res.FirstOrDefault();
@@ -220,5 +292,7 @@ namespace Core.Servicers.Instances
                 return null;
             }
         }
+
+
     }
 }

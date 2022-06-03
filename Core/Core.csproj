@@ -73,9 +73,6 @@
       <HintPath>..\packages\SQLitePCLRaw.core.2.0.6\lib\netstandard2.0\SQLitePCLRaw.core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
-    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.115.5, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -88,6 +85,7 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.115.5\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
@@ -98,6 +96,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -115,8 +114,10 @@
     <Compile Include="Librarys\Iconer.cs" />
     <Compile Include="Librarys\SQLite\SQLiteBuilder.cs" />
     <Compile Include="Librarys\SQLite\SQLiteConfiguration.cs" />
-    <Compile Include="Librarys\SQLite\StatisticContext.cs" />
+    <Compile Include="Librarys\SQLite\TaiDbContext.cs" />
     <Compile Include="Librarys\Win32API.cs" />
+    <Compile Include="Models\AppModel.cs" />
+    <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\Config\ConfigAttribute.cs" />
     <Compile Include="Models\Config\ConfigModel.cs" />
     <Compile Include="Models\Config\BehaviorModel.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Models\DailyLogModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Servicers\Instances\AppConfig.cs" />
+    <Compile Include="Servicers\Instances\AppData.cs" />
     <Compile Include="Servicers\Instances\Data.cs" />
     <Compile Include="Librarys\Logger.cs" />
     <Compile Include="Servicers\Instances\DateObserver.cs" />
@@ -133,6 +135,7 @@
     <Compile Include="Servicers\Instances\Observer.cs" />
     <Compile Include="Servicers\Instances\Sleepdiscover.cs" />
     <Compile Include="Servicers\Interfaces\IAppConfig.cs" />
+    <Compile Include="Servicers\Interfaces\IAppData.cs" />
     <Compile Include="Servicers\Interfaces\IData.cs" />
     <Compile Include="Servicers\Interfaces\IDateObserver.cs" />
     <Compile Include="Servicers\Interfaces\IMain.cs" />

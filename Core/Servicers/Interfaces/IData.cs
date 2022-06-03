@@ -9,6 +9,7 @@ namespace Core.Servicers.Interfaces
 {
     public interface IData
     {
+       
         /// <summary>
         /// 设置进程数据
         /// </summary>
@@ -29,18 +30,18 @@ namespace Core.Servicers.Interfaces
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        List<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end);
+        IEnumerable<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end);
 
         /// <summary>
         /// 获取本周的数据
         /// </summary>
         /// <returns></returns>
-        List<DailyLogModel> GetThisWeeklogList();
+        IEnumerable<DailyLogModel> GetThisWeeklogList();
         /// <summary>
         /// 获取上周的数据
         /// </summary>
         /// <returns></returns>
-        List<DailyLogModel> GetLastWeeklogList();
+        IEnumerable<DailyLogModel> GetLastWeeklogList();
         /// <summary>
         /// 设置进程数据（仅通过进程名可能会出现重复的问题
         /// </summary>

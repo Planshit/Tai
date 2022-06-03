@@ -167,19 +167,20 @@ namespace UI.ViewModels
         }
 
         #region 处理数据
-        private List<ChartsDataModel> MapToChartsData(List<Core.Models.DailyLogModel> list)
+        private List<ChartsDataModel> MapToChartsData(IEnumerable<Core.Models.DailyLogModel> list)
         {
             var resData = new List<ChartsDataModel>();
 
             foreach (var item in list)
             {
+
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = string.IsNullOrEmpty(item.ProcessDescription) ? item.ProcessName : item.ProcessDescription;
+                bindModel.Name = item.AppModel?.Name;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);
-                bindModel.PopupText = item.File;
-                bindModel.Icon = Iconer.Get(item.ProcessName, item.ProcessDescription);
+                bindModel.PopupText = item.AppModel?.File;
+                bindModel.Icon = item.AppModel?.IconFile;
                 resData.Add(bindModel);
             }
 

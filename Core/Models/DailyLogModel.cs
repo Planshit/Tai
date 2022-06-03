@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,16 +22,21 @@ namespace Core.Models
         /// </summary>
         public int Time { get; set; } = 0;
         /// <summary>
-        /// 进程名称
+        /// 应用ID
         /// </summary>
-        public string ProcessName { get; set; }
-        /// <summary>
-        /// 进程描述
-        /// </summary>
-        public string ProcessDescription { get; set; }
-        /// <summary>
-        /// 进程文件
-        /// </summary>
-        public string File { get; set; }
+        public int AppModelID { get; set; }
+        ///// <summary>
+        ///// 进程名称
+        ///// </summary>
+        //public string ProcessName { get; set; }
+        ///// <summary>
+        ///// 进程描述
+        ///// </summary>
+        //public string ProcessDescription { get; set; }
+        ///// <summary>
+        ///// 进程文件
+        ///// </summary>
+        //public string File { get; set; }
+        public virtual AppModel AppModel { get; set; }
     }
 }

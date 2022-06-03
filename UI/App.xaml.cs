@@ -39,6 +39,10 @@ namespace UI
         private ContextMenu contextMenu;
 
         private DefaultWindow mainWindow;
+
+        private IAppData appData;
+
+
         public App()
         {
             InitStatusBarIcon();
@@ -56,9 +60,8 @@ namespace UI
         {
             base.OnExit(e);
 
-            var data = serviceProvider.GetService<IData>();
 
-            data.SaveAppChanges();
+            appData.SaveAppChanges();
 
             Logger.Save(true);
 
@@ -66,6 +69,8 @@ namespace UI
         }
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
+            appData.SaveAppChanges();
+
             //  记录崩溃错误
             Logger.Error("[程序崩溃异常] " + e.Exception.Message);
 
@@ -109,7 +114,7 @@ namespace UI
             CreateStatusBarIconMenu();
 
             statusBarIcon = new System.Windows.Forms.NotifyIcon();
-            statusBarIcon.Text = "Tai! [数据库自检中...请稍后]";
+            statusBarIcon.Text = "Tai! [数据加载中...请稍后]";
             Stream iconStream = GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/taibusy.ico")).Stream;
             statusBarIcon.Icon = new Icon(iconStream);
             //statusBarIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name);
@@ -177,6 +182,7 @@ namespace UI
             services.AddSingleton<ISleepdiscover, Sleepdiscover>();
             services.AddSingleton<IAppConfig, AppConfig>();
             services.AddSingleton<IDateObserver, DateObserver>();
+            services.AddSingleton<IAppData, AppData>();
 
             //  主窗口
             services.AddSingleton<MainViewModel>();
@@ -219,6 +225,8 @@ namespace UI
             //  创建保活窗口
             keepaliveWindow = new HideWindow();
 
+
+            appData = serviceProvider.GetService<IAppData>();
         }
 
         private void ShowMainWindow()
