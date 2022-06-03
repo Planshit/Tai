@@ -244,12 +244,68 @@ namespace UI.Controls.SettingPanel
         {
             string value = (string)pi.GetValue(Data);
 
+            if (SettingData.ContainsKey(pi.Name))
+            {
+                SettingData[pi.Name].Add(value);
+            }
+            else
+            {
+                SettingData.Add(pi.Name, new List<string>()
+                {
+                    value
+                });
+            }
+
+
             var textBox = new InputBox();
             textBox.Text = value;
             textBox.Placeholder = attribute.Name;
             textBox.Width = 125;
+            textBox.TextChanged += (e, c) =>
+            {
+                textBox.Error = attribute.Name + (textBox.Text == String.Empty ? "不能为空" : "已存在");
+
+                if (!attribute.IsCanRepeat)
+                {
+                    if (SettingData[pi.Name].Contains(textBox.Text) && textBox.Tag.ToString() != textBox.Text)
+                    {
+                        textBox.ShowError();
+                        return;
+                    }
+                    else
+                    {
+                        textBox.HideError();
+                    }
+                }
+                if (textBox.Text == String.Empty)
+                {
+                    textBox.ShowError();
+                }
+                else
+                {
+                    textBox.HideError();
+                }
+            };
+            textBox.GotFocus += (e, c) =>
+            {
+                //  记录获得焦点时的数据
+                textBox.Tag = textBox.Text;
+            };
             textBox.LostFocus += (e, c) =>
             {
+                if (textBox.Text == String.Empty)
+                {
+                    textBox.Text = textBox.Tag.ToString();
+                    return;
+                }
+                if (!attribute.IsCanRepeat)
+                {
+                    if (SettingData[pi.Name].Contains(textBox.Text) && textBox.Tag.ToString() != textBox.Text)
+                    {
+                        textBox.Text = textBox.Tag.ToString();
+                        return;
+                    }
+                }
                 if (attribute.IsName)
                 {
                     Title = textBox.Text;
@@ -257,6 +313,10 @@ namespace UI.Controls.SettingPanel
                 pi.SetValue(configData, textBox.Text);
                 Data = configData;
                 DataChanged?.Invoke(this, EventArgs.Empty);
+
+                SettingData[pi.Name].Remove(textBox.Tag.ToString());
+                SettingData[pi.Name].Add(textBox.Text);
+
             };
             var item = new SettingPanelItem();
             item.Name = attribute.Name;
