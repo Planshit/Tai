@@ -26,7 +26,7 @@
             <TextBlock Text="概览" FontSize="18" Margin="0,5,0,20"/>
             <Tabbar:Tabbar Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
             <TextBlock Text="最为频繁" FontSize="15" Margin="0,5,0,10"/>
-            <Charts:Charts Height="180" Data="{Binding WeekData}" ChartsType="HorizontalA" ShowLimit="3" IsLoading="{Binding IsLoading,Mode=TwoWay}"  ClickCommand="{Binding ToDetailCommand}"/>
+            <Charts:Charts IsCanScroll="False" Height="180" Data="{Binding WeekData}" ChartsType="HorizontalA" ShowLimit="3" IsLoading="{Binding IsLoading,Mode=TwoWay}"  ClickCommand="{Binding ToDetailCommand}"/>
             <TextBlock Text="更多" FontSize="15" Margin="0,20,0,10"/>
             <Charts:Charts Data="{Binding WeekData}" ChartsType="Card" ShowLimit="12" IsLoading="{Binding IsLoading,Mode=TwoWay}" ClickCommand="{Binding ToDetailCommand}"/>
 
