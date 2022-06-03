@@ -1,4 +1,5 @@
 ﻿using Core.Librarys;
+using Core.Librarys.SQLite;
 using Core.Servicers.Instances;
 using Core.Servicers.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,10 @@ namespace UI
         private DefaultWindow mainWindow;
         public App()
         {
+            InitStatusBarIcon();
+
+            WatchStatus();
+
             DispatcherUnhandledException += App_DispatcherUnhandledException;
 
             var serviceCollection = new ServiceCollection();
@@ -50,12 +55,21 @@ namespace UI
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
+
+            var data = serviceProvider.GetService<IData>();
+
+            data.SaveAppChanges();
+
+            Logger.Save(true);
+
             statusBarIcon.Visible = false;
         }
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             //  记录崩溃错误
             Logger.Error("[程序崩溃异常] " + e.Exception.Message);
+
+            Logger.Save(true);
 
             e.Handled = true;
 
@@ -95,8 +109,8 @@ namespace UI
             CreateStatusBarIconMenu();
 
             statusBarIcon = new System.Windows.Forms.NotifyIcon();
-            statusBarIcon.Text = "Tai!";
-            Stream iconStream = GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/tai32.ico")).Stream;
+            statusBarIcon.Text = "Tai! [数据库自检中...请稍后]";
+            Stream iconStream = GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/taibusy.ico")).Stream;
             statusBarIcon.Icon = new Icon(iconStream);
             //statusBarIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name);
 
@@ -106,7 +120,7 @@ namespace UI
         }
         private void NotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == System.Windows.Forms.MouseButtons.Right && !SQLiteBuilder.IsSelfChecking)
             {
                 //右键单击弹出托盘菜单
                 contextMenu.IsOpen = true;
@@ -114,7 +128,7 @@ namespace UI
         }
         private void NotifyIcon_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == System.Windows.Forms.MouseButtons.Left && !SQLiteBuilder.IsSelfChecking)
             {
                 //双击托盘图标显示主窗口
                 ShowMainWindow();
@@ -205,7 +219,6 @@ namespace UI
             //  创建保活窗口
             keepaliveWindow = new HideWindow();
 
-            InitStatusBarIcon();
         }
 
         private void ShowMainWindow()
@@ -226,6 +239,19 @@ namespace UI
             mainWindow.WindowState = WindowState.Normal;
             mainWindow.Show();
             mainWindow.Activate();
+        }
+
+        private async void WatchStatus()
+        {
+            await Task.Run(() =>
+             {
+                 while (SQLiteBuilder.IsSelfChecking)
+                 {
+                 }
+                 statusBarIcon.Text = "Tai!";
+                 Stream iconStream = GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/tai32.ico")).Stream;
+                 statusBarIcon.Icon = new Icon(iconStream);
+             });
         }
     }
 }

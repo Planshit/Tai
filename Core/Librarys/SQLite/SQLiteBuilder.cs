@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,15 +37,26 @@ namespace Core.Librarys.SQLite
         /// 列名
         /// </summary>
         public string Name { get; set; }
-        public string Type { get; set; }
+        public DbType Type { get; set; }
         public bool PK { get; set; }
-        public bool NotNull { get { return !PK; } }
+        //public bool NotNull { get { return !PK; } }
     }
+
+    public enum DbType
+    {
+        INTEGER,
+        datetime,
+        nvarchar,
+        @int
+    }
+
     /// <summary>
     ///handle sqlite code first
     /// </summary>
     public class SQLiteBuilder
     {
+        public static bool IsSelfChecking = true;
+
         private System.Data.Entity.Infrastructure.DbModel model;
         /// <summary>
         /// 连接字符串
@@ -54,6 +66,11 @@ namespace Core.Librarys.SQLite
         /// 数据库版本文件
         /// </summary>
         private string versionFile;
+
+        /// <summary>
+        /// 数据库文件路径
+        /// </summary>
+        private string dbFile;
         /// <summary>
         /// 数据模型
         /// </summary>
@@ -71,62 +88,210 @@ namespace Core.Librarys.SQLite
 
                 providerManifest = model.ProviderManifest;
 
-                versionFile = connstr.Split('=')[1] + ".version";
-            }
-        }
+                dbFile = connstr.Split('=')[1];
 
-        public void Handle()
-        {
-            if (IsHandleDb())
-            {
-                HandleTable();
+                versionFile = $"{dbFile}.version";
+
             }
         }
 
         /// <summary>
-        /// 处理表变化（仅处理新增表、新增表字段。不处理表名更改、列名更改、删除）
+        /// 执行数据库自检
         /// </summary>
-        private void HandleTable()
+        public bool SelfCheck()
         {
-            var modelInfos = GetModelInfos();
-
-            var modelInfosDb = GetModelInfosForDb();
-
-            foreach (var model in modelInfos)
+            if (IsHandleDb())
             {
-                //表名
-                string tableName = model.TableName;
+                bool res = HandleTable();
 
-                var modelInfoDb = modelInfosDb.Where(m => m.TableName == tableName);
-                //判断表是否存在
-                if (modelInfoDb.Count() <= 0)
+                IsSelfChecking = false;
+
+                return res;
+            }
+
+            IsSelfChecking = false;
+            
+            return true;
+        }
+
+        /// <summary>
+        /// 处理表变化（仅处理新增表、新增表字段、表结构变化）
+        /// </summary>
+        private bool HandleTable()
+        {
+            try
+            {
+                //  处理前先复制一份数据库文件以防万一
+                string dir = Path.Combine(Path.GetDirectoryName(dbFile), "backup");
+                string backupName = Path.Combine(dir, $"data.handle.backup");
+                if (!Directory.Exists(dir))
                 {
-                    //不存在则重新创建表
-                    string csql = GetCreateTableSQL(model);
-                    ExecuteNonQuery(csql);
+                    Directory.CreateDirectory(dir);
                 }
-                else
+                if (File.Exists(backupName))
                 {
-                    //存在则扫描新字段（*暂时不处理字段的属性变化，只处理新增）
+                    File.Delete(backupName);
+                }
+                File.Copy(dbFile, backupName);
 
-                    //对应的数据库模型信息
-                    var modelDb = modelInfoDb.Single();
-                    //查找差异属性
-                    foreach (var item in model.Properties)
+                var modelInfos = GetModelInfos();
+
+                var modelInfosDb = GetModelInfosForDb();
+
+                foreach (var model in modelInfos)
+                {
+                    //表名
+                    string tableName = model.TableName;
+
+                    var modelInfoDb = modelInfosDb.Where(m => m.TableName == tableName);
+                    //判断表是否存在
+                    if (modelInfoDb.Count() <= 0)
                     {
-                        if (modelDb.Properties.Where(m => m.Name == item.Name).Count() <= 0)
+                        //不存在则重新创建表
+                        string csql = GetCreateTableSQL(model);
+                        ExecuteNonQuery(csql);
+                    }
+                    else
+                    {
+                        //存在则扫描新字段（*暂时不处理字段的属性变化，只处理新增）
+
+                        //对应的数据库模型信息
+                        var modelDb = modelInfoDb.Single();
+                        //查找差异属性
+                        foreach (var item in model.Properties)
                         {
-                            string csql = GetCreateColumnSQL(tableName, item);
-                            ExecuteNonQuery(csql);
+                            if (modelDb.Properties.Where(m => m.Name == item.Name).Count() <= 0)
+                            {
+                                string csql = GetCreateColumnSQL(tableName, item);
+                                ExecuteNonQuery(csql);
+                            }
                         }
+
                     }
 
                 }
 
+                HandleVersion1002Migrate();
+
+
+                //  处理表字段删除
+                foreach (var dbModel in modelInfosDb)
+                {
+                    //  表名
+                    string tableName = dbModel.TableName;
+
+                    //  查找对应的实体模型
+                    var model = modelInfos.Where(m => m.TableName == tableName).FirstOrDefault();
+
+                    if (model == null)
+                    {
+                        //  已删除的模型就从数据库中删除
+                        //ExecuteNonQuery($"DROP TABLE {tableName}");// 暂时不处理
+                    }
+                    else
+                    {
+                        //  遍历数据库表的属性
+
+                        bool isDel = false;
+
+
+
+                        foreach (var dbItem in dbModel.Properties)
+                        {
+                            //  判断实体模型是否有字段，没有的话需要重建表
+                            if (!model.Properties.Where(m => m.Name == dbItem.Name).Any())
+                            {
+                                isDel = true;
+                                break;
+                            }
+
+
+                        }
+                        if (isDel)
+                        {
+                            //  模型字段
+                            string field = string.Join(",", model.Properties.Select(m => m.Name).ToArray());
+
+                            //  临时表名
+                            string tempName = $"{tableName}_temp_{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+
+                            //  创建一个新表
+                            ExecuteNonQuery(GetCreateTableSQL(model, tempName));
+
+                            ////  转移数据
+                            ExecuteNonQuery($"INSERT INTO {tempName}({field}) SELECT {field} FROM {tableName}");
+
+
+                            //  删除旧表
+                            ExecuteNonQuery($"drop table {tableName}");
+
+
+                            //  重新命名临时表
+                            ExecuteNonQuery($"alter table {tempName} rename to {tableName}");
+                        }
+                    }
+
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"SQLiteBuilder handle fail!Exception Message:{ex.Message}");
+                return false;
             }
         }
 
+
+        /// <summary>
+        /// 数据迁移，1.0.0.2升级1.0.0.3时需要转移表数据
+        /// </summary>
+        private void HandleVersion1002Migrate()
+        {
+            //if (ExecuteNonQuery("select count(*) from sqlite_master where type='table' and name='AppModels'") != 0)
+            //{
+            //    return;
+            //}
+            ExecuteNonQuery($"insert into AppModels(ID,Name,Description,File,TotalTime) select null,ProcessName as Name,ProcessDescription as Description,File,sum(Time) as TotalTime from DailyLogModels where 1=1 GROUP BY Name");
+
+            using (var con = new SQLiteConnection(connstr))
+            {
+                con.Open();
+                using (var cmd = new SQLiteCommand(con))
+                {
+                    cmd.CommandText = $"select ID,Name,Description from AppModels GROUP BY Name";
+
+                    List<string> sqlList = new List<string>();
+
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        while (rd.Read())
+                        {
+                            var ID = rd[0];
+                            var Name = rd[1].ToString();
+                            var Description = rd[2].ToString();
+
+                            var icon = Iconer.Get(Name, Description);
+
+                            sqlList.Add($"update DailyLogModels set AppModelID={ID} where ProcessName='{Name}'");
+                            sqlList.Add($"update HoursLogModels set AppModelID={ID} where ProcessName='{Name}'");
+
+
+                            sqlList.Add($"update AppModels set IconFile='{icon}' where ID={ID}");
+                        }
+                    }
+
+                    cmd.CommandText = string.Join("; ", sqlList.ToArray());
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+        }
+
         #region 是否需要处理
+        /// <summary>
+        /// 判断是否需要处理数据，比对core程序集版本号
+        /// </summary>
+        /// <returns></returns>
         private bool IsHandleDb()
         {
             string dir = Path.GetDirectoryName(versionFile);
@@ -136,22 +301,24 @@ namespace Core.Librarys.SQLite
             }
 
             bool f = File.Exists(versionFile);
-            string appVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            //  core程序集版本号
+            string coreVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             if (f)
             {
                 //存在版本文件对比是否需要更新
                 string dbVersion = File.ReadAllText(versionFile);
-                if (dbVersion != appVersion)
+                if (dbVersion != coreVersion)
                 {
                     //版本不一致需要更新
-                    File.WriteAllText(versionFile, appVersion);
+                    File.WriteAllText(versionFile, coreVersion);
                     return true;
                 }
                 //不需要更新
                 return false;
             }
 
-            File.WriteAllText(versionFile, appVersion);
+            File.WriteAllText(versionFile, coreVersion);
             return true;
         }
 
@@ -166,7 +333,12 @@ namespace Core.Librarys.SQLite
         /// <returns></returns>
         private string GetCreateColumnSQL(string tableName, IModelProperties properties)
         {
-            string typeDefault = properties.NotNull ? properties.Type == "int" ? "NOT NULL DEFAULT 0" : "NOT NULL DEFAULT ''" : "";
+            string typeDefault = !properties.PK ? properties.Type == DbType.@int ? "NULL DEFAULT 0" : "NULL DEFAULT ''" : "";
+
+            if (properties.PK)
+            {
+                properties.Type = DbType.INTEGER;
+            }
             return $"ALTER table {tableName} ADD COLUMN  [{properties.Name}] {properties.Type} {typeDefault}";
         }
         #endregion
@@ -177,14 +349,23 @@ namespace Core.Librarys.SQLite
         /// </summary>
         /// <param name="model">模型信息</param>
         /// <returns></returns>
-        private string GetCreateTableSQL(IModelInfo model)
+        private string GetCreateTableSQL(IModelInfo model, string tableName = null)
         {
-            string sql = $"CREATE TABLE \"{model.TableName}\" (";
+            tableName = string.IsNullOrEmpty(tableName) ? model.TableName : tableName;
+
+            string sql = $"CREATE TABLE \"{tableName}\" (";
             foreach (var p in model.Properties)
             {
-                string add = p.PK ? $"{p.Type} PRIMARY KEY" : p.Type + (p.NotNull ? " NOT NULL" : "");
+                string typeDefault = p.Type == DbType.@int ? " NULL DEFAULT 0" : " NULL DEFAULT ''";
+                if (p.PK)
+                {
+                    typeDefault = "";
+                    p.Type = DbType.INTEGER;
+                }
+
+                string add = p.PK ? $"{p.Type} PRIMARY KEY" : p.Type.ToString();
                 string addChar = p == model.Properties[0] ? "" : ",";
-                sql += $"{addChar}[{p.Name}] {add}";
+                sql += $"{addChar}[{p.Name}] {add}{typeDefault}";
             }
             sql += ")";
             return sql;
@@ -238,11 +419,13 @@ namespace Core.Librarys.SQLite
                 //属性获取
                 foreach (var p in model.Properties)
                 {
+                    Enum.TryParse(p.TypeName, out DbType dbType);
+
                     ps.Add(new IModelProperties()
                     {
                         Name = p.Name,
                         PK = p.IsStoreGeneratedIdentity,
-                        Type = p.TypeName == "int" && p.IsStoreGeneratedIdentity ? "INTEGER" : p.TypeName
+                        Type = dbType
                     });
                 }
                 result.Add(i);
@@ -303,7 +486,8 @@ namespace Core.Librarys.SQLite
                         {
                             var mp = new IModelProperties();
                             mp.Name = rd["name"].ToString();
-                            mp.Type = rd["type"].ToString();
+                            Enum.TryParse(rd["type"].ToString(), out DbType dbType);
+                            mp.Type = dbType;
                             mp.PK = rd["pk"].ToString() == "1";
                             result.Add(mp);
                         }
@@ -334,6 +518,8 @@ namespace Core.Librarys.SQLite
 
             }
         }
+
+
     }
 
 }

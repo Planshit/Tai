@@ -1,6 +1,7 @@
 ﻿using Core.Enums;
 using Core.Librarys;
 using Core.Librarys.SQLite;
+using Core.Models;
 using Core.Models.Config;
 using Core.Models.Config.Link;
 using Core.Servicers.Interfaces;
@@ -118,24 +119,40 @@ namespace Core.Servicers.Instances
 
         public void Run()
         {
-            //  加载应用配置（确保配置文件最先加载
-            appConfig.Load();
-            config = appConfig.GetConfig();
+            Task.Run(() =>
+            {
+                Debug.WriteLine("start");
+                //  数据库自检
+                using (var db = new StatisticContext())
+                {
+                    db.Database.ExecuteSqlCommand("select count(*) from sqlite_master where type='table' and name='tai'");
+                }
+                //  加载app信息
+                data.LoadAppList();
 
-            //  日期变化观察
-            dateObserver.Start();
+                //  加载应用配置（确保配置文件最先加载
+                appConfig.Load();
+                config = appConfig.GetConfig();
 
-            //  启动进程观察
-            observer.Start();
+                //  日期变化观察
+                dateObserver.Start();
 
-            //  启动睡眠监测
-            sleepdiscover.Start();
+                //  启动进程观察
+                observer.Start();
+
+                //  启动睡眠监测
+                sleepdiscover.Start();
+                Debug.WriteLine("over!");
+
+            });
 
         }
 
         public void Exit()
         {
             observer?.Stop();
+
+            data.SaveAppChanges();
         }
 
 
@@ -153,6 +170,9 @@ namespace Core.Servicers.Instances
                 activeProcess = null;
                 //activeSeconds = 0;
                 //activeTimer.Stop();
+
+                //  更新app数据
+                data.SaveAppChanges();
             }
             else if (sleepStatus == SleepStatus.Wake)
             {
@@ -161,8 +181,46 @@ namespace Core.Servicers.Instances
             }
         }
 
+
+        /// <summary>
+        /// 检查焦点app是否已经在库
+        /// </summary>
+        /// <param name="processName"></param>
+        /// <param name="description"></param>
+        /// <param name="file"></param>
+        private void CheckApp(string processName, string description, string file)
+        {
+            if (string.IsNullOrEmpty(file) || string.IsNullOrEmpty(processName))
+            {
+                return;
+            }
+
+
+            if (!config.Behavior.IgnoreProcessList.Contains(processName)
+                && !IgnoreProcess.Contains(processName))
+            {
+                AppModel app = data.GetApp(processName);
+                if (app == null)
+                {
+                    //  提取icon
+                    string iconFile = Iconer.ExtractFromFile(file, processName, description);
+
+                    data.AddApp(new AppModel()
+                    {
+                        Name = processName,
+                        Description = description,
+                        File = file,
+                        CategoryID = 0,
+                        IconFile = iconFile,
+                    });
+                }
+            }
+        }
+
         private void Observer_OnAppActive(string processName, string description, string file)
         {
+            CheckApp(processName, description, file);
+
             if (activeProcess != processName && activeProcessFile != file)
             {
                 UpdateTime();
@@ -185,8 +243,7 @@ namespace Core.Servicers.Instances
                 //    activeTimer.Start();
                 //}
 
-                //  提取icon
-                Iconer.ExtractFromFile(file, processName, description);
+
             }
             else
             {
@@ -266,7 +323,7 @@ namespace Core.Servicers.Instances
 
 
 
-                Logger.Info("【"+sleepStatus + "】进程：" + activeProcess + " 更新时间：" + seconds + "，开始时间：" + activeStartTime.ToString() + "，当前时间：" + DateTime.Now.ToString());
+                Logger.Info("【" + sleepStatus + "】进程：" + activeProcess + " 更新时间：" + seconds + "，开始时间：" + activeStartTime.ToString() + "，当前时间：" + DateTime.Now.ToString());
 
 
                 data.Set(activeProcess, activeProcessDescription, activeProcessFile, seconds);

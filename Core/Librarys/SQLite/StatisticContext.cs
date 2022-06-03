@@ -19,6 +19,7 @@ namespace Core.Librarys.SQLite
         /// 时段数据
         /// </summary>
         public DbSet<HoursLogModel> HoursLog { get; set; }
+        public DbSet<AppModel> App { get; set; }
 
         // public StatisticContext(string n)
         //: base("StatisticContext")
@@ -37,7 +38,7 @@ namespace Core.Librarys.SQLite
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             var model = modelBuilder.Build(Database.Connection);
-            new SQLiteBuilder(model).Handle();
+            new SQLiteBuilder(model).SelfCheck();
         }
     }
 }
