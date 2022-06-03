@@ -362,6 +362,9 @@
   <ItemGroup>
     <Resource Include="Resources\Icons\tai32.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\taibusy.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PathMap>$(MSBuildProjectDirectory)=Tai</PathMap>
