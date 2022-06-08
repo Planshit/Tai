@@ -1,0 +1,156 @@
+﻿<Page x:Class="UI.Views.CategoryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:UI.Views" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Button="clr-namespace:UI.Controls.Button" xmlns:input="clr-namespace:UI.Controls.Input" xmlns:select="clr-namespace:UI.Controls.Select"
+      mc:Ignorable="d" 
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="CategoryPage">
+
+
+    <Grid>
+
+        <!--编辑-->
+        <Grid Visibility="{Binding EditVisibility}" Panel.ZIndex="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Border Background="Black" Opacity=".7"/>
+            <Border Height="460" Background="White" CornerRadius="10" BorderBrush="#ccc" BorderThickness="1" Margin="50"  VerticalAlignment="Top">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="80"/>
+
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <base:Text Content="?创建分类:编辑分类" Value="{Binding IsCreate}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <Button:IconButton Foreground="#ccc" Icon="ChromeClose" HorizontalAlignment="Right" FontSize="12" Margin="0,0,10,0" Command="{Binding EditCloseCommand}"/>
+                    </Grid>
+                    <!--<TextBlock Text="编辑" VerticalAlignment="Center" Margin="10,0,0,0"/>-->
+                    <StackPanel Grid.Row="1" Margin="10">
+                        <TextBlock Text="分类名称"/>
+                        <input:InputBox Error="{Binding EditErrorText}" IsShowError="{Binding IsEditError,Mode=TwoWay}" Text="{Binding EditName,Mode=TwoWay}" MaxLength="10" Margin="0,10,0,0"/>
+
+                        <TextBlock Text="分类图标" Margin="0,10,0,0"/>
+                        <select:ImageSelect URL="{Binding EditIconFile,Mode=TwoWay}" ImageWidth="50" ImageHeight="50" HorizontalAlignment="Left" Margin="0,10,0,0" Width="100" Height="100" />
+                    </StackPanel>
+
+                    <Button:Button Grid.Row="2" HorizontalAlignment="Right" Text="?创建:更新" Value="{Binding IsCreate}" Width="120" Margin="0,0,10,0" VerticalAlignment="Center" Command="{Binding EditDoneCommand}">
+
+                    </Button:Button>
+
+
+                </Grid>
+
+            </Border>
+        </Grid>
+
+
+        <!--主内容-->
+        <StackPanel Margin="20">
+            <TextBlock Text="分类" FontSize="18" Margin="0,0,0,20"/>
+            <TextBlock Text="管理所有应用分类"/>
+            <Button:Button Content="创建分类" HorizontalAlignment="Right" Width="150" Command="{Binding EditCommand}"/>
+
+
+            <ListView Margin="10,20,10,0" ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedItem,Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction Command="{Binding GotoAppListCommand}"
+                             CommandParameter="{Binding SelectedItem}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <!--<ListView.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Page}}, Path=DataContext.GotoAppListCommand}" CommandParameter="{Binding SelectedItem}"/>
+                </ListView.InputBindings>-->
+
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="查看分类应用列表" Command="{Binding GotoAppListCommand}" CommandParameter="{Binding SelectedItem}"/>
+
+                        <MenuItem Header="编辑" Command="{Binding EditCommand}" CommandParameter="{Binding SelectedItem}"/>
+                        <MenuItem Header="删除分类" Command="{Binding DelCommand}" CommandParameter="{Binding SelectedItem}"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListBox.Resources>
+                    <Style TargetType="{x:Type ListView}">
+                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListView}">
+                                    <Border>
+                                        <ItemsPresenter />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="5" CornerRadius="10">
+
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <!--<Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>-->
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>
+
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                    </Style>
+                </ListBox.Resources>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+
+                        <WrapPanel Orientation="Vertical">
+                            <Border Width="150" Height="150">
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="80"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="*"/>
+
+                                    </Grid.RowDefinitions>
+                                    <Border>
+                                        <base:Img Width="50" Height="50" URL="{Binding Data.IconFile}"/>
+                                    </Border>
+                                    <TextBlock Foreground="#202020" HorizontalAlignment="Center" Grid.Row="1" Text="{Binding Data.Name}"  FontSize="14"/>
+
+                                    <Border Grid.Row="2" >
+                                        <Border Margin="10,0,0,0" CornerRadius="5" Background="#f9f9f9" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="15,5">
+                                            <TextBlock Foreground="#FF737373">
+                                                <Run Text="{Binding Count}"/>
+                                                <Run Text="个应用"/>
+                                            </TextBlock>
+
+                                        </Border>
+
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackPanel>
+
+    </Grid>
+</Page>
