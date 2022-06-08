@@ -109,11 +109,11 @@ namespace UI.Controls.Charts
 
             //对部分程序未获取程序名的程序使用路径中名字作为程序名
             NameTextObj.Text = Data.Name;
-            if (Data.Name.Trim() == "" && Data.PopupText.Trim() != "")
-            {
-                FileInfo fi = new FileInfo(Data.PopupText);
-                NameTextObj.Text = fi.Name.Replace(fi.Extension, "");
-            }
+            //if (Data.Name.Trim() == "" && Data.PopupText.Trim() != "")
+            //{
+            //    FileInfo fi = new FileInfo(Data.PopupText);
+            //    NameTextObj.Text = fi.Name.Replace(fi.Extension, "");
+            //}
 
             NameTextObj.SizeChanged += (e, c) =>
             {

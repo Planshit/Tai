@@ -177,7 +177,7 @@
                                         <!--内容-->
                                         <Border 
                                             Padding="15,15"
-                                            CornerRadius="6"
+                                            CornerRadius="12"
                                             MaxWidth="320"
                                             x:Name="ToastBorder" Background="White" HorizontalAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="1000">
                                             <Border.RenderTransform>
@@ -194,8 +194,8 @@
                                                     <ColumnDefinition Width="*"/>
 
                                                 </Grid.ColumnDefinitions>
-                                                <base:Icon IconType="{TemplateBinding ToastIcon}" VerticalAlignment="Top" Margin="0,0,10,0"/>
-                                                <TextBlock Grid.Column="1" Text="{TemplateBinding ToastContent}" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"/>
+                                                <base:Icon IconType="{TemplateBinding ToastIcon}" VerticalAlignment="Top" Margin="0,0,10,0" x:Name="ToastIcon"/>
+                                                <TextBlock x:Name="ToastText" Grid.Column="1" Text="{TemplateBinding ToastContent}" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"/>
                                             </Grid>
                                         </Border>
                                         <!--遮罩层-->
@@ -224,6 +224,16 @@
                         </VisualStateManager.VisualStateGroups>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="ToastType" Value="Success">
+                            <Setter TargetName="ToastBorder" Property="Background" Value="#24bf5f" />
+                            <Setter TargetName="ToastIcon" Property="Foreground" Value="#fff" />
+                            <Setter TargetName="ToastText" Property="Foreground" Value="#fff" />
+                        </Trigger>
+                        <Trigger Property="ToastType" Value="Error">
+                            <Setter TargetName="ToastBorder" Property="Background" Value="#f54f4e" />
+                            <Setter TargetName="ToastIcon" Property="Foreground" Value="#fff" />
+                            <Setter TargetName="ToastText" Property="Foreground" Value="#fff" />
+                        </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="WindowState" Value="Normal" />

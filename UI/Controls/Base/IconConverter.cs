@@ -118,6 +118,11 @@ namespace UI.Controls.Base
             {IconTypes.Blocked,"\xE733"},
             {IconTypes.Remove,"\xE738"},
             {IconTypes.Chart,"\xE999"},
+            {IconTypes.Forward,"\xE72A"},
+            {IconTypes.FileImage,"\xF311"},
+            {IconTypes.CriticalErrorSolid,"\xF5C9"},
+            {IconTypes.TagGroup,"\xE3F6"},
+            {IconTypes.ClipboardListMirrored,"\xF0E4"},
 
 
         };

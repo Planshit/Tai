@@ -109,11 +109,11 @@ namespace UI.Controls.Charts
             isRendering = true;
             NameTextObj.Text = Data.Name;
             //对部分程序未获取程序名的程序使用路径中名字作为程序名
-            if (Data.Name.Trim() == "" && Data.PopupText.Trim() != "")
-            {
-                FileInfo fi = new FileInfo(Data.PopupText);
-                NameTextObj.Text = fi.Name.Replace(fi.Extension, "");
-            }
+            //if (Data.Name.Trim() == "" && Data.PopupText.Trim() != "")
+            //{
+            //    FileInfo fi = new FileInfo(Data.PopupText);
+            //    NameTextObj.Text = fi.Name.Replace(fi.Extension, "");
+            //}
 
             ValueTextObj.Text = Data.Tag;
             IconObj.Source = Imager.Load(Data.Icon);

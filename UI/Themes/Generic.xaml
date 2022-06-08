@@ -8,6 +8,9 @@
         <ResourceDictionary Source="/Tai;component/Themes/Base/Icon.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Base/Placeholder.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Base/EmptyData.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Base/Img.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Base/CheckBox.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Base/Text.xaml"/>
 
         <ResourceDictionary Source="/Tai;component/Themes/PageContainer.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/Charts.xaml"/>
@@ -27,6 +30,10 @@
         <ResourceDictionary Source="/Tai;component/Themes/Button/Button.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/List/BaseList.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/List/BaseListItem.xaml"/>
+
+        <ResourceDictionary Source="/Tai;component/Themes/Select/Select.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Select/Option.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Select/ImageSelect.xaml"/>
 
     </ResourceDictionary.MergedDictionaries>
 

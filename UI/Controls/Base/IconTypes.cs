@@ -141,6 +141,11 @@ namespace UI.Controls.Base
         Preview,
         Blocked,
         Remove,
-        Chart
+        Chart,
+        Forward,
+        FileImage,
+        CriticalErrorSolid,
+        TagGroup,
+        ClipboardListMirrored
     }
 }

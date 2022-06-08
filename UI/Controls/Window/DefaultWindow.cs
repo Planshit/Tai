@@ -56,7 +56,15 @@ namespace UI.Controls.Window
             get { return (string)GetValue(ToastContentProperty); }
             set { SetValue(ToastContentProperty, value); }
         }
-
+        public static readonly DependencyProperty ToastTypeProperty = DependencyProperty.Register("ToastType", typeof(ToastType), typeof(DefaultWindow), new PropertyMetadata(ToastType.Info));
+        /// <summary>
+        /// toast type
+        /// </summary>
+        public ToastType ToastType
+        {
+            get { return (ToastType)GetValue(ToastTypeProperty); }
+            set { SetValue(ToastTypeProperty, value); }
+        }
         public static readonly DependencyProperty PageContainerProperty = DependencyProperty.Register("PageContainer", typeof(PageContainer), typeof(DefaultWindow), new PropertyMetadata(null, new PropertyChangedCallback(OnPageContainerChanged)));
         public PageContainer PageContainer { get { return (PageContainer)GetValue(PageContainerProperty); } set { SetValue(PageContainerProperty, value); } }
         #region 最小化按钮显示状态

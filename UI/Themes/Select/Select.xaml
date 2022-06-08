@@ -1,0 +1,60 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:UI.Controls.Select" xmlns:base="clr-namespace:UI.Controls.Base">
+
+
+    <Style TargetType="{x:Type local:Select}">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+
+        <Setter Property="Background" Value="Transparent"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:Select}">
+                    <Border Background="{TemplateBinding Background}"  HorizontalAlignment="Left" >
+                        <Grid>
+                            <!--当前选择项-->
+                            <Border x:Name="Main" Margin="0,10,0,0" Background="#f9f9f9" HorizontalAlignment="Left" Padding="15,5" CornerRadius="5">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                </Border.Effect>
+                                <StackPanel Orientation="Horizontal">
+                                    <base:Img URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Img}" Width="30" Height="30"  VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Name}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!--选择-->
+                            <Popup 
+                                Placement="Bottom"
+                                PlacementTarget="{Binding ElementName=Main}"
+                                IsOpen="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=IsOpen,Mode=TwoWay}" AllowsTransparency="True" StaysOpen="False">
+                                <Border 
+                                    CornerRadius="10"
+                                      BorderBrush="#CCC"
+                                            BorderThickness="1"
+                                    Background="White" Padding="10" MaxHeight="300" Margin="10">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="6" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
+                                    </Border.Effect>
+                                    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                                        <StackPanel x:Name="OptionsContainer">
+
+                                        </StackPanel>
+                                    </ScrollViewer>
+
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="Main" Value="#FFE8E6FF"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
