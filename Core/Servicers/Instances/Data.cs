@@ -100,6 +100,9 @@ namespace Core.Servicers.Instances
 
         public IEnumerable<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end)
         {
+
+            IEnumerable<AppModel> apps = appData.GetAllApps();
+
             //using (var db = new StatisticContext())
             //{
 
@@ -108,23 +111,45 @@ namespace Core.Servicers.Instances
             //    //var res = db.DailyLog.Include(m => m.AppModel).SqlQuery("Select *,Sum(Time) as Time,DailyLogModels.ID,AppModelID,Date,AppModels.ID,AppModels.Name,AppModels.Description,AppModels.File,AppModels.CategoryID,AppModels.IconFile,AppModels.TotalTime from DailyLogModels  LEFT OUTER JOIN AppModels ON AppModels.ID=DailyLogModels.ID WHERE AppModelID<>0 AND Date between '" + start.ToString("yyyy-MM-dd HH:mm:ss") + "' AND '" + end.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY AppModelID ").ToList();
             using (var db = new TaiDbContext())
             {
+                //var res = db.DailyLog
+                //.Include(m => m.AppModel)
+                //.Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
+                //.GroupBy(m => m.AppModelID)
+                //.Select(m => new
+                //{
+                //    Time = m.Sum(a => a.Time),
+                //    App = m.FirstOrDefault().AppModel,
+                //    Date = m.FirstOrDefault().Date,
+                //})
+                //.ToList()
+                //.Select(m => new DailyLogModel
+                //{
+                //    Time = m.Time,
+                //    AppModel = m.App,
+                //    Date = m.Date
+                //});
+
                 var res = db.DailyLog
-                .Include(m => m.AppModel)
                 .Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
                 .GroupBy(m => m.AppModelID)
                 .Select(m => new
                 {
                     Time = m.Sum(a => a.Time),
-                    App = m.FirstOrDefault().AppModel,
                     Date = m.FirstOrDefault().Date,
+                    AppID = m.FirstOrDefault().AppModelID
                 })
                 .ToList()
                 .Select(m => new DailyLogModel
                 {
                     Time = m.Time,
-                    AppModel = m.App,
-                    Date = m.Date
-                });
+                    Date = m.Date,
+                    AppModelID = m.AppID
+                }).ToList();
+
+                foreach (var log in res)
+                {
+                    log.AppModel = appData.GetApp(log.AppModelID);
+                }
 
                 return res;
             }
@@ -218,13 +243,13 @@ namespace Core.Servicers.Instances
 
         }
 
-        public List<DailyLogModel> GetProcessMonthLogList(string processName, DateTime month)
+        public List<DailyLogModel> GetProcessMonthLogList(int appID, DateTime month)
         {
-            var app = appData.GetApp(processName);
-            if (app == null)
-            {
-                return new List<DailyLogModel>();
-            }
+            //var app = appData.GetApp(processName);
+            //if (app == null)
+            //{
+            //    return new List<DailyLogModel>();
+            //}
             using (var db = new TaiDbContext())
             {
 
@@ -232,7 +257,7 @@ namespace Core.Servicers.Instances
                 m =>
                 m.Date.Year == month.Year
                 && m.Date.Month == month.Month
-                && m.AppModelID == app.ID
+                && m.AppModelID == appID
                 );
                 if (res != null)
                 {
@@ -243,45 +268,31 @@ namespace Core.Servicers.Instances
         }
 
 
-        public void Clear(string processName, DateTime month)
+        public void Clear(int appID, DateTime month)
         {
-            if (string.IsNullOrEmpty(processName))
-            {
-                return;
-            }
 
-            var app = appData.GetApp(processName);
-            if (app == null)
-            {
-                return;
-            }
             using (var db = new TaiDbContext())
             {
 
                 db.DailyLog.RemoveRange(
                 db.DailyLog.Where(m =>
-                m.AppModelID == app.ID
+                m.AppModelID == appID
                 && m.Date.Year == month.Year
                 && m.Date.Month == month.Month));
                 db.SaveChanges();
             }
         }
 
-        public DailyLogModel GetProcess(string processName, DateTime day)
+        public DailyLogModel GetProcess(int appID, DateTime day)
         {
-            var app = appData.GetApp(processName);
 
-            if (app == null)
-            {
-                return null;
-            }
 
             using (var db = new TaiDbContext())
             {
 
 
                 var res = db.DailyLog.Where(m =>
-            m.AppModelID == app.ID
+            m.AppModelID == appID
             && m.Date.Year == day.Year
             && m.Date.Month == day.Month
             && m.Date.Day == day.Day);

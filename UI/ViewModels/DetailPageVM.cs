@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using UI.Controls;
 using UI.Controls.Charts.Model;
+using UI.Controls.Select;
 using UI.Librays;
 using UI.Models;
 
@@ -21,17 +22,21 @@ namespace UI.ViewModels
         private readonly IData data;
         private readonly MainViewModel main;
         private readonly IAppConfig appConfig;
+        private readonly ICategorys categories;
+        private readonly IAppData appData;
 
         private ConfigModel config;
         public Command BlockActionCommand { get; set; }
         public Command ClearSelectMonthDataCommand { get; set; }
         public Command InfoMenuActionCommand { get; set; }
         public DetailPageVM(
-            IData data, MainViewModel main, IAppConfig appConfig)
+            IData data, MainViewModel main, IAppConfig appConfig, ICategorys categories, IAppData appData)
         {
             this.data = data;
             this.main = main;
             this.appConfig = appConfig;
+            this.categories = categories;
+            this.appData = appData;
 
             BlockActionCommand = new Command(new Action<object>(OnBlockActionCommand));
             ClearSelectMonthDataCommand = new Command(new Action<object>(OnClearSelectMonthDataCommand));
@@ -43,7 +48,7 @@ namespace UI.ViewModels
 
         private async void Init()
         {
-            Process = main.Data as ChartsDataModel;
+            App = main.Data as AppModel;
 
             Date = DateTime.Now;
 
@@ -61,30 +66,30 @@ namespace UI.ViewModels
             switch (obj.ToString())
             {
                 case "copy processname":
-                    Clipboard.SetText(ProcessName);
+                    Clipboard.SetText(App.Name);
 
                     break;
                 case "copy process file":
-                    Clipboard.SetText(Process.PopupText);
+                    Clipboard.SetText(App.File);
                     break;
                 case "open dir":
-                    if (File.Exists(Process.PopupText))
+                    if (File.Exists(App.File))
                     {
-                        System.Diagnostics.Process.Start("explorer.exe", "/select, " + Process.PopupText);
+                        System.Diagnostics.Process.Start("explorer.exe", "/select, " + App.File);
                     }
                     else
                     {
-                        main.Toast("进程文件似乎不存在", Controls.Base.IconTypes.Blocked);
+                        main.Toast("进程文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
                     }
                     break;
                 case "open exe":
-                    if (File.Exists(Process.PopupText))
+                    if (File.Exists(App.File))
                     {
-                        System.Diagnostics.Process.Start(Process.PopupText);
+                        System.Diagnostics.Process.Start(App.File);
                     }
                     else
                     {
-                        main.Toast("进程文件似乎不存在", Controls.Base.IconTypes.Blocked);
+                        main.Toast("进程文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
                     }
                     break;
             }
@@ -99,15 +104,15 @@ namespace UI.ViewModels
         {
             if (obj.ToString() == "block")
             {
-                config.Behavior.IgnoreProcessList.Add(ProcessName);
+                config.Behavior.IgnoreProcessList.Add(App.Name);
                 IsIgnore = true;
-                main.Toast("进程已忽略");
+                main.Toast("应用已忽略");
             }
             else
             {
-                config.Behavior.IgnoreProcessList.Remove(ProcessName);
+                config.Behavior.IgnoreProcessList.Remove(App.Name);
                 IsIgnore = false;
-                main.Toast("进程已取消忽略");
+                main.Toast("已取消忽略");
             }
 
             appConfig.Save();
@@ -119,24 +124,60 @@ namespace UI.ViewModels
             {
                 await LoadData();
             }
+
+            if (e.PropertyName == nameof(Category))
+            {
+                if (App.Category == null && Category != null || Category != null && App.Category.Name != Category.Name)
+                {
+                    App.Category = Category.Data as CategoryModel;
+
+                    var app = appData.GetApp(App.ID);
+                    if (app != null)
+                    {
+                        app.CategoryID = App.Category.ID;
+                        appData.UpdateApp(app);
+                    }
+                }
+
+            }
+        }
+
+        private void LoadCategorys(string categoryName)
+        {
+            var list = new List<SelectItemModel>();
+            foreach (var item in categories.GetCategories())
+            {
+                var option = new SelectItemModel()
+                {
+                    Data = item,
+                    Img = item.IconFile,
+                    Name = item.Name,
+                };
+                list.Add(option);
+                if (categoryName == option.Name)
+                {
+                    Category = option;
+                }
+            }
+
+            Categorys = list;
+
         }
 
         private async Task LoadInfo()
         {
             await Task.Run(() =>
             {
-                if (Process != null)
+                if (App != null)
                 {
-                    var info = Process.Data as DailyLogModel;
-                    if (info != null)
-                    {
-                        ProcessName = info.AppModel?.Name;
-                        //  判断是否是忽略的进程
-                        IsIgnore = config.Behavior.IgnoreProcessList.Contains(ProcessName);
-                    }
 
-                    var today = data.GetProcess(ProcessName, DateTime.Now);
-                    var yesterday = data.GetProcess(ProcessName, DateTime.Now.AddDays(-1));
+                    //  判断是否是忽略的进程
+                    IsIgnore = config.Behavior.IgnoreProcessList.Contains(App.Name);
+
+                    LoadCategorys(App.Category?.Name);
+
+                    var today = data.GetProcess(App.ID, DateTime.Now);
+                    var yesterday = data.GetProcess(App.ID, DateTime.Now.AddDays(-1));
 
                     if (today != null)
                     {
@@ -185,11 +226,10 @@ namespace UI.ViewModels
         {
             await Task.Run(() =>
             {
-                if (Process != null)
+                if (App != null)
                 {
 
-                    var info = Process.Data as DailyLogModel;
-                    var monthData = data.GetProcessMonthLogList(info.AppModel.Name, Date);
+                    var monthData = data.GetProcessMonthLogList(App.ID, Date);
                     int monthTotal = monthData.Sum(m => m.Time);
                     Total = Timer.Fromat(monthTotal);
 
@@ -231,10 +271,10 @@ namespace UI.ViewModels
         {
             await Task.Run(async () =>
             {
-                if (Process != null)
+                if (App != null)
                 {
                     main.Toast("正在处理");
-                    data.Clear(ProcessName, Date);
+                    data.Clear(App.ID, Date);
 
                     await LoadData();
                     await LoadInfo();
@@ -253,7 +293,7 @@ namespace UI.ViewModels
             {
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name =item.AppModel.Name;
+                bindModel.Name = item.AppModel.Name;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);
                 bindModel.PopupText = item.AppModel.File;

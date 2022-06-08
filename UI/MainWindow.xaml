@@ -15,7 +15,9 @@
                   Icon="/Resources/Icons/tai32.ico"
                   IsShowToast="{Binding IsShowToast,Mode=TwoWay}"
                   ToastContent="{Binding ToastContent,Mode=TwoWay}"
-                  ToastIcon="{Binding ToastIcon}">
+                  ToastIcon="{Binding ToastIcon}"
+                  ToastType="{Binding ToastType}"
+                  >
     <Grid>
         <!--主要功能-->
         <Grid>

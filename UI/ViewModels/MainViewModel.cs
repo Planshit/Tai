@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UI.Controls;
 using UI.Controls.Base;
 using UI.Controls.Navigation.Models;
+using UI.Controls.Window;
 using UI.Models;
 using UI.Views;
 
@@ -72,6 +73,7 @@ namespace UI.ViewModels
             IndexUriList = new List<string>();
             IndexUriList.Add(nameof(IndexPage));
             IndexUriList.Add(nameof(DataPage));
+            IndexUriList.Add(nameof(CategoryPage));
 
 
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
@@ -85,19 +87,38 @@ namespace UI.ViewModels
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
                 Icon = Controls.Base.IconTypes.BIDashboard,
-                Title = "详细",
+                Title = "统计",
                 ID = 1,
                 Uri = nameof(DataPage),
+
+            });
+            Items.Add(new Controls.Navigation.Models.NavigationItemModel()
+            {
+                Icon = Controls.Base.IconTypes.ClipboardListMirrored,
+                //Icon = Controls.Base.IconTypes.BIDashboard,
+                Title = "详细",
+                ID = 2,
+                Uri = nameof(DataPage),
+
+            });
+            Items.Add(new Controls.Navigation.Models.NavigationItemModel()
+            {
+                Icon = Controls.Base.IconTypes.TagGroup,
+                Title = "分类",
+                ID = 3,
+                Uri = nameof(CategoryPage),
 
             });
             NavSelectedItem = Items[0];
         }
 
-        public void Toast(string content, IconTypes icon = IconTypes.Accept)
+        public void Toast(string content, ToastType type = ToastType.Info, IconTypes icon = IconTypes.Accept)
         {
             ToastContent = content;
             ToastIcon = icon;
+            ToastType = type;
             IsShowToast = true;
+
         }
     }
 }

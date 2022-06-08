@@ -26,6 +26,8 @@ namespace Core.Servicers.Instances
             dispatcherTimer.Interval = new TimeSpan(0, 30, 0);
             dispatcherTimer.Tick += DispatcherTimer_Tick;
             dispatcherTimer.Start();
+
+            _apps = new List<AppModel>();
         }
 
 
@@ -82,7 +84,10 @@ namespace Core.Servicers.Instances
         {
             return _apps.Where(m => m.Name == name).FirstOrDefault();
         }
-
+        public AppModel GetApp(int id)
+        {
+            return _apps.Where(m => m.ID == id).FirstOrDefault();
+        }
         public void AddApp(AppModel app)
         {
             if (_apps.Where(m => m.Name == app.Name).Any())
@@ -103,6 +108,7 @@ namespace Core.Servicers.Instances
 
         public void SaveAppChanges()
         {
+
             using (var db = new TaiDbContext())
             {
                 foreach (var item in _updateTempApps)
@@ -116,11 +122,18 @@ namespace Core.Servicers.Instances
                         app.Name = item.Name;
                         app.CategoryID = item.CategoryID;
                         app.Description = item.Description;
-                        app.Category = item.Category;
+                        //app.Category = item.Category;
                     }
                 }
                 db.SaveChanges();
+                _updateTempApps.Clear();
             }
+
+        }
+
+        public List<AppModel> GetAppsByCategoryID(int categoryID)
+        {
+            return _apps.Where(m => m.CategoryID == categoryID).ToList();
         }
     }
 }

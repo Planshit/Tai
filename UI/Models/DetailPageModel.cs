@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using UI.Controls.Charts.Model;
+using UI.Controls.Select;
 
 namespace UI.Models
 {
@@ -21,8 +23,8 @@ namespace UI.Models
             get { return Data_; }
             set { Data_ = value; OnPropertyChanged(); }
         }
-        private ChartsDataModel Process_;
-        public ChartsDataModel Process { get { return Process_; } set { Process_ = value; OnPropertyChanged(); } }
+        private AppModel App_;
+        public AppModel App { get { return App_; } set { App_ = value; OnPropertyChanged(); } }
         private bool IsLoading_;
         public bool IsLoading { get { return IsLoading_; } set { IsLoading_ = value; OnPropertyChanged(); } }
 
@@ -38,8 +40,6 @@ namespace UI.Models
         private string LongDay_;
         public string LongDay { get { return LongDay_; } set { LongDay_ = value; OnPropertyChanged(); } }
 
-        private string ProcessName_;
-        public string ProcessName { get { return ProcessName_; } set { ProcessName_ = value; OnPropertyChanged(); } }
 
         private bool IsIgnore_;
         public bool IsIgnore
@@ -79,5 +79,17 @@ namespace UI.Models
         /// 相比昨日
         /// </summary>
         public string Yesterday { get { return Yesterday_; } set { Yesterday_ = value; OnPropertyChanged(); } }
+
+        private List<SelectItemModel> Categorys_;
+        /// <summary>
+        /// 分类数据
+        /// </summary>
+        public List<SelectItemModel> Categorys { get { return Categorys_; } set { Categorys_ = value; OnPropertyChanged(); } }
+
+        private SelectItemModel Category_;
+        /// <summary>
+        /// 当前分类
+        /// </summary>
+        public SelectItemModel Category { get { return Category_; } set { Category_ = value; OnPropertyChanged(); } }
     }
 }

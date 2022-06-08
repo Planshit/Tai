@@ -53,7 +53,7 @@ namespace UI.ViewModels
 
                 if (!File.Exists(updaterExePath))
                 {
-                    mainVM.Toast("升级程序似乎已被删除，请手动前往发布页查看新版本", Controls.Base.IconTypes.None);
+                    mainVM.Toast("升级程序似乎已被删除，请手动前往发布页查看新版本", Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
                     return;
                 }
                 File.Copy(updaterExePath, updaterCacheExePath, true);
@@ -70,7 +70,7 @@ namespace UI.ViewModels
                 CheckUpdateBtnVisibility = System.Windows.Visibility.Visible;
 
                 Logger.Error(ex.Message);
-                mainVM.Toast("无法正确启动检查更新程序", Controls.Base.IconTypes.None);
+                mainVM.Toast("无法正确启动检查更新程序", Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
             }
         }
 

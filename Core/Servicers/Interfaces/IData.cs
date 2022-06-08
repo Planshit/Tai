@@ -9,7 +9,7 @@ namespace Core.Servicers.Interfaces
 {
     public interface IData
     {
-       
+
         /// <summary>
         /// 设置进程数据
         /// </summary>
@@ -55,14 +55,14 @@ namespace Core.Servicers.Interfaces
         /// <param name="processName"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        List<DailyLogModel> GetProcessMonthLogList(string processName, DateTime month);
+        List<DailyLogModel> GetProcessMonthLogList(int appID, DateTime month);
 
 
         /// <summary>
         /// 清空指定进程某月的数据
         /// </summary>
         /// <param name="processName"></param>
-        void Clear(string processName, DateTime month);
+        void Clear(int appID, DateTime month);
 
         /// <summary>
         /// 获取指定进程某天的数据
@@ -70,6 +70,6 @@ namespace Core.Servicers.Interfaces
         /// <param name="processName"></param>
         /// <param name="day"></param>
         /// <returns></returns>
-        DailyLogModel GetProcess(string processName, DateTime day);
+        DailyLogModel GetProcess(int appID, DateTime day);
     }
 }

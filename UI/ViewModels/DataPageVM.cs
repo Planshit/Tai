@@ -1,5 +1,6 @@
 ﻿using Core.Librarys;
 using Core.Librarys.Image;
+using Core.Models;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -57,8 +58,12 @@ namespace UI.ViewModels
 
             if (data != null)
             {
-                main.Data = data;
-                main.Uri = nameof(DetailPage);
+                var model = data.Data as DailyLogModel;
+                if (model != null && model.AppModel != null)
+                {
+                    main.Data = model.AppModel;
+                    main.Uri = nameof(DetailPage);
+                }
             }
         }
 

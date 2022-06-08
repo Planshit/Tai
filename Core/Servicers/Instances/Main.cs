@@ -25,6 +25,7 @@ namespace Core.Servicers.Instances
         private readonly IAppConfig appConfig;
         private readonly IDateObserver dateObserver;
         private readonly IAppData appData;
+        private readonly ICategorys categories;
         //  忽略的进程
         private readonly string[] IgnoreProcess = new string[] {
             "Tai",
@@ -80,7 +81,7 @@ namespace Core.Servicers.Instances
             ISleepdiscover sleepdiscover,
             IAppConfig appConfig,
             IDateObserver dateObserver,
-            IAppData appData)
+            IAppData appData, ICategorys categories)
         {
             this.observer = observer;
             this.data = data;
@@ -88,6 +89,7 @@ namespace Core.Servicers.Instances
             this.appConfig = appConfig;
             this.dateObserver = dateObserver;
             this.appData = appData;
+            this.categories = categories;
 
             observer.OnAppActive += Observer_OnAppActive;
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
@@ -132,10 +134,15 @@ namespace Core.Servicers.Instances
                      db.SelfCheck();
                  }
                  Debug.WriteLine("db self check over!");
+
+                 //  加载app信息
+                 appData.Load();
+
+                 // 加载分类信息
+                 categories.Load();
              });
 
-            //  加载app信息
-            appData.Load();
+            
 
             //  加载应用配置（确保配置文件最先加载
             appConfig.Load();
