@@ -15,7 +15,7 @@
                     <Border SnapsToDevicePixels="True" Background="{TemplateBinding Background}"  HorizontalAlignment="Left" >
                         <Grid>
                             <!--当前选择项-->
-                            <Border x:Name="Main" Margin="0,10,0,0" Background="#f9f9f9" HorizontalAlignment="Left" Padding="15,5" CornerRadius="5">
+                            <Border x:Name="Main" Margin="0,0,0,0" Background="White" HorizontalAlignment="Left" Padding="18,10" CornerRadius="5">
                                 <Border.InputBindings>
                                     <MouseBinding Gesture="LeftClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=ShowSelectCommand}"/>
                                 </Border.InputBindings>

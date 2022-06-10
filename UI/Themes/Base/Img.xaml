@@ -14,10 +14,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Img}">
-                    <Border Background="{TemplateBinding Background}">
+                    <!--<Border Background="{TemplateBinding Background}" CornerRadius="5">
                         <Image x:Name="image" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"/>
+                    </Border>-->
+                    <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" CornerRadius="5">
+                        <Border.Background>
+                            <ImageBrush Stretch="Fill" x:Name="image" />
+                        </Border.Background>
                     </Border>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

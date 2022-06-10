@@ -16,12 +16,15 @@
                             <Grid x:Name="header">
                                 <Border
                                     x:Name="Date"
-                                    Background="Transparent"
-                                    Padding="5,10"
+                                    Background="White"
+                                    Padding="15,10"
                                     CornerRadius="12"
                                     Margin="0,0,0,10"
                                     HorizontalAlignment="Left"
                                     ToolTip="选择">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                    </Border.Effect>
                                     <StackPanel Orientation="Horizontal" >
                                         <base:Icon x:Name="DateIcon" Margin="0,0,5,0" IconType="DateTime" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Right"/>
 
@@ -87,7 +90,7 @@
                                 </Popup>
                             </Grid>
                             <Grid x:Name="ItemSelect">
-                                <Border Background="White" Padding="10" CornerRadius="10">
+                                <Border Background="White" Padding="10" CornerRadius="10" Margin="0,10,0,0">
                                     <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden">
                                         <StackPanel
                                 Orientation="Horizontal"

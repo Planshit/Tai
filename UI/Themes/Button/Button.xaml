@@ -14,7 +14,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Button}">
-                    <Border x:Name="Border">
+                    <Border x:Name="Border" SnapsToDevicePixels="True">
 
                         <Border BorderBrush="#f3f3f3" BorderThickness="1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="{TemplateBinding Background}">
                             <Border.Effect>

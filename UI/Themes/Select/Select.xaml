@@ -7,15 +7,15 @@
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
 
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="White"/>
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Select}">
-                    <Border Background="{TemplateBinding Background}"  HorizontalAlignment="Left" SnapsToDevicePixels="True">
+                    <Border  HorizontalAlignment="Left" SnapsToDevicePixels="True">
                         <Grid>
                             <!--当前选择项-->
-                            <Border x:Name="Main" Background="#f9f9f9" HorizontalAlignment="Left" Padding="15,5" CornerRadius="5">
+                            <Border x:Name="Main" Background="{TemplateBinding Background}" HorizontalAlignment="Left" Padding="18,10" CornerRadius="5">
                                 <Border.Effect>
                                     <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
                                 </Border.Effect>

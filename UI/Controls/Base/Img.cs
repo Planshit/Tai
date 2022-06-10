@@ -40,7 +40,7 @@ namespace UI.Controls.Base
             }
         }
 
-        private Image _image;
+        private ImageBrush _image;
         public Img()
         {
             DefaultStyleKey = typeof(Img);
@@ -49,7 +49,7 @@ namespace UI.Controls.Base
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            _image = GetTemplateChild("image") as Image;
+            _image = GetTemplateChild("image") as ImageBrush;
             Render();
         }
 
@@ -59,7 +59,7 @@ namespace UI.Controls.Base
             {
                 return;
             }
-            _image.Source = Imager.Load(URL);
+            _image.ImageSource = Imager.Load(URL);
         }
     }
 }

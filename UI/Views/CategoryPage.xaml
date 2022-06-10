@@ -93,7 +93,9 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
                                     <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="5" CornerRadius="10">
-
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="#d8d2d2" BlurRadius="10" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                        </Border.Effect>
                                         <ContentPresenter/>
                                     </Border>
                                     <ControlTemplate.Triggers>

@@ -137,14 +137,16 @@ namespace UI.ViewModels
                 foreach (var item in list)
                 {
                     var category = categorys.GetCategory(item.CategoryID);
-
-                    chartData.Add(new ChartsDataModel()
+                    if (category != null)
                     {
+                        chartData.Add(new ChartsDataModel()
+                        {
 
-                        Name = category.Name,
-                        Icon = category.IconFile,
-                        Values = item.Values,
-                    });
+                            Name = category.Name,
+                            Icon = category.IconFile,
+                            Values = item.Values,
+                        });
+                    }
                 }
 
                 Data = chartData;
