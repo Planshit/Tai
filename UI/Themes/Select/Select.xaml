@@ -12,17 +12,21 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Select}">
-                    <Border  HorizontalAlignment="Left" SnapsToDevicePixels="True">
-                        <Grid>
+                    <Border  HorizontalAlignment="Left" >
+
+                        <Grid >
                             <!--当前选择项-->
-                            <Border x:Name="Main" Background="{TemplateBinding Background}" HorizontalAlignment="Left" Padding="18,10" CornerRadius="5">
+                            <Border Background="{TemplateBinding Background}" Panel.ZIndex="-1" Width="{Binding ElementName=Main,Path=ActualWidth}"  Height="{Binding ElementName=Main,Path=ActualHeight}" CornerRadius="{Binding ElementName=Main,Path=CornerRadius}">
                                 <Border.Effect>
                                     <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
                                 </Border.Effect>
-                                <StackPanel Orientation="Horizontal">
+                                
+                            </Border>
+                            <Border x:Name="Main" Background="{TemplateBinding Background}" Padding="18,10" CornerRadius="5">
+                                <StackPanel Orientation="Horizontal" >
                                     <!--<TextBlock x:Name="PlaceholderText" Text="请选择" Visibility="Collapsed"/>-->
                                     <base:Img x:Name="Img" URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Img}" Width="25" Height="25"  VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Name}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                    <TextBlock TextOptions.TextFormattingMode="Display" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Name}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                 </StackPanel>
                             </Border>
 
