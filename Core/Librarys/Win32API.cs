@@ -202,7 +202,9 @@ namespace Core.Librarys
         #region 键盘钩子
         private const int WH_KEYBOARD_LL = 13;
         public const int WM_KEYDOWN = 0x0100;
-
+        private const int WH_MOUSE_LL = 14;
+        public const int WM_LBUTTONDBLCLK = 0x202;
+        public const int WM_WHEEL = 0x20a;
         /// <summary>
         /// 设置键盘钩子
         /// </summary>
@@ -218,10 +220,25 @@ namespace Core.Librarys
             }
         }
 
+
+        /// <summary>
+        /// 设置鼠标钩子
+        /// </summary>
+        /// <param name="proc"></param>
+        /// <returns></returns>
+        public static IntPtr SetMouseHook(LowLevelKeyboardProc proc)
+        {
+            using (Process curProcess = Process.GetCurrentProcess())
+            using (ProcessModule curModule = curProcess.MainModule)
+            {
+                return SetWindowsHookEx(WH_MOUSE_LL, proc,
+                    GetModuleHandle(curModule.ModuleName), 0);
+            }
+        }
         public delegate IntPtr LowLevelKeyboardProc(
             int nCode, IntPtr wParam, IntPtr lParam);
 
-       
+
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr SetWindowsHookEx(int idHook,
