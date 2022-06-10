@@ -10,6 +10,15 @@ namespace UI.Controls.Select
 {
     public class Option : Control
     {
+        public bool IsShowIcon
+        {
+            get { return (bool)GetValue(IsShowIconProperty); }
+            set { SetValue(IsShowIconProperty, value); }
+        }
+        public static readonly DependencyProperty IsShowIconProperty =
+            DependencyProperty.Register("IsShowIcon",
+                typeof(bool),
+                typeof(Option), new PropertyMetadata(true));
         public bool IsChecked
         {
             get { return (bool)GetValue(IsCheckedProperty); }

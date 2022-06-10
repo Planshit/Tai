@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Librarys;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -158,6 +159,142 @@ namespace UI.Controls.Charts
 
 
         #endregion
+        #region 柱状图信息数据
+        /// <summary>
+        /// 柱状图信息数据
+        /// </summary>
+        public List<ChartColumnInfoModel> ColumnInfoList
+        {
+            get { return (List<ChartColumnInfoModel>)GetValue(ColumnInfoListProperty); }
+            set { SetValue(ColumnInfoListProperty, value); }
+        }
+        public static readonly DependencyProperty ColumnInfoListProperty =
+            DependencyProperty.Register("ColumnInfoList",
+                typeof(List<ChartColumnInfoModel>),
+                typeof(Charts)
+                );
+
+
+        #endregion
+        #region 中间值
+        /// <summary>
+        /// 中间值
+        /// </summary>
+        public string Median
+        {
+            get { return (string)GetValue(MedianProperty); }
+            set { SetValue(MedianProperty, value); }
+        }
+        public static readonly DependencyProperty MedianProperty =
+            DependencyProperty.Register("Median",
+                typeof(string),
+                typeof(Charts)
+                );
+
+
+        #endregion
+        #region 最大值
+        /// <summary>
+        /// 最大值
+        /// </summary>
+        public string Maximum
+        {
+            get { return (string)GetValue(MaximumProperty); }
+            set { SetValue(MaximumProperty, value); }
+        }
+        public static readonly DependencyProperty MaximumProperty =
+            DependencyProperty.Register("Maximum",
+                typeof(string),
+                typeof(Charts)
+                );
+
+
+        #endregion
+        #region 单位
+        /// <summary>
+        /// 单位
+        /// </summary>
+        public string Unit
+        {
+            get { return (string)GetValue(UnitProperty); }
+            set { SetValue(UnitProperty, value); }
+        }
+        public static readonly DependencyProperty UnitProperty =
+            DependencyProperty.Register("Unit",
+                typeof(string),
+                typeof(Charts)
+                );
+
+
+        #endregion
+        #region 总计
+        /// <summary>
+        /// 总计
+        /// </summary>
+        public string Total
+        {
+            get { return (string)GetValue(TotalProperty); }
+            set { SetValue(TotalProperty, value); }
+        }
+        public static readonly DependencyProperty TotalProperty =
+            DependencyProperty.Register("Total",
+                typeof(string),
+                typeof(Charts)
+                );
+
+
+        #endregion
+
+        #region 数据值类型
+        /// <summary>
+        /// 数据值类型
+        /// </summary>
+        public ChartDataValueType DataValueType
+        {
+            get { return (ChartDataValueType)GetValue(DataValueTypeProperty); }
+            set { SetValue(DataValueTypeProperty, value); }
+        }
+        public static readonly DependencyProperty DataValueTypeProperty =
+            DependencyProperty.Register("DataValueType",
+                typeof(ChartDataValueType),
+                typeof(Charts)
+                );
+
+
+        #endregion
+        #region 
+
+        public int NameIndexStart
+        {
+            get { return (int)GetValue(NameIndexStartProperty); }
+            set { SetValue(NameIndexStartProperty, value); }
+        }
+        public static readonly DependencyProperty NameIndexStartProperty =
+            DependencyProperty.Register("NameIndexStart",
+                typeof(int),
+                typeof(Charts), new PropertyMetadata((int)0)
+                );
+
+
+        #endregion
+        #region 是否空数据
+        /// <summary>
+        /// 是否空数据
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return (bool)GetValue(IsEmptyProperty); }
+            set { SetValue(IsEmptyProperty, value); }
+        }
+        public static readonly DependencyProperty IsEmptyProperty =
+            DependencyProperty.Register("IsEmpty",
+                typeof(bool),
+                typeof(Charts),
+                new PropertyMetadata(false, new PropertyChangedCallback(OnPropertyChanged)));
+
+
+        #endregion
+
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var charts = (d as Charts);
@@ -191,6 +328,7 @@ namespace UI.Controls.Charts
         private WrapPanel CardContainer;
         private Grid MonthContainer;
         private ScrollViewer ScrollViewer;
+        private Grid ColumnContainer;
         /// <summary>
         /// 是否在渲染中
         /// </summary>
@@ -224,6 +362,7 @@ namespace UI.Controls.Charts
             MonthContainer = GetTemplateChild("MonthContainer") as Grid;
             ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
             NoScrollContainer = GetTemplateChild("NoScrollContainer") as StackPanel;
+            ColumnContainer = GetTemplateChild("ColumnContainer") as Grid;
 
             if (IsLoading)
             {
@@ -273,7 +412,7 @@ namespace UI.Controls.Charts
         }
         private void Calculate()
         {
-            if (Data == null)
+            if (Data == null || ChartsType == ChartsType.Column)
             {
                 return;
             }
@@ -295,7 +434,7 @@ namespace UI.Controls.Charts
 
         private void Render()
         {
-            if (isRendering || Container == null || CardContainer == null)
+            if (isRendering || Container == null || CardContainer == null || ColumnContainer == null)
             {
                 return;
             }
@@ -315,13 +454,19 @@ namespace UI.Controls.Charts
             CardContainer.Children.Clear();
             MonthContainer.Children.Clear();
             NoScrollContainer.Children.Clear();
+            ColumnContainer.Children.Clear();
 
             if (Data == null || Data.Count() <= 0)
             {
                 Container.Children.Add(new EmptyData());
                 NoScrollContainer.Children.Add(new EmptyData());
                 CardContainer.Children.Add(new EmptyData());
+                IsEmpty = true;
                 return;
+            }
+            else
+            {
+                IsEmpty = false;
             }
 
             isRendering = true;
@@ -335,6 +480,9 @@ namespace UI.Controls.Charts
                     break;
                 case ChartsType.Month:
                     RenderMonthStyle();
+                    break;
+                case ChartsType.Column:
+                    RenderColumnStyle();
                     break;
             }
 
@@ -615,6 +763,130 @@ namespace UI.Controls.Charts
         }
         #endregion
 
+        #region 渲染柱形图
+        private void RenderColumnStyle()
+        {
+            ColumnContainer.Children.Clear();
+            ColumnInfoList = new List<ChartColumnInfoModel>();
+            ColumnContainer.ColumnDefinitions.Clear();
+            maxValue = 0;
+
+            Maximum = string.Empty;
+            Median = string.Empty;
+            Total = string.Empty;
+
+            if (Data == null || Data.Count() == 0)
+            {
+                return;
+            }
+
+
+
+
+            double total = 0;
+            //  查找最大值
+            foreach (var item in Data)
+            {
+                //  查找最大值
+                double max = item.Values.Max();
+                if (max > maxValue)
+                {
+                    maxValue = max;
+                }
+
+                total += item.Values.Sum();
+
+            }
+
+            Maximum = Covervalue(maxValue);
+
+            Median = Covervalue((maxValue / 2));
+
+            Total = Covervalue(total);
+
+            int margin = 5;
+
+
+
+            //  创建列
+            int columns = Data.FirstOrDefault().Values.Length;
+
+
+            //  调整间距
+            if (columns <= 7)
+            {
+                margin = 25;
+            }
+            else if (columns <= 12)
+            {
+                margin = 15;
+            }
+            else if (columns >= 20)
+            {
+                margin = 2;
+            }
+
+            int columnCount = Data.Count();
+
+            var list = Data.ToList();
+
+            for (int i = 0; i < columns; i++)
+            {
+                ColumnContainer.ColumnDefinitions.Add(new ColumnDefinition()
+                {
+                    Width = new GridLength(1, GridUnitType.Star)
+                });
+
+
+                for (int di = 0; di < columnCount; di++)
+                {
+                    var item = list[di];
+                    item.Color = item.Color == null ? UI.Base.Color.Colors.MainColors[di] : item.Color;
+                    var column = new ChartItemTypeColumn();
+                    column.Value = item.Values[i];
+                    column.MaxValue = maxValue;
+                    column.Margin = new Thickness(margin, 0, margin, 0);
+
+                    column.Color = item.Color;
+                    column.ColumnName = item.ColumnNames != null && item.ColumnNames.Length > 0 ? item.ColumnNames[i] : (i + NameIndexStart).ToString();
+                    Panel.SetZIndex(column, column.Value > 0 ? -(int)column.Value : 0);
+                    Grid.SetColumn(column, i);
+                    ColumnContainer.Children.Add(column);
+                }
+
+
+            }
+
+            var infoList = new List<ChartColumnInfoModel>();
+
+            foreach (var item in list)
+            {
+                infoList.Add(new ChartColumnInfoModel()
+                {
+                    Color = item.Color,
+                    Name = item.Name,
+                    Icon = item.Icon,
+                    Text = Covervalue(item.Values.Sum()) + Unit
+                });
+            }
+
+            ColumnInfoList = infoList;
+
+            isRendering = false;
+        }
+        #endregion
+
+        private string Covervalue(double value)
+        {
+            if (DataValueType == ChartDataValueType.Seconds)
+            {
+                return Time.ToString((int)value);
+            }
+            else
+            {
+                return value.ToString();
+            }
+        }
 
         private void HandleItemClick(UIElement el, ChartsDataModel data)
         {

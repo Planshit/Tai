@@ -11,12 +11,14 @@
         <ResourceDictionary Source="/Tai;component/Themes/Base/Img.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Base/CheckBox.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Base/Text.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Base/View.xaml"/>
 
         <ResourceDictionary Source="/Tai;component/Themes/PageContainer.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/Charts.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeA.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeCard.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeMonth.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeColumn.xaml"/>
 
         <ResourceDictionary Source="/Tai;component/Themes/Tabbar/Tabbar.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/DatePickerBar/DatePickerBar.xaml"/>
@@ -34,6 +36,7 @@
         <ResourceDictionary Source="/Tai;component/Themes/Select/Select.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Select/Option.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Select/ImageSelect.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Select/DateSelect.xaml"/>
 
     </ResourceDictionary.MergedDictionaries>
 

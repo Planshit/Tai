@@ -10,6 +10,15 @@ namespace UI.Controls.Select
 {
     public class Select : Control
     {
+        public bool IsShowIcon
+        {
+            get { return (bool)GetValue(IsShowIconProperty); }
+            set { SetValue(IsShowIconProperty, value); }
+        }
+        public static readonly DependencyProperty IsShowIconProperty =
+            DependencyProperty.Register("IsShowIcon",
+                typeof(bool),
+                typeof(Select), new PropertyMetadata(true));
         public bool IsOpen
         {
             get { return (bool)GetValue(IsOpenProperty); }
@@ -84,6 +93,7 @@ namespace UI.Controls.Select
             {
                 var option = new Option();
                 option.Value = item;
+                option.IsShowIcon = IsShowIcon;
                 option.IsChecked = SelectedItem?.Name == item.Name;
                 option.MouseLeftButtonUp += Option_MouseLeftButtonUp; ;
                 _optionsContainer.Children.Add(option);
@@ -102,6 +112,10 @@ namespace UI.Controls.Select
 
         private void OnSelectedItemChange()
         {
+            if (_optionsContainer == null || SelectedItem == null)
+            {
+                return;
+            }
             foreach (Option option in _optionsContainer.Children)
             {
                 option.IsChecked = SelectedItem.Name == option.Value.Name;

@@ -15,13 +15,13 @@ namespace Core.Librarys.Image
 {
     public class Imager
     {
-        public static BitmapImage Load(string filePath)
+        public static BitmapImage Load(string filePath, string defaultPath = "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png")
         {
             try
             {
-                if (filePath == null)
+                if (string.IsNullOrEmpty(filePath))
                 {
-                    return null;
+                    throw new ArgumentNullException(nameof(filePath));
                 }
 
                 var bitmap = new BitmapImage();
@@ -63,7 +63,7 @@ namespace Core.Librarys.Image
                 var bitmap = new BitmapImage();
                 bitmap.BeginInit();
 
-                StreamResourceInfo info = Application.GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png", UriKind.RelativeOrAbsolute));
+                StreamResourceInfo info = Application.GetResourceStream(new Uri(defaultPath, UriKind.RelativeOrAbsolute));
                 using (var st = info.Stream)
                 {
                     bitmap.StreamSource = st;

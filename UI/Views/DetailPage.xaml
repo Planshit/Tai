@@ -69,7 +69,7 @@
                                 <TextBlock Text="{Binding Process.Data.AppModel.Category.Name}"  VerticalAlignment="Center" Margin="5,0,0,0"/>
                             </StackPanel>
                         </Border>-->
-                        <Select:Select ToolTip="分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categorys}"/>
+                        <Select:Select Margin="0,10,0,0" ToolTip="分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categorys}"/>
 
                     </StackPanel>
 

@@ -74,6 +74,7 @@ namespace UI.ViewModels
             IndexUriList.Add(nameof(IndexPage));
             IndexUriList.Add(nameof(DataPage));
             IndexUriList.Add(nameof(CategoryPage));
+            IndexUriList.Add(nameof(ChartPage));
 
 
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
@@ -89,7 +90,7 @@ namespace UI.ViewModels
                 Icon = Controls.Base.IconTypes.BIDashboard,
                 Title = "统计",
                 ID = 1,
-                Uri = nameof(DataPage),
+                Uri = nameof(ChartPage),
 
             });
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()

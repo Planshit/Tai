@@ -1,0 +1,51 @@
+﻿<Page x:Class="UI.Views.ChartPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:UI.Views" xmlns:charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:select="clr-namespace:UI.Controls.Select" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:DatePickerBar="clr-namespace:UI.Controls.DatePickerBar"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ChartPage">
+
+    <Grid>
+        <StackPanel Margin="20">
+            <TextBlock Text="统计" FontSize="18" Margin="0,5,0,20"/>
+            <Tabbar:Tabbar Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
+            <Border>
+                <Grid>
+                    <!--按天-->
+                    <base:View Condition="0" Value="{Binding TabbarSelectedIndex}">
+                        <select:DateSelect Date="{Binding Date,Mode=TwoWay}"/>
+                    </base:View>
+
+                    <!--按周-->
+                    <base:View Condition="1" Value="{Binding TabbarSelectedIndex}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <select:Select  IsShowIcon="False" SelectedItem="{Binding SelectedWeek,Mode=TwoWay}" Options="{Binding WeekOptions}"/>
+                            <TextBlock Foreground="#626262" Margin="20,0,0,0" FontSize="14" Text="{Binding WeekDateStr}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </base:View>
+                    <!--按月-->
+                    <base:View Condition="2" Value="{Binding TabbarSelectedIndex}">
+                        <select:DateSelect Date="{Binding MonthDate,Mode=TwoWay}" SelectType="Month"/>
+
+                    </base:View>
+                    <!--按年-->
+                    <base:View Condition="3" Value="{Binding TabbarSelectedIndex}">
+                        <select:DateSelect Date="{Binding YearDate,Mode=TwoWay}" SelectType="Year"/>
+
+                    </base:View>
+                </Grid>
+            </Border>
+            <Border Margin="0,20,0,0" Height="330" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
+                <charts:Charts NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}"/>
+
+            </Border>
+            <TextBlock Text="最为频繁" FontSize="15" Margin="0,20,0,5"/>
+            <Border Margin="0,10,0,0" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
+                <charts:Charts IsCanScroll="False" Height="180" Data="{Binding TopData}" ChartsType="HorizontalA" ShowLimit="3" ClickCommand="{Binding ToDetailCommand}"/>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Page>

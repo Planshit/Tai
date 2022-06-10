@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Data.Entity;
 using System.Windows.Threading;
+using Core.Models.Data;
+using Core.Librarys;
 
 namespace Core.Servicers.Instances
 {
@@ -98,38 +100,22 @@ namespace Core.Servicers.Instances
             }
         }
 
-        public IEnumerable<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end)
+        public IEnumerable<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end, int take = -1)
         {
 
             IEnumerable<AppModel> apps = appData.GetAllApps();
 
-            //using (var db = new StatisticContext())
-            //{
-
-
-            //    //var test = db.DailyLog.Include(m=>m.AppModel).Where(m => m.AppModelID != 0).Take(4).ToList();
-            //    //var res = db.DailyLog.Include(m => m.AppModel).SqlQuery("Select *,Sum(Time) as Time,DailyLogModels.ID,AppModelID,Date,AppModels.ID,AppModels.Name,AppModels.Description,AppModels.File,AppModels.CategoryID,AppModels.IconFile,AppModels.TotalTime from DailyLogModels  LEFT OUTER JOIN AppModels ON AppModels.ID=DailyLogModels.ID WHERE AppModelID<>0 AND Date between '" + start.ToString("yyyy-MM-dd HH:mm:ss") + "' AND '" + end.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY AppModelID ").ToList();
             using (var db = new TaiDbContext())
             {
-                //var res = db.DailyLog
-                //.Include(m => m.AppModel)
-                //.Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
-                //.GroupBy(m => m.AppModelID)
-                //.Select(m => new
-                //{
-                //    Time = m.Sum(a => a.Time),
-                //    App = m.FirstOrDefault().AppModel,
-                //    Date = m.FirstOrDefault().Date,
-                //})
-                //.ToList()
-                //.Select(m => new DailyLogModel
-                //{
-                //    Time = m.Time,
-                //    AppModel = m.App,
-                //    Date = m.Date
-                //});
-
-                var res = db.DailyLog
+                var data = take == -1 ? db.DailyLog
+                .Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
+                .GroupBy(m => m.AppModelID)
+                .Select(m => new
+                {
+                    Time = m.Sum(a => a.Time),
+                    Date = m.FirstOrDefault().Date,
+                    AppID = m.FirstOrDefault().AppModelID
+                }) : db.DailyLog
                 .Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
                 .GroupBy(m => m.AppModelID)
                 .Select(m => new
@@ -138,6 +124,9 @@ namespace Core.Servicers.Instances
                     Date = m.FirstOrDefault().Date,
                     AppID = m.FirstOrDefault().AppModelID
                 })
+                .Take(take);
+
+                var res = data
                 .ToList()
                 .Select(m => new DailyLogModel
                 {
@@ -304,6 +293,151 @@ namespace Core.Servicers.Instances
             }
         }
 
+        public struct CategoryHoursDataModel
+        {
+            public int Total { get; set; }
+            public int CategoryID { get; set; }
+            public DateTime Time { get; set; }
 
+        }
+
+        public List<CategoryChartDataModel> GetCategoryHoursData(DateTime date)
+        {
+            using (var db = new TaiDbContext())
+            {
+                //  查出有数据的分类
+                //var res = db.Database.SqlQuery<CategoryHoursDataModel>("select AppModels.CategoryID,HoursLogModels.DataTime as Time from HoursLogModels join AppModels on AppModels.ID=HoursLogModels.AppModelID where HoursLogModels.AppModelID<>0 and AppModels.CategoryID<>0 and HoursLogModels.DataTime>='" + start.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and HoursLogModels.DataTime<= '"+ end.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY AppModels.CategoryID").ToArray();
+                var categorys = db.Database.SqlQuery<CategoryHoursDataModel>("select sum(Time) as Total,AppModels.CategoryID,HoursLogModels.DataTime as Time from HoursLogModels join AppModels on AppModels.ID=HoursLogModels.AppModelID where AppModels.CategoryID<>0 and HoursLogModels.DataTime>='" + date.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and HoursLogModels.DataTime<= '" + date.Date.ToString("yyyy-MM-dd 23:59:59") + "' GROUP BY AppModels.CategoryID ").ToArray();
+
+
+                var data = db.Database.SqlQuery<CategoryHoursDataModel>("select sum(Time) as Total,AppModels.CategoryID,HoursLogModels.DataTime as Time from HoursLogModels join AppModels on AppModels.ID=HoursLogModels.AppModelID where AppModels.CategoryID<>0 and HoursLogModels.DataTime>='" + date.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and HoursLogModels.DataTime<= '" + date.Date.ToString("yyyy-MM-dd 23:59:59") + "' GROUP BY AppModels.CategoryID,HoursLogModels.DataTime ").ToArray();
+
+
+                List<CategoryChartDataModel> list = new List<CategoryChartDataModel>();
+
+                foreach (var category in categorys)
+                {
+                    list.Add(new CategoryChartDataModel()
+                    {
+                        CategoryID = category.CategoryID,
+                        Values = new double[24]
+                    });
+                }
+
+                for (int i = 0; i < 24; i++)
+                {
+                    string hours = i < 10 ? "0" + i : i.ToString();
+                    var time = date.ToString($"yyyy-MM-dd {hours}:00:00");
+                    foreach (var category in categorys)
+                    {
+                        var log = data.Where(m => m.CategoryID == category.CategoryID && m.Time.ToString("yyyy-MM-dd HH:00:00") == time).FirstOrDefault();
+
+                        var item = list.Where(m => m.CategoryID == category.CategoryID).FirstOrDefault();
+
+                        item.Values[i] = log.Total;
+                    }
+                }
+                return list;
+            }
+        }
+
+        public List<CategoryChartDataModel> GetCategoryRangeData(DateTime start, DateTime end)
+        {
+            using (var db = new TaiDbContext())
+            {
+                //  查出有数据的分类
+
+                var categorys = db.Database.SqlQuery<CategoryHoursDataModel>("select sum(Time) as Total,AppModels.CategoryID,DailyLogModels.Date as Time from DailyLogModels join AppModels on AppModels.ID=DailyLogModels.AppModelID where AppModels.CategoryID<>0 and DailyLogModels.Date>='" + start.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DailyLogModels.Date<= '" + end.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY AppModels.CategoryID").ToArray();
+
+
+                var data = db.Database.SqlQuery<CategoryHoursDataModel>("select sum(Time) as Total,AppModels.CategoryID,DailyLogModels.Date as Time from DailyLogModels join AppModels on AppModels.ID=DailyLogModels.AppModelID where AppModels.CategoryID<>0 and DailyLogModels.Date>='" + start.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DailyLogModels.Date<= '" + end.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY AppModels.CategoryID,DailyLogModels.Date ").ToArray();
+
+
+                var ts = end - start;
+                var days = ts.TotalDays + 1;
+
+
+                List<CategoryChartDataModel> list = new List<CategoryChartDataModel>();
+
+
+                foreach (var category in categorys)
+                {
+                    list.Add(new CategoryChartDataModel()
+                    {
+                        CategoryID = category.CategoryID,
+                        Values = new double[(int)days]
+                    });
+                }
+
+
+
+                for (int i = 0; i < days; i++)
+                {
+                    string day = i < 10 ? "0" + i : i.ToString();
+                    var time = start.AddDays(i).ToString($"yyyy-MM-dd 00:00:00");
+                    Debug.WriteLine(time);
+                    foreach (var category in categorys)
+                    {
+                        var log = data.Where(m => m.CategoryID == category.CategoryID && m.Time.ToString("yyyy-MM-dd 00:00:00") == time).FirstOrDefault();
+
+                        var item = list.Where(m => m.CategoryID == category.CategoryID).FirstOrDefault();
+
+                        item.Values[i] = log.Total;
+                    }
+                }
+                return list;
+            }
+        }
+
+        public List<CategoryChartDataModel> GetCategoryYearData(DateTime date)
+        {
+            using (var db = new TaiDbContext())
+            {
+                //  查出有数据的分类
+
+                var dateArr = Time.GetYearDate(date);
+
+                var categorys = db.Database.SqlQuery<CategoryHoursDataModel>("select sum(Time) as Total,AppModels.CategoryID,DailyLogModels.Date as Time from DailyLogModels join AppModels on AppModels.ID=DailyLogModels.AppModelID where AppModels.CategoryID<>0 and DailyLogModels.Date>='" + dateArr[0].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DailyLogModels.Date<= '" + dateArr[1].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY AppModels.CategoryID").ToArray();
+
+
+                var data = db.Database.SqlQuery<CategoryHoursDataModel>("select sum(Time) as Total,AppModels.CategoryID,DailyLogModels.Date as Time from DailyLogModels join AppModels on AppModels.ID=DailyLogModels.AppModelID where AppModels.CategoryID<>0 and DailyLogModels.Date>='" + dateArr[0].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DailyLogModels.Date<= '" + dateArr[1].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY AppModels.CategoryID,DailyLogModels.Date ").ToArray();
+
+
+                //var ts = end - start;
+                //var days = ts.TotalDays + 1;
+
+
+                List<CategoryChartDataModel> list = new List<CategoryChartDataModel>();
+
+
+                foreach (var category in categorys)
+                {
+                    list.Add(new CategoryChartDataModel()
+                    {
+                        CategoryID = category.CategoryID,
+                        Values = new double[12]
+                    });
+                }
+
+
+
+                for (int i = 1; i < 13; i++)
+                {
+                    string month = i < 10 ? "0" + i : i.ToString();
+                    var dayArr = Time.GetMonthDate(new DateTime(date.Year, i, 1));
+
+                    Debug.WriteLine(dayArr);
+                    foreach (var category in categorys)
+                    {
+                        var total = data.Where(m => m.CategoryID == category.CategoryID && m.Time >= dayArr[0] && m.Time <= dayArr[1]).Sum(m => m.Total);
+
+                        var item = list.Where(m => m.CategoryID == category.CategoryID).FirstOrDefault();
+
+                        item.Values[i - 1] = total;
+                    }
+                }
+                return list;
+            }
+        }
     }
 }

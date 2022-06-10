@@ -18,7 +18,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
 
-                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="*"/>
 
                                 </Grid.ColumnDefinitions>
@@ -50,7 +50,7 @@
                                     </Grid>
                                 </Border>
                                 <!--图标-->
-                                <Border Grid.Column="1" Margin="5,0,0,0">
+                                <Border Grid.Column="1" Margin="5,0,0,0" x:Name="Img">
                                     <base:Img URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Option}}, Path=Value.Img}" Width="25" Height="25"  VerticalAlignment="Center"/>
                                 </Border>
                                 <!--文字-->
@@ -65,6 +65,9 @@
 
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsShowIcon" Value="False">
+                            <Setter Property="Visibility" TargetName="Img" Value="Collapsed"/>
+                        </Trigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="CheckStyle" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="UnCheckStyle" Property="Visibility" Value="Collapsed"/>

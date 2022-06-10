@@ -1,4 +1,5 @@
 ﻿using Core.Models;
+using Core.Models.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace Core.Servicers.Interfaces
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        IEnumerable<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end);
+        IEnumerable<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end, int take = -1);
 
         /// <summary>
         /// 获取本周的数据
@@ -71,5 +72,25 @@ namespace Core.Servicers.Interfaces
         /// <param name="day"></param>
         /// <returns></returns>
         DailyLogModel GetProcess(int appID, DateTime day);
+
+        /// <summary>
+        /// 获取指定日期所有分类时段统计数据
+        /// </summary>
+        /// <returns></returns>
+        List<CategoryChartDataModel> GetCategoryHoursData(DateTime date);
+        /// <summary>
+        /// 获取指定日期范围所有分类按天统计数据
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        List<CategoryChartDataModel> GetCategoryRangeData(DateTime start, DateTime end);
+        /// <summary>
+        /// 获取指定年份所有分类按月份统计数据
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        List<CategoryChartDataModel> GetCategoryYearData(DateTime date);
+
     }
 }

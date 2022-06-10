@@ -13,16 +13,44 @@
                 <ControlTemplate TargetType="{x:Type local:EmptyData}">
                     <Border >
 
-                        <StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
                             <Grid>
-                                <local:Icon IconType="Preview" FontSize="100" Foreground="Gray" RenderTransformOrigin=".5,.5" Opacity=".3">
-                                    <local:Icon.RenderTransform>
-                                        <RotateTransform Angle="90" />
-                                    </local:Icon.RenderTransform>
-                                </local:Icon>
+                                <Border Background="White" BorderThickness="4" CornerRadius="10" Width="100" Height="100">
+                                    <Border.RenderTransform>
+                                        <RotateTransform Angle="5"/>
+                                    </Border.RenderTransform>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#d8d2d2" BlurRadius="10" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                    </Border.Effect>
+                                    <StackPanel>
+                                        <Border Background="#c4c4c4" BorderThickness="4" CornerRadius="6" Height="20" Margin="5"/>
+                                        <Border Background="#f0f0f0" BorderThickness="4" CornerRadius="6" Height="40" Margin="5"/>
+                                    </StackPanel>
+                                    
+                                </Border>
+                                <Border HorizontalAlignment="Left" Margin="30,0,0,30" Background="White" BorderThickness="4" CornerRadius="10" Width="100" Height="100">
+                                   
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#d8d2d2" BlurRadius="10" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                    </Border.Effect>
+                                    <StackPanel>
+                                        <Border Background="#c4c4c4" BorderThickness="4" CornerRadius="6" Height="20" Margin="5"/>
+                                        <Border Background="#f0f0f0" BorderThickness="4" CornerRadius="6" Height="40" Margin="5">
+                                            <TextBlock Foreground="Gray" Opacity=".4" Text="Tai" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                </Border>
                             </Grid>
-                            <TextBlock Text="暂时没有数据" HorizontalAlignment="Center" Foreground="Gray" Opacity=".3"/>
-                        </StackPanel>
+                            <Border  Grid.Row="1"  Margin="0,10,0,0">
+                                <TextBlock VerticalAlignment="Center" Text="暂时没有数据" FontSize="12" Margin="0,10" HorizontalAlignment="Center" Foreground="Gray" Opacity=".7"/>
+
+                            </Border>
+                        </Grid>
 
                     </Border>
 

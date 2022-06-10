@@ -51,6 +51,11 @@ namespace UI
 
             DispatcherUnhandledException += App_DispatcherUnhandledException;
 
+#if DEBUG
+            DispatcherUnhandledException -= App_DispatcherUnhandledException;
+
+#endif
+
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             serviceProvider = serviceCollection.BuildServiceProvider();
@@ -183,6 +188,7 @@ namespace UI
             services.AddSingleton<IAppConfig, AppConfig>();
             services.AddSingleton<IDateObserver, DateObserver>();
             services.AddSingleton<IAppData, AppData>();
+            services.AddSingleton<ICategorys, Categorys>();
 
             //  主窗口
             services.AddSingleton<MainViewModel>();
@@ -203,6 +209,18 @@ namespace UI
             //  详情页
             services.AddTransient<DetailPage>();
             services.AddTransient<DetailPageVM>();
+
+            //  分类
+            services.AddTransient<CategoryPage>();
+            services.AddTransient<CategoryPageVM>();
+
+            //  分类app
+            services.AddTransient<CategoryAppListPage>();
+            services.AddTransient<CategoryAppListPageVM>();
+
+            //  图表
+            services.AddTransient<ChartPage>();
+            services.AddTransient<ChartPageVM>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)

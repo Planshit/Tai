@@ -21,6 +21,16 @@ namespace UI.Controls.Button
             DependencyProperty.Register("Command",
                 typeof(ICommand),
                 typeof(IconButton));
+
+        public object CommandParameter
+        {
+            get { return (object)GetValue(CommandParameterProperty); }
+            set { SetValue(CommandParameterProperty, value); }
+        }
+        public static readonly DependencyProperty CommandParameterProperty =
+            DependencyProperty.Register("CommandParameter",
+                typeof(object),
+                typeof(IconButton));
         public IconTypes Icon
         {
             get { return (IconTypes)GetValue(IconProperty); }
@@ -39,7 +49,7 @@ namespace UI.Controls.Button
         {
             base.OnMouseLeftButtonUp(e);
 
-            Command?.Execute(null);
+            Command?.Execute(CommandParameter);
         }
         protected override void OnMouseEnter(MouseEventArgs e)
         {

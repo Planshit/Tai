@@ -43,5 +43,18 @@ namespace UI.Controls.Charts.Model
         /// 数据模型
         /// </summary>
         public object Data { get; set; }
+
+        /// <summary>
+        /// 值
+        /// </summary>
+        public double[] Values { get; set; }
+        /// <summary>
+        /// 列名
+        /// </summary>
+        public string[] ColumnNames { get; set; }
+        /// <summary>
+        /// 颜色
+        /// </summary>
+        public string Color { get; set; }
     }
 }
