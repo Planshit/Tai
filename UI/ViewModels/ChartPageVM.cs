@@ -174,15 +174,17 @@ namespace UI.ViewModels
                 foreach (var item in list)
                 {
                     var category = categorys.GetCategory(item.CategoryID);
-
-                    chartData.Add(new ChartsDataModel()
+                    if (category != null)
                     {
+                        chartData.Add(new ChartsDataModel()
+                        {
 
-                        Name = category.Name,
-                        Icon = category.IconFile,
-                        Values = item.Values,
-                        ColumnNames = weekNames
-                    });
+                            Name = category.Name,
+                            Icon = category.IconFile,
+                            Values = item.Values,
+                            ColumnNames = weekNames
+                        });
+                    }
                 }
 
                 Data = chartData;
@@ -209,14 +211,16 @@ namespace UI.ViewModels
                 foreach (var item in list)
                 {
                     var category = categorys.GetCategory(item.CategoryID);
-
-                    chartData.Add(new ChartsDataModel()
+                    if (category != null)
                     {
+                        chartData.Add(new ChartsDataModel()
+                        {
 
-                        Name = category.Name,
-                        Icon = category.IconFile,
-                        Values = item.Values,
-                    });
+                            Name = category.Name,
+                            Icon = category.IconFile,
+                            Values = item.Values,
+                        });
+                    }
                 }
 
                 Data = chartData;
@@ -246,15 +250,17 @@ namespace UI.ViewModels
                 foreach (var item in list)
                 {
                     var category = categorys.GetCategory(item.CategoryID);
-
-                    chartData.Add(new ChartsDataModel()
+                    if (category != null)
                     {
+                        chartData.Add(new ChartsDataModel()
+                        {
 
-                        Name = category.Name,
-                        Icon = category.IconFile,
-                        Values = item.Values,
-                        ColumnNames = names
-                    });
+                            Name = category.Name,
+                            Icon = category.IconFile,
+                            Values = item.Values,
+                            ColumnNames = names
+                        });
+                    }
                 }
 
                 Data = chartData;
@@ -307,7 +313,7 @@ namespace UI.ViewModels
 
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = item.AppModel?.Name;
+                bindModel.Name = item.AppModel?.Description;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);
                 bindModel.PopupText = item.AppModel?.File;

@@ -53,6 +53,9 @@
             <TextBlock Text="管理所有应用分类"/>
             <Button:Button Content="创建分类" HorizontalAlignment="Right" Width="150" Command="{Binding EditCommand}"/>
 
+            <base:View Condition="empty" Value="{Binding Data}">
+                <base:EmptyData/>
+            </base:View>
 
             <ListView Margin="10,20,10,0" ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedItem,Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
                 <i:Interaction.Triggers>
@@ -92,12 +95,17 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="5" CornerRadius="10">
-                                        <Border.Effect>
-                                            <DropShadowEffect Color="#d8d2d2" BlurRadius="10" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
-                                        </Border.Effect>
-                                        <ContentPresenter/>
-                                    </Border>
+                                    <Grid>
+                                        <Border BorderBrush="{Binding ElementName=Border,Path=BorderBrush}" BorderThickness="{Binding ElementName=Border,Path=BorderThickness}" Background="{Binding ElementName=Border,Path=Background}" Margin="{Binding ElementName=Border,Path=Margin}" CornerRadius="{Binding ElementName=Border,Path=CornerRadius}">
+                                            <Border.Effect>
+                                                <DropShadowEffect Color="#d8d2d2" BlurRadius="10" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                            </Border.Effect>
+                                        </Border>
+                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="5" CornerRadius="10">
+                                            <ContentPresenter/>
+                                        </Border>
+                                    </Grid>
+
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <!--<Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>-->
@@ -130,7 +138,7 @@
 
                                     </Grid.RowDefinitions>
                                     <Border>
-                                        <base:Img Width="50" Height="50" URL="{Binding Data.IconFile}"/>
+                                        <base:Img Radius="10" Width="50" Height="50" URL="{Binding Data.IconFile}"/>
                                     </Border>
                                     <TextBlock Foreground="#202020" HorizontalAlignment="Center" Grid.Row="1" Text="{Binding Data.Name}"  FontSize="14"/>
 

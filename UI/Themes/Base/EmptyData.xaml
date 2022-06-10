@@ -6,7 +6,8 @@
           Value="true" />
         <Setter Property="HorizontalAlignment"
           Value="Left" />
-
+        <Setter Property="ToolTip"
+          Value="什么都没有" />
 
         <Setter Property="Template">
             <Setter.Value>

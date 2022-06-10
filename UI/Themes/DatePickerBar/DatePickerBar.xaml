@@ -15,16 +15,30 @@
                         <StackPanel>
                             <Grid x:Name="header">
                                 <Border
+                                    Width="{Binding ElementName=Date,Path=ActualWidth}"
+                                    Height="{Binding ElementName=Date,Path=ActualHeight}"
+                                    Background="{Binding ElementName=Date,Path=Background}"
+                                    CornerRadius="{Binding ElementName=Date,Path=CornerRadius}"
+                                    Padding="{Binding ElementName=Date,Path=Padding}"
+                                    Margin="{Binding ElementName=Date,Path=Margin}"
+                                    
+                                    HorizontalAlignment="Left"
+                                   >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                    </Border.Effect>
+                                </Border>
+                                <Border
                                     x:Name="Date"
                                     Background="White"
-                                    Padding="15,10"
+                                    Padding="15,8"
                                     CornerRadius="12"
                                     Margin="0,0,0,10"
                                     HorizontalAlignment="Left"
                                     ToolTip="选择">
-                                    <Border.Effect>
+                                    <!--<Border.Effect>
                                         <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
-                                    </Border.Effect>
+                                    </Border.Effect>-->
                                     <StackPanel Orientation="Horizontal" >
                                         <base:Icon x:Name="DateIcon" Margin="0,0,5,0" IconType="DateTime" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Right"/>
 

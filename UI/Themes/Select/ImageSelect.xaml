@@ -30,7 +30,7 @@
                                 </Grid>
                             </Border>
                             <Border x:Name="Img" BorderBrush="#f7f8fa" BorderThickness="1" CornerRadius="10" Padding="10">
-                                <base:Img URL="{TemplateBinding URL}" Width="{TemplateBinding ImageWidth}" Height="{TemplateBinding ImageHeight}"/>
+                                <base:Img URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ImageSelect}}, Path=URL,Mode=TwoWay}" Width="{TemplateBinding ImageWidth}" Height="{TemplateBinding ImageHeight}"/>
                             </Border>
 
                         </Grid>

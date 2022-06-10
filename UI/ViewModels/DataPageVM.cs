@@ -181,7 +181,7 @@ namespace UI.ViewModels
 
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = item.AppModel?.Name;
+                bindModel.Name = item.AppModel?.Description;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);
                 bindModel.PopupText = item.AppModel?.File;

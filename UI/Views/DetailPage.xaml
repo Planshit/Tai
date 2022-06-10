@@ -21,10 +21,10 @@
                 Padding="0,20">
                 <Border.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open exe"  Header="打开程序"/>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制进程名称"/>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制进程路径"/>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开进程所在目录"/>
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open exe"  Header="启动应用"/>
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制应用进程名称"/>
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制应用文件路径"/>
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开应用所在目录"/>
                     </ContextMenu>
                 </Border.ContextMenu>
                 <Grid>
@@ -34,9 +34,9 @@
                         <ColumnDefinition Width="3*"/>
 
                     </Grid.ColumnDefinitions>
-                    <base:Img URL="{Binding App.IconFile}" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <base:Img URL="{Binding App.IconFile}" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <!--<Image Source="{Binding Process.Icon}" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
-
+                   
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                         <!--<StackPanel Orientation="Horizontal">
                             <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,4,0" VerticalAlignment="Center" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该进程将不再统计使用时长">
@@ -49,17 +49,17 @@
                             <TextBlock ToolTip="进程名" Text="{Binding ProcessName}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
                         </StackPanel>-->
-                        <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该进程将不再统计使用时长">
+                        <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该应用将不再统计使用时长">
                             <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
                                 <base:Icon IconType="Blocked" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
                                 <TextBlock Text="已被忽略" Foreground="White" VerticalAlignment="Center" Margin="5,0,0,0"/>
                             </StackPanel>
                         </Border>
 
-                        <TextBlock ToolTip="描述" Grid.Column="1" Text="{Binding App.Description}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                        <TextBlock ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
 
-                        <TextBlock ToolTip="进程名" Text="{Binding App.Name}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
-                        <TextBlock ToolTip="进程文件路径"  Foreground="Gray" Text="{Binding App.File}"  Margin="0,5,0,0" TextWrapping="WrapWithOverflow"/>
+                        <TextBlock ToolTip="应用进程名称" Text="{Binding App.Name}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                        <TextBlock ToolTip="应用文件路径"  Foreground="Gray" Text="{Binding App.File}"  Margin="0,5,0,0" TextWrapping="WrapWithOverflow"/>
                         <!--分类-->
 
                         <!--<Border Margin="0,10,0,0" Background="#f9f9f9" HorizontalAlignment="Left" Padding="5" CornerRadius="5">
@@ -69,13 +69,17 @@
                                 <TextBlock Text="{Binding Process.Data.AppModel.Category.Name}"  VerticalAlignment="Center" Margin="5,0,0,0"/>
                             </StackPanel>
                         </Border>-->
-                        <Select:Select Margin="0,10,0,0" ToolTip="分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categorys}"/>
+
+                        <base:View Condition="not null" Value="{Binding Category}">
+                            <Select:Select Margin="0,10,0,0" ToolTip="分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categorys}"/>
+
+                        </base:View>
 
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,20,0">
-                        <btn:Button Command="{Binding BlockActionCommand}" CommandParameter="block" Width="120" Visibility="{Binding BlockBtnVisibility}" Icon="Blocked">忽略此进程</btn:Button>
-                        <btn:Button Command="{Binding BlockActionCommand}"  CommandParameter="unblock" Width="120" Visibility="{Binding CancelBlockBtnVisibility}" Icon="Remove">取消忽略此进程</btn:Button>
+                        <btn:Button Command="{Binding BlockActionCommand}" CommandParameter="block" Width="120" Visibility="{Binding BlockBtnVisibility}" Icon="Blocked">忽略此应用</btn:Button>
+                        <btn:Button Command="{Binding BlockActionCommand}"  CommandParameter="unblock" Width="120" Visibility="{Binding CancelBlockBtnVisibility}" Icon="Remove">取消忽略</btn:Button>
 
                     </StackPanel>
                 </Grid>
@@ -113,7 +117,7 @@
                     <Grid>
                         <DatePickerBar:DatePickerBar ShowType="Month" HorizontalAlignment="Left" SelectedDate="{Binding Date,Mode=TwoWay}"/>
 
-                        <btn:Button ToolTip="清空此进程在该月的统计数据" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#f51837" Foreground="White" Width="120" Margin="0" Icon="Delete" Command="{Binding ClearSelectMonthDataCommand}">清空统计</btn:Button>
+                        <btn:Button ToolTip="清空此应用在该月的统计数据" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#f51837" Foreground="White" Width="120" Margin="0" Icon="Delete" Command="{Binding ClearSelectMonthDataCommand}">清空统计</btn:Button>
 
                     </Grid>
                     <Grid  Margin="0,20,0,0">

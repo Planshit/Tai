@@ -19,14 +19,14 @@
             </Grid.RowDefinitions>
             <TextBlock Text="详细" FontSize="18" Margin="0,5,0,20"/>
 
-            <Tabbar:Tabbar Grid.Row="1" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
+            <Tabbar:Tabbar Width="245" HorizontalAlignment="Left" Grid.Row="1" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
 
 
             <TabControl 
                 Grid.Row="2"
                 SelectedIndex="{Binding TabbarSelectedIndex}"
                 BorderThickness="0"
-                Margin="0"
+                Margin="0,15,0,0"
                 Padding="0"
                 Background="Transparent"
                 >

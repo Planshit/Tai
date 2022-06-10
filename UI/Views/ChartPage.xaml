@@ -11,8 +11,8 @@
     <Grid>
         <StackPanel Margin="20">
             <TextBlock Text="统计" FontSize="18" Margin="0,5,0,20"/>
-            <Tabbar:Tabbar Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
-            <Border>
+            <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
+            <Border Margin="0,15,0,0">
                 <Grid>
                     <!--按天-->
                     <base:View Condition="0" Value="{Binding TabbarSelectedIndex}">

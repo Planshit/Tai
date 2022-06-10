@@ -23,7 +23,7 @@ namespace UI.Models
         //private List<AppModel> ChooseAppList_;
         //public List<AppModel> ChooseAppList { get { return ChooseAppList_; } set { ChooseAppList_ = value; OnPropertyChanged(); } }
 
-        private Visibility ChooseVisibility_ = Visibility.Collapsed;
+        private Visibility ChooseVisibility_ = Visibility.Hidden;
         public Visibility ChooseVisibility { get { return ChooseVisibility_; } set { ChooseVisibility_ = value; OnPropertyChanged(); } }
 
         private AppModel SelectedItem_;

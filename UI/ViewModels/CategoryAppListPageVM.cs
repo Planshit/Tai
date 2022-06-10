@@ -29,6 +29,7 @@ namespace UI.ViewModels
             ShowChooseCommand = new Command(new Action<object>(OnShowChoose));
             ChoosedCommand = new Command(new Action<object>(OnChoosed));
             GotoDetailCommand = new Command(new Action<object>(OnGotoDetail));
+
             LoadData();
         }
 
@@ -82,28 +83,59 @@ namespace UI.ViewModels
         private void OnShowChoose(object obj)
         {
             ChooseVisibility = System.Windows.Visibility.Visible;
+
+
+            LoadApps();
+
         }
 
 
         private void LoadData()
         {
-            Category = mainVM.Data as UI.Models.Category.CategoryModel;
-            Data = appData.GetAppsByCategoryID(Category.Data.ID);
-
-            var appList = new List<ChooseAppModel>();
-            foreach (var item in appData.GetAllApps())
+            Task.Run(() =>
             {
-                var app = new ChooseAppModel();
-                app.App = item;
-                app.IsChoosed = item.CategoryID == Category.Data.ID;
-                app.Value.Name = item.Name;
-                app.Value.Img = item.IconFile;
+                Category = mainVM.Data as UI.Models.Category.CategoryModel;
+                Data = appData.GetAppsByCategoryID(Category.Data.ID);
 
-                appList.Add(app);
-            }
+                //var appList = new List<ChooseAppModel>();
+                //foreach (var item in appData.GetAllApps())
+                //{
+                //    var app = new ChooseAppModel();
+                //    app.App = item;
+                //    app.IsChoosed = item.CategoryID == Category.Data.ID;
+                //    app.Value.Name = item.Name;
+                //    app.Value.Img = item.IconFile;
 
-            AppList = appList;
-            //ChooseAppList = Data;
+                //    appList.Add(app);
+                //}
+
+                //AppList = appList;
+            });
+        }
+
+        private void LoadApps()
+        {
+            Task.Run(() =>
+            {
+                //Category = mainVM.Data as UI.Models.Category.CategoryModel;
+                if (Category == null)
+                {
+                    return;
+                }
+                var appList = new List<ChooseAppModel>();
+                foreach (var item in appData.GetAllApps())
+                {
+                    var app = new ChooseAppModel();
+                    app.App = item;
+                    app.IsChoosed = item.CategoryID == Category.Data.ID;
+                    app.Value.Name = item.Name;
+                    app.Value.Img = item.IconFile;
+
+                    appList.Add(app);
+                }
+
+                AppList = appList;
+            });
         }
     }
 }

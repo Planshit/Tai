@@ -119,18 +119,27 @@
     <Compile Include="Base\Color\Colors.cs" />
     <Compile Include="Base\Color\ColorTypes.cs" />
     <Compile Include="Controls\Base\EmptyData.cs" />
+    <Compile Include="Controls\Base\CheckBox.cs" />
+    <Compile Include="Controls\Base\Img.cs" />
     <Compile Include="Controls\Base\Placeholder.cs" />
     <Compile Include="Controls\Base\Icon.cs" />
     <Compile Include="Controls\Base\IconConverter.cs" />
     <Compile Include="Controls\Base\IconTypes.cs" />
+    <Compile Include="Controls\Base\Text.cs" />
+    <Compile Include="Controls\Base\View.cs" />
     <Compile Include="Controls\Button\Button.cs" />
     <Compile Include="Controls\Button\IconButton.cs" />
+    <Compile Include="Controls\Charts\ChartDataValueType.cs" />
+    <Compile Include="Controls\Charts\ChartItemTypeColumn.cs" />
     <Compile Include="Controls\Charts\ChartsItemTypeMonth.cs" />
     <Compile Include="Controls\Charts\ChartsItemTypeCard.cs" />
     <Compile Include="Controls\Charts\ChartsItemTypeA.cs" />
     <Compile Include="Controls\Charts\Charts.cs" />
     <Compile Include="Controls\Charts\ChartsType.cs" />
+    <Compile Include="Controls\Charts\Model\ChartColumnInfoModel.cs" />
     <Compile Include="Controls\Charts\Model\ChartsDataModel.cs" />
+    <Compile Include="Controls\Converters\ToStringConverter.cs" />
+    <Compile Include="Controls\Converters\HextoColorConverter.cs" />
     <Compile Include="Controls\DatePickerBar\DatePickerBarItem.cs" />
     <Compile Include="Controls\DatePickerBar\DatePickerShowType.cs" />
     <Compile Include="Controls\Input\InputBox.cs" />
@@ -140,14 +149,26 @@
     <Compile Include="Controls\Navigation\Navigation.cs" />
     <Compile Include="Controls\Navigation\NavigationItem.cs" />
     <Compile Include="Controls\DatePickerBar\DatePickerBar.cs" />
+    <Compile Include="Controls\Select\DateSelect.cs" />
+    <Compile Include="Controls\Select\DateSelectType.cs" />
+    <Compile Include="Controls\Select\ImageSelect.cs" />
+    <Compile Include="Controls\Select\Option.cs" />
+    <Compile Include="Controls\Select\Select.cs" />
+    <Compile Include="Controls\Select\SelectItemModel.cs" />
     <Compile Include="Controls\SettingPanel\SettingPanelMultiItem.cs" />
     <Compile Include="Controls\SettingPanel\SettingPanelItem.cs" />
     <Compile Include="Controls\SettingPanel\SettingPanel.cs" />
     <Compile Include="Controls\Tabbar\Tabbar.cs" />
     <Compile Include="Controls\Toggle\Toggle.cs" />
+    <Compile Include="Controls\Window\ToastType.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Librays\Image\Imager.cs" />
     <Compile Include="Librays\Timer.cs" />
+    <Compile Include="Models\CategoryAppListPageModel.cs" />
+    <Compile Include="Models\CategoryAppList\ChooseAppModel.cs" />
+    <Compile Include="Models\CategoryPageModel.cs" />
+    <Compile Include="Models\Category\CategoryModel.cs" />
+    <Compile Include="Models\ChartPageModel.cs" />
     <Compile Include="Models\DataPageModel.cs" />
     <Compile Include="Models\DetailPageModel.cs" />
     <Compile Include="Models\IndexPageModel.cs" />
@@ -155,11 +176,23 @@
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\SettingPageModel.cs" />
     <Compile Include="Models\UINotifyPropertyChanged.cs" />
+    <Compile Include="ViewModels\CategoryAppListPageVM.cs" />
+    <Compile Include="ViewModels\CategoryPageVM.cs" />
+    <Compile Include="ViewModels\ChartPageVM.cs" />
     <Compile Include="ViewModels\DataPageVM.cs" />
     <Compile Include="ViewModels\DetailPageVM.cs" />
     <Compile Include="ViewModels\IndexPageVM.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingPageVM.cs" />
+    <Compile Include="Views\CategoryAppListPage.xaml.cs">
+      <DependentUpon>CategoryAppListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CategoryPage.xaml.cs">
+      <DependentUpon>CategoryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ChartPage.xaml.cs">
+      <DependentUpon>ChartPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DataPage.xaml.cs">
       <DependentUpon>DataPage.xaml</DependentUpon>
     </Compile>
@@ -193,6 +226,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Base\CheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Base\View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Base\Text.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Base\Img.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\Base\Placeholder.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -202,6 +251,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Button\Button.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Charts\ChartsItemTypeColumn.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -249,6 +302,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Select\Option.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Select\ImageSelect.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Select\DateSelect.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Select\Select.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\SettingPanel\SettingPanelMultiItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -286,6 +355,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Window\HideWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CategoryAppListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CategoryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChartPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

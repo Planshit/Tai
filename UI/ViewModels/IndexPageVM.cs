@@ -93,37 +93,57 @@ namespace UI.ViewModels
         #region 读取数据
 
         #region 本周数据
-        private async void LoadThisWeekData()
+        private void LoadThisWeekData()
         {
+            //IsLoading = true;
+
+            //var task = Task.Run(() =>
+            // {
+            //     var list = data.GetThisWeeklogList();
+            //     var res = MapToChartsData(list);
+            //     IsLoading = false;
+            //     return res;
+
+            // });
+
+            //WeekData = await task;
             IsLoading = true;
 
-            var task = Task.Run(() =>
-             {
-                 var list = data.GetThisWeeklogList();
-                 var res = MapToChartsData(list);
-                 IsLoading = false;
-                 return res;
+            Task.Run(() =>
+               {
+                   var list = data.GetThisWeeklogList();
+                   var res = MapToChartsData(list);
+                   IsLoading = false;
+                   WeekData = res;
+               });
 
-             });
 
-            WeekData = await task;
 
         }
         #endregion
 
 
         #region 上周数据
-        private async void LoadLastWeekData()
+        private void LoadLastWeekData()
         {
+            //IsLoading = true;
+            //var task = Task.Run(() =>
+            // {
+            //     var list = data.GetLastWeeklogList();
+            //     var res = MapToChartsData(list);
+            //     IsLoading = false;
+            //     return res;
+            // });
+            //WeekData = await task;
             IsLoading = true;
-            var task = Task.Run(() =>
-             {
-                 var list = data.GetLastWeeklogList();
-                 var res = MapToChartsData(list);
-                 IsLoading = false;
-                 return res;
-             });
-            WeekData = await task;
+            Task.Run(() =>
+            {
+                var list = data.GetLastWeeklogList();
+                var res = MapToChartsData(list);
+                IsLoading = false;
+                WeekData = res;
+            });
+
         }
         #endregion
 
@@ -136,7 +156,7 @@ namespace UI.ViewModels
             {
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = item.AppModel?.Name;
+                bindModel.Name = item.AppModel?.Description;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);
                 bindModel.PopupText = item.AppModel?.File;

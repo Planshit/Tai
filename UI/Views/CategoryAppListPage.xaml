@@ -53,8 +53,9 @@
                     </ListBox.Resources>
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel/>
-                        </ItemsPanelTemplate>
+                                <VirtualizingStackPanel/>
+                                <!--<StackPanel/>-->
+                            </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -84,6 +85,9 @@
             <TextBlock Text="应用列表"/>
 
             <Button:Button Content="选择" HorizontalAlignment="Right" Width="150" Command="{Binding ShowChooseCommand}"/>
+            <base:View Condition="empty" Value="{Binding Data}">
+                <base:EmptyData/>
+            </base:View>
             <ListView ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedItem,Mode=TwoWay}" Margin="0,20,0,0">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonUp">
@@ -110,12 +114,18 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                    <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="0,0,0,10" Padding="15" CornerRadius="10">
-                                        <Border.Effect>
-                                            <DropShadowEffect Color="#f3f3f3" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.15" RenderingBias="Performance" ></DropShadowEffect>
-                                        </Border.Effect>
+                                    <Grid>
+                                        <Border BorderBrush="{Binding ElementName=Border,Path=BorderBrush}" BorderThickness="{Binding ElementName=Border,Path=BorderThickness}"  Background="{Binding ElementName=Border,Path=Background}" Margin="{Binding ElementName=Border,Path=Margin}" CornerRadius="{Binding ElementName=Border,Path=CornerRadius}">
+                                            <Border.Effect>
+                                                <DropShadowEffect Color="#f3f3f3" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.15" RenderingBias="Performance" ></DropShadowEffect>
+                                            </Border.Effect>
+                                            <ContentPresenter/>
+                                        </Border>
+                                        
+                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="0,0,0,10" Padding="15" CornerRadius="10">
+                                        
                                         <ContentPresenter/>
-                                    </Border>
+                                    </Border></Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <!--<Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>-->
@@ -147,7 +157,7 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border>
-                                        <base:Img Width="25" URL="{Binding IconFile}"/>
+                                        <base:Img Width="25" Height="25" URL="{Binding IconFile}"/>
                                     </Border>
                                     <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Name}" />
 

@@ -79,7 +79,7 @@ namespace UI.ViewModels
                     }
                     else
                     {
-                        main.Toast("进程文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                        main.Toast("应用文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
                     }
                     break;
                 case "open exe":
@@ -89,7 +89,7 @@ namespace UI.ViewModels
                     }
                     else
                     {
-                        main.Toast("进程文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                        main.Toast("应用似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
                     }
                     break;
             }
@@ -241,7 +241,7 @@ namespace UI.ViewModels
                     if (monthData.Count > 0)
                     {
                         var longDayData = monthData.OrderByDescending(m => m.Time).FirstOrDefault();
-                        LongDay = longDayData.Date.ToString("最长一天是在 dd 日，使用了 " + Timer.Fromat(longDayData.Time));
+                        LongDay = longDayData.Date.ToString("最长一天是在 dd 号，使用了 " + Timer.Fromat(longDayData.Time));
 
                     }
 
@@ -293,7 +293,7 @@ namespace UI.ViewModels
             {
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = item.AppModel.Name;
+                bindModel.Name = item.AppModel.Description;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);
                 bindModel.PopupText = item.AppModel.File;

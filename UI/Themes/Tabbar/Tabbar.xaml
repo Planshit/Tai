@@ -13,16 +13,27 @@
                 <ControlTemplate TargetType="{x:Type local:Tabbar}">
                     <Border Background="{TemplateBinding Background}">
                         <Grid>
-                            <Border x:Name="ActiveBlock" Width="35" Height="4" CornerRadius="2" Background="#2b20d9" HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="9" RenderTransformOrigin="0,0">
+                            <Border x:Name="ActiveBlock" Width="35"  CornerRadius="2"  HorizontalAlignment="Left"  VerticalAlignment="Bottom" Panel.ZIndex="9" RenderTransformOrigin="0,0">
                                 <Border.RenderTransform>
                                     <TransformGroup>
                                         <TranslateTransform X="0" Y="0"></TranslateTransform>
                                         <ScaleTransform CenterX="0" CenterY="0" ScaleY="1"/>
                                     </TransformGroup>
                                 </Border.RenderTransform>
+                                <Path 
+                      Width="15"
+                      Height="15"
+                      SnapsToDevicePixels="False"
+                      Data="M 0 15 L 7.5 7.5 L 15 15" Fill="#2b20d9"
+                                        Stroke="#2b20d9"
+                                        StrokeThickness="1"
+                                        />
                             </Border>
-                            <Border Height="30" Margin="0,10,0,20">
-                                <StackPanel Orientation="Horizontal" x:Name="ItemsPanel" VerticalAlignment="Bottom"/>
+                            <Border Height="30" Margin="0,0,0,15">
+                                <Grid x:Name="ItemsContainer">
+                                    
+                                </Grid>
+                                <!--<StackPanel Orientation="Horizontal" x:Name="ItemsPanel" VerticalAlignment="Bottom"/>-->
                             </Border>
                         </Grid>
                     </Border>

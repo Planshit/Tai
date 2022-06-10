@@ -73,6 +73,10 @@ namespace UI.ViewModels
                 //  从界面移除
 
                 Data.Remove(SelectedItem);
+                if (Data.Count == 0)
+                {
+                    Data = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
+                }
                 mainVM.Toast("分类已删除", Controls.Window.ToastType.Success);
 
             }
@@ -117,13 +121,22 @@ namespace UI.ViewModels
                     IconFile = EditIconFile,
                 });
 
-
-                Data.Add(new CategoryModel()
+                var item = new CategoryModel()
                 {
                     Data = res,
                     Count = 0
-                });
-
+                };
+                if (Data.Count == 0)
+                {
+                    //Data=new System.Collections.ObjectModel.ObservableCollection<CategoryModel>()
+                    var list = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
+                    list.Add(item);
+                    Data = list;
+                }
+                else
+                {
+                    Data.Add(item);
+                }
 
             }
             else

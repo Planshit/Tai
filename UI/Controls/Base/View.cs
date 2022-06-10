@@ -38,8 +38,14 @@ namespace UI.Controls.Base
         public View()
         {
             DefaultStyleKey = typeof(View);
+
+            Loaded += View_Loaded;
         }
 
+        private void View_Loaded(object sender, RoutedEventArgs e)
+        {
+            Handle();
+        }
 
         private void Handle()
         {
@@ -64,6 +70,28 @@ namespace UI.Controls.Base
                 {
                     string val = Condition.Substring(Condition.IndexOf("=") + 1);
                     isShow = val == Value.ToString();
+                }
+                else if (Condition.IndexOf("not null") != -1)
+                {
+
+                    isShow = Value != null;
+                }
+                else if (Condition.IndexOf("null") != -1)
+                {
+
+                    isShow = Value == null;
+                }
+                else if (Condition.IndexOf("empty") != -1)
+                {
+                    if (Value == null)
+                    {
+                        isShow = true;
+                    }
+                    else
+                    {
+                        var data = Value as IEnumerable<object>;
+                        isShow = data.Count() == 0;
+                    }
                 }
                 else
                 {

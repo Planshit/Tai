@@ -66,7 +66,7 @@ namespace UI
             base.OnExit(e);
 
 
-            appData.SaveAppChanges();
+            //appData.SaveAppChanges();
 
             Logger.Save(true);
 
@@ -74,7 +74,7 @@ namespace UI
         }
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            appData.SaveAppChanges();
+            //appData.SaveAppChanges();
 
             //  记录崩溃错误
             Logger.Error("[程序崩溃异常] " + e.Exception.Message);

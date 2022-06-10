@@ -25,7 +25,7 @@
                             <Border x:Name="Main" Background="{TemplateBinding Background}" Padding="18,10" CornerRadius="5">
                                 <StackPanel Orientation="Horizontal" >
                                     <!--<TextBlock x:Name="PlaceholderText" Text="请选择" Visibility="Collapsed"/>-->
-                                    <base:Img x:Name="Img" URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Img}" Width="25" Height="25"  VerticalAlignment="Center"/>
+                                    <base:Img x:Name="Img" URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Img}" Width="20" Height="20"  VerticalAlignment="Center"/>
                                     <TextBlock TextOptions.TextFormattingMode="Display" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Name}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                 </StackPanel>
                             </Border>
