@@ -119,7 +119,7 @@ namespace UI
             CreateStatusBarIconMenu();
 
             statusBarIcon = new System.Windows.Forms.NotifyIcon();
-            statusBarIcon.Text = "Tai! [加载中,请稍后...]";
+            //statusBarIcon.Text = "Tai!";
             Stream iconStream = GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/taibusy.ico")).Stream;
             statusBarIcon.Icon = new Icon(iconStream);
             //statusBarIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name);
@@ -273,6 +273,7 @@ namespace UI
              {
                  while (AppState.IsLoading)
                  {
+                     statusBarIcon.Text = $"[{AppState.ProcessValue}%] Tai [{AppState.ActionText}]";
                  }
                  statusBarIcon.Text = "Tai!";
                  Stream iconStream = GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/tai32.ico")).Stream;

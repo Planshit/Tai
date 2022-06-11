@@ -255,6 +255,7 @@ namespace Core.Librarys.SQLite
         /// </summary>
         private void HandleVersion1002Migrate()
         {
+            AppState.ActionText = "导入数据中，请勿退出...";
             //if (ExecuteNonQuery("select count(*) from sqlite_master where type='table' and name='AppModels'") != 0)
             //{
             //    return;
@@ -282,14 +283,34 @@ namespace Core.Librarys.SQLite
 
                             sqlList.Add($"update DailyLogModels set AppModelID={ID} where ProcessName='{Name}'");
                             sqlList.Add($"update HoursLogModels set AppModelID={ID} where ProcessName='{Name}'");
-
-
                             sqlList.Add($"update AppModels set IconFile='{icon}' where ID={ID}");
                         }
                     }
 
-                    cmd.CommandText = string.Join("; ", sqlList.ToArray());
-                    cmd.ExecuteNonQuery();
+                    int take = 50;
+                    bool isRuning = true;
+                    int index = 0;
+                    double count = sqlList.Count;
+                    while (isRuning)
+                    {
+                        var sqlArr = sqlList.Skip(index).Take(take).ToArray();
+                        cmd.CommandText = string.Join("; ", sqlArr);
+                        cmd.ExecuteNonQuery();
+
+                        index += take;
+
+                        if (sqlArr.Length == 0)
+                        {
+                            isRuning = false;
+                        }
+                        double num = sqlList.Skip(index).Count();
+
+                        //  更新进度
+                        AppState.ProcessValue = (int)((count - num) / count * 100);
+                        Debug.WriteLine("加载：" + AppState.ProcessValue);
+                    }
+                    Debug.WriteLine("结束！");
+
                 }
             }
 
