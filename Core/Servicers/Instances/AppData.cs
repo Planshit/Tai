@@ -78,13 +78,8 @@ namespace Core.Servicers.Instances
             if (!_updateTempApps.Where(m => m.ID == app.ID).Any())
             {
                 _updateTempApps.Add(app);
-
-                Task.Run(() =>
-                {
-                    SaveAppChanges();
-                });
-
             }
+            SaveAppChanges();
         }
         public AppModel GetApp(string name)
         {
@@ -114,27 +109,32 @@ namespace Core.Servicers.Instances
 
         private void SaveAppChanges()
         {
-            if (_updateTempApps.Count > 0)
+            Task.Run(() =>
             {
-                using (var db = new TaiDbContext())
+                if (_updateTempApps.Count > 0)
                 {
-                    foreach (var item in _updateTempApps)
+                    using (var db = new TaiDbContext())
                     {
-                        var app = db.App.Find(item.ID);
-                        if (app != null)
+                        foreach (var item in _updateTempApps)
                         {
-                            app.TotalTime = item.TotalTime;
-                            app.File = item.File;
-                            app.IconFile = item.IconFile;
-                            app.Name = item.Name;
-                            app.CategoryID = item.CategoryID;
-                            app.Description = item.Description;
-                            //app.Category = item.Category;
+                            var app = db.App.Find(item.ID);
+                            if (app != null)
+                            {
+                                app.TotalTime = item.TotalTime;
+                                app.File = item.File;
+                                app.IconFile = item.IconFile;
+                                app.Name = item.Name;
+                                app.CategoryID = item.CategoryID;
+                                app.Description = item.Description;
+                                //app.Category = item.Category;
+                            }
                         }
+                        db.SaveChanges();
                     }
-                    db.SaveChanges();
                 }
-            }
+            });
+
+
         }
 
         public List<AppModel> GetAppsByCategoryID(int categoryID)
