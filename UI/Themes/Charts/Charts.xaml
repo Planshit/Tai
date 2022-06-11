@@ -126,7 +126,7 @@
                                                                 </Border>
                                                                 <Border Grid.Column="1">
                                                                     <!--图标-->
-                                                                    <base:Img IsAutoDispose="True" Width="20" Height="20" URL="{Binding Icon}"/>
+                                                                    <base:Img Width="20" Height="20" URL="{Binding Icon}"/>
                                                                 </Border>
                                                                 <Border Grid.Column="2" Margin="5,0,0,0">
                                                                     <!--名称-->

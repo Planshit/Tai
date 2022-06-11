@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,22 +17,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace UI.Controls.Base
 {
     public class Img : Control
     {
-        public bool IsAutoDispose
-        {
-            get { return (bool)GetValue(IsAutoDisposeProperty); }
-            set { SetValue(IsAutoDisposeProperty, value); }
-        }
-        public static readonly DependencyProperty IsAutoDisposeProperty =
-            DependencyProperty.Register("IsAutoDispose",
-                typeof(bool),
-                typeof(Img), new PropertyMetadata(false, new PropertyChangedCallback(OnPropertyChanged)));
-
-
         public CornerRadius Radius
         {
             get { return (CornerRadius)GetValue(RadiusProperty); }
@@ -63,23 +55,11 @@ namespace UI.Controls.Base
                 control.Handle();
             }
         }
-        //private bool isRendered = false;
-        //private Image _image;
-        //Page page;
-        private ImageBrush _image;
+      
         public Img()
         {
             DefaultStyleKey = typeof(Img);
-        }
 
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-
-            _image = GetTemplateChild("image") as ImageBrush;
-
-            Render();
-            //_image = GetTemplateChild("image") as Image;
         }
 
         private void Handle()
@@ -92,67 +72,7 @@ namespace UI.Controls.Base
             {
                 URL = "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png";
             }
-           
-            Render();
         }
-
-
-
-        //private void Page_LayoutUpdated(object sender, EventArgs e)
-        //{
-        //    if (!isRendered)
-        //    {
-        //        Rect bounds = this.TransformToAncestor(page).TransformBounds(new Rect(0.0, 0.0, this.ActualWidth, this.ActualHeight));
-        //        Rect rect = new Rect(0.0, 0.0, page.ActualWidth, page.ActualHeight);
-
-        //        if (rect.Contains(bounds))
-        //        {
-        //            Debug.WriteLine("渲染！");
-
-        //            isRendered = true;
-
-        //            Render();
-        //        }
-        //    }
-        //}
-
-        //private void Img_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    var parent = VisualTreeHelper.GetParent(this);
-        //    while (!(parent is Page))
-        //    {
-        //        parent = VisualTreeHelper.GetParent(parent);
-        //    }
-        //    page = (parent as Page);
-
-        //    page.LayoutUpdated += Page_LayoutUpdated;
-        //}
-
-        private async void Render()
-        {
-            if (_image == null || !IsAutoDispose)
-            {
-                return;
-            }
-
-            _image.ImageSource = null;
-            //_image.Source = Imager.Load(URL);
-
-
-
-            //_image.ImageSource = Imager.Load(URL);
-            //BitmapImage bitimg = null;
-
-            string img = URL != null ? URL.ToString() : "";
-
-            var res = Task.Run(() =>
-             {
-
-                 Debug.WriteLine("load:" + img);
-                 return Imager.Load(img);
-             });
-
-            _image.ImageSource = await res;
-        }
+      
     }
 }

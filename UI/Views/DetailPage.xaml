@@ -38,7 +38,7 @@
                         <ColumnDefinition Width="3*"/>
 
                     </Grid.ColumnDefinitions>
-                    <base:Img IsAutoDispose="True" URL="{Binding App.IconFile}"  Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <base:Img URL="{Binding App.IconFile}"  Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <!--<Image Source="{Binding Process.Icon}" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
                    
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
