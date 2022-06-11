@@ -42,7 +42,7 @@ namespace Core.Librarys
 
             return iconName;
         }
-        public static string Get(string processname, string desc)
+        public static string Get(string processname, string desc, bool isRelativePath = true)
         {
             string iconName = FromatIconFileName(processname, desc);
             string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
@@ -50,6 +50,12 @@ namespace Core.Librarys
             if (!File.Exists(iconPath))
             {
                 return "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png";
+            }
+
+            if (isRelativePath)
+            {
+                return Path.Combine(
+                         "AppIcons", iconName);
             }
             return iconPath;
         }
@@ -59,8 +65,9 @@ namespace Core.Librarys
         /// <param name="file"></param>
         /// <param name="processname"></param>
         /// <param name="desc"></param>
+        /// <param name="isRelativePath">是否返回相对路径</param>
         /// <returns>返回提取到程序目录下的路径</returns>
-        public static string ExtractFromFile(string file, string processname, string desc, bool isCheck = true)
+        public static string ExtractFromFile(string file, string processname, string desc, bool isCheck = true, bool isRelativePath = true)
         {
             try
             {
@@ -69,8 +76,15 @@ namespace Core.Librarys
                 string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                              "AppIcons", iconName);
 
+                string relativePath = Path.Combine(
+                             "AppIcons", iconName);
+
                 if (isCheck && File.Exists(iconPath))
                 {
+                    if (isRelativePath)
+                    {
+                        return relativePath;
+                    }
                     return iconPath;
                 }
                 string dir = Path.GetDirectoryName(iconPath);
@@ -135,6 +149,12 @@ namespace Core.Librarys
                             //  copy to tai dir
 
                             File.Copy(iconFile, iconPath);
+
+                            if (isRelativePath)
+                            {
+                                return relativePath;
+                            }
+
                             return iconPath;
                         }
                         return string.Empty;
@@ -153,6 +173,12 @@ namespace Core.Librarys
                     encoder.Frames.Add(BitmapFrame.Create(ToImageSource(ico) as BitmapSource));
                     encoder.Save(fileStream);
                 }
+
+                if (isRelativePath)
+                {
+                    return relativePath;
+                }
+
                 return iconPath;
             }
             catch (Exception ex)

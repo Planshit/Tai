@@ -74,6 +74,10 @@ namespace UI.Controls.Base
 
         private void Handle()
         {
+            if (URL != null && URL.Length > 8 && URL.Substring(0, 8) == "AppIcons")
+            {
+                URL = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, URL);
+            }
             if (URL == null || (URL.IndexOf("pack://") == -1 && !File.Exists(URL)))
             {
                 URL = "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png";

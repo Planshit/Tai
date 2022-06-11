@@ -144,7 +144,7 @@ namespace Core.Servicers.Instances
                  AppState.IsLoading = false;
              });
 
-            
+
 
             //  加载应用配置（确保配置文件最先加载
             appConfig.Load();

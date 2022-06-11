@@ -71,7 +71,7 @@ namespace Core.Librarys.Image
                     bitmap.Freeze();
                 }
 
-                Logger.Error(ec.Message);
+                Logger.Error("无法读取图片：" + filePath + "。" + ec.Message);
 
                 return bitmap;
             }
