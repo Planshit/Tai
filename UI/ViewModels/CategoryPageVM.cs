@@ -1,6 +1,7 @@
 ﻿using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -97,6 +98,11 @@ namespace UI.ViewModels
             if (string.IsNullOrEmpty(EditIconFile))
             {
                 mainVM.Toast("请选择一个分类图标", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                return;
+            }
+            if(new FileInfo(EditIconFile).Length> 1000000)
+            {
+                mainVM.Toast("图标文件不能超过1MB", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
                 return;
             }
 
