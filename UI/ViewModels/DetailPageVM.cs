@@ -122,22 +122,22 @@ namespace UI.ViewModels
                         main.Toast("应用似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
                     }
                     break;
-                case "geticon":
-                    string iconFile = Iconer.ExtractFromFile(App.File, App.Name, App.Description, false);
-                    if (string.IsNullOrEmpty(iconFile))
-                    {
-                        main.Toast("图标获取失败", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
-                        return;
-                    }
-                    var app = appData.GetApp(App.ID);
-                    if (app != null)
-                    {
-                        app.IconFile = iconFile;
-                        appData.UpdateApp(app);
-                        main.Toast("图标已更新", Controls.Window.ToastType.Success, Controls.Base.IconTypes.Accept);
-                    }
+                //case "geticon":
+                //    string iconFile = Iconer.ExtractFromFile(App.File, App.Name, App.Description, false);
+                //    if (string.IsNullOrEmpty(iconFile))
+                //    {
+                //        main.Toast("图标获取失败", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                //        return;
+                //    }
+                //    var app = appData.GetApp(App.ID);
+                //    if (app != null)
+                //    {
+                //        app.IconFile = iconFile;
+                //        appData.UpdateApp(app);
+                //        main.Toast("图标已更新", Controls.Window.ToastType.Success, Controls.Base.IconTypes.Accept);
+                //    }
 
-                    break;
+                //    break;
             }
         }
 

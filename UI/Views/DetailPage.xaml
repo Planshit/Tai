@@ -26,8 +26,8 @@
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制应用进程名称"/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制应用文件路径"/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开应用所在目录"/>
-                        <Separator/>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="geticon"  Header="重新获取图标"/>
+                        <!--<Separator/>-->
+                        <!--<MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="geticon"  Header="重新获取图标"/>-->
 
                     </ContextMenu>
                 </Border.ContextMenu>
