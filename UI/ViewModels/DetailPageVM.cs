@@ -122,6 +122,22 @@ namespace UI.ViewModels
                         main.Toast("应用似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
                     }
                     break;
+                case "geticon":
+                    string iconFile = Iconer.ExtractFromFile(App.File, App.Name, App.Description, false);
+                    if (string.IsNullOrEmpty(iconFile))
+                    {
+                        main.Toast("图标获取失败", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                        return;
+                    }
+                    var app = appData.GetApp(App.ID);
+                    if (app != null)
+                    {
+                        app.IconFile = iconFile;
+                        appData.UpdateApp(app);
+                        main.Toast("图标已更新", Controls.Window.ToastType.Success, Controls.Base.IconTypes.Accept);
+                    }
+
+                    break;
             }
         }
 
@@ -248,47 +264,47 @@ namespace UI.ViewModels
 
                     LoadCategorys(App.Category?.Name);
 
-                    var today = data.GetProcess(App.ID, DateTime.Now);
-                    var yesterday = data.GetProcess(App.ID, DateTime.Now.AddDays(-1));
+                    //var today = data.GetProcess(App.ID, DateTime.Now);
+                    //var yesterday = data.GetProcess(App.ID, DateTime.Now.AddDays(-1));
 
-                    if (today != null)
-                    {
-                        TodayTime = Timer.Fromat(today.Time);
-                    }
-                    else
-                    {
-                        TodayTime = "暂无数据";
-                    }
+                    //if (today != null)
+                    //{
+                    //    TodayTime = Timer.Fromat(today.Time);
+                    //}
+                    //else
+                    //{
+                    //    TodayTime = "暂无数据";
+                    //}
 
-                    if (yesterday != null)
-                    {
-                        int diffseconds = today != null ? today.Time - yesterday.Time : yesterday.Time;
+                    //if (yesterday != null)
+                    //{
+                    //    int diffseconds = today != null ? today.Time - yesterday.Time : yesterday.Time;
 
-                        string diffText = string.Empty;
-                        if (diffseconds != yesterday.Time)
-                        {
-                            if (diffseconds == 0)
-                            {
-                                //  无变化
-                                diffText = "持平";
-                            }
-                            else if (diffseconds > 0)
-                            {
-                                //  增加
-                                diffText = "增加了" + Timer.Fromat(diffseconds);
-                            }
-                            else
-                            {
-                                //  减少
-                                diffText = "减少了" + Timer.Fromat(Math.Abs(diffseconds));
-                            }
-                        }
-                        Yesterday = diffseconds == yesterday.Time ? "减少100%" : diffText;
-                    }
-                    else
-                    {
-                        Yesterday = "昨日未使用";
-                    }
+                    //    string diffText = string.Empty;
+                    //    if (diffseconds != yesterday.Time)
+                    //    {
+                    //        if (diffseconds == 0)
+                    //        {
+                    //            //  无变化
+                    //            diffText = "持平";
+                    //        }
+                    //        else if (diffseconds > 0)
+                    //        {
+                    //            //  增加
+                    //            diffText = "增加了" + Timer.Fromat(diffseconds);
+                    //        }
+                    //        else
+                    //        {
+                    //            //  减少
+                    //            diffText = "减少了" + Timer.Fromat(Math.Abs(diffseconds));
+                    //        }
+                    //    }
+                    //    Yesterday = diffseconds == yesterday.Time ? "减少100%" : diffText;
+                    //}
+                    //else
+                    //{
+                    //    Yesterday = "昨日未使用";
+                    //}
                 }
             }
             );

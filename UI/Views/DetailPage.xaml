@@ -22,9 +22,13 @@
                 <Border.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open exe"  Header="启动应用"/>
+                        <Separator/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制应用进程名称"/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制应用文件路径"/>
                         <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开应用所在目录"/>
+                        <Separator/>
+                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="geticon"  Header="重新获取图标"/>
+
                     </ContextMenu>
                 </Border.ContextMenu>
                 <Grid>
@@ -34,7 +38,7 @@
                         <ColumnDefinition Width="3*"/>
 
                     </Grid.ColumnDefinitions>
-                    <base:Img URL="{Binding App.IconFile}" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <base:Img IsAutoDispose="True" URL="{Binding App.IconFile}"  Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <!--<Image Source="{Binding Process.Icon}" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
                    
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
