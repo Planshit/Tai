@@ -20,6 +20,17 @@ namespace UI.Controls.Base
 {
     public class Img : Control
     {
+        public bool IsAutoDispose
+        {
+            get { return (bool)GetValue(IsAutoDisposeProperty); }
+            set { SetValue(IsAutoDisposeProperty, value); }
+        }
+        public static readonly DependencyProperty IsAutoDisposeProperty =
+            DependencyProperty.Register("IsAutoDispose",
+                typeof(bool),
+                typeof(Img), new PropertyMetadata(false, new PropertyChangedCallback(OnPropertyChanged)));
+
+
         public CornerRadius Radius
         {
             get { return (CornerRadius)GetValue(RadiusProperty); }
@@ -55,21 +66,20 @@ namespace UI.Controls.Base
         //private bool isRendered = false;
         //private Image _image;
         //Page page;
-        //private ImageBrush _image;
+        private ImageBrush _image;
         public Img()
         {
             DefaultStyleKey = typeof(Img);
-
-            //Loaded += Img_Loaded;
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            //_image = GetTemplateChild("image") as ImageBrush;
-            //_image = GetTemplateChild("image") as Image;
 
-            //new Border().CornerRadius
+            _image = GetTemplateChild("image") as ImageBrush;
+
+            Render();
+            //_image = GetTemplateChild("image") as Image;
         }
 
         private void Handle()
@@ -82,6 +92,8 @@ namespace UI.Controls.Base
             {
                 URL = "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png";
             }
+           
+            Render();
         }
 
 
@@ -116,30 +128,31 @@ namespace UI.Controls.Base
         //    page.LayoutUpdated += Page_LayoutUpdated;
         //}
 
-        //private async void Render()
-        //{
-        //    if (_image == null)
-        //    {
-        //        return;
-        //    }
+        private async void Render()
+        {
+            if (_image == null || !IsAutoDispose)
+            {
+                return;
+            }
 
-        //    //_image.Source = Imager.Load(URL);
+            _image.ImageSource = null;
+            //_image.Source = Imager.Load(URL);
 
 
 
-        //    //_image.ImageSource = Imager.Load(URL);
-        //    //BitmapImage bitimg = null;
+            //_image.ImageSource = Imager.Load(URL);
+            //BitmapImage bitimg = null;
 
-        //    string img = URL != null ? URL.ToString() : "";
+            string img = URL != null ? URL.ToString() : "";
 
-        //    var res = Task.Run(() =>
-        //     {
+            var res = Task.Run(() =>
+             {
 
-        //         Debug.WriteLine("load:" + img);
-        //         return Imager.Load(img);
-        //     });
+                 Debug.WriteLine("load:" + img);
+                 return Imager.Load(img);
+             });
 
-        //    _image.Source = await res;
-        //}
+            _image.ImageSource = await res;
+        }
     }
 }
