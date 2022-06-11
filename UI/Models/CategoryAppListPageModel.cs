@@ -28,5 +28,8 @@ namespace UI.Models
 
         private AppModel SelectedItem_;
         public AppModel SelectedItem { get { return SelectedItem_; } set { SelectedItem_ = value; OnPropertyChanged(); } }
+
+        private string SearchInput_;
+        public string SearchInput { get { return SearchInput_; } set { SearchInput_ = value; OnPropertyChanged(); } }
     }
 }

@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:UI.Views" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:select="clr-namespace:UI.Controls.Select" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:local="clr-namespace:UI.Views" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:select="clr-namespace:UI.Controls.Select" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:input="clr-namespace:UI.Controls.Input"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="CategoryAppListPage">
@@ -13,67 +13,80 @@
         <Grid Visibility="{Binding ChooseVisibility}" Panel.ZIndex="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Border Background="Black" Opacity=".7"/>
             <Border Height="460" Background="White" CornerRadius="10" BorderBrush="#ccc" BorderThickness="1" Margin="50" VerticalAlignment="Top">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="80"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="80"/>
 
-                </Grid.RowDefinitions>
-                <TextBlock Text="选择应用" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                <ListView ItemsSource="{Binding AppList}" Margin="20" Grid.Row="1">
-                    <ListBox.Resources>
-                        <Style TargetType="{x:Type ListView}">
-                            <Setter Property="OverridesDefaultStyle" Value="True"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <TextBlock Text="选择应用" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <Button:IconButton Foreground="#ccc" Icon="ChromeClose" HorizontalAlignment="Right" FontSize="12" Margin="0,0,10,0" Command="{Binding ChooseCloseCommand}"/>
+                    </Grid>
+                    <Border Grid.Row="1">
+                        <input:InputBox Placeholder="搜索应用" Margin="10" x:Name="SearchBox" Text="{Binding SearchInput,Mode=TwoWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="KeyUp">
+                                    <i:InvokeCommandAction Command="{Binding Path=SearchCommand}" CommandParameter="{Binding ElementName=SearchBox,Path=Text}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </input:InputBox>
+                    </Border>
+                    <ListView ItemsSource="{Binding AppList}" Margin="20" Grid.Row="2">
+                        <ListBox.Resources>
+                            <Style TargetType="{x:Type ListView}">
+                                <Setter Property="OverridesDefaultStyle" Value="True"/>
 
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListView}">
-                                        <ScrollViewer>
-                                            <ItemsPresenter />
-                                        </ScrollViewer>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="OverridesDefaultStyle" Value="True"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <Border>
-                                            <ContentPresenter/>
-                                        </Border>
-                                       
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListView}">
+                                            <ScrollViewer>
+                                                <ItemsPresenter />
+                                            </ScrollViewer>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <Border>
+                                                <ContentPresenter/>
+                                            </Border>
 
-                        </Style>
-                    </ListBox.Resources>
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+
+                            </Style>
+                        </ListBox.Resources>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
                                 <VirtualizingStackPanel/>
                                 <!--<StackPanel/>-->
                             </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel  >
-                                <Border  HorizontalAlignment="Stretch">
-                                    <select:Option HorizontalAlignment="Stretch" IsChecked="{Binding IsChoosed,Mode=TwoWay}" Value="{Binding Value}"/>
-                                    
-                                </Border>
+                        </ListBox.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel  >
+                                    <Border  HorizontalAlignment="Stretch">
+                                        <select:Option Visibility="{Binding Visibility}" HorizontalAlignment="Stretch" IsChecked="{Binding IsChoosed,Mode=TwoWay}" Value="{Binding Value}"/>
 
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                                    </Border>
 
-                    <Button:Button Grid.Row="2" HorizontalAlignment="Right" Content="完成" Width="120" Margin="0,0,10,0" VerticalAlignment="Center" Command="{Binding ChoosedCommand}"/>
-            </Grid>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-        </Border>
+                    <Button:Button Grid.Row="3" HorizontalAlignment="Right" Content="完成" Width="120" Margin="0,0,10,0" VerticalAlignment="Center" Command="{Binding ChoosedCommand}"/>
+                </Grid>
+
+            </Border>
         </Grid>
         <StackPanel Margin="20">
             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
@@ -89,6 +102,12 @@
                 <base:EmptyData/>
             </base:View>
             <ListView ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedItem,Mode=TwoWay}" Margin="0,20,0,0">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+
+                        <MenuItem Header="从分类中移除" Command="{Binding DelCommand}" CommandParameter="{Binding SelectedItem}"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonUp">
                         <i:InvokeCommandAction Command="{Binding GotoDetailCommand}"
@@ -121,11 +140,12 @@
                                             </Border.Effect>
                                             <ContentPresenter/>
                                         </Border>
-                                        
+
                                         <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="0,0,0,10" Padding="15" CornerRadius="10">
-                                        
-                                        <ContentPresenter/>
-                                    </Border></Grid>
+
+                                            <ContentPresenter/>
+                                        </Border>
+                                    </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <!--<Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>-->
@@ -159,7 +179,13 @@
                                     <Border>
                                         <base:Img Width="25" Height="25" URL="{Binding IconFile}"/>
                                     </Border>
-                                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Name}" />
+                                    <Grid Grid.Column="1">
+                                        <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  HorizontalAlignment="Center" Text="{Binding Description}" />
+                                        <base:View Condition="empty" Value="{Binding Description}">
+                                            <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  HorizontalAlignment="Center" Text="{Binding Name}" />
+
+                                        </base:View>
+                                    </Grid>
 
 
                                 </Grid>

@@ -133,7 +133,6 @@ namespace Core.Servicers.Instances
                         }
                     }
                     db.SaveChanges();
-                    _updateTempApps.Clear();
                 }
             }
         }

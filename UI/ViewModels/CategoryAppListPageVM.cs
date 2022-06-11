@@ -2,6 +2,7 @@
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,21 +18,72 @@ namespace UI.ViewModels
     {
         private readonly IAppData appData;
         private readonly MainViewModel mainVM;
-
+        private List<ChooseAppModel> appList;
         public Command ShowChooseCommand { get; set; }
         public Command ChoosedCommand { get; set; }
         public Command GotoDetailCommand { get; set; }
+        public Command SearchCommand { get; set; }
+        public Command ChooseCloseCommand { get; set; }
+        public Command DelCommand { get; set; }
         public CategoryAppListPageVM(IAppData appData, MainViewModel mainVM)
         {
             this.appData = appData;
             this.mainVM = mainVM;
 
+
             ShowChooseCommand = new Command(new Action<object>(OnShowChoose));
             ChoosedCommand = new Command(new Action<object>(OnChoosed));
             GotoDetailCommand = new Command(new Action<object>(OnGotoDetail));
+            SearchCommand = new Command(new Action<object>(OnSearch));
+            ChooseCloseCommand = new Command(new Action<object>(OnChooseClose));
+            DelCommand = new Command(new Action<object>(OnDel));
 
             LoadData();
+
         }
+
+        private void OnDel(object obj)
+        {
+            if (SelectedItem != null)
+            {
+                var list = Data.ToList();
+
+                list.Remove(SelectedItem);
+
+                var app = appData.GetApp(SelectedItem.ID);
+                if(app != null)
+                {
+                    app.CategoryID = 0;
+                    app.Category = null;
+                    appData.UpdateApp(app);
+                }
+
+                Data = list;
+            }
+        }
+
+        private void OnChooseClose(object obj)
+        {
+            ChooseVisibility = System.Windows.Visibility.Collapsed;
+            SearchInput = "";
+        }
+
+        private void OnSearch(object obj)
+        {
+            string keyword = obj.ToString();
+
+            if (keyword == "vscode")
+            {
+                keyword = "Visual Studio Code";
+            }
+            else if (keyword == "ps")
+            {
+                keyword = "Photoshop";
+            }
+            Search(keyword);
+        }
+
+
 
         private void OnGotoDetail(object obj)
         {
@@ -46,7 +98,10 @@ namespace UI.ViewModels
         {
             ChooseVisibility = System.Windows.Visibility.Collapsed;
 
+            SearchInput = "";
+
             var data = new List<AppModel>();
+
             foreach (var item in AppList)
             {
 
@@ -77,6 +132,7 @@ namespace UI.ViewModels
                 }
             }
             Data = data;
+
             //LoadData();
         }
 
@@ -117,25 +173,58 @@ namespace UI.ViewModels
         {
             Task.Run(() =>
             {
-                //Category = mainVM.Data as UI.Models.Category.CategoryModel;
+                appList = new List<ChooseAppModel>();
+
                 if (Category == null)
                 {
                     return;
                 }
-                var appList = new List<ChooseAppModel>();
                 foreach (var item in appData.GetAllApps())
                 {
                     var app = new ChooseAppModel();
                     app.App = item;
                     app.IsChoosed = item.CategoryID == Category.Data.ID;
-                    app.Value.Name = item.Name;
+                    app.Value.Name = String.IsNullOrEmpty(item.Description) ? item.Name : item.Description;
                     app.Value.Img = item.IconFile;
 
                     appList.Add(app);
                 }
+                appList = appList.OrderBy(m => m.App.Description).ToList();
 
                 AppList = appList;
             });
+        }
+
+        private void Search(string keyword)
+        {
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                Debug.WriteLine(keyword);
+                keyword = keyword.ToLower();
+
+                //var list = appList.Where(m => m.App.Description.ToLower().IndexOf(keyword) != -1 || m.App.Name.ToLower().IndexOf(keyword) != -1).ToList();
+                var list = AppList.ToList();
+
+                foreach (var item in list)
+                {
+                    item.Visibility = item.App.Description.ToLower().IndexOf(keyword) != -1 || item.App.Name.ToLower().IndexOf(keyword) != -1 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+                }
+                
+                AppList = list;
+
+            }
+            else
+            {
+                var list = AppList.ToList();
+
+                foreach (var item in list)
+                {
+                    item.Visibility = System.Windows.Visibility.Visible;
+                }
+                
+                AppList = list;
+
+            }
         }
     }
 }

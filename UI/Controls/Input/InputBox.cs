@@ -44,6 +44,7 @@ namespace UI.Controls.Input
 
         public void HideError()
         {
+            
             IsShowError = false;
         }
     }

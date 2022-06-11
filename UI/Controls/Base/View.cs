@@ -90,7 +90,14 @@ namespace UI.Controls.Base
                     else
                     {
                         var data = Value as IEnumerable<object>;
-                        isShow = data.Count() == 0;
+                        if (data != null)
+                        {
+                            isShow = data.Count() == 0;
+                        }
+                        else
+                        {
+                            isShow = string.IsNullOrEmpty(Value.ToString());
+                        }
                     }
                 }
                 else

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using UI.Controls.Select;
 
 namespace UI.Models.CategoryAppList
@@ -13,5 +14,6 @@ namespace UI.Models.CategoryAppList
         public bool IsChoosed { get; set; }
         public AppModel App { get; set; }
         public SelectItemModel Value { get; set; } = new SelectItemModel();
+        public Visibility Visibility { get; set; } = Visibility.Visible;
     }
 }
