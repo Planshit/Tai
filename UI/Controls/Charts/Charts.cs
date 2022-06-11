@@ -859,6 +859,8 @@ namespace UI.Controls.Charts
 
             var infoList = new List<ChartColumnInfoModel>();
 
+            list = list.OrderByDescending(m => m.Values.Sum()).ToList();
+
             foreach (var item in list)
             {
                 infoList.Add(new ChartColumnInfoModel()

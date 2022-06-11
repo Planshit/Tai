@@ -16,7 +16,7 @@ namespace Core.Servicers.Interfaces
         /// <summary>
         /// 保存app数据更改
         /// </summary>
-        void SaveAppChanges();
+        //void SaveAppChanges();
         /// <summary>
         /// 通过进程名称获取app
         /// </summary>

@@ -115,6 +115,7 @@
     <Compile Include="Librarys\SQLite\SQLiteBuilder.cs" />
     <Compile Include="Librarys\SQLite\SQLiteConfiguration.cs" />
     <Compile Include="Librarys\SQLite\TaiDbContext.cs" />
+    <Compile Include="Librarys\Time.cs" />
     <Compile Include="Librarys\Win32API.cs" />
     <Compile Include="Models\AppModel.cs" />
     <Compile Include="Models\CategoryModel.cs" />
@@ -123,11 +124,13 @@
     <Compile Include="Models\Config\BehaviorModel.cs" />
     <Compile Include="Models\Config\GeneralModel.cs" />
     <Compile Include="Models\Config\Link\LinkModel.cs" />
+    <Compile Include="Models\Data\HoursDataModel.cs" />
     <Compile Include="Models\HoursLogModel.cs" />
     <Compile Include="Models\DailyLogModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Servicers\Instances\AppConfig.cs" />
     <Compile Include="Servicers\Instances\AppData.cs" />
+    <Compile Include="Servicers\Instances\Categorys.cs" />
     <Compile Include="Servicers\Instances\Data.cs" />
     <Compile Include="Librarys\Logger.cs" />
     <Compile Include="Servicers\Instances\DateObserver.cs" />
@@ -135,6 +138,7 @@
     <Compile Include="Servicers\Instances\Observer.cs" />
     <Compile Include="Servicers\Instances\Sleepdiscover.cs" />
     <Compile Include="Servicers\Interfaces\IAppConfig.cs" />
+    <Compile Include="Servicers\Interfaces\ICategorys.cs" />
     <Compile Include="Servicers\Interfaces\IAppData.cs" />
     <Compile Include="Servicers\Interfaces\IData.cs" />
     <Compile Include="Servicers\Interfaces\IDateObserver.cs" />

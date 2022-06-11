@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Core.Models.Data
 {
-    public class CategoryChartDataModel
+    public class ColumnDataModel
     {
+        public int AppId { get; set; }
         public int CategoryID { get; set; }
         public double[] Values { get; set; }
     }

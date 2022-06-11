@@ -163,7 +163,7 @@ namespace Core.Servicers.Instances
         {
             observer?.Stop();
 
-            appData.SaveAppChanges();
+            //appData.SaveAppChanges();
         }
 
 
@@ -183,7 +183,7 @@ namespace Core.Servicers.Instances
                 //activeTimer.Stop();
 
                 //  更新app数据
-                appData.SaveAppChanges();
+                //appData.SaveAppChanges();
             }
             else if (sleepStatus == SleepStatus.Wake)
             {

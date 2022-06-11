@@ -134,18 +134,33 @@ namespace UI.ViewModels
 
                 var chartData = new List<ChartsDataModel>();
 
+                var nullCategory = new CategoryModel()
+                {
+                    ID = 0,
+                    Name = "未分类",
+                    IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
+                };
                 foreach (var item in list)
                 {
                     var category = categorys.GetCategory(item.CategoryID);
+                    if (item.CategoryID == 0)
+                    {
+                        category = nullCategory;
+                    }
                     if (category != null)
                     {
-                        chartData.Add(new ChartsDataModel()
+                        var dataItem = new ChartsDataModel()
                         {
 
                             Name = category.Name,
                             Icon = category.IconFile,
                             Values = item.Values,
-                        });
+                        };
+                        if (category.ID == 0)
+                        {
+                            dataItem.Color = "#f7f6f2";
+                        }
+                        chartData.Add(dataItem);
                     }
                 }
 
@@ -170,20 +185,37 @@ namespace UI.ViewModels
 
                 var chartData = new List<ChartsDataModel>();
 
+                var nullCategory = new CategoryModel()
+                {
+                    ID = 0,
+                    Name = "未分类",
+                    IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
+
+                };
+
                 string[] weekNames = { "周一", "周二", "周三", "周四", "周五", "周六", "周日", };
                 foreach (var item in list)
                 {
                     var category = categorys.GetCategory(item.CategoryID);
+                    if (item.CategoryID == 0)
+                    {
+                        category = nullCategory;
+                    }
                     if (category != null)
                     {
-                        chartData.Add(new ChartsDataModel()
+                        var dataItem = new ChartsDataModel()
                         {
 
                             Name = category.Name,
                             Icon = category.IconFile,
                             Values = item.Values,
-                            ColumnNames = weekNames
-                        });
+                            ColumnNames = weekNames,
+                        };
+                        if (category.ID == 0)
+                        {
+                            dataItem.Color = "#f7f6f2";
+                        }
+                        chartData.Add(dataItem);
                     }
                 }
 
@@ -208,18 +240,34 @@ namespace UI.ViewModels
 
                 var chartData = new List<ChartsDataModel>();
 
+                var nullCategory = new CategoryModel()
+                {
+                    ID = 0,
+                    Name = "未分类",
+                    IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
+                };
+
                 foreach (var item in list)
                 {
                     var category = categorys.GetCategory(item.CategoryID);
+                    if (item.CategoryID == 0)
+                    {
+                        category = nullCategory;
+                    }
                     if (category != null)
                     {
-                        chartData.Add(new ChartsDataModel()
+                        var dataItem = new ChartsDataModel()
                         {
 
                             Name = category.Name,
                             Icon = category.IconFile,
                             Values = item.Values,
-                        });
+                        };
+                        if (category.ID == 0)
+                        {
+                            dataItem.Color = "#f7f6f2";
+                        }
+                        chartData.Add(dataItem);
                     }
                 }
 
@@ -247,19 +295,35 @@ namespace UI.ViewModels
                     names[i] = (i + 1) + "月";
                 }
 
+                var nullCategory = new CategoryModel()
+                {
+                    ID = 0,
+                    Name = "未分类",
+                    IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
+                };
+
                 foreach (var item in list)
                 {
                     var category = categorys.GetCategory(item.CategoryID);
+                    if (item.CategoryID == 0)
+                    {
+                        category = nullCategory;
+                    }
                     if (category != null)
                     {
-                        chartData.Add(new ChartsDataModel()
+                        var dataItem = new ChartsDataModel()
                         {
 
                             Name = category.Name,
                             Icon = category.IconFile,
                             Values = item.Values,
-                            ColumnNames = names
-                        });
+                            ColumnNames = names,
+                        };
+                        if (category.ID == 0)
+                        {
+                            dataItem.Color = "#f7f6f2";
+                        }
+                        chartData.Add(dataItem);
                     }
                 }
 
@@ -298,7 +362,7 @@ namespace UI.ViewModels
                     dateStart = dateArr[0];
                     dateEnd = dateArr[1];
                 }
-                var list = data.GetDateRangelogList(dateStart, dateEnd, 3);
+                var list = data.GetDateRangelogList(dateStart, dateEnd, 10);
 
                 TopData = MapToChartsData(list);
             });

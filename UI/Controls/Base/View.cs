@@ -95,7 +95,7 @@ namespace UI.Controls.Base
                 }
                 else
                 {
-                    isShow = Condition == Value.ToString();
+                    isShow = Condition == (Value != null ? Value.ToString() : "");
                 }
             }
 

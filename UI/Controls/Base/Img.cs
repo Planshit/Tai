@@ -74,7 +74,7 @@ namespace UI.Controls.Base
 
         private void Handle()
         {
-            if (!File.Exists(URL))
+            if (URL == null || (URL.IndexOf("pack://") == -1 && !File.Exists(URL)))
             {
                 URL = "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png";
             }

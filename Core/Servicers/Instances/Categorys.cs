@@ -104,6 +104,10 @@ namespace Core.Servicers.Instances
             if (!_updateTempList.Where(m => m.ID == category.ID).Any())
             {
                 _updateTempList.Add(category);
+                Task.Run(() =>
+                {
+                    SaveChanged();
+                });
             }
         }
     }
