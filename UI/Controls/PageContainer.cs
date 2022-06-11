@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using UI.Controls.Models;
 using UI.Models;
 
 namespace UI.Controls
@@ -61,6 +62,12 @@ namespace UI.Controls
             var control = d as PageContainer;
             if (e.NewValue != e.OldValue)
             {
+                string oldUri = e.OldValue.ToString();
+                if (control.PageCache.ContainsKey(oldUri))
+                {
+                    PageModel page = control.PageCache[oldUri];
+                    page.ScrollValue = control.ScrollViewer.VerticalOffset;
+                }
                 control.LoadPage();
             }
         }
@@ -117,8 +124,9 @@ namespace UI.Controls
         private readonly string ProjectName;
         private List<string> Historys;
         public int Index = 0, OldIndex = 0;
-        private Dictionary<string, Page> PageCache;
+        private Dictionary<string, PageModel> PageCache;
         private bool IsBack = false;
+        private ScrollViewer ScrollViewer;
         public PageContainer()
         {
             DefaultStyleKey = typeof(PageContainer);
@@ -127,13 +135,15 @@ namespace UI.Controls
             BackCommand = new Command(new Action<object>(OnBackCommand));
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
-            PageCache = new Dictionary<string, Page>();
+            PageCache = new Dictionary<string, PageModel>();
         }
 
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+
+            ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
 
             Loaded += PageContainer_Loaded;
             Unloaded += PageContainer_Unloaded;
@@ -151,6 +161,7 @@ namespace UI.Controls
         private void PageContainer_Loaded(object sender, RoutedEventArgs e)
         {
             Instance = this;
+
         }
 
         private void OnBackCommand(object obj)
@@ -174,9 +185,8 @@ namespace UI.Controls
                 if (PageCache.ContainsKey(pageUri))
                 {
                     var page = PageCache[pageUri];
-                    var vm = page.DataContext as ModelBase;
+                    var vm = page.Instance.DataContext as ModelBase;
                     vm?.Dispose();
-                    page = null;
                     PageCache.Remove(pageUri);
                 }
                 Historys.RemoveRange(preIndex, 1);
@@ -219,17 +229,27 @@ namespace UI.Controls
                     }
                     OldIndex = Index;
                 }
-                Page page = GetPage();
+                PageModel page = GetPage();
 
 
                 if (page != null)
                 {
-                    Content = page;
+                    Content = page.Instance;
 
                     //  加入缓存
                     if (!PageCache.ContainsKey(Uri))
                     {
                         PageCache.Add(Uri, page);
+                    }
+
+                    //  滚动条位置处理
+                    if (IsBack)
+                    {
+                        ScrollViewer.ScrollToVerticalOffset(page.ScrollValue);
+                    }
+                    else
+                    {
+                        ScrollViewer.ScrollToVerticalOffset(0);
                     }
 
                     OnLoadPaged?.Invoke(this, EventArgs.Empty);
@@ -242,7 +262,7 @@ namespace UI.Controls
             IsBack = false;
         }
 
-        private Page GetPage()
+        private PageModel GetPage()
         {
             Page page = null;
             if (PageCache.ContainsKey(Uri))
@@ -258,12 +278,18 @@ namespace UI.Controls
                     page.Unloaded += Page_Unloaded;
                 }
             }
-            return page;
+            var newPage = new PageModel()
+            {
+                Instance = page,
+                ScrollValue = 0
+            };
+
+            return newPage;
         }
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             Page page = (Page)sender;
-           
+
             page.Unloaded -= Page_Unloaded;
         }
 
@@ -274,7 +300,7 @@ namespace UI.Controls
                 foreach (var key in PageCache.Keys)
                 {
                     var page = PageCache[key];
-                    var vm = page.DataContext as ModelBase;
+                    var vm = page.Instance.DataContext as ModelBase;
                     vm?.Dispose();
                 }
                 PageCache.Clear();

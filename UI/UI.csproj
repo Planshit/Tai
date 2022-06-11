@@ -145,6 +145,7 @@
     <Compile Include="Controls\Input\InputBox.cs" />
     <Compile Include="Controls\List\BaseList.cs" />
     <Compile Include="Controls\List\BaseListItem.cs" />
+    <Compile Include="Controls\Models\PageModel.cs" />
     <Compile Include="Controls\Navigation\Models\NavigationItemModel.cs" />
     <Compile Include="Controls\Navigation\Navigation.cs" />
     <Compile Include="Controls\Navigation\NavigationItem.cs" />
