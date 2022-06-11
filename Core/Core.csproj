@@ -106,6 +106,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppState.cs" />
     <Compile Include="Enums\SleepStatus.cs" />
     <Compile Include="Event\EventHandler.cs" />
     <Compile Include="Event\ObserverEventHandler.cs" />

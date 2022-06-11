@@ -1,4 +1,5 @@
-﻿using Core.Librarys;
+﻿using Core;
+using Core.Librarys;
 using Core.Librarys.SQLite;
 using Core.Servicers.Instances;
 using Core.Servicers.Interfaces;
@@ -41,7 +42,6 @@ namespace UI
         private DefaultWindow mainWindow;
 
         private IAppData appData;
-
 
         public App()
         {
@@ -119,7 +119,7 @@ namespace UI
             CreateStatusBarIconMenu();
 
             statusBarIcon = new System.Windows.Forms.NotifyIcon();
-            statusBarIcon.Text = "Tai! [数据加载中...请稍后]";
+            statusBarIcon.Text = "Tai! [加载中,请稍后...]";
             Stream iconStream = GetResourceStream(new Uri("pack://application:,,,/Tai;component/Resources/Icons/taibusy.ico")).Stream;
             statusBarIcon.Icon = new Icon(iconStream);
             //statusBarIcon.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name);
@@ -130,7 +130,7 @@ namespace UI
         }
         private void NotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right && !SQLiteBuilder.IsSelfChecking)
+            if (e.Button == System.Windows.Forms.MouseButtons.Right && !AppState.IsLoading)
             {
                 //右键单击弹出托盘菜单
                 contextMenu.IsOpen = true;
@@ -138,7 +138,7 @@ namespace UI
         }
         private void NotifyIcon_MouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left && !SQLiteBuilder.IsSelfChecking)
+            if (e.Button == System.Windows.Forms.MouseButtons.Left && !AppState.IsLoading)
             {
                 //双击托盘图标显示主窗口
                 ShowMainWindow();
@@ -271,7 +271,7 @@ namespace UI
         {
             await Task.Run(() =>
              {
-                 while (SQLiteBuilder.IsSelfChecking)
+                 while (AppState.IsLoading)
                  {
                  }
                  statusBarIcon.Text = "Tai!";

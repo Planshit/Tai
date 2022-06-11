@@ -140,6 +140,8 @@ namespace Core.Servicers.Instances
 
                  // 加载分类信息
                  categories.Load();
+
+                 AppState.IsLoading = false;
              });
 
             
