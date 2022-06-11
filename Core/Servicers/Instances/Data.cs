@@ -301,7 +301,7 @@ namespace Core.Servicers.Instances
 
         }
 
-        public List<CategoryChartDataModel> GetCategoryHoursData(DateTime date)
+        public List<ColumnDataModel> GetCategoryHoursData(DateTime date)
         {
             using (var db = new TaiDbContext())
             {
@@ -313,11 +313,11 @@ namespace Core.Servicers.Instances
                 var data = db.Database.SqlQuery<CategoryHoursDataModel>("select sum(Time) as Total,AppModels.CategoryID,HoursLogModels.DataTime as Time from HoursLogModels join AppModels on AppModels.ID=HoursLogModels.AppModelID where AppModels.CategoryID<>0 and HoursLogModels.DataTime>='" + date.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and HoursLogModels.DataTime<= '" + date.Date.ToString("yyyy-MM-dd 23:59:59") + "' GROUP BY AppModels.CategoryID,HoursLogModels.DataTime ").ToArray();
 
 
-                List<CategoryChartDataModel> list = new List<CategoryChartDataModel>();
+                List<ColumnDataModel> list = new List<ColumnDataModel>();
 
                 foreach (var category in categorys)
                 {
-                    list.Add(new CategoryChartDataModel()
+                    list.Add(new ColumnDataModel()
                     {
                         CategoryID = category.CategoryID,
                         Values = new double[24]
@@ -341,7 +341,7 @@ namespace Core.Servicers.Instances
             }
         }
 
-        public List<CategoryChartDataModel> GetCategoryRangeData(DateTime start, DateTime end)
+        public List<ColumnDataModel> GetCategoryRangeData(DateTime start, DateTime end)
         {
             using (var db = new TaiDbContext())
             {
@@ -357,12 +357,12 @@ namespace Core.Servicers.Instances
                 var days = ts.TotalDays + 1;
 
 
-                List<CategoryChartDataModel> list = new List<CategoryChartDataModel>();
+                List<ColumnDataModel> list = new List<ColumnDataModel>();
 
 
                 foreach (var category in categorys)
                 {
-                    list.Add(new CategoryChartDataModel()
+                    list.Add(new ColumnDataModel()
                     {
                         CategoryID = category.CategoryID,
                         Values = new double[(int)days]
@@ -389,7 +389,7 @@ namespace Core.Servicers.Instances
             }
         }
 
-        public List<CategoryChartDataModel> GetCategoryYearData(DateTime date)
+        public List<ColumnDataModel> GetCategoryYearData(DateTime date)
         {
             using (var db = new TaiDbContext())
             {
@@ -407,12 +407,12 @@ namespace Core.Servicers.Instances
                 //var days = ts.TotalDays + 1;
 
 
-                List<CategoryChartDataModel> list = new List<CategoryChartDataModel>();
+                List<ColumnDataModel> list = new List<ColumnDataModel>();
 
 
                 foreach (var category in categorys)
                 {
-                    list.Add(new CategoryChartDataModel()
+                    list.Add(new ColumnDataModel()
                     {
                         CategoryID = category.CategoryID,
                         Values = new double[12]
@@ -435,6 +435,129 @@ namespace Core.Servicers.Instances
 
                         item.Values[i - 1] = total;
                     }
+                }
+                return list;
+            }
+        }
+
+        public struct ColumnItemDataModel
+        {
+            public int Total { get; set; }
+            public int AppID { get; set; }
+            public DateTime Time { get; set; }
+
+        }
+
+        public List<ColumnDataModel> GetAppDayData(int appID, DateTime date)
+        {
+            using (var db = new TaiDbContext())
+            {
+
+                var data = db.Database.SqlQuery<ColumnItemDataModel>("select sum(Time) as Total,AppModelID as AppID,DataTime as Time from HoursLogModels  where AppModelID=" + appID + " and DataTime>='" + date.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DataTime<= '" + date.Date.ToString("yyyy-MM-dd 23:59:59") + "' GROUP BY AppModelID ").ToArray();
+
+
+                List<ColumnDataModel> list = new List<ColumnDataModel>();
+
+
+                list.Add(new ColumnDataModel()
+                {
+                    AppId = appID,
+                    Values = new double[24]
+                });
+
+                var item = list[0];
+
+                for (int i = 0; i < 24; i++)
+                {
+                    string hours = i < 10 ? "0" + i : i.ToString();
+                    var time = date.ToString($"yyyy-MM-dd {hours}:00:00");
+
+                    var log = data.Where(m => m.Time.ToString("yyyy-MM-dd HH:00:00") == time).FirstOrDefault();
+
+
+
+                    item.Values[i] = log.Total;
+                }
+                return list;
+            }
+        }
+
+        public List<ColumnDataModel> GetAppRangeData(int appID, DateTime start, DateTime end)
+        {
+            using (var db = new TaiDbContext())
+            {
+                //  查出有数据的分类
+
+                var data = db.Database.SqlQuery<ColumnItemDataModel>("select sum(Time) as Total,AppModelID as AppID,Date as Time from DailyLogModels where AppModelID=" + appID + " and Date>='" + start.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and Date<= '" + end.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY Date ").ToArray();
+
+
+                var ts = end - start;
+                var days = ts.TotalDays + 1;
+
+
+                List<ColumnDataModel> list = new List<ColumnDataModel>();
+
+
+
+                list.Add(new ColumnDataModel()
+                {
+                    AppId = appID,
+                    Values = new double[(int)days]
+                });
+
+
+                var item = list[0];
+
+                for (int i = 0; i < days; i++)
+                {
+                    string day = i < 10 ? "0" + i : i.ToString();
+                    var time = start.AddDays(i).ToString($"yyyy-MM-dd 00:00:00");
+
+                    var log = data.Where(m => m.Time.ToString("yyyy-MM-dd 00:00:00") == time).FirstOrDefault();
+
+                    item.Values[i] = log.Total;
+                }
+                return list;
+            }
+        }
+
+        public List<ColumnDataModel> GetAppYearData(int appID, DateTime date)
+        {
+            using (var db = new TaiDbContext())
+            {
+                //  查出有数据的分类
+
+                var dateArr = Time.GetYearDate(date);
+
+
+                var data = db.Database.SqlQuery<ColumnItemDataModel>("select sum(Time) as Total,AppModelID as AppID,Date as Time from DailyLogModels  where  AppModelID=" + appID + " and Date>='" + dateArr[0].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and Date<= '" + dateArr[1].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY Date").ToArray();
+
+
+
+
+                List<ColumnDataModel> list = new List<ColumnDataModel>();
+
+
+                list.Add(new ColumnDataModel()
+                {
+                    AppId = appID,
+                    Values = new double[12]
+                });
+
+
+                var item = list[0];
+
+                for (int i = 1; i < 13; i++)
+                {
+                    string month = i < 10 ? "0" + i : i.ToString();
+                    var dayArr = Time.GetMonthDate(new DateTime(date.Year, i, 1));
+
+                    Debug.WriteLine(dayArr);
+
+                    var total = data.Where(m => m.Time >= dayArr[0] && m.Time <= dayArr[1]).Sum(m => m.Total);
+
+
+                    item.Values[i - 1] = total;
                 }
                 return list;
             }

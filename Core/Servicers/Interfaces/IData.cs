@@ -77,20 +77,26 @@ namespace Core.Servicers.Interfaces
         /// 获取指定日期所有分类时段统计数据
         /// </summary>
         /// <returns></returns>
-        List<CategoryChartDataModel> GetCategoryHoursData(DateTime date);
+        List<ColumnDataModel> GetCategoryHoursData(DateTime date);
         /// <summary>
         /// 获取指定日期范围所有分类按天统计数据
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        List<CategoryChartDataModel> GetCategoryRangeData(DateTime start, DateTime end);
+        List<ColumnDataModel> GetCategoryRangeData(DateTime start, DateTime end);
         /// <summary>
         /// 获取指定年份所有分类按月份统计数据
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
-        List<CategoryChartDataModel> GetCategoryYearData(DateTime date);
+        List<ColumnDataModel> GetCategoryYearData(DateTime date);
+
+        List<ColumnDataModel> GetAppDayData(int appID, DateTime date);
+        List<ColumnDataModel> GetAppRangeData(int appID, DateTime start, DateTime end);
+        List<ColumnDataModel> GetAppYearData(int appID, DateTime date);
+
+
 
     }
 }

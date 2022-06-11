@@ -52,6 +52,35 @@ namespace UI.ViewModels
 
             Date = DateTime.Now;
 
+            TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
+            {
+                "按天","按周","按月","按年"
+            };
+
+            var weekOptions = new List<SelectItemModel>();
+            weekOptions.Add(new SelectItemModel()
+            {
+                Name = "本周"
+            });
+            weekOptions.Add(new SelectItemModel()
+            {
+                Name = "上周"
+            });
+
+            WeekOptions = weekOptions;
+
+            SelectedWeek = weekOptions[0];
+
+            MonthDate = DateTime.Now;
+
+            TabbarSelectedIndex = 0;
+
+            Date = DateTime.Now;
+
+            YearDate = DateTime.Now;
+
+            ChartDate = DateTime.Now;
+
             PropertyChanged += DetailPageVM_PropertyChanged;
 
             config = appConfig.GetConfig();
@@ -60,6 +89,7 @@ namespace UI.ViewModels
 
             await LoadInfo();
 
+            LoadDayData();
         }
         private void OnInfoMenuActionCommand(object obj)
         {
@@ -139,6 +169,48 @@ namespace UI.ViewModels
                     }
                 }
 
+            }
+
+            //  处理图表数据加载
+            if (e.PropertyName == nameof(ChartDate))
+            {
+                LoadDayData();
+            }
+            if (e.PropertyName == nameof(TabbarSelectedIndex))
+            {
+                if (TabbarSelectedIndex == 0)
+                {
+                    NameIndexStart = 0;
+
+                    LoadDayData();
+                }
+                else if (TabbarSelectedIndex == 1)
+                {
+                    LoadWeekData();
+                }
+                else if (TabbarSelectedIndex == 2)
+                {
+                    NameIndexStart = 1;
+
+                    LoadMonthlyData();
+                }
+                else if (TabbarSelectedIndex == 3)
+                {
+                    LoadYearData();
+                }
+
+            }
+            if (e.PropertyName == nameof(SelectedWeek))
+            {
+                LoadWeekData();
+            }
+            if (e.PropertyName == nameof(MonthDate))
+            {
+                LoadMonthlyData();
+            }
+            if (e.PropertyName == nameof(YearDate))
+            {
+                LoadYearData();
             }
         }
 
@@ -304,5 +376,131 @@ namespace UI.ViewModels
 
             return resData;
         }
+
+        #region 柱状图图表数据加载
+        /// <summary>
+        /// 加载天数据
+        /// </summary>
+        private void LoadDayData()
+        {
+            Task.Run(() =>
+            {
+                var list = data.GetAppDayData(App.ID, ChartDate);
+
+                var chartData = new List<ChartsDataModel>();
+
+                foreach (var item in list)
+                {
+
+                    chartData.Add(new ChartsDataModel()
+                    {
+                        Name = App.Description,
+                        Icon = App.IconFile,
+                        Values = item.Values,
+                    });
+                }
+
+                ChartData = chartData;
+            });
+        }
+
+        /// <summary>
+        /// 加载周数据
+        /// </summary>
+        private void LoadWeekData()
+        {
+            Task.Run(() =>
+            {
+                var weekDateArr = SelectedWeek.Name == "本周" ? Time.GetThisWeekDate() : Time.GetLastWeekDate();
+
+                WeekDateStr = weekDateArr[0].ToString("yyyy年MM月dd日") + " 到 " + weekDateArr[1].ToString("yyyy年MM月dd日");
+
+                var list = data.GetAppRangeData(App.ID, weekDateArr[0], weekDateArr[1]);
+
+                var chartData = new List<ChartsDataModel>();
+
+                string[] weekNames = { "周一", "周二", "周三", "周四", "周五", "周六", "周日", };
+                foreach (var item in list)
+                {
+
+                    chartData.Add(new ChartsDataModel()
+                    {
+
+                        Name = App.Description,
+                        Icon = App.IconFile,
+                        Values = item.Values,
+                        ColumnNames = weekNames
+                    });
+                }
+
+                ChartData = chartData;
+            });
+        }
+
+        /// <summary>
+        /// 加载月数据
+        /// </summary>
+        private void LoadMonthlyData()
+        {
+            Task.Run(() =>
+            {
+                var dateArr = Time.GetMonthDate(MonthDate);
+
+                var list = data.GetAppRangeData(App.ID, dateArr[0], dateArr[1]);
+
+                var chartData = new List<ChartsDataModel>();
+
+                foreach (var item in list)
+                {
+
+                    chartData.Add(new ChartsDataModel()
+                    {
+
+                        Name = App.Description,
+                        Icon = App.IconFile,
+                        Values = item.Values,
+                    });
+                }
+
+                ChartData = chartData;
+
+            });
+
+        }
+
+        /// <summary>
+        /// 加载年份数据
+        /// </summary>
+        private void LoadYearData()
+        {
+            Task.Run(() =>
+            {
+                var list = data.GetAppYearData(App.ID, YearDate);
+
+                var chartData = new List<ChartsDataModel>();
+
+                string[] names = new string[12];
+                for (int i = 0; i < 12; i++)
+                {
+                    names[i] = (i + 1) + "月";
+                }
+
+                foreach (var item in list)
+                {
+
+                    chartData.Add(new ChartsDataModel()
+                    {
+                        Name = App.Description,
+                        Icon = App.IconFile,
+                        Values = item.Values,
+                        ColumnNames = names
+                    });
+                }
+
+                ChartData = chartData;
+
+            });
+        }
+        #endregion
     }
 }

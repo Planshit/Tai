@@ -91,5 +91,67 @@ namespace UI.Models
         /// 当前分类
         /// </summary>
         public SelectItemModel Category { get { return Category_; } set { Category_ = value; OnPropertyChanged(); } }
+
+
+        //  图表数据
+        private List<ChartsDataModel> ChartData_;
+
+        public List<ChartsDataModel> ChartData
+        {
+            get
+            {
+                return ChartData_;
+            }
+            set
+            {
+                ChartData_ = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<string> TabbarData_;
+        /// <summary>
+        /// tabbar data
+        /// </summary>
+        public ObservableCollection<string> TabbarData
+        {
+            get { return TabbarData_; }
+            set { TabbarData_ = value; OnPropertyChanged(); }
+        }
+
+        private int TabbarSelectedIndex_;
+        /// <summary>
+        /// tabbar selected item index
+        /// </summary>
+        public int TabbarSelectedIndex
+        {
+            get { return TabbarSelectedIndex_; }
+            set
+            {
+                TabbarSelectedIndex_ = value;
+                OnPropertyChanged();
+            }
+        }
+        private string WeekDateStr_;
+        public string WeekDateStr { get { return WeekDateStr_; } set { WeekDateStr_ = value; OnPropertyChanged(); } }
+        private DateTime ChartDate_;
+        public DateTime ChartDate { get { return ChartDate_; } set { ChartDate_ = value; OnPropertyChanged(); } }
+
+        private List<SelectItemModel> WeekOptions_;
+
+        public List<SelectItemModel> WeekOptions { get { return WeekOptions_; } set { WeekOptions_ = value; OnPropertyChanged(); } }
+
+        private SelectItemModel SelectedWeek_;
+
+        public SelectItemModel SelectedWeek { get { return SelectedWeek_; } set { SelectedWeek_ = value; OnPropertyChanged(); } }
+
+        private DateTime MonthDate_;
+        public DateTime MonthDate { get { return MonthDate_; } set { MonthDate_ = value; OnPropertyChanged(); } }
+
+        private DateTime YearDate_;
+        public DateTime YearDate { get { return YearDate_; } set { YearDate_ = value; OnPropertyChanged(); } }
+
+        private int NameIndexStart_ = 0;
+        public int NameIndexStart { get { return NameIndexStart_; } set { NameIndexStart_ = value; OnPropertyChanged(); } }
     }
 }
