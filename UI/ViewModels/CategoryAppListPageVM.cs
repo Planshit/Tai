@@ -51,7 +51,7 @@ namespace UI.ViewModels
                 list.Remove(SelectedItem);
 
                 var app = appData.GetApp(SelectedItem.ID);
-                if(app != null)
+                if (app != null)
                 {
                     app.CategoryID = 0;
                     app.Category = null;
@@ -197,34 +197,44 @@ namespace UI.ViewModels
 
         private void Search(string keyword)
         {
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                Debug.WriteLine(keyword);
-                keyword = keyword.ToLower();
+            Task.Run(() =>
+              {
+                  if (!string.IsNullOrEmpty(keyword))
+                  {
+                      Debug.WriteLine(keyword);
+                      keyword = keyword.ToLower();
 
-                //var list = appList.Where(m => m.App.Description.ToLower().IndexOf(keyword) != -1 || m.App.Name.ToLower().IndexOf(keyword) != -1).ToList();
-                var list = AppList.ToList();
+                      //var list = appList.Where(m => m.App.Description.ToLower().IndexOf(keyword) != -1 || m.App.Name.ToLower().IndexOf(keyword) != -1).ToList();
+                      var list = AppList.ToList();
 
-                foreach (var item in list)
-                {
-                    item.Visibility = item.App.Description.ToLower().IndexOf(keyword) != -1 || item.App.Name.ToLower().IndexOf(keyword) != -1 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
-                }
-                
-                AppList = list;
+                      foreach (var item in list)
+                      {
+                          item.Visibility = item.App.Description.ToLower().IndexOf(keyword) != -1 || item.App.Name.ToLower().IndexOf(keyword) != -1 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+                      }
 
-            }
-            else
-            {
-                var list = AppList.ToList();
+                      return list;
 
-                foreach (var item in list)
-                {
-                    item.Visibility = System.Windows.Visibility.Visible;
-                }
-                
-                AppList = list;
+                  }
+                  else
+                  {
+                      var list = AppList.ToList();
 
-            }
+                      foreach (var item in list)
+                      {
+                          item.Visibility = System.Windows.Visibility.Visible;
+                      }
+
+                      return list;
+
+                  }
+              })
+
+      .ContinueWith(task =>
+      {
+          AppList = task.Result;
+
+      }, TaskScheduler.FromCurrentSynchronizationContext());
+
         }
     }
 }

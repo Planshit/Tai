@@ -76,7 +76,7 @@
             <Setter Property="Height"
           Value="1" />
             <Setter Property="Margin"
-          Value="35,0,5,0" />
+          Value="35,5,5,5" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Separator}">
@@ -85,7 +85,7 @@
                             <SolidColorBrush Color="#FFDEDEDE"/>
                         </Border.BorderBrush>
                     </Border>-->
-                        <Rectangle Fill="#FFDEDEDE"/>
+                        <Rectangle Fill="#FFECECEC"/>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

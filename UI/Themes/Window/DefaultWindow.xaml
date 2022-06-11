@@ -186,7 +186,7 @@
                                                 </TransformGroup>
                                             </Border.RenderTransform>
                                             <Border.Effect>
-                                                <DropShadowEffect BlurRadius="10" Color="Black" Opacity=".5"/>
+                                                <DropShadowEffect BlurRadius="10" Color="Black" Opacity=".1"/>
                                             </Border.Effect>
                                             <Grid >
                                                 <Grid.ColumnDefinitions>

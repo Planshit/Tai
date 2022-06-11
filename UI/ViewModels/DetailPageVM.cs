@@ -152,13 +152,13 @@ namespace UI.ViewModels
             {
                 config.Behavior.IgnoreProcessList.Add(App.Name);
                 IsIgnore = true;
-                main.Toast("应用已忽略");
+                main.Toast("应用已忽略", Controls.Window.ToastType.Success);
             }
             else
             {
                 config.Behavior.IgnoreProcessList.Remove(App.Name);
                 IsIgnore = false;
-                main.Toast("已取消忽略");
+                main.Toast("已取消忽略", Controls.Window.ToastType.Success);
             }
 
             appConfig.Save();
@@ -381,7 +381,7 @@ namespace UI.ViewModels
             {
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = item.AppModel.Description;
+                bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);
                 bindModel.PopupText = item.AppModel.File;

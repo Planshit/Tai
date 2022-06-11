@@ -158,7 +158,7 @@ namespace UI.ViewModels
                         };
                         if (category.ID == 0)
                         {
-                            dataItem.Color = "#f7f6f2";
+                            dataItem.Color = "#E5F7F6F2";
                         }
                         chartData.Add(dataItem);
                     }
@@ -213,7 +213,7 @@ namespace UI.ViewModels
                         };
                         if (category.ID == 0)
                         {
-                            dataItem.Color = "#f7f6f2";
+                            dataItem.Color = "#E5F7F6F2";
                         }
                         chartData.Add(dataItem);
                     }
@@ -265,7 +265,7 @@ namespace UI.ViewModels
                         };
                         if (category.ID == 0)
                         {
-                            dataItem.Color = "#f7f6f2";
+                            dataItem.Color = "#E5F7F6F2";
                         }
                         chartData.Add(dataItem);
                     }
@@ -321,7 +321,7 @@ namespace UI.ViewModels
                         };
                         if (category.ID == 0)
                         {
-                            dataItem.Color = "#f7f6f2";
+                            dataItem.Color = "#E5F7F6F2";
                         }
                         chartData.Add(dataItem);
                     }
@@ -377,7 +377,7 @@ namespace UI.ViewModels
 
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = item.AppModel?.Description;
+                bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Timer.Fromat(item.Time);
                 bindModel.PopupText = item.AppModel?.File;
