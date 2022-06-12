@@ -37,13 +37,6 @@ namespace Core.Servicers.Instances
             "OpenWith",
             "Updater",
             "LockApp",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-
         };
 
         /// <summary>
@@ -249,20 +242,10 @@ namespace Core.Servicers.Instances
                 activeProcessFile = file;
 
                 activeStartTime = DateTime.Now;
-
-                //activeSeconds = 0;
-                //if (!activeTimer.Enabled)
-                //{
-                //    activeTimer.Start();
-                //}
-
-
             }
             else
             {
                 activeProcess = null;
-                //activeSeconds = 0;
-                //activeTimer.Stop();
             }
         }
 
@@ -343,6 +326,8 @@ namespace Core.Servicers.Instances
 
                 //  关联进程更新
                 HandleLinks(activeProcess, seconds);
+
+                activeStartTime = DateTime.Now;
 
                 OnUpdateTime?.Invoke(this, null);
             }

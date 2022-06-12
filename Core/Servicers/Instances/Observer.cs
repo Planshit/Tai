@@ -22,7 +22,7 @@ namespace Core.Servicers.Instances
         public event ObserverEventHandler OnAppActive;
 
 
-        private string activeProcessName, activeProcessFile = null;
+        //private string activeProcessName, activeProcessFile = null;
         public Observer()
         {
             winEventDelegate = new Win32API.WinEventDelegate(WinEventProc);
@@ -138,17 +138,17 @@ namespace Core.Servicers.Instances
         private void EventInvoke(string processName, string description, string filename)
         {
             //  防止重复和错误响应
-            if (string.IsNullOrEmpty(processName) || string.IsNullOrEmpty(filename) || !File.Exists(filename))
-            {
-                return;
-            }
-            if (filename == activeProcessFile && processName == activeProcessName)
-            {
-                return;
-            }
+            //if (string.IsNullOrEmpty(processName) || string.IsNullOrEmpty(filename) || !File.Exists(filename))
+            //{
+            //    return;
+            //}
+            //if (filename == activeProcessFile && processName == activeProcessName)
+            //{
+            //    return;
+            //}
 
-            activeProcessName = processName;
-            activeProcessFile = filename;
+            //activeProcessName = processName;
+            //activeProcessFile = filename;
 
             OnAppActive?.Invoke(processName, description, filename);
         }
