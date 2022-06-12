@@ -116,6 +116,8 @@ namespace Core.Librarys
 
 
                 File.AppendAllText(loggerName, string.Join("", loggers.ToArray()));
+
+                loggers.Clear();
             }
         }
 
