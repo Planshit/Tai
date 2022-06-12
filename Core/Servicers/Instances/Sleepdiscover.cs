@@ -112,8 +112,7 @@ namespace Core.Servicers.Instances
             {
                 TimeSpan timeSpan = DateTime.Now - pressKeyboardLastTime;
 
-                Point point;
-                Win32API.GetCursorPos(out point);
+                Point point = Win32API.GetCursorPosition();
                 if (lastPoint.ToString() == point.ToString() && timeSpan.TotalSeconds > 10)
                 {
                     //  非鼠标或键盘激活
@@ -135,7 +134,7 @@ namespace Core.Servicers.Instances
             timer.Tick += Timer_Tick;
             timer.Start();
 
-            Win32API.GetCursorPos(out lastPoint);
+            lastPoint = Win32API.GetCursorPosition();
 
             playSoundStartTime = DateTime.MinValue;
 
@@ -147,9 +146,7 @@ namespace Core.Servicers.Instances
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            Point point;
-
-            Win32API.GetCursorPos(out point);
+            Point point = Win32API.GetCursorPosition();
 
             if (point.X + point.Y == 0)
             {
@@ -227,8 +224,8 @@ namespace Core.Servicers.Instances
             }
 
             Logger.Info("【当前坐标】status：" + status + "，lastPoint：" + lastPoint.ToString() + "，now point：" + point.ToString());
+            
             lastPoint = point;
-            //Win32API.GetCursorPos(out lastPoint);
         }
 
 

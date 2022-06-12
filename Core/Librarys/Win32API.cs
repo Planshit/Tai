@@ -63,8 +63,8 @@ namespace Core.Librarys
         public const UInt32 PROCESS_QUERY_INFORMATION = 0x400;
         public const UInt32 PROCESS_VM_READ = 0x010;
 
-        private const uint WINEVENT_OUTOFCONTEXT = 0;
-        private const uint EVENT_SYSTEM_FOREGROUND = 3;
+        //private const uint WINEVENT_OUTOFCONTEXT = 0;
+        //private const uint EVENT_SYSTEM_FOREGROUND = 3;
         public static string UWP_AppName(IntPtr hWnd, uint pID)
         {
             WINDOWINFO windowinfo = new WINDOWINFO();
@@ -117,8 +117,26 @@ namespace Core.Librarys
         /// <returns></returns>
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetCursorPos(out Point lpPoint);
+        private static extern bool GetCursorPos(out POINT lpPoint);
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+
+            public static implicit operator Point(POINT point)
+            {
+                return new Point(point.X, point.Y);
+            }
+        }
+
+        public static Point GetCursorPosition()
+        {
+            POINT lpPoint;
+            GetCursorPos(out lpPoint);
+            return lpPoint;
+        }
 
         #region 声音判断
         /// <summary>
@@ -254,6 +272,38 @@ namespace Core.Librarys
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
+        #endregion
+
+        #region 获取窗口信息
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;        // x position of upper-left corner
+            public int Top;         // y position of upper-left corner
+            public int Right;       // x position of lower-right corner
+            public int Bottom;      // y position of lower-right corner
+
+            public int Width
+            {
+                get
+                {
+                    return Right - Left;
+                }
+            }
+            public int Height
+            {
+                get
+                {
+                    return Bottom - Top;
+                }
+            }
+
+        }
+
         #endregion
     }
 }
