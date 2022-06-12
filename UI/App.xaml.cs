@@ -238,7 +238,10 @@ namespace UI
 
             observer.OnAppActive += (p, d, f) =>
             {
-                contextMenu.IsOpen = false;
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>
+                {
+                    contextMenu.IsOpen = false;
+                }));
             };
             //  创建保活窗口
             keepaliveWindow = new HideWindow();
