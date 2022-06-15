@@ -462,7 +462,7 @@ namespace Core.Servicers.Instances
             using (var db = new TaiDbContext())
             {
 
-                var data = db.Database.SqlQuery<ColumnItemDataModel>("select sum(Time) as Total,AppModelID as AppID,DataTime as Time from HoursLogModels  where AppModelID=" + appID + " and DataTime>='" + date.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DataTime<= '" + date.Date.ToString("yyyy-MM-dd 23:59:59") + "' GROUP BY AppModelID ").ToArray();
+                var data = db.Database.SqlQuery<ColumnItemDataModel>("select sum(Time) as Total,AppModelID as AppID,DataTime as Time from HoursLogModels  where AppModelID=" + appID + " and DataTime>='" + date.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DataTime<= '" + date.Date.ToString("yyyy-MM-dd 23:59:59") + "' GROUP BY AppModelID,DataTime ").ToArray();
 
 
                 List<ColumnDataModel> list = new List<ColumnDataModel>();
