@@ -178,9 +178,10 @@ namespace Core.Librarys.SQLite
 
                 }
 
-
-                HandleVersion1002Migrate();
-
+                if (!isNew)
+                {
+                    HandleVersion1002Migrate();
+                }
 
                 //  处理表字段删除
                 foreach (var dbModel in modelInfosDb)
@@ -278,8 +279,9 @@ namespace Core.Librarys.SQLite
                             var ID = rd[0];
                             var Name = rd[1].ToString();
                             var Description = rd[2].ToString();
-
                             var icon = Iconer.Get(Name, Description);
+
+                            Name = SQLiteEscape(Name);
 
                             sqlList.Add($"update DailyLogModels set AppModelID={ID} where ProcessName='{Name}'");
                             sqlList.Add($"update HoursLogModels set AppModelID={ID} where ProcessName='{Name}'");
@@ -314,6 +316,20 @@ namespace Core.Librarys.SQLite
                 }
             }
 
+        }
+
+        private string SQLiteEscape(string str)
+        {
+            str = str.Replace("/", "//");
+            str = str.Replace("'", "''");
+            str = str.Replace("[", "/[");
+            str = str.Replace("]", "/]");
+            str = str.Replace("%", "/%");
+            str = str.Replace("&", "/&");
+            str = str.Replace("_", "/_");
+            str = str.Replace("(", "/(");
+            str = str.Replace(")", "/)");
+            return str;
         }
 
         #region 是否需要处理
