@@ -77,7 +77,7 @@ namespace UI
             //appData.SaveAppChanges();
 
             //  记录崩溃错误
-            Logger.Error("[程序崩溃异常] " + e.Exception.Message);
+            Logger.Error("[程序崩溃异常] " + e.Exception.ToString());
 
             Logger.Save(true);
 
