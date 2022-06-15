@@ -35,7 +35,7 @@ namespace UI.Base.Color
 
         };
 
-        public static string[] MainColors = { "#00FFAB", "#A761FF", "#ff587f", "#ff1801", "#f7fd05", "#DAEAF1", "#2B20D9", "#FF5C01", "#9EB23C", "#FF9999", "#998CEB", "#77E4D4", "#FD5E5E", "#B4FF9F", "#07FF01", "#FFE162", "#C70B80", "#590696", "#97DBAE" };
+        public static string[] MainColors = { "#00FFAB", "#A761FF", "#ff587f", "#fff323",  "#DAEAF1", "#2B20D9", "#FF5C01", "#9EB23C", "#FF9999", "#998CEB", "#77E4D4", "#FD5E5E", "#B4FF9F", "#07FF01", "#FFE162", "#C70B80", "#590696", "#97DBAE", "#ff1801" };
 
         public static IColor Get(ColorTypes color)
         {
