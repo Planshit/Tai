@@ -20,19 +20,25 @@ namespace UI.ViewModels
         private ConfigModel config;
         private readonly IAppConfig appConfig;
         private readonly MainViewModel mainVM;
+        private readonly IData data;
         public Command OpenURL { get; set; }
         public Command CheckUpdate { get; set; }
+        public Command DelDataCommand { get; set; }
 
-        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM)
+        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data)
         {
             this.appConfig = appConfig;
             this.mainVM = mainVM;
+            this.data = data;
 
             OpenURL = new Command(new Action<object>(OnOpenURL));
             CheckUpdate = new Command(new Action<object>(OnCheckUpdate));
+            DelDataCommand = new Command(new Action<object>(OnDelData));
 
             Init();
         }
+
+
 
         private void OnCheckUpdate(object obj)
         {
@@ -87,12 +93,16 @@ namespace UI.ViewModels
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "常规","关联","行为","关于"
+                "常规","关联","行为","数据","关于"
             };
 
             PropertyChanged += SettingPageVM_PropertyChanged;
 
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            DelDataStartMonthDate = DateTime.Now;
+
+            DelDataEndMonthDate = DateTime.Now;
         }
 
 
@@ -145,6 +155,19 @@ namespace UI.ViewModels
                     Data = config.Behavior;
                 }
             }
+        }
+
+        private void OnDelData(object obj)
+        {
+            if (DelDataStartMonthDate > DelDataEndMonthDate)
+            {
+                mainVM.Toast("时间范围选择错误", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                return;
+            }
+
+            data.ClearRange(DelDataStartMonthDate, DelDataEndMonthDate);
+
+            mainVM.Toast("操作已完成", Controls.Window.ToastType.Success);
         }
     }
 }

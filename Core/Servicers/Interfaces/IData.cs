@@ -95,8 +95,12 @@ namespace Core.Servicers.Interfaces
         List<ColumnDataModel> GetAppDayData(int appID, DateTime date);
         List<ColumnDataModel> GetAppRangeData(int appID, DateTime start, DateTime end);
         List<ColumnDataModel> GetAppYearData(int appID, DateTime date);
-
-
+        /// <summary>
+        /// 清空指定时间范围数据
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        void ClearRange(DateTime start, DateTime end);
 
     }
 }

@@ -9,68 +9,81 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SettingPage"
     xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar"
-    xmlns:Btn="clr-namespace:UI.Controls.Button">
+    xmlns:Btn="clr-namespace:UI.Controls.Button" xmlns:select="clr-namespace:UI.Controls.Select">
+    <StackPanel Margin="20">
 
-    <Grid Margin="20">
-        <StackPanel>
+        <TextBlock Text="设置" FontSize="18" Margin="0,5,0,20"/>
+        <Tabbar:Tabbar Width="230" HorizontalAlignment="Left" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
 
-            <TextBlock Text="设置" FontSize="18" Margin="0,5,0,20"/>
-            <Tabbar:Tabbar Width="200" HorizontalAlignment="Left" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
-
-            <TabControl 
+        <TabControl 
                 SelectedIndex="{Binding TabbarSelectedIndex}"
                 BorderThickness="0"
                 Margin="0,15,0,0"
                 Padding="0"
                 Background="Transparent"
                 >
-                <TabControl.Resources>
-                    <Style TargetType="TabItem">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="TabItem">
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
 
-                </TabControl.Resources>
-                <TabItem>
-                    <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" />
-                </TabItem>
-                <TabItem>
-                    <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" Margin="0,0,0,10"/>
-                </TabItem>
-                <TabItem>
-                    <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" Margin="0,0,0,0"/>
-                </TabItem>
-                <TabItem>
-                    <!--关于-->
-                    <Border Background="White" Padding="20" CornerRadius="6">
-                        <StackPanel HorizontalAlignment="Left">
-                            <Image Width="25" Source="/Resources/Icons/tai.ico" HorizontalAlignment="Left"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                <TextBlock VerticalAlignment="Center">
-                                <Run Text="Tai 版本号 "/><Run Text="{Binding Version}"/>
-                                </TextBlock>
-                                <Btn:Button Visibility="{Binding CheckUpdateBtnVisibility}" Command="{Binding CheckUpdate}" Margin="20,0,0,0" VerticalAlignment="Center" Width="120" Icon="CloudImportExport" Content="检查更新"/>
-                            </StackPanel>
-                            <TextBlock Margin="0,30,0,0">
-                                <Run Text="开源 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai">https://github.com/Planshit/Tai</Hyperlink>
-                            </TextBlock>
-                            <TextBlock Margin="0,5,0,0">
-                                <Run Text="讨论 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai/discussions">https://github.com/Planshit/Tai/discussions</Hyperlink>
-                            </TextBlock>
-                            <TextBlock Margin="0,10,0,0">
-                                <Run Text="外部资源声明 "/>
-                            </TextBlock>
-                            <TextBlock Foreground="Gray" Margin="0,5,0,0" Text="Icon 来自微软 Emoji"/>
+            </TabControl.Resources>
+            <TabItem>
+                <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" />
+            </TabItem>
+            <TabItem>
+                <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" Margin="0,0,0,10"/>
+            </TabItem>
+            <TabItem>
+                <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" Margin="0,0,0,0"/>
+            </TabItem>
+            <TabItem>
+                <!--数据-->
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="删除数据" Foreground="#f54f4e" FontSize="14"/>
+                    <Border Background="White" Padding="20" CornerRadius="6" Margin="0,15,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBlock Text="从" VerticalAlignment="Center"/>
+                            <select:DateSelect Date="{Binding DelDataStartMonthDate,Mode=TwoWay}" Margin="10,0" SelectType="Month"/>
+                            <TextBlock Text="到" VerticalAlignment="Center"/>
+                            <select:DateSelect Date="{Binding DelDataEndMonthDate,Mode=TwoWay}" Margin="10,0" SelectType="Month"/>
+                            <Btn:Button Margin="20,0,0,0" Content="执行" Width="80" Background="#f51837" Foreground="White" Command="{Binding DelDataCommand}"/>
                         </StackPanel>
                     </Border>
-                </TabItem>
 
-            </TabControl>
-        </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem>
+                <!--关于-->
+                <Border Background="White" Padding="20" CornerRadius="6">
+                    <StackPanel HorizontalAlignment="Left">
+                        <Image Width="25" Source="/Resources/Icons/tai.ico" HorizontalAlignment="Left"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBlock VerticalAlignment="Center">
+                                <Run Text="Tai 版本号 "/><Run Text="{Binding Version}"/>
+                            </TextBlock>
+                            <Btn:Button Visibility="{Binding CheckUpdateBtnVisibility}" Command="{Binding CheckUpdate}" Margin="20,0,0,0" VerticalAlignment="Center" Width="120" Icon="CloudImportExport" Content="检查更新"/>
+                        </StackPanel>
+                        <TextBlock Margin="0,30,0,0">
+                                <Run Text="开源 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai">https://github.com/Planshit/Tai</Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="0,5,0,0">
+                                <Run Text="讨论 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai/discussions">https://github.com/Planshit/Tai/discussions</Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="0,10,0,0">
+                                <Run Text="外部资源声明 "/>
+                        </TextBlock>
+                        <TextBlock Foreground="Gray" Margin="0,5,0,0" Text="Icon 来自微软 Emoji"/>
+                    </StackPanel>
+                </Border>
+            </TabItem>
 
-    </Grid>
+        </TabControl>
+    </StackPanel>
 </Page>

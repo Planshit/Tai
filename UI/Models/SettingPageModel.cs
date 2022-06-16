@@ -32,8 +32,14 @@ namespace UI.Models
         /// </summary>
         public string Version { get { return version; } set { version = value; OnPropertyChanged(); } }
 
-        private Visibility CheckUpdateBtnVisibility_= Visibility.Visible;
+        private Visibility CheckUpdateBtnVisibility_ = Visibility.Visible;
         public Visibility CheckUpdateBtnVisibility { get { return CheckUpdateBtnVisibility_; } set { CheckUpdateBtnVisibility_ = value; OnPropertyChanged(); } }
 
+
+        private DateTime DelDataStartMonthDate_;
+        public DateTime DelDataStartMonthDate { get { return DelDataStartMonthDate_; } set { DelDataStartMonthDate_ = value; OnPropertyChanged(); } }
+
+        private DateTime DelDataEndMonthDate_;
+        public DateTime DelDataEndMonthDate { get { return DelDataEndMonthDate_; } set { DelDataEndMonthDate_ = value; OnPropertyChanged(); } }
     }
 }
