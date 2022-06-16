@@ -16,12 +16,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:BaseListItem}">
-                    <Border Background="{TemplateBinding Background}" x:Name="Border">
+                    <Grid Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
 
                         <Border BorderBrush="#f3f3f3" BorderThickness="1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="White" >
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Direction="315" Color="#ccc" Opacity=".05"/>
-                            </Border.Effect>
                             <Grid VerticalAlignment="Center" Margin="10,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="9*"/>
@@ -30,6 +27,11 @@
                                 <TextBlock Text="{TemplateBinding Text}"/>
                             </Grid>
 
+                        </Border>
+                        <Border x:Name="Shadow" BorderBrush="{Binding ElementName=BoxBorder,Path=BorderBrush}" BorderThickness="{Binding ElementName=BoxBorder,Path=BorderThickness}" Panel.ZIndex="-1" Width="{Binding ElementName=BoxBorder,Path=ActualWidth}"  Height="{Binding ElementName=BoxBorder,Path=ActualHeight}" CornerRadius="{Binding ElementName=BoxBorder,Path=CornerRadius}" Background="{Binding ElementName=BoxBorder,Path=Background}">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Direction="315" Color="#ccc" Opacity=".05"/>
+                            </Border.Effect>
                         </Border>
 
                         <VisualStateManager.VisualStateGroups>
@@ -43,7 +45,7 @@
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.Color)"
-                                                Storyboard.TargetName="BoxBorder">
+                                                Storyboard.TargetName="Shadow">
                                             <EasingColorKeyFrame KeyTime="0"
                                          Value="#2b20d9"/>
                                         </ColorAnimationUsingKeyFrames>
@@ -65,7 +67,7 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
-                    </Border>
+                    </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="BoxBorder" Property="Background" Value="#2b20d9"/>
