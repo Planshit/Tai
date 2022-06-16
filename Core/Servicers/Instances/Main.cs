@@ -11,6 +11,7 @@ using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Threading;
@@ -27,7 +28,7 @@ namespace Core.Servicers.Instances
         private readonly IAppData appData;
         private readonly ICategorys categories;
         //  忽略的进程
-        private readonly string[] IgnoreProcess = new string[] {
+        private readonly string[] DefaultIgnoreProcess = new string[] {
             "Tai",
             "SearchHost",
             "Taskmgr",
@@ -61,6 +62,19 @@ namespace Core.Servicers.Instances
 
         public event EventHandler OnUpdateTime;
 
+        /// <summary>
+        /// 忽略进程缓存列表
+        /// </summary>
+        private List<string> IgnoreProcessCacheList;
+
+        /// <summary>
+        /// 配置正则忽略进程列表
+        /// </summary>
+        private List<string> ConfigIgnoreProcessRegxList;
+        /// <summary>
+        /// 配置忽略进程名称列表
+        /// </summary>
+        private List<string> ConfigIgnoreProcessList;
         public Main(
             IObserver observer,
             IData data,
@@ -76,6 +90,10 @@ namespace Core.Servicers.Instances
             this.dateTimeObserver = dateTimeObserver;
             this.appData = appData;
             this.categories = categories;
+
+            IgnoreProcessCacheList = new List<string>();
+            ConfigIgnoreProcessRegxList = new List<string>();
+            ConfigIgnoreProcessList = new List<string>();
 
             observer.OnAppActive += Observer_OnAppActive;
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
@@ -97,6 +115,9 @@ namespace Core.Servicers.Instances
             {
                 //  处理开机自启
                 Shortcut.SetStartup(newConfig.General.IsStartatboot);
+
+                //  更新忽略规则
+                UpdateConfigIgnoreProcess();
             }
         }
 
@@ -126,6 +147,7 @@ namespace Core.Servicers.Instances
             //  加载应用配置（确保配置文件最先加载
             appConfig.Load();
             config = appConfig.GetConfig();
+            UpdateConfigIgnoreProcess();
 
             //  日期变化观察
             dateTimeObserver.Start();
@@ -145,6 +167,21 @@ namespace Core.Servicers.Instances
             //appData.SaveAppChanges();
         }
 
+
+        private void UpdateConfigIgnoreProcess()
+        {
+            ConfigIgnoreProcessList.Clear();
+            ConfigIgnoreProcessRegxList.Clear();
+            IgnoreProcessCacheList.Clear();
+
+            ConfigIgnoreProcessList = config.Behavior.IgnoreProcessList.Where(m => !IsRegex(m)).ToList();
+            ConfigIgnoreProcessRegxList = config.Behavior.IgnoreProcessList.Where(m => IsRegex(m)).ToList();
+        }
+
+        private bool IsRegex(string str)
+        {
+            return Regex.IsMatch(str, @"[\.|\*|\?|\{|\\|\[|\^|\|]");
+        }
 
         private void Sleepdiscover_SleepStatusChanged(Enums.SleepStatus sleepStatus)
         {
@@ -173,53 +210,66 @@ namespace Core.Servicers.Instances
 
 
         /// <summary>
-        /// 检查焦点app是否已经在库
+        /// 检查应用是否需要记录数据
         /// </summary>
         /// <param name="processName"></param>
         /// <param name="description"></param>
         /// <param name="file"></param>
-        private void CheckApp(string processName, string description, string file)
+        private bool IsCheckApp(string processName, string description, string file)
         {
-            if (string.IsNullOrEmpty(file) || string.IsNullOrEmpty(processName))
+            if (string.IsNullOrEmpty(file) || string.IsNullOrEmpty(processName) || DefaultIgnoreProcess.Contains(processName) || IgnoreProcessCacheList.Contains(processName))
             {
-                return;
+                return false;
             }
 
-
-            if (!config.Behavior.IgnoreProcessList.Contains(processName)
-                && !IgnoreProcess.Contains(processName))
+            //  从名称判断
+            if (ConfigIgnoreProcessList.Contains(processName))
             {
-                AppModel app = appData.GetApp(processName);
-                if (app == null)
-                {
-                    //  提取icon
-                    string iconFile = Iconer.ExtractFromFile(file, processName, description);
+                return false;
+            }
 
-                    appData.AddApp(new AppModel()
-                    {
-                        Name = processName,
-                        Description = description,
-                        File = file,
-                        CategoryID = 0,
-                        IconFile = iconFile,
-                    });
+            //  正则表达式
+            foreach (string reg in ConfigIgnoreProcessRegxList)
+            {
+                if (Regex.IsMatch(processName, reg))
+                {
+                    IgnoreProcessCacheList.Add(processName);
+
+                    return false;
                 }
             }
+
+            AppModel app = appData.GetApp(processName);
+            if (app == null)
+            {
+                //  记录应用信息
+
+                //  提取icon
+                string iconFile = Iconer.ExtractFromFile(file, processName, description);
+
+                appData.AddApp(new AppModel()
+                {
+                    Name = processName,
+                    Description = description,
+                    File = file,
+                    CategoryID = 0,
+                    IconFile = iconFile,
+                });
+            }
+
+            return true;
         }
 
         private void Observer_OnAppActive(string processName, string description, string file)
         {
-            CheckApp(processName, description, file);
+            bool isCheck = IsCheckApp(processName, description, file);
 
             if (activeProcess != processName && activeProcessFile != file)
             {
                 UpdateTime();
             }
 
-            if (!config.Behavior.IgnoreProcessList.Contains(processName)
-                && file != string.Empty
-                && sleepStatus != SleepStatus.Sleep
-                && !IgnoreProcess.Contains(processName))
+            if (isCheck && sleepStatus != SleepStatus.Sleep)
             {
                 activeProcess = processName;
                 activeProcessDescription = description;
