@@ -23,7 +23,7 @@ namespace Core.Servicers.Instances
         private readonly IData data;
         private readonly ISleepdiscover sleepdiscover;
         private readonly IAppConfig appConfig;
-        private readonly IDateObserver dateObserver;
+        private readonly IDateTimeObserver dateTimeObserver;
         private readonly IAppData appData;
         private readonly ICategorys categories;
         //  忽略的进程
@@ -49,10 +49,6 @@ namespace Core.Servicers.Instances
         /// </summary>
         private DateTime activeStartTime = DateTime.Now;
 
-        ///// <summary>
-        ///// 活动计时器
-        ///// </summary>
-        //private Timer activeTimer;
         /// <summary>
         /// 睡眠状态
         /// </summary>
@@ -64,46 +60,34 @@ namespace Core.Servicers.Instances
         private ConfigModel config;
 
         public event EventHandler OnUpdateTime;
-        ///// <summary>
-        ///// 当前焦点使用时长（秒）
-        ///// </summary>
-        //private int activeSeconds = 0;
+
         public Main(
             IObserver observer,
             IData data,
             ISleepdiscover sleepdiscover,
             IAppConfig appConfig,
-            IDateObserver dateObserver,
+            IDateTimeObserver dateTimeObserver,
             IAppData appData, ICategorys categories)
         {
             this.observer = observer;
             this.data = data;
             this.sleepdiscover = sleepdiscover;
             this.appConfig = appConfig;
-            this.dateObserver = dateObserver;
+            this.dateTimeObserver = dateTimeObserver;
             this.appData = appData;
             this.categories = categories;
 
             observer.OnAppActive += Observer_OnAppActive;
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
-            //activeTimer = new Timer();
-            //activeTimer.Interval = 1000;
-            //activeTimer.Elapsed += ActiveTimer_Elapsed;
             appConfig.ConfigChanged += AppConfig_ConfigChanged;
-            dateObserver.OnDateChanging += DateObserver_OnDateChanging;
+            dateTimeObserver.OnDateTimeChanging += DateTimeObserver_OnDateTimeChanging;
         }
 
-        //private void ActiveTimer_Elapsed(object sender, ElapsedEventArgs e)
-        //{
-        //    activeSeconds++;
-        //}
-
-        private void DateObserver_OnDateChanging(object sender, EventArgs e)
+        private void DateTimeObserver_OnDateTimeChanging(object sender, DateTime time)
         {
             if (sleepStatus == SleepStatus.Wake)
             {
-                Debug.WriteLine("日期变更前：" + DateTime.Now.ToString());
-                UpdateTime();
+                UpdateTime(time);
             }
         }
 
@@ -144,7 +128,7 @@ namespace Core.Servicers.Instances
             config = appConfig.GetConfig();
 
             //  日期变化观察
-            dateObserver.Start();
+            dateTimeObserver.Start();
 
             //  启动进程观察
             observer.Start();
@@ -249,7 +233,7 @@ namespace Core.Servicers.Instances
             }
         }
 
-        private void HandleLinks(string processName, int seconds)
+        private void HandleLinks(string processName, int seconds, DateTime? time = null)
         {
             try
             {
@@ -268,7 +252,7 @@ namespace Core.Servicers.Instances
                                 if (IsProcessRuning(linkProcess))
                                 {
                                     //  同步更新
-                                    data.Set(linkProcess, seconds);
+                                    data.Set(linkProcess, seconds, time);
                                 }
 
                             }
@@ -297,7 +281,7 @@ namespace Core.Servicers.Instances
         }
         #endregion
 
-        private void UpdateTime()
+        private void UpdateTime(DateTime? time = null)
         {
             if (!string.IsNullOrEmpty(activeProcess))
             {
@@ -312,24 +296,19 @@ namespace Core.Servicers.Instances
                     seconds -= 300;
                 }
 
-                if (seconds <= 0)
+                if (seconds > 0)
                 {
-                    return;
+                    data.Set(activeProcess, activeProcessDescription, activeProcessFile, seconds, time);
+
+                    //  关联进程更新
+                    HandleLinks(activeProcess, seconds, time);
                 }
-
-
-
-                Logger.Info("【" + sleepStatus + "】进程：" + activeProcess + " 更新时间：" + seconds + "，开始时间：" + activeStartTime.ToString() + "，当前时间：" + DateTime.Now.ToString());
-
-
-                data.Set(activeProcess, activeProcessDescription, activeProcessFile, seconds);
-
-                //  关联进程更新
-                HandleLinks(activeProcess, seconds);
 
                 activeStartTime = DateTime.Now;
 
                 OnUpdateTime?.Invoke(this, null);
+
+                Logger.Info("【" + sleepStatus + "】进程：" + activeProcess + " 更新时间：" + seconds + "，开始时间：" + activeStartTime.ToString() + "，当前时间：" + DateTime.Now.ToString());
             }
         }
 

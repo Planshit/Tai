@@ -19,8 +19,14 @@ namespace Core.Servicers.Instances
         {
             this.appData = appData;
         }
-        public void Set(string processName, string processDescription, string file, int seconds)
+        public void Set(string processName, string processDescription, string file, int seconds, DateTime? time_ = null)
         {
+            DateTime time = !time_.HasValue ? DateTime.Now : time_.Value;
+            var today = time.Date;
+
+            //  当前时段
+            var nowtime = new DateTime(today.Year, today.Month, today.Day, time.Hour, 0, 0);
+
             if (string.IsNullOrEmpty(processName) || seconds <= 0)
             {
                 return;
@@ -35,7 +41,7 @@ namespace Core.Servicers.Instances
             }
 
 
-            var today = DateTime.Now.Date;
+
             using (var db = new TaiDbContext())
             {
                 var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
@@ -56,8 +62,6 @@ namespace Core.Servicers.Instances
 
                 //  分时段记录数据
 
-                //  当前时段
-                var nowtime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
                 var hourslog = db.HoursLog.SingleOrDefault(
                     m =>
                     m.DataTime == nowtime
@@ -185,8 +189,14 @@ namespace Core.Servicers.Instances
             return GetDateRangelogList(weekStartDate, weekEndDate);
         }
 
-        public void Set(string processName, int seconds)
+        public void Set(string processName, int seconds, DateTime? time_ = null)
         {
+            DateTime time = !time_.HasValue ? DateTime.Now : time_.Value;
+            var today = time.Date;
+
+            //  当前时段
+            var nowtime = new DateTime(today.Year, today.Month, today.Day, time.Hour, 0, 0);
+
             if (string.IsNullOrEmpty(processName) || seconds <= 0)
             {
                 return;
@@ -200,7 +210,6 @@ namespace Core.Servicers.Instances
 
             using (var db = new TaiDbContext())
             {
-                var today = DateTime.Now.Date;
                 var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
                 if (res != null)
                 {
@@ -209,8 +218,6 @@ namespace Core.Servicers.Instances
 
                 //  分时段记录数据
 
-                //  当前时段
-                var nowtime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
                 var hourslog = db.HoursLog.SingleOrDefault(
                     m =>
                     m.DataTime == nowtime

@@ -18,7 +18,7 @@ namespace Core.Servicers.Interfaces
         /// <param name="processDescription"></param>
         /// <param name="file"></param>
         /// <param name="seconds"></param>
-        void Set(string processName, string processDescription, string file, int seconds);
+        void Set(string processName, string processDescription, string file, int seconds, DateTime? time = null);
 
         /// <summary>
         /// 获取今天的数据
@@ -48,7 +48,7 @@ namespace Core.Servicers.Interfaces
         /// </summary>
         /// <param name="processName"></param>
         /// <param name="seconds"></param>
-        void Set(string processName, int seconds);
+        void Set(string processName, int seconds, DateTime? time = null);
 
         /// <summary>
         /// 获取指定进程某个月的数据

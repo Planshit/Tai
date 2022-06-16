@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Event;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,15 +10,15 @@ namespace Core.Servicers.Interfaces
     /// <summary>
     /// 日期变更观察（用于监听日期变化
     /// </summary>
-    public interface IDateObserver
+    public interface IDateTimeObserver
     {
         /// <summary>
         /// 启动
         /// </summary>
         void Start();
         /// <summary>
-        /// 日期即将变化时发生（前30秒）
+        /// 日期即将变化时发生（前1秒）
         /// </summary>
-        event EventHandler OnDateChanging;
+        event DateTimeObserverEventHandler OnDateTimeChanging;
     }
 }

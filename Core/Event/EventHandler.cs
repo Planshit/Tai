@@ -9,6 +9,6 @@ using System.Threading.Tasks;
 namespace Core.Event
 {
     public delegate void SleepdiscoverEventHandler(SleepStatus sleepStatus);
-
     public delegate void AppConfigEventHandler(ConfigModel oldConfig, ConfigModel newConfig);
+    public delegate void DateTimeObserverEventHandler(object sender, DateTime e);
 }

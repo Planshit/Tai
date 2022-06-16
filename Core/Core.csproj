@@ -134,7 +134,7 @@
     <Compile Include="Servicers\Instances\Categorys.cs" />
     <Compile Include="Servicers\Instances\Data.cs" />
     <Compile Include="Librarys\Logger.cs" />
-    <Compile Include="Servicers\Instances\DateObserver.cs" />
+    <Compile Include="Servicers\Instances\DateTimeObserver.cs" />
     <Compile Include="Servicers\Instances\Main.cs" />
     <Compile Include="Servicers\Instances\Observer.cs" />
     <Compile Include="Servicers\Instances\Sleepdiscover.cs" />
@@ -142,7 +142,7 @@
     <Compile Include="Servicers\Interfaces\ICategorys.cs" />
     <Compile Include="Servicers\Interfaces\IAppData.cs" />
     <Compile Include="Servicers\Interfaces\IData.cs" />
-    <Compile Include="Servicers\Interfaces\IDateObserver.cs" />
+    <Compile Include="Servicers\Interfaces\IDateTimeObserver.cs" />
     <Compile Include="Servicers\Interfaces\IMain.cs" />
     <Compile Include="Servicers\Interfaces\IObserver.cs" />
     <Compile Include="Servicers\Interfaces\ISleepdiscover.cs" />

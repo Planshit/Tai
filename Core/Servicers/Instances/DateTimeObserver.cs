@@ -1,6 +1,8 @@
-﻿using Core.Servicers.Interfaces;
+﻿using Core.Event;
+using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,18 +10,10 @@ using System.Windows.Threading;
 
 namespace Core.Servicers.Instances
 {
-    public class DateObserver : IDateObserver
+    public class DateTimeObserver : IDateTimeObserver
     {
-        public event EventHandler OnDateChanging;
-
-
-
+        public event DateTimeObserverEventHandler OnDateTimeChanging;
         private DispatcherTimer timer;
-
-        public DateObserver()
-        {
-        }
-
 
         public void Start()
         {
@@ -31,13 +25,13 @@ namespace Core.Servicers.Instances
             timer = new DispatcherTimer();
             timer.Tick += Timer_Tick;
             DateTime now = DateTime.Now;
-            DateTime tmorrow = new DateTime(now.Year, now.Month, now.Day, 23, 59, 30);
-            int diffseconds = (int)tmorrow.Subtract(now).TotalSeconds;
-            if (diffseconds < 0)
+            DateTime updateTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, 59, 59);
+            int diffMilliseconds = (int)updateTime.Subtract(now).TotalMilliseconds;
+            if (diffMilliseconds < 0)
             {
-                diffseconds = 0;
+                diffMilliseconds = 1;
             }
-            timer.Interval = new TimeSpan(0, 0, diffseconds);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, diffMilliseconds);
             timer.Start();
         }
 
@@ -45,11 +39,13 @@ namespace Core.Servicers.Instances
         {
             timer.Stop();
 
-            OnDateChanging?.Invoke(this, EventArgs.Empty);
+            DateTime nowTime = DateTime.Now;
+
+            OnDateTimeChanging?.Invoke(this, nowTime);
 
             await Task.Run(async () =>
             {
-                await Task.Delay(60000);
+                await Task.Delay(1000);
                 SetTimer();
             });
         }

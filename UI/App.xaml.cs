@@ -186,7 +186,7 @@ namespace UI
             services.AddSingleton<IData, Data>();
             services.AddSingleton<ISleepdiscover, Sleepdiscover>();
             services.AddSingleton<IAppConfig, AppConfig>();
-            services.AddSingleton<IDateObserver, DateObserver>();
+            services.AddSingleton<IDateTimeObserver, DateTimeObserver>();
             services.AddSingleton<IAppData, AppData>();
             services.AddSingleton<ICategorys, Categorys>();
 
