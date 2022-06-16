@@ -12,19 +12,19 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:ChartsItemTypeA}">
-                    <Border Background="{TemplateBinding Background}">
-                        <Grid>
-                            <Grid x:Name="Normal">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid Margin="0,0,10,0">
-                                    <Border x:Name="IconBorder" BorderBrush="Transparent" BorderThickness="2" Background="#f3f3f3" CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
-                                        <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                </Grid>
-                                <!--<Grid  Grid.Column="1" x:Name="ValueContainer"  VerticalAlignment="Center" >
+                    <!--<Border Background="{TemplateBinding Background}">-->
+                    <Grid Background="{TemplateBinding Background}">
+                        <Grid x:Name="Normal">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Margin="0,0,10,0">
+                                <Border x:Name="IconBorder" BorderBrush="Transparent" BorderThickness="2" Background="#f3f3f3" CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
+                                    <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
+                            <!--<Grid  Grid.Column="1" x:Name="ValueContainer"  VerticalAlignment="Center" >
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
@@ -50,10 +50,10 @@
                                         <TextBlock Grid.Column="1" x:Name="ValueTextObj" VerticalAlignment="Center" Foreground="#5c5c5c" FontSize="12" Margin="5,0,0,0"/>
                                     </Grid>
                                 </Grid>-->
-                                <StackPanel Grid.Column="1" x:Name="ValueContainer" VerticalAlignment="Center" >
-                                    <TextBlock x:Name="NameTextObj" Foreground="#5c5c5c" HorizontalAlignment="Left"/>
-                                    <StackPanel Orientation="Horizontal" >
-                                        <Rectangle
+                            <StackPanel Grid.Column="1" x:Name="ValueContainer" VerticalAlignment="Center" >
+                                <TextBlock x:Name="NameTextObj" Foreground="#5c5c5c" HorizontalAlignment="Left"/>
+                                <StackPanel Orientation="Horizontal" >
+                                    <Rectangle
                             x:Name="ValueBlockObj"
                                 RadiusX="4"
                                 RadiusY="4"
@@ -63,27 +63,27 @@
                                         HorizontalAlignment="Left"
                             />
 
-                                        <TextBlock x:Name="ValueTextObj" VerticalAlignment="Center" Foreground="#5c5c5c" FontSize="12" Margin="5,0,0,0"/>
-                                    </StackPanel>
+                                    <TextBlock x:Name="ValueTextObj" VerticalAlignment="Center" Foreground="#5c5c5c" FontSize="12" Margin="5,0,0,0"/>
                                 </StackPanel>
+                            </StackPanel>
 
+                        </Grid>
+
+                        <Grid x:Name="Loading" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Margin="0,0,10,0">
+
+                                <base:Placeholder  CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
+                                    <!--<Rectangle Height="25" Fill="" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
+                                </base:Placeholder>
                             </Grid>
-
-                            <Grid x:Name="Loading" Visibility="Collapsed">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid Margin="0,0,10,0">
-
-                                    <base:Placeholder  CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
-                                        <!--<Rectangle Height="25" Fill="" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
-                                    </base:Placeholder>
-                                </Grid>
-                                <StackPanel  Grid.Column="1"  VerticalAlignment="Center" >
-                                    <base:Placeholder Width="100" Height="12" HorizontalAlignment="Left" Margin="0,0,0,6"/>
-                                    <StackPanel Orientation="Horizontal" >
-                                        <Rectangle
+                            <StackPanel  Grid.Column="1"  VerticalAlignment="Center" >
+                                <base:Placeholder Width="100" Height="12" HorizontalAlignment="Left" Margin="0,0,0,6"/>
+                                <StackPanel Orientation="Horizontal" >
+                                    <Rectangle
                                 RadiusX="0"
                                 RadiusY="0"
                                 Fill="#e0e0e0"
@@ -93,11 +93,11 @@
                                         HorizontalAlignment="Left"
                             />
 
-                                        <!--<TextBlock VerticalAlignment="Center" Foreground="#5c5c5c" FontSize="12" Margin="5,0,0,0"/>-->
-                                    </StackPanel>
+                                    <!--<TextBlock VerticalAlignment="Center" Foreground="#5c5c5c" FontSize="12" Margin="5,0,0,0"/>-->
                                 </StackPanel>
-                            </Grid>
+                            </StackPanel>
                         </Grid>
+
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualStateGroup.Transitions>
@@ -133,7 +133,9 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                    </Border>
+                    </Grid>
+
+                    <!--</Border>-->
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsLoading" Value="True">

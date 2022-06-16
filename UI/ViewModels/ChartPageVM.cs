@@ -62,7 +62,13 @@ namespace UI.ViewModels
 
             PropertyChanged += ChartPageVM_PropertyChanged;
         }
-
+        public override void Dispose()
+        {
+            base.Dispose();
+            PropertyChanged -= ChartPageVM_PropertyChanged;
+            Data = null;
+            TopData = null;
+        }
         private void OnTodetailCommand(object obj)
         {
             var data = obj as ChartsDataModel;

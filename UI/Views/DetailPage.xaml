@@ -11,38 +11,37 @@
     xmlns:btn="clr-namespace:UI.Controls.Button"
     xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar">
 
-    <Grid>
-        <StackPanel Margin="20">
-            <TextBlock Text="查看" FontSize="18" Margin="0,0,0,20"/>
+    <StackPanel Margin="20">
+        <TextBlock Text="查看" FontSize="18" Margin="0,0,0,20"/>
 
-            <Border
+        <Border
                 Background="White"
                 CornerRadius="12"
                 Padding="0,20">
-                <Border.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open exe"  Header="启动应用"/>
-                        <Separator/>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制应用进程名称"/>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制应用文件路径"/>
-                        <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开应用所在目录"/>
-                        <!--<Separator/>-->
-                        <!--<MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="geticon"  Header="重新获取图标"/>-->
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open exe"  Header="启动应用"/>
+                    <Separator/>
+                    <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制应用进程名称"/>
+                    <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制应用文件路径"/>
+                    <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开应用所在目录"/>
+                    <!--<Separator/>-->
+                    <!--<MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="geticon"  Header="重新获取图标"/>-->
 
-                    </ContextMenu>
-                </Border.ContextMenu>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="9*"/>
-                        <ColumnDefinition Width="3*"/>
+                </ContextMenu>
+            </Border.ContextMenu>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="9*"/>
+                    <ColumnDefinition Width="3*"/>
 
-                    </Grid.ColumnDefinitions>
-                    <base:Img URL="{Binding App.IconFile}"  Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <!--<Image Source="{Binding Process.Icon}" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
-                   
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <!--<StackPanel Orientation="Horizontal">
+                </Grid.ColumnDefinitions>
+                <base:Img URL="{Binding App.IconFile}"  Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <!--<Image Source="{Binding Process.Icon}" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <!--<StackPanel Orientation="Horizontal">
                             <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,4,0" VerticalAlignment="Center" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该进程将不再统计使用时长">
                                 <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
                                     <base:Icon IconType="Blocked" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
@@ -53,20 +52,20 @@
                             <TextBlock ToolTip="进程名" Text="{Binding ProcessName}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
                         </StackPanel>-->
-                        <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该应用将不再统计使用时长">
-                            <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
-                                <base:Icon IconType="Blocked" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
-                                <TextBlock Text="已被忽略" Foreground="White" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                            </StackPanel>
-                        </Border>
+                    <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该应用将不再统计使用时长">
+                        <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                            <base:Icon IconType="Blocked" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
+                            <TextBlock Text="已被忽略" Foreground="White" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </Border>
 
-                        <TextBlock ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                    <TextBlock ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
 
-                        <TextBlock ToolTip="应用进程名称" Text="{Binding App.Name}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
-                        <TextBlock ToolTip="应用文件路径"  Foreground="Gray" Text="{Binding App.File}"  Margin="0,5,0,0" TextWrapping="WrapWithOverflow"/>
-                        <!--分类-->
+                    <TextBlock ToolTip="应用进程名称" Text="{Binding App.Name}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                    <TextBlock ToolTip="应用文件路径"  Foreground="Gray" Text="{Binding App.File}"  Margin="0,5,0,0" TextWrapping="WrapWithOverflow"/>
+                    <!--分类-->
 
-                        <!--<Border Margin="0,10,0,0" Background="#f9f9f9" HorizontalAlignment="Left" Padding="5" CornerRadius="5">
+                    <!--<Border Margin="0,10,0,0" Background="#f9f9f9" HorizontalAlignment="Left" Padding="5" CornerRadius="5">
                             
                             <StackPanel Orientation="Horizontal">
                                 <base:Img URL="{Binding Process.Data.AppModel.Category.IconFile}" Width="25" Height="25"  VerticalAlignment="Center"/>
@@ -74,21 +73,21 @@
                             </StackPanel>
                         </Border>-->
 
-                        <base:View Condition="not null" Value="{Binding Category}">
-                            <Select:Select Margin="0,10,0,0" ToolTip="分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categorys}"/>
+                    <base:View Condition="not null" Value="{Binding Category}">
+                        <Select:Select Margin="0,10,0,0" ToolTip="分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categorys}"/>
 
-                        </base:View>
+                    </base:View>
 
-                    </StackPanel>
+                </StackPanel>
 
-                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,20,0">
-                        <btn:Button Command="{Binding BlockActionCommand}" CommandParameter="block" Width="120" Visibility="{Binding BlockBtnVisibility}" Icon="Blocked">忽略此应用</btn:Button>
-                        <btn:Button Command="{Binding BlockActionCommand}"  CommandParameter="unblock" Width="120" Visibility="{Binding CancelBlockBtnVisibility}" Icon="Remove">取消忽略</btn:Button>
+                <StackPanel Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,20,0">
+                    <btn:Button Command="{Binding BlockActionCommand}" CommandParameter="block" Width="120" Visibility="{Binding BlockBtnVisibility}" Icon="Blocked">忽略此应用</btn:Button>
+                    <btn:Button Command="{Binding BlockActionCommand}"  CommandParameter="unblock" Width="120" Visibility="{Binding CancelBlockBtnVisibility}" Icon="Remove">取消忽略</btn:Button>
 
-                    </StackPanel>
-                </Grid>
-            </Border>
-            <!--<TextBlock Text="今日数据" FontSize="14" Margin="0,20,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <!--<TextBlock Text="今日数据" FontSize="14" Margin="0,20,0,0"/>
 
             <Border
                 Background="White"
@@ -109,77 +108,76 @@
 
                 </StackPanel>
             </Border>-->
-            <TextBlock Text="统计" Foreground="#5c5c5c" FontSize="14" Margin="0,20,0,0"/>
-            <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
-            <Border Margin="0,15,0,0"  Width="680" HorizontalAlignment="Left" Background="White" Padding="20,10" CornerRadius="10">
-                <StackPanel>
-                    
+        <TextBlock Text="统计" Foreground="#5c5c5c" FontSize="14" Margin="0,20,0,0"/>
+        <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
+        <Border Margin="0,15,0,0"  Width="680" HorizontalAlignment="Left" Background="White" Padding="20,10" CornerRadius="10">
+            <StackPanel>
 
-                    <Grid Margin="0,15,0,0">
-                        <!--按天-->
-                        <base:View Condition="0" Value="{Binding TabbarSelectedIndex}">
-                            <Select:DateSelect Date="{Binding ChartDate,Mode=TwoWay}"/>
-                        </base:View>
 
-                        <!--按周-->
-                        <base:View Condition="1" Value="{Binding TabbarSelectedIndex}">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Select:Select  IsShowIcon="False" SelectedItem="{Binding SelectedWeek,Mode=TwoWay}" Options="{Binding WeekOptions}"/>
-                                <TextBlock Foreground="#626262" Margin="20,0,0,0" FontSize="14" Text="{Binding WeekDateStr}" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </base:View>
-                        <!--按月-->
-                        <base:View Condition="2" Value="{Binding TabbarSelectedIndex}">
-                            <Select:DateSelect Date="{Binding MonthDate,Mode=TwoWay}" SelectType="Month"/>
+                <Grid Margin="0,15,0,0">
+                    <!--按天-->
+                    <base:View Condition="0" Value="{Binding TabbarSelectedIndex}">
+                        <Select:DateSelect Date="{Binding ChartDate,Mode=TwoWay}"/>
+                    </base:View>
 
-                        </base:View>
-                        <!--按年-->
-                        <base:View Condition="3" Value="{Binding TabbarSelectedIndex}">
-                            <Select:DateSelect Date="{Binding YearDate,Mode=TwoWay}" SelectType="Year"/>
+                    <!--按周-->
+                    <base:View Condition="1" Value="{Binding TabbarSelectedIndex}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Select:Select  IsShowIcon="False" SelectedItem="{Binding SelectedWeek,Mode=TwoWay}" Options="{Binding WeekOptions}"/>
+                            <TextBlock Foreground="#626262" Margin="20,0,0,0" FontSize="14" Text="{Binding WeekDateStr}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </base:View>
+                    <!--按月-->
+                    <base:View Condition="2" Value="{Binding TabbarSelectedIndex}">
+                        <Select:DateSelect Date="{Binding MonthDate,Mode=TwoWay}" SelectType="Month"/>
 
-                        </base:View>
-                    </Grid>
-                    <Charts:Charts Height="300" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding ChartData}" Margin="0,20,0,0"/>
+                    </base:View>
+                    <!--按年-->
+                    <base:View Condition="3" Value="{Binding TabbarSelectedIndex}">
+                        <Select:DateSelect Date="{Binding YearDate,Mode=TwoWay}" SelectType="Year"/>
 
-                </StackPanel>
+                    </base:View>
+                </Grid>
+                <Charts:Charts Height="300" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding ChartData}" Margin="0,20,0,0"/>
 
-            </Border>
-            <TextBlock Text="热力图" Foreground="#5c5c5c" FontSize="14" Margin="0,20,0,0"/>
+            </StackPanel>
 
-            <Border
+        </Border>
+        <TextBlock Text="热力图" Foreground="#5c5c5c" FontSize="14" Margin="0,20,0,0"/>
+
+        <Border
                 Background="White"
                 CornerRadius="12"
                 Padding="20,20"
                 Margin="0,10,0,0">
-                <StackPanel>
-                    <Grid>
-                        <DatePickerBar:DatePickerBar ShowType="Month" HorizontalAlignment="Left" SelectedDate="{Binding Date,Mode=TwoWay}"/>
+            <StackPanel>
+                <Grid>
+                    <DatePickerBar:DatePickerBar ShowType="Month" HorizontalAlignment="Left" SelectedDate="{Binding Date,Mode=TwoWay}"/>
 
-                        <btn:Button ToolTip="清空此应用在该月的统计数据" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#f51837" Foreground="White" Width="120" Margin="0" Icon="Delete" Command="{Binding ClearSelectMonthDataCommand}">清空统计</btn:Button>
+                    <btn:Button ToolTip="清空此应用在该月的统计数据" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#f51837" Foreground="White" Width="120" Margin="0" Icon="Delete" Command="{Binding ClearSelectMonthDataCommand}">清空统计</btn:Button>
 
-                    </Grid>
-                    <Grid  Margin="0,20,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="256"/>
-                            <ColumnDefinition Width="9*"/>
+                </Grid>
+                <Grid  Margin="0,20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="256"/>
+                        <ColumnDefinition Width="9*"/>
 
-                        </Grid.ColumnDefinitions>
-                        <Charts:Charts Data="{Binding Data}" ChartsType="Month"  HorizontalAlignment="Left"/>
-                        <StackPanel Grid.Column="1">
-                            <TextBlock  FontSize="14"><Run Text="该月累计使用"/><Run Text="{Binding Total}"/>
-                            </TextBlock>
-                            <TextBlock Foreground="Gray" Margin="0,5,0,0" FontSize="14"><Run Text="{Binding LongDay}"/>
-                            </TextBlock>
-                            <TextBlock Text="在当月所有使用应用时长中占比" FontSize="14" Margin="0,20,0,0"/>
+                    </Grid.ColumnDefinitions>
+                    <Charts:Charts Data="{Binding Data}" ChartsType="Month"  HorizontalAlignment="Left"/>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock  FontSize="14"><Run Text="该月累计使用"/><Run Text="{Binding Total}"/>
+                        </TextBlock>
+                        <TextBlock Foreground="Gray" Margin="0,5,0,0" FontSize="14"><Run Text="{Binding LongDay}"/>
+                        </TextBlock>
+                        <TextBlock Text="在当月所有使用应用时长中占比" FontSize="14" Margin="0,20,0,0"/>
 
-                            <TextBlock Margin="0,10,0,0" FontSize="24"><Run Text="{Binding Ratio}"/>
-                            </TextBlock>
+                        <TextBlock Margin="0,10,0,0" FontSize="24"><Run Text="{Binding Ratio}"/>
+                        </TextBlock>
 
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
-            </Border>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
 
-        </StackPanel>
-    </Grid>
+    </StackPanel>
 </Page>

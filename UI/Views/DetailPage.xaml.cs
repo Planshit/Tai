@@ -26,22 +26,6 @@ namespace UI.Views
             InitializeComponent();
 
             DataContext = vm;
-
-           
-            //test.Options = new List<Controls.Select.SelectItemModel>()
-            //{
-            //    new Controls.Select.SelectItemModel()
-            //{
-            //    Name = "123abc",
-            //    Img = "D:\\projects\\moneylog\\icon.png"
-            //},new Controls.Select.SelectItemModel()
-            //{
-            //    Name = "AAA",
-            //    Img = "D:\\projects\\moneylog\\icon.png"
-            //}
-            //};
-
-            //test.SelectedItem = test.Options[0];
         }
     }
 }

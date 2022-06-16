@@ -11,16 +11,16 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Tabbar}">
-                    <Border Background="{TemplateBinding Background}">
-                        <Grid>
-                            <Border x:Name="ActiveBlock" Width="35"  CornerRadius="2"  HorizontalAlignment="Left"  VerticalAlignment="Bottom" Panel.ZIndex="9" RenderTransformOrigin="0,0">
-                                <Border.RenderTransform>
-                                    <TransformGroup>
-                                        <TranslateTransform X="0" Y="0"></TranslateTransform>
-                                        <ScaleTransform CenterX="0" CenterY="0" ScaleY="1"/>
-                                    </TransformGroup>
-                                </Border.RenderTransform>
-                                <Path 
+                    <!--<Border Background="{TemplateBinding Background}">-->
+                    <Grid Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <Border x:Name="ActiveBlock" Width="35"  CornerRadius="2"  HorizontalAlignment="Left"  VerticalAlignment="Bottom" Panel.ZIndex="9" RenderTransformOrigin="0,0">
+                            <Border.RenderTransform>
+                                <TransformGroup>
+                                    <TranslateTransform X="0" Y="0"></TranslateTransform>
+                                    <ScaleTransform CenterX="0" CenterY="0" ScaleY="1"/>
+                                </TransformGroup>
+                            </Border.RenderTransform>
+                            <Path 
                       Width="15"
                       Height="15"
                       SnapsToDevicePixels="False"
@@ -28,15 +28,15 @@
                                         Stroke="#2b20d9"
                                         StrokeThickness="1"
                                         />
-                            </Border>
-                            <Border Height="30" Margin="0,0,0,15">
-                                <Grid x:Name="ItemsContainer">
-                                    
-                                </Grid>
-                                <!--<StackPanel Orientation="Horizontal" x:Name="ItemsPanel" VerticalAlignment="Bottom"/>-->
-                            </Border>
-                        </Grid>
-                    </Border>
+                        </Border>
+                        <Border Height="30" Margin="0,0,0,15">
+                            <Grid x:Name="ItemsContainer">
+
+                            </Grid>
+                            <!--<StackPanel Orientation="Horizontal" x:Name="ItemsPanel" VerticalAlignment="Bottom"/>-->
+                        </Border>
+                    </Grid>
+                    <!--</Border>-->
 
                 </ControlTemplate>
             </Setter.Value>

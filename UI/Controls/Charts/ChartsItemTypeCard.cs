@@ -77,10 +77,19 @@ namespace UI.Controls.Charts
         private StackPanel ValueContainer;
         private Image IconObj;
         private bool isRendering = false;
+        private bool IsAddEvent = false;
         public ChartsItemTypeCard()
         {
             DefaultStyleKey = typeof(ChartsItemTypeCard);
+            Unloaded += ChartsItemTypeCard_Unloaded;
         }
+
+        private void ChartsItemTypeCard_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unloaded -= ChartsItemTypeCard_Unloaded;
+            Loaded -= ChartsItemTypeCard_Loaded;
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -88,10 +97,13 @@ namespace UI.Controls.Charts
             ValueTextObj = GetTemplateChild("ValueTextObj") as TextBlock;
             ValueBlockObj = GetTemplateChild("ValueBlockObj") as Rectangle;
             ValueContainer = GetTemplateChild("ValueContainer") as StackPanel;
-
             IconObj = GetTemplateChild("IconObj") as Image;
 
-            Loaded += ChartsItemTypeCard_Loaded;
+            if (!IsAddEvent)
+            {
+                Loaded += ChartsItemTypeCard_Loaded;
+                IsAddEvent = true;
+            }
         }
 
         private void ChartsItemTypeCard_Loaded(object sender, RoutedEventArgs e)
@@ -132,7 +144,7 @@ namespace UI.Controls.Charts
                 //{
                 //    return;
                 //}
-                double size = (Data.Value / MaxValue) * ActualWidth/3;
+                double size = (Data.Value / MaxValue) * ActualWidth / 3;
                 ValueBlockObj.Width = ValueBlockObj.Height = size;
 
                 ValueBlockObj.Effect = new BlurEffect()
@@ -140,7 +152,7 @@ namespace UI.Controls.Charts
                     Radius = size,
                     RenderingBias = RenderingBias.Performance
                 };
-                
+
             };
 
         }

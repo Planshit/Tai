@@ -81,26 +81,35 @@ namespace UI.Controls.Charts
 
         private bool isRendering = false;
         private Rectangle ValueBlockObj;
-        private Grid ValueContainer;
-
+        private Border ValueContainer;
+        private bool IsAddEvent = false;
         public ChartItemTypeColumn()
         {
             DefaultStyleKey = typeof(ChartItemTypeColumn);
+            Unloaded += ChartItemTypeColumn_Unloaded;
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
             ValueBlockObj = GetTemplateChild("ValueBlockObj") as Rectangle;
-            ValueContainer = GetTemplateChild("ValueContainer") as Grid;
+            ValueContainer = GetTemplateChild("ValueContainer") as Border;
+            if (!IsAddEvent)
+            {
+                Loaded += ChartItemTypeColumn_Loaded;
+            }
+        }
 
-            Loaded += ChartItemTypeColumn_Loaded;
+        private void ChartItemTypeColumn_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= ChartItemTypeColumn_Loaded;
+            Unloaded -= ChartItemTypeColumn_Unloaded;
         }
 
         private void ChartItemTypeColumn_Loaded(object sender, RoutedEventArgs e)
         {
             Render();
-
+            IsAddEvent = true;
         }
 
 

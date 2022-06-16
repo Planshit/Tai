@@ -26,24 +26,6 @@ namespace UI.Views
         {
             InitializeComponent();
             DataContext = vm;
-
-            //var data = new List<ChartsDataModel>();
-            //data.Add(new ChartsDataModel()
-            //{
-            //    Name="分布",
-            //    //Color= "#2f69fe",
-            //    Values = new double[] { 10, 20, 30, 40,30,403,30,50,43,43,23,65,87,43,23,23 }
-            //});
-            //data.Add(new ChartsDataModel()
-            //{
-            //    Name = "测试",
-
-            //    //Color = "#da4d07",
-            //    Values = new double[] { 110, 30, 10, 20, 330, 203, 3, 500, 53, 93, 23, 65, 87, 43, 23, 23 }
-            //});
-
-       
-            //test.Data = data;
         }
     }
 }

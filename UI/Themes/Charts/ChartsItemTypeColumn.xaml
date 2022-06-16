@@ -12,16 +12,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:ChartItemTypeColumn}">
-                    <Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                        <Grid>
-                            <Grid x:Name="Normal">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="30"/>
-                                </Grid.RowDefinitions>
-                                <Grid x:Name="ValueContainer" >
-                                    <Border Background="Transparent" x:Name="ValueBorder">
-                                        <Rectangle
+
+                    <Grid x:Name="Normal" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Border x:Name="ValueContainer" Background="Transparent" >
+                            <Rectangle
                             x:Name="ValueBlockObj"
                                 RadiusX="4"
                                 RadiusY="4"
@@ -30,20 +28,8 @@
                                         VerticalAlignment="Bottom"
                                         HorizontalAlignment="Center"
                             />
-                                    </Border>
-                                </Grid>
-                                <Grid Grid.Row="1">
-                                    <TextBlock FontSize="12" HorizontalAlignment="Center" Margin="0,10,0,0" Text="{TemplateBinding ColumnName}" Foreground="#FF8A8A8A" />
-                                </Grid>
-
-
-
-                            </Grid>
-
-                            <Grid x:Name="Loading" Visibility="Collapsed">
-
-                            </Grid>
-                        </Grid>
+                        </Border>
+                        <TextBlock Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Margin="0,10,0,0" Text="{TemplateBinding ColumnName}" Foreground="#FF8A8A8A" />
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualStateGroup.Transitions>
@@ -54,8 +40,8 @@
                                 <VisualState x:Name="NormalState" />
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard >
-                                        <ColorAnimation Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                Storyboard.TargetName="ValueBorder" To="#7FF1F1F1" >
+                                        <ColorAnimation Storyboard.TargetProperty="(Canvas.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="ValueContainer" To="#7FF1F1F1" >
                                             <ColorAnimation.EasingFunction>
                                                 <CubicEase EasingMode="EaseInOut"/>
                                             </ColorAnimation.EasingFunction>
@@ -79,7 +65,11 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                    </Border>
+                    </Grid>
+
+
+
+
 
                     <ControlTemplate.Triggers>
                         <!--<Trigger Property="IsLoading" Value="True">

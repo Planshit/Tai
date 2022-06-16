@@ -66,6 +66,15 @@ namespace UI.Controls.Select
             DefaultStyleKey = typeof(Select);
 
             MouseLeftButtonUp += Select_MouseLeftButtonUp;
+
+            Unloaded += Select_Unloaded;
+        }
+
+        private void Select_Unloaded(object sender, RoutedEventArgs e)
+        {
+            MouseLeftButtonUp -= Select_MouseLeftButtonUp;
+
+            Unloaded -= Select_Unloaded;
         }
 
         private void Select_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -95,7 +104,7 @@ namespace UI.Controls.Select
                 option.Value = item;
                 option.IsShowIcon = IsShowIcon;
                 option.IsChecked = SelectedItem?.Name == item.Name;
-                option.MouseLeftButtonUp += Option_MouseLeftButtonUp; ;
+                option.MouseLeftButtonUp += Option_MouseLeftButtonUp;
                 _optionsContainer.Children.Add(option);
             }
         }

@@ -2,17 +2,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:w="clr-namespace:UI.Controls.Window">
     <Style TargetType="{x:Type w:HideWindow}">
-        <Setter Property="Background" Value="Transparent" />
+        <!--<Setter Property="Background" Value="Transparent" />-->
         <Setter Property="ResizeMode" Value="NoResize" />
         <Setter Property="Width" Value="0" />
         <Setter Property="Height" Value="0" />
         <Setter Property="Visibility" Value="Collapsed" />
-        <Setter Property="Template">
+        <!--<Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type w:HideWindow}">
-                    <TextBlock Text="test" Foreground="Red"/>
                 </ControlTemplate>
             </Setter.Value>
-        </Setter>
+        </Setter>-->
     </Style>
 </ResourceDictionary>

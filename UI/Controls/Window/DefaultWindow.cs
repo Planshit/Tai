@@ -208,7 +208,8 @@ namespace UI.Controls.Window
              System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name));
             }
 
-            Loaded += new RoutedEventHandler(window_Loaded);
+            Loaded += window_Loaded;
+            Unloaded += DefaultWindow_Unloaded;
 
             toastTimer = new DispatcherTimer();
             toastTimer.Tick += (s, e) =>
@@ -217,6 +218,13 @@ namespace UI.Controls.Window
                 IsShowToast = false;
             };
             toastTimer.Interval = new TimeSpan(0, 0, 3);
+        }
+
+        private void DefaultWindow_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unloaded -= DefaultWindow_Unloaded;
+            Loaded -= window_Loaded;
+
         }
 
         private void OnBackCommand(object sender, ExecutedRoutedEventArgs e)

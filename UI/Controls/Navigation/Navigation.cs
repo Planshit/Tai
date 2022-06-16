@@ -108,11 +108,13 @@ namespace UI.Controls.Navigation
             {
                 if (control.Data != null)
                 {
+                    control.Data.CollectionChanged -= control.Data_CollectionChanged;
                     control.Data.CollectionChanged += control.Data_CollectionChanged;
-                }
-                foreach (var item in control.Data)
-                {
-                    control.AddItem(item);
+
+                    foreach (var item in control.Data)
+                    {
+                        control.AddItem(item);
+                    }
                 }
             }
         }
@@ -284,7 +286,7 @@ namespace UI.Controls.Navigation
             if (ItemsPanel != null)
             {
                 var navItem = new NavigationItem();
-                int id = item.ID == null ? CreateID() : item.ID;
+                int id = item.ID < -1 ? CreateID() : item.ID;
                 item.ID = id;
                 navItem.ID = id;
                 navItem.Title = item.Title;
@@ -296,6 +298,10 @@ namespace UI.Controls.Navigation
                 if (!string.IsNullOrEmpty(item.Title))
                 {
                     navItem.MouseUp += NavItem_MouseUp;
+                    navItem.Unloaded += (e, c) =>
+                    {
+                        navItem.MouseUp -= NavItem_MouseUp;
+                    };
                 }
                 ItemsPanel.Children.Add(navItem);
                 ItemsDictionary.Add(id, navItem);
@@ -312,7 +318,7 @@ namespace UI.Controls.Navigation
             if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
             {
                 //左键选中
-                
+
                 SelectedItem = Data.Where(m => m.ID == navitem.ID).FirstOrDefault();
                 OnSelected?.Invoke(this, null);
 
@@ -357,7 +363,7 @@ namespace UI.Controls.Navigation
                 return;
             }
             var item = ItemsDictionary[SelectedItem.ID];
-            var index = Data.IndexOf(SelectedItem);
+            //var index = Data.IndexOf(SelectedItem);
 
             //ActiveBlock.Height = item.ActualHeight * Data.Count;
 

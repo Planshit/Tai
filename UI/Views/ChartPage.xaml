@@ -8,46 +8,44 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ChartPage">
 
-    <Grid>
-        <StackPanel Margin="20">
-            <TextBlock Text="统计" FontSize="18" Margin="0,5,0,20"/>
-            <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
-            <Border Margin="0,15,0,0">
-                <Grid>
-                    <!--按天-->
-                    <base:View Condition="0" Value="{Binding TabbarSelectedIndex}">
-                        <select:DateSelect Date="{Binding Date,Mode=TwoWay}"/>
-                    </base:View>
+    <StackPanel Margin="20">
+        <TextBlock Text="统计" FontSize="18" Margin="0,5,0,20"/>
+        <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
+        <Border Margin="0,15,0,0">
+            <Grid>
+                <!--按天-->
+                <base:View Condition="0" Value="{Binding TabbarSelectedIndex}">
+                    <select:DateSelect Date="{Binding Date,Mode=TwoWay}"/>
+                </base:View>
 
-                    <!--按周-->
-                    <base:View Condition="1" Value="{Binding TabbarSelectedIndex}">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <select:Select  IsShowIcon="False" SelectedItem="{Binding SelectedWeek,Mode=TwoWay}" Options="{Binding WeekOptions}"/>
-                            <TextBlock Foreground="#626262" Margin="20,0,0,0" FontSize="14" Text="{Binding WeekDateStr}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </base:View>
-                    <!--按月-->
-                    <base:View Condition="2" Value="{Binding TabbarSelectedIndex}">
-                        <select:DateSelect Date="{Binding MonthDate,Mode=TwoWay}" SelectType="Month"/>
+                <!--按周-->
+                <base:View Condition="1" Value="{Binding TabbarSelectedIndex}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <select:Select  IsShowIcon="False" SelectedItem="{Binding SelectedWeek,Mode=TwoWay}" Options="{Binding WeekOptions}"/>
+                        <TextBlock Foreground="#626262" Margin="20,0,0,0" FontSize="14" Text="{Binding WeekDateStr}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </base:View>
+                <!--按月-->
+                <base:View Condition="2" Value="{Binding TabbarSelectedIndex}">
+                    <select:DateSelect Date="{Binding MonthDate,Mode=TwoWay}" SelectType="Month"/>
 
-                    </base:View>
-                    <!--按年-->
-                    <base:View Condition="3" Value="{Binding TabbarSelectedIndex}">
-                        <select:DateSelect Date="{Binding YearDate,Mode=TwoWay}" SelectType="Year"/>
+                </base:View>
+                <!--按年-->
+                <base:View Condition="3" Value="{Binding TabbarSelectedIndex}">
+                    <select:DateSelect Date="{Binding YearDate,Mode=TwoWay}" SelectType="Year"/>
 
-                    </base:View>
-                </Grid>
-            </Border>
-            <TextBlock Text="分类" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
+                </base:View>
+            </Grid>
+        </Border>
+        <TextBlock Text="分类" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
 
-            <Border Margin="0,15,0,0" Height="360" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
-                <charts:Charts NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}"/>
+        <Border Margin="0,15,0,0" Height="360" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
+            <charts:Charts NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}"/>
 
-            </Border>
-            <TextBlock Text="最为频繁的应用" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
-            <Border Margin="0,10,0,0" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
-                <charts:Charts Height="300" Data="{Binding TopData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}"/>
-            </Border>
-        </StackPanel>
-    </Grid>
+        </Border>
+        <TextBlock Text="最为频繁的应用" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
+        <Border Margin="0,10,0,0" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
+            <charts:Charts Height="300" Data="{Binding TopData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}"/>
+        </Border>
+    </StackPanel>
 </Page>

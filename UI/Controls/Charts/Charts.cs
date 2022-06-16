@@ -353,7 +353,23 @@ namespace UI.Controls.Charts
         public Charts()
         {
             DefaultStyleKey = typeof(Charts);
+
+            Unloaded += Charts_Unloaded;
         }
+
+        private void Charts_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unloaded -= Charts_Unloaded;
+            if (Container != null)
+            {
+                Container.SizeChanged -= Container_SizeChanged;
+            }
+            if (ScrollViewer != null)
+            {
+                ScrollViewer.ScrollChanged -= ScrollViewer_ScrollChanged;
+            }
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using UI.Controls.Models;
 using UI.Models;
 
@@ -127,6 +128,7 @@ namespace UI.Controls
         private Dictionary<string, PageModel> PageCache;
         private bool IsBack = false;
         private ScrollViewer ScrollViewer;
+        private Frame Frame;
         public PageContainer()
         {
             DefaultStyleKey = typeof(PageContainer);
@@ -144,26 +146,38 @@ namespace UI.Controls
             base.OnApplyTemplate();
 
             ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
+            Frame = GetTemplateChild("Frame") as Frame;
+            Frame.NavigationService.Navigated += NavigationService_Navigated;
 
             Loaded += PageContainer_Loaded;
             Unloaded += PageContainer_Unloaded;
         }
-
+        private void NavigationService_Navigated(object sender, NavigationEventArgs e)
+        {
+            Frame.NavigationService.RemoveBackEntry();
+        }
         private void PageContainer_Unloaded(object sender, RoutedEventArgs e)
         {
             Loaded -= PageContainer_Loaded;
             Unloaded -= PageContainer_Unloaded;
-            ClearCache();
-            Content = null;
-            DataContext = null;
+            Frame.NavigationService.Navigated -= NavigationService_Navigated;
+
+            Disponse();
         }
 
         private void PageContainer_Loaded(object sender, RoutedEventArgs e)
         {
             Instance = this;
-
         }
 
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (e.ChangedButton == MouseButton.XButton1)
+            {
+                Back();
+            }
+        }
         private void OnBackCommand(object obj)
         {
             Back();
@@ -187,6 +201,9 @@ namespace UI.Controls
                     var page = PageCache[pageUri];
                     var vm = page.Instance.DataContext as ModelBase;
                     vm?.Dispose();
+                    page.Instance.Content = null;
+                    page.Instance.DataContext = null;
+
                     PageCache.Remove(pageUri);
                 }
                 Historys.RemoveRange(preIndex, 1);
@@ -216,7 +233,6 @@ namespace UI.Controls
                     {
                         ClearCache();
                     }
-
                 }
                 else
                 {
@@ -273,10 +289,6 @@ namespace UI.Controls
             if (pageType != null && ServiceProvider != null)
             {
                 page = ServiceProvider.GetService(pageType) as Page;
-                if (page != null)
-                {
-                    page.Unloaded += Page_Unloaded;
-                }
             }
             var newPage = new PageModel()
             {
@@ -285,12 +297,6 @@ namespace UI.Controls
             };
 
             return newPage;
-        }
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Page page = (Page)sender;
-
-            page.Unloaded -= Page_Unloaded;
         }
 
         private void ClearCache()
@@ -302,9 +308,19 @@ namespace UI.Controls
                     var page = PageCache[key];
                     var vm = page.Instance.DataContext as ModelBase;
                     vm?.Dispose();
+                    page.Instance.Content = null;
+                    page.Instance.DataContext = null;
                 }
                 PageCache.Clear();
             }
+        }
+
+        public void Disponse()
+        {
+            ClearCache();
+            Content = null;
+            DataContext = null;
+            Instance = null;
         }
     }
 }

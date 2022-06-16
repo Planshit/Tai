@@ -52,6 +52,13 @@ namespace UI.ViewModels
 
             PropertyChanged += CategoryPageVM_PropertyChanged;
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            PropertyChanged -= CategoryPageVM_PropertyChanged;
+            Data = null;
+        }
         private void OnDel(object obj)
         {
             if (SelectedItem == null)
@@ -100,7 +107,7 @@ namespace UI.ViewModels
                 mainVM.Toast("请选择一个分类图标", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
                 return;
             }
-            if(new FileInfo(EditIconFile).Length> 1000000)
+            if (new FileInfo(EditIconFile).Length > 1000000)
             {
                 mainVM.Toast("图标文件不能超过1MB", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
                 return;

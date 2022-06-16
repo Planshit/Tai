@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,20 +21,28 @@ namespace UI.Controls.Base
                 typeof(Placeholder));
 
         private Border Flash;
+        private bool IsAddEvent = false;
         public Placeholder()
         {
-
             DefaultStyleKey = typeof(Placeholder);
         }
+
+
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
             Flash = GetTemplateChild("Flash") as Border;
-            Loaded += Placeholder_Loaded;
+            if (!IsAddEvent)
+            {
+                Loaded += Placeholder_Loaded;
+            }
         }
 
         private void Placeholder_Loaded(object sender, RoutedEventArgs e)
         {
+            Loaded -= Placeholder_Loaded;
+
             Animation();
         }
 
@@ -54,6 +63,8 @@ namespace UI.Controls.Base
             storyboard.Children.Add(scrollAnimation);
 
             storyboard.Begin();
+
+            IsAddEvent = true;
         }
 
     }

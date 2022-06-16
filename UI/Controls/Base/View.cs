@@ -40,6 +40,13 @@ namespace UI.Controls.Base
             DefaultStyleKey = typeof(View);
 
             Loaded += View_Loaded;
+            Unloaded += View_Unloaded;
+        }
+
+        private void View_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= View_Loaded;
+            Unloaded -= View_Unloaded;
         }
 
         private void View_Loaded(object sender, RoutedEventArgs e)

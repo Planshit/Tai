@@ -4,7 +4,7 @@
     <Style TargetType="{x:Type local:Icon}">
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
-        
+
         <Setter Property="MinWidth" Value="18"/>
         <Setter Property="MinHeight" Value="18"/>
         <Setter Property="FontSize" Value="16"/>
@@ -14,10 +14,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Icon}">
-                    <Border Background="{TemplateBinding Background}">
+                    <!--<Border Background="{TemplateBinding Background}">-->
 
-                        <TextBlock Text="{TemplateBinding Unicode}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" TextOptions.TextFormattingMode="Ideal" SnapsToDevicePixels="True"  />
-                    </Border>
+                    <TextBlock Text="{TemplateBinding Unicode}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" VerticalAlignment="Center" HorizontalAlignment="Center" TextOptions.TextFormattingMode="Ideal" SnapsToDevicePixels="True"  />
+                    <!--</Border>-->
 
                 </ControlTemplate>
             </Setter.Value>

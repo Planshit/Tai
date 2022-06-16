@@ -25,6 +25,13 @@ namespace UI
         public MainWindow()
         {
             InitializeComponent();
+            Unloaded += Page_Unloaded;
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unloaded -= Page_Unloaded;
+            DataContext = null;
         }
     }
 }

@@ -77,10 +77,19 @@ namespace UI.Controls.Charts
         //private Grid ValueContainer;
         private Image IconObj;
         private bool isRendering = false;
+        private bool IsAddEvent = false;
         public ChartsItemTypeA()
         {
             DefaultStyleKey = typeof(ChartsItemTypeA);
+            Unloaded += ChartsItemTypeA_Unloaded;
         }
+
+        private void ChartsItemTypeA_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unloaded -= ChartsItemTypeA_Unloaded;
+            Loaded -= ChartsItemTypeA_Loaded;
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -92,7 +101,11 @@ namespace UI.Controls.Charts
 
             IconObj = GetTemplateChild("IconObj") as Image;
 
-            Loaded += ChartsItemTypeA_Loaded;
+            if (!IsAddEvent)
+            {
+                Loaded += ChartsItemTypeA_Loaded;
+                IsAddEvent = true;
+            }
         }
 
         private void ChartsItemTypeA_Loaded(object sender, RoutedEventArgs e)

@@ -21,10 +21,22 @@ namespace UI.Controls.Input
         public string Placeholder { get { return (string)GetValue(PlaceholderProperty); } set { SetValue(PlaceholderProperty, value); } }
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register("Placeholder", typeof(string), typeof(InputBox));
         private Popup ErrorPopup;
+
         public InputBox()
         {
             DefaultStyleKey = typeof(InputBox);
+            Unloaded += InputBox_Unloaded;
         }
+
+        private void InputBox_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unloaded -= InputBox_Unloaded;
+            if (ErrorPopup != null)
+            {
+                ErrorPopup.Closed -= ErrorPopup_Closed;
+            }
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();

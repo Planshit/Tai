@@ -14,14 +14,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:IconButton}">
-                    <Border Background="{TemplateBinding Background}"  x:Name="Border">
+                    <!--<Border Background="{TemplateBinding Background}"  x:Name="Border">-->
 
-                        <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Padding="5" Background="Transparent">
-                            <base:Icon x:Name="Icon" IconType="{TemplateBinding Icon}" Foreground="#5c5c5c" VerticalAlignment="Center"  FontSize="{TemplateBinding FontSize}" >
+                    <Border  Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Padding="5" Background="Transparent">
+                        <base:Icon x:Name="Icon" IconType="{TemplateBinding Icon}" Foreground="#5c5c5c" VerticalAlignment="Center"  FontSize="{TemplateBinding FontSize}" >
 
-                            </base:Icon>
-                        </Border>
-
+                        </base:Icon>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualStateGroup.Transitions>
@@ -44,8 +42,11 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-
                     </Border>
+
+
+
+                    <!--</Border>-->
                     <ControlTemplate.Triggers>
 
                     </ControlTemplate.Triggers>

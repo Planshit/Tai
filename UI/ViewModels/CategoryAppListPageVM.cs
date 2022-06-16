@@ -41,7 +41,12 @@ namespace UI.ViewModels
             LoadData();
 
         }
-
+        public override void Dispose()
+        {
+            base.Dispose();
+            Data = null;
+            AppList = null;
+        }
         private void OnDel(object obj)
         {
             if (SelectedItem != null)

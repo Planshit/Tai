@@ -18,37 +18,35 @@
                   ToastIcon="{Binding ToastIcon}"
                   ToastType="{Binding ToastType}"
                   >
+    <!--主要功能-->
     <Grid>
-        <!--主要功能-->
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Navigation:Navigation x:Name="Navigation" Margin="0,32,0,0" Data="{Binding Items,Mode=TwoWay}" Width="80" WindowWidth="{Binding ElementName=Window,Path=ActualWidth}" IsShowNavigation="{Binding IsShowNavigation,Mode=TwoWay}" SelectedItem="{Binding NavSelectedItem,Mode=TwoWay}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="OnSelected">
-                        <i:InvokeCommandAction Command="{Binding OnSelectedCommand}" CommandParameter="{Binding ElementName=Navigation}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="OnMouseRightButtonUP">
-                        <!--<vm:EventCommand Command="{Binding OnMouseRightButtonUPCommand}" />-->
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <!--<Navigation:Navigation.TopExtContent>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Navigation:Navigation x:Name="Navigation" Margin="0,32,0,0" Data="{Binding Items,Mode=TwoWay}" Width="80" WindowWidth="{Binding ElementName=Window,Path=ActualWidth}" IsShowNavigation="{Binding IsShowNavigation,Mode=TwoWay}" SelectedItem="{Binding NavSelectedItem,Mode=TwoWay}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="OnSelected">
+                    <i:InvokeCommandAction Command="{Binding OnSelectedCommand}" CommandParameter="{Binding ElementName=Navigation}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="OnMouseRightButtonUP">
+                    <!--<vm:EventCommand Command="{Binding OnMouseRightButtonUPCommand}" />-->
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <!--<Navigation:Navigation.TopExtContent>
                     <TextBlock Text="test"/>
                 </Navigation:Navigation.TopExtContent>-->
-                <Navigation:Navigation.BottomExtContent>
-                    <Navigation:NavigationItem Icon="Settings" Title="设置" Uri="SettingsPage" Command="{Binding GotoPageCommand}" CommandParameter="SettingPage"/>
-                </Navigation:Navigation.BottomExtContent>
+            <Navigation:Navigation.BottomExtContent>
+                <Navigation:NavigationItem Icon="Settings" Title="设置" Uri="SettingsPage" Command="{Binding GotoPageCommand}" CommandParameter="SettingPage"/>
+            </Navigation:Navigation.BottomExtContent>
 
-            </Navigation:Navigation>
+        </Navigation:Navigation>
 
-            <Border Grid.Column="1" Background="#f9f9f9" Margin="0,40,10,10" CornerRadius="5" BorderThickness="1,1,1,1" BorderBrush="#ccc">
-                <!--<ScrollViewer VerticalScrollBarVisibility="Auto">-->
-                <control:PageContainer IndexUriList="{Binding IndexUriList}" Instance="{Binding PageContainer,Mode=TwoWay}" ServiceProvider="{Binding ServiceProvider}" Uri="{Binding Uri,Mode=TwoWay}" Title="{Binding Title}" IsShowTilteBar="{Binding IsShowTitleBar,Mode=TwoWay}"/>
-                <!--</ScrollViewer>-->
-            </Border>
+        <Border Grid.Column="1" Background="#f9f9f9" Margin="0,40,10,10" CornerRadius="5" BorderThickness="1,1,1,1" BorderBrush="#ccc">
+            <!--<ScrollViewer VerticalScrollBarVisibility="Auto">-->
+            <control:PageContainer IndexUriList="{Binding IndexUriList}" Instance="{Binding PageContainer,Mode=TwoWay}" ServiceProvider="{Binding ServiceProvider}" Uri="{Binding Uri,Mode=TwoWay}" Title="{Binding Title}" IsShowTilteBar="{Binding IsShowTitleBar,Mode=TwoWay}"/>
+            <!--</ScrollViewer>-->
+        </Border>
 
-        </Grid>
     </Grid>
 </ui:DefaultWindow>

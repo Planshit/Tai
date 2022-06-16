@@ -14,38 +14,35 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Button}">
-                    <Border x:Name="Border" SnapsToDevicePixels="True">
-                        <Grid>
+                    <!--<Border x:Name="Border" SnapsToDevicePixels="True">-->
+                    <Grid SnapsToDevicePixels="True">
 
 
-                            <Border BorderBrush="#f3f3f3" BorderThickness="1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="{TemplateBinding Background}">
-                                <!--<Border.Effect>
+                        <Border BorderBrush="#f3f3f3" BorderThickness="1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="{TemplateBinding Background}">
+                            <!--<Border.Effect>
                                 <DropShadowEffect BlurRadius="5" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
                             </Border.Effect>-->
-                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <base:Icon x:Name="Icon" Margin="0,0,5,0" IconType="{TemplateBinding Icon}" VerticalAlignment="Center"  FontSize="12" >
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <base:Icon x:Name="Icon" Margin="0,0,5,0" IconType="{TemplateBinding Icon}" VerticalAlignment="Center"  FontSize="12" >
 
-                                    </base:Icon>
-                                    <ContentPresenter 
+                                </base:Icon>
+                                <ContentPresenter 
                                     Grid.Column="1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             RecognizesAccessKey="True"/>
-                                </Grid>
+                            </Grid>
 
-                            </Border>
-                            <Border x:Name="Shadow" BorderBrush="{Binding ElementName=BoxBorder,Path=BorderBrush}" BorderThickness="{Binding ElementName=BoxBorder,Path=BorderThickness}" Panel.ZIndex="-1" Width="{Binding ElementName=BoxBorder,Path=ActualWidth}"  Height="{Binding ElementName=BoxBorder,Path=ActualHeight}" CornerRadius="{Binding ElementName=BoxBorder,Path=CornerRadius}" Background="{Binding ElementName=BoxBorder,Path=Background}">
-                                <Border.Effect>
-                                    <DropShadowEffect BlurRadius="5" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
-                                </Border.Effect>
-                            </Border>
-
-                            
-                        </Grid>
+                        </Border>
+                        <Border x:Name="Shadow" BorderBrush="{Binding ElementName=BoxBorder,Path=BorderBrush}" BorderThickness="{Binding ElementName=BoxBorder,Path=BorderThickness}" Panel.ZIndex="-1" Width="{Binding ElementName=BoxBorder,Path=ActualWidth}"  Height="{Binding ElementName=BoxBorder,Path=ActualHeight}" CornerRadius="{Binding ElementName=BoxBorder,Path=CornerRadius}" Background="{Binding ElementName=BoxBorder,Path=Background}">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
+                            </Border.Effect>
+                        </Border>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualStateGroup.Transitions>
@@ -91,7 +88,10 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                    </Border>
+
+                    </Grid>
+
+                    <!--</Border>-->
                     <ControlTemplate.Triggers>
                         <Trigger Property="Icon" Value="None">
                             <Setter TargetName="Icon" Property="Visibility" Value="Collapsed"/>

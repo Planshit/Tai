@@ -9,9 +9,8 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="IndexPage">
 
-    <Grid>
-        <StackPanel Margin="20">
-            <!--<Border Width="60" Height="60"  HorizontalAlignment="Left" RenderTransformOrigin="1,0.5">
+    <StackPanel Margin="20">
+        <!--<Border Width="60" Height="60"  HorizontalAlignment="Left" RenderTransformOrigin="1,0.5">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="4" ShadowDepth="0" Direction="0" Opacity="1"/>
                 </Border.Effect>
@@ -23,14 +22,13 @@
                 </Border.Background>
 
             </Border>-->
-            <TextBlock Text="概览" FontSize="18" Margin="0,5,0,20"/>
-            <Tabbar:Tabbar Width="100" HorizontalAlignment="Left" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
-            <TextBlock Text="最为频繁" FontSize="15" Margin="0,20,0,10"/>
-            <Charts:Charts IsCanScroll="False" Height="180" Data="{Binding WeekData}" ChartsType="HorizontalA" ShowLimit="3" IsLoading="{Binding IsLoading,Mode=TwoWay}"  ClickCommand="{Binding ToDetailCommand}"/>
-            <TextBlock Text="更多" FontSize="15" Margin="0,20,0,10"/>
-            <Charts:Charts Data="{Binding WeekData}" ChartsType="Card" ShowLimit="12" IsLoading="{Binding IsLoading,Mode=TwoWay}" ClickCommand="{Binding ToDetailCommand}"/>
+        <TextBlock Text="概览" FontSize="18" Margin="0,5,0,20"/>
+        <Tabbar:Tabbar Width="100" HorizontalAlignment="Left" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
+        <TextBlock Text="最为频繁" FontSize="15" Margin="0,20,0,10"/>
+        <Charts:Charts IsCanScroll="False" Height="180" Data="{Binding WeekData}" ChartsType="HorizontalA" ShowLimit="3" IsLoading="{Binding IsLoading,Mode=TwoWay}"  ClickCommand="{Binding ToDetailCommand}"/>
+        <TextBlock Text="更多" FontSize="15" Margin="0,20,0,10"/>
+        <Charts:Charts Data="{Binding WeekData}" ChartsType="Card" ShowLimit="12" IsLoading="{Binding IsLoading,Mode=TwoWay}" ClickCommand="{Binding ToDetailCommand}"/>
 
 
-        </StackPanel>
-    </Grid>
+    </StackPanel>
 </Page>

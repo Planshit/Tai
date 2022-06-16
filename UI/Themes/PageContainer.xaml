@@ -7,28 +7,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:PageContainer}">
-                    <Border Background="{TemplateBinding Background}"
+                    <!--<Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <Grid>
-                            <!--<StackPanel Height="44" Orientation="Horizontal" Panel.ZIndex="1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,32,0,0" Visibility="{TemplateBinding TitleBarVisibility}">
-                                <Button Style="{DynamicResource Icon}"
-                                    Width="35"
-                                    Height="35"
-                                        Command="{TemplateBinding BackCommand}"
-                                        VerticalAlignment="Center"
-                                       >
-                                    <base:Icon IconType="Back"
-                                               VerticalAlignment="Center"
-                                      FontSize="15" />
-                                </Button>
-                                <TextBlock Text="{TemplateBinding Title}" VerticalAlignment="Center" FontSize="16" Margin="10,0,0,0"/>
-                            </StackPanel>-->
-                            <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="False">
-                                <Frame Grid.Row="1" Content="{TemplateBinding Content}" NavigationUIVisibility="Hidden"/>
-                            </ScrollViewer>
-                        </Grid>
-                    </Border>
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="True">-->
+                    <ScrollViewer SnapsToDevicePixels="True" x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="False">
+                        <Frame x:Name="Frame" Grid.Row="1" Content="{TemplateBinding Content}" NavigationUIVisibility="Hidden"/>
+                    </ScrollViewer>
+                    <!--</Border>-->
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

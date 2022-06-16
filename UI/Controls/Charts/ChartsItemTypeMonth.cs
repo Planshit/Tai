@@ -86,26 +86,40 @@ namespace UI.Controls.Charts
 
 
         #endregion
-        private TextBlock NameTextObj, ValueTextObj;
+        //private TextBlock NameTextObj, ValueTextObj;
         private Rectangle ValueBlockObj;
-        private StackPanel ValueContainer;
-        private Image IconObj;
+        //private StackPanel ValueContainer;
+        //private Image IconObj;
         private bool isRendering = false;
+        private bool IsAddEvent = false;
+
         public ChartsItemTypeMonth()
         {
             DefaultStyleKey = typeof(ChartsItemTypeMonth);
+
+            Unloaded += ChartsItemTypeMonth_Unloaded;
         }
+
+        private void ChartsItemTypeMonth_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Unloaded -= ChartsItemTypeMonth_Unloaded;
+            Loaded -= ChartsItemTypeMonth_Loaded;
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            NameTextObj = GetTemplateChild("NameTextObj") as TextBlock;
-            ValueTextObj = GetTemplateChild("ValueTextObj") as TextBlock;
+            //NameTextObj = GetTemplateChild("NameTextObj") as TextBlock;
+            //ValueTextObj = GetTemplateChild("ValueTextObj") as TextBlock;
             ValueBlockObj = GetTemplateChild("ValueBlockObj") as Rectangle;
-            ValueContainer = GetTemplateChild("ValueContainer") as StackPanel;
+            //ValueContainer = GetTemplateChild("ValueContainer") as StackPanel;
 
-            IconObj = GetTemplateChild("IconObj") as Image;
-
-            Loaded += ChartsItemTypeMonth_Loaded;
+            //IconObj = GetTemplateChild("IconObj") as Image;
+            if (!IsAddEvent)
+            {
+                IsAddEvent = true;
+                Loaded += ChartsItemTypeMonth_Loaded;
+            }
         }
 
         private void ChartsItemTypeMonth_Loaded(object sender, RoutedEventArgs e)

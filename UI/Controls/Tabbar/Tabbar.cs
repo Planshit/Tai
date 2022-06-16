@@ -60,7 +60,7 @@ namespace UI.Controls.Tabbar
         }
 
 
-        private StackPanel ItemsPanel;
+        //private StackPanel ItemsPanel;
         private List<TextBlock> ItemsDictionary;
         private Grid ItemsContainer;
         //  选中标记块
