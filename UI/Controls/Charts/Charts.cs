@@ -295,6 +295,47 @@ namespace UI.Controls.Charts
 
         #endregion
 
+        public bool IsShowValuesPopup
+        {
+            get { return (bool)GetValue(IsShowValuesPopupProperty); }
+            set { SetValue(IsShowValuesPopupProperty, value); }
+        }
+        public static readonly DependencyProperty IsShowValuesPopupProperty =
+            DependencyProperty.Register("IsShowValuesPopup",
+                typeof(bool),
+                typeof(Charts),
+                new PropertyMetadata(false));
+        public FrameworkElement ValuesPopupPlacementTarget
+        {
+            get { return (FrameworkElement)GetValue(ValuesPopupPlacementTargetProperty); }
+            set { SetValue(ValuesPopupPlacementTargetProperty, value); }
+        }
+        public static readonly DependencyProperty ValuesPopupPlacementTargetProperty =
+            DependencyProperty.Register("ValuesPopupPlacementTarget",
+                typeof(FrameworkElement),
+                typeof(Charts));
+
+        public List<ChartColumnInfoModel> ColumnValuesInfoList
+        {
+            get { return (List<ChartColumnInfoModel>)GetValue(ColumnValuesInfoListProperty); }
+            set { SetValue(ColumnValuesInfoListProperty, value); }
+        }
+        public static readonly DependencyProperty ColumnValuesInfoListProperty =
+            DependencyProperty.Register("ColumnValuesInfoList",
+                typeof(List<ChartColumnInfoModel>),
+                typeof(Charts)
+                );
+
+        public double ValuesPopupHorizontalOffset
+        {
+            get { return (double)GetValue(ValuesPopupHorizontalOffsetProperty); }
+            set { SetValue(ValuesPopupHorizontalOffsetProperty, value); }
+        }
+        public static readonly DependencyProperty ValuesPopupHorizontalOffsetProperty =
+            DependencyProperty.Register("ValuesPopupHorizontalOffset",
+                typeof(double),
+                typeof(Charts));
+
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var charts = (d as Charts);
@@ -853,7 +894,13 @@ namespace UI.Controls.Charts
                     Width = new GridLength(1, GridUnitType.Star)
                 });
 
+                var valueContainer = new Grid();
 
+                Grid.SetColumn(valueContainer, i);
+                ColumnContainer.Children.Add(valueContainer);
+
+                var valuesPopupList = new List<ChartColumnInfoModel>();
+                
                 for (int di = 0; di < columnCount; di++)
                 {
                     var item = list[di];
@@ -866,11 +913,30 @@ namespace UI.Controls.Charts
                     column.Color = item.Color;
                     column.ColumnName = item.ColumnNames != null && item.ColumnNames.Length > 0 ? item.ColumnNames[i] : (i + NameIndexStart).ToString();
                     Panel.SetZIndex(column, column.Value > 0 ? -(int)column.Value : 0);
-                    Grid.SetColumn(column, i);
-                    ColumnContainer.Children.Add(column);
+
+                    valueContainer.Children.Add(column);
+
+                    valuesPopupList.Add(new ChartColumnInfoModel()
+                    {
+                        Color = item.Color,
+                        Name = item.Name,
+                        Icon = item.Icon,
+                        Text = Covervalue(column.Value) + Unit
+                    });
                 }
 
+                valueContainer.MouseEnter += (e, c) =>
+                {
+                    ColumnValuesInfoList = valuesPopupList;
+                    ValuesPopupPlacementTarget = valueContainer;
+                    IsShowValuesPopup = true;
 
+                    ValuesPopupHorizontalOffset = -17.5 + (valueContainer.ActualWidth / 2);
+                };
+                valueContainer.MouseLeave += (e, c) =>
+                {
+                    IsShowValuesPopup = false;
+                };
             }
 
             var infoList = new List<ChartColumnInfoModel>();
