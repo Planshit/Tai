@@ -88,14 +88,13 @@ namespace Core.Servicers.Instances
                     var model = db.Categorys.Find(item.ID);
                     if (model != null)
                     {
-
                         model.IconFile = item.IconFile;
                         model.Name = item.Name;
                     }
                 }
                 db.SaveChanges();
 
-                _updateTempList.Clear();
+                //_updateTempList.Clear();
             }
         }
 
