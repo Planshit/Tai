@@ -12,7 +12,6 @@ using System.Windows;
 using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
-using UI.Librays;
 using UI.Models;
 
 namespace UI.ViewModels
@@ -269,7 +268,7 @@ namespace UI.ViewModels
 
                     //if (today != null)
                     //{
-                    //    TodayTime = Timer.Fromat(today.Time);
+                    //    TodayTime = Time.ToString(today.Time);
                     //}
                     //else
                     //{
@@ -291,12 +290,12 @@ namespace UI.ViewModels
                     //        else if (diffseconds > 0)
                     //        {
                     //            //  增加
-                    //            diffText = "增加了" + Timer.Fromat(diffseconds);
+                    //            diffText = "增加了" + Time.ToString(diffseconds);
                     //        }
                     //        else
                     //        {
                     //            //  减少
-                    //            diffText = "减少了" + Timer.Fromat(Math.Abs(diffseconds));
+                    //            diffText = "减少了" + Time.ToString(Math.Abs(diffseconds));
                     //        }
                     //    }
                     //    Yesterday = diffseconds == yesterday.Time ? "减少100%" : diffText;
@@ -319,7 +318,7 @@ namespace UI.ViewModels
 
                     var monthData = data.GetProcessMonthLogList(App.ID, Date);
                     int monthTotal = monthData.Sum(m => m.Time);
-                    Total = Timer.Fromat(monthTotal);
+                    Total = Time.ToString(monthTotal);
 
                     DateTime start = new DateTime(Date.Year, Date.Month, 1);
                     DateTime end = new DateTime(Date.Year, Date.Month, DateTime.DaysInMonth(Date.Year, Date.Month));
@@ -329,7 +328,7 @@ namespace UI.ViewModels
                     if (monthData.Count > 0)
                     {
                         var longDayData = monthData.OrderByDescending(m => m.Time).FirstOrDefault();
-                        LongDay = longDayData.Date.ToString("最长一天是在 dd 号，使用了 " + Timer.Fromat(longDayData.Time));
+                        LongDay = longDayData.Date.ToString("最长一天是在 dd 号，使用了 " + Time.ToString(longDayData.Time));
 
                     }
 
@@ -383,7 +382,7 @@ namespace UI.ViewModels
                 bindModel.Data = item;
                 bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                 bindModel.Value = item.Time;
-                bindModel.Tag = Timer.Fromat(item.Time);
+                bindModel.Tag = Time.ToString(item.Time);
                 bindModel.PopupText = item.AppModel.File;
                 bindModel.Icon = item.AppModel.IconFile;
                 bindModel.DateTime = item.Date;

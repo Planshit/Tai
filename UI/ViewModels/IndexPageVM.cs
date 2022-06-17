@@ -13,7 +13,6 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using UI.Controls;
 using UI.Controls.Charts.Model;
-using UI.Librays;
 using UI.Models;
 using UI.Views;
 
@@ -158,7 +157,7 @@ namespace UI.ViewModels
                 bindModel.Data = item;
                 bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                 bindModel.Value = item.Time;
-                bindModel.Tag = Timer.Fromat(item.Time);
+                bindModel.Tag = Time.ToString(item.Time);
                 bindModel.PopupText = item.AppModel?.File;
                 bindModel.Icon = item.AppModel?.IconFile;
                 bindModel.DateTime = item.Date;

@@ -16,9 +16,15 @@ namespace Core.Librarys
             }
             else
             {
-                double minutes = seconds / 60;
+                double minutes = (double)seconds / 60;
                 if (minutes < 60)
                 {
+                    if (minutes != (int)minutes)
+                    {
+                        double pointNumber = minutes - (int)minutes;
+                        return (int)minutes + "分" + (int)(pointNumber * 60) + "秒";
+                    }
+
                     return minutes + "分钟";
                 }
                 else
