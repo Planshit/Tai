@@ -336,6 +336,22 @@ namespace UI.Controls.Charts
                 typeof(double),
                 typeof(Charts));
 
+        /// <summary>
+        /// 数据最大值
+        /// </summary>
+        public double DataMaximum
+        {
+            get { return (double)GetValue(DataMaximumProperty); }
+            set { SetValue(DataMaximumProperty, value); }
+        }
+        public static readonly DependencyProperty DataMaximumProperty =
+            DependencyProperty.Register("DataMaximum",
+                typeof(double),
+                typeof(Charts),
+                new PropertyMetadata((double)0)
+                );
+
+
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var charts = (d as Charts);
@@ -855,6 +871,11 @@ namespace UI.Controls.Charts
 
             }
 
+            if (DataMaximum > 0)
+            {
+                maxValue = DataMaximum;
+            }
+
             Maximum = Covervalue(maxValue);
 
             Median = Covervalue((maxValue / 2));
@@ -900,7 +921,7 @@ namespace UI.Controls.Charts
                 ColumnContainer.Children.Add(valueContainer);
 
                 var valuesPopupList = new List<ChartColumnInfoModel>();
-                
+
                 for (int di = 0; di < columnCount; di++)
                 {
                     var item = list[di];
