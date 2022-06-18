@@ -398,6 +398,7 @@ namespace UI.ViewModels
         /// </summary>
         private void LoadDayData()
         {
+            DataMaximum = 3600;
             Task.Run(() =>
             {
                 var list = data.GetAppDayData(App.ID, ChartDate);
@@ -424,6 +425,7 @@ namespace UI.ViewModels
         /// </summary>
         private void LoadWeekData()
         {
+            DataMaximum = 0;
             Task.Run(() =>
             {
                 var weekDateArr = SelectedWeek.Name == "本周" ? Time.GetThisWeekDate() : Time.GetLastWeekDate();
@@ -457,6 +459,7 @@ namespace UI.ViewModels
         /// </summary>
         private void LoadMonthlyData()
         {
+            DataMaximum = 0;
             Task.Run(() =>
             {
                 var dateArr = Time.GetMonthDate(MonthDate);
@@ -488,6 +491,7 @@ namespace UI.ViewModels
         /// </summary>
         private void LoadYearData()
         {
+            DataMaximum = 0;
             Task.Run(() =>
             {
                 var list = data.GetAppYearData(App.ID, YearDate);

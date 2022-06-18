@@ -153,5 +153,7 @@ namespace UI.Models
 
         private int NameIndexStart_ = 0;
         public int NameIndexStart { get { return NameIndexStart_; } set { NameIndexStart_ = value; OnPropertyChanged(); } }
+        private double DataMaximum_ = 0;
+        public double DataMaximum { get { return DataMaximum_; } set { DataMaximum_ = value; OnPropertyChanged(); } }
     }
 }

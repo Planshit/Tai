@@ -138,7 +138,7 @@
 
                     </base:View>
                 </Grid>
-                <Charts:Charts Height="300" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding ChartData}" Margin="0,20,0,0"/>
+                <Charts:Charts DataMaximum="{Binding DataMaximum}" Height="300" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding ChartData}" Margin="0,20,0,0"/>
 
             </StackPanel>
 

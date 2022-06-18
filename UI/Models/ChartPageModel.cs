@@ -77,5 +77,8 @@ namespace UI.Models
             get { return TopData_; }
             set { TopData_ = value; OnPropertyChanged(); }
         }
+
+        private double DataMaximum_ = 0;
+        public double DataMaximum { get { return DataMaximum_; } set { DataMaximum_ = value; OnPropertyChanged(); } }
     }
 }
