@@ -22,7 +22,8 @@ namespace Core.Librarys
                     if (minutes != (int)minutes)
                     {
                         double pointNumber = minutes - (int)minutes;
-                        return (int)minutes + "分" + (int)(pointNumber * 60) + "秒";
+                        int seconds_ = (int)(pointNumber * 60);
+                        return (int)minutes + "分钟" + (seconds_ > 0 ? seconds_ + "秒" : "");
                     }
 
                     return minutes + "分钟";
@@ -33,7 +34,8 @@ namespace Core.Librarys
                     if (hours != (int)hours)
                     {
                         double pointNumber = hours - (int)hours;
-                        return (int)hours + "小时" + (int)(pointNumber * 60) + "分";
+                        int minutes_ = (int)(pointNumber * 60);
+                        return (int)hours + "小时" + (minutes_ > 0 ? minutes_ + "分" : "");
                     }
                     return hours + "小时";
                 }
