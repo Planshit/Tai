@@ -170,6 +170,10 @@ namespace Core.Servicers.Instances
 
         private void UpdateConfigIgnoreProcess()
         {
+            if (config == null)
+            {
+                return;
+            }
             ConfigIgnoreProcessList.Clear();
             ConfigIgnoreProcessRegxList.Clear();
             IgnoreProcessCacheList.Clear();
@@ -348,7 +352,7 @@ namespace Core.Servicers.Instances
 
                 if (seconds > 0)
                 {
-                    data.Set(activeProcess, activeProcessDescription, activeProcessFile, seconds, time);
+                    data.Set(activeProcess, seconds, time);
 
                     //  关联进程更新
                     HandleLinks(activeProcess, seconds, time);
