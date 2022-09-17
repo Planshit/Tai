@@ -19,7 +19,7 @@ namespace Core.Servicers.Instances
         {
             this.appData = appData;
         }
-        public void Set(string processName, string processDescription, string file, int seconds, DateTime? time_ = null)
+        public void Set(string processName, int seconds, DateTime? time_ = null)
         {
             DateTime time = !time_.HasValue ? DateTime.Now : time_.Value;
             var today = time.Date;
@@ -31,7 +31,6 @@ namespace Core.Servicers.Instances
             {
                 return;
             }
-            processDescription = processDescription == null ? string.Empty : processDescription;
 
             AppModel app = appData.GetApp(processName);
 
@@ -70,6 +69,15 @@ namespace Core.Servicers.Instances
                 if (hourslog == null)
                 {
                     //  没有时创建
+
+                    if (seconds > 3600)
+                    {
+                        int overflowSeconds = seconds - 3600;
+                        Set(processName, overflowSeconds, nowtime.AddHours(1));
+
+                        seconds = 3600;
+                    }
+
                     db.HoursLog.Add(new Models.HoursLogModel()
                     {
                         DataTime = nowtime,
@@ -79,7 +87,18 @@ namespace Core.Servicers.Instances
                 }
                 else
                 {
-                    hourslog.Time += seconds;
+                    if (hourslog.Time + seconds > 3600)
+                    {
+                        hourslog.Time = 3600;
+
+                        int overflowSeconds = hourslog.Time + seconds - 3600;
+
+                        Set(processName, overflowSeconds, nowtime.AddHours(1));
+                    }
+                    else
+                    {
+                        hourslog.Time += seconds;
+                    }
                 }
 
                 //  统计使用时长
@@ -90,6 +109,7 @@ namespace Core.Servicers.Instances
                 db.SaveChanges();
             }
         }
+
 
         public List<DailyLogModel> GetTodaylogList()
         {
@@ -189,57 +209,6 @@ namespace Core.Servicers.Instances
             return GetDateRangelogList(weekStartDate, weekEndDate);
         }
 
-        public void Set(string processName, int seconds, DateTime? time_ = null)
-        {
-            DateTime time = !time_.HasValue ? DateTime.Now : time_.Value;
-            var today = time.Date;
-
-            //  当前时段
-            var nowtime = new DateTime(today.Year, today.Month, today.Day, time.Hour, 0, 0);
-
-            if (string.IsNullOrEmpty(processName) || seconds <= 0)
-            {
-                return;
-            }
-
-            AppModel app = appData.GetApp(processName);
-            if (app == null)
-            {
-                return;
-            }
-
-            using (var db = new TaiDbContext())
-            {
-                var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
-                if (res != null)
-                {
-                    res.Time += seconds;
-                }
-
-                //  分时段记录数据
-
-                var hourslog = db.HoursLog.SingleOrDefault(
-                    m =>
-                    m.DataTime == nowtime
-                    && m.AppModelID == app.ID);
-                if (hourslog != null)
-                {
-                    hourslog.Time += seconds;
-                }
-
-
-                //  统计使用时长
-
-                app.TotalTime += seconds;
-
-                appData.UpdateApp(app);
-
-
-                db.SaveChanges();
-            }
-
-        }
-
         public List<DailyLogModel> GetProcessMonthLogList(int appID, DateTime month)
         {
             //var app = appData.GetApp(processName);
@@ -276,6 +245,12 @@ namespace Core.Servicers.Instances
                 m.AppModelID == appID
                 && m.Date.Year == month.Year
                 && m.Date.Month == month.Month));
+
+                db.HoursLog.RemoveRange(
+                    db.HoursLog.Where(m => m.AppModelID == appID
+                    && m.DataTime.Year == month.Year
+                    && m.DataTime.Month == month.Month));
+
                 db.SaveChanges();
             }
         }

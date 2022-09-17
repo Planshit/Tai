@@ -275,11 +275,13 @@ namespace Core.Servicers.Instances
 
             if (isCheck && sleepStatus != SleepStatus.Sleep)
             {
+                if (activeProcess == null)
+                {
+                    activeStartTime = DateTime.Now;
+                }
                 activeProcess = processName;
                 activeProcessDescription = description;
                 activeProcessFile = file;
-
-                activeStartTime = DateTime.Now;
             }
             else
             {

@@ -14,11 +14,9 @@ namespace Core.Servicers.Interfaces
         /// <summary>
         /// 设置进程数据
         /// </summary>
-        /// <param name="processName"></param>
-        /// <param name="processDescription"></param>
-        /// <param name="file"></param>
-        /// <param name="seconds"></param>
-        void Set(string processName, string processDescription, string file, int seconds, DateTime? time = null);
+        /// <param name="processName">进程名称</param>
+        /// <param name="seconds">时长（秒）</param>
+        void Set(string processName, int seconds, DateTime? time = null);
 
         /// <summary>
         /// 获取今天的数据
@@ -43,12 +41,6 @@ namespace Core.Servicers.Interfaces
         /// </summary>
         /// <returns></returns>
         IEnumerable<DailyLogModel> GetLastWeeklogList();
-        /// <summary>
-        /// 设置进程数据（仅通过进程名可能会出现重复的问题
-        /// </summary>
-        /// <param name="processName"></param>
-        /// <param name="seconds"></param>
-        void Set(string processName, int seconds, DateTime? time = null);
 
         /// <summary>
         /// 获取指定进程某个月的数据
