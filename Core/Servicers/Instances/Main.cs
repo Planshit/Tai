@@ -114,7 +114,7 @@ namespace Core.Servicers.Instances
             if (oldConfig != newConfig)
             {
                 //  处理开机自启
-                Shortcut.SetStartup(newConfig.General.IsStartatboot);
+                SystemCommon.SetStartup(newConfig.General.IsStartatboot);
 
                 //  更新忽略规则
                 UpdateConfigIgnoreProcess();
@@ -360,11 +360,13 @@ namespace Core.Servicers.Instances
                     HandleLinks(activeProcess, seconds, time);
                 }
 
+                Logger.Info("status:" + sleepStatus + ",process:" + activeProcess + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString());
+
                 activeStartTime = DateTime.Now;
 
                 OnUpdateTime?.Invoke(this, null);
 
-                Logger.Info("【" + sleepStatus + "】进程：" + activeProcess + " 更新时间：" + seconds + "，开始时间：" + activeStartTime.ToString() + "，当前时间：" + DateTime.Now.ToString());
+
             }
         }
 
