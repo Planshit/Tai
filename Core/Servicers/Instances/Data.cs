@@ -15,98 +15,102 @@ namespace Core.Servicers.Instances
     public class Data : IData
     {
         private readonly IAppData appData;
+        private readonly object setLock = new object();
         public Data(IAppData appData)
         {
             this.appData = appData;
         }
         public void Set(string processName, int seconds, DateTime? time_ = null)
         {
-            DateTime time = !time_.HasValue ? DateTime.Now : time_.Value;
-            var today = time.Date;
-
-            //  当前时段
-            var nowtime = new DateTime(today.Year, today.Month, today.Day, time.Hour, 0, 0);
-
-            if (string.IsNullOrEmpty(processName) || seconds <= 0)
+            lock (setLock)
             {
-                return;
-            }
+                DateTime time = !time_.HasValue ? DateTime.Now : time_.Value;
+                var today = time.Date;
 
-            AppModel app = appData.GetApp(processName);
+                //  当前时段
+                var nowtime = new DateTime(today.Year, today.Month, today.Day, time.Hour, 0, 0);
 
-            if (app == null)
-            {
-                return;
-            }
-
-
-
-            using (var db = new TaiDbContext())
-            {
-                var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
-                if (res == null)
+                if (string.IsNullOrEmpty(processName) || seconds <= 0)
                 {
-                    //数据库中没有时则创建
-                    db.DailyLog.Add(new Models.DailyLogModel()
-                    {
-                        Date = today,
-                        AppModelID = app.ID,
-                        Time = seconds,
-                    });
-                }
-                else
-                {
-                    res.Time += seconds;
+                    return;
                 }
 
-                //  分时段记录数据
+                AppModel app = appData.GetApp(processName);
 
-                var hourslog = db.HoursLog.SingleOrDefault(
-                    m =>
-                    m.DataTime == nowtime
-                    && m.AppModelID == app.ID
-                    );
-                if (hourslog == null)
+                if (app == null)
                 {
-                    //  没有时创建
-
-                    if (seconds > 3600)
-                    {
-                        int overflowSeconds = seconds - 3600;
-                        Set(processName, overflowSeconds, nowtime.AddHours(1));
-
-                        seconds = 3600;
-                    }
-
-                    db.HoursLog.Add(new Models.HoursLogModel()
-                    {
-                        DataTime = nowtime,
-                        AppModelID = app.ID,
-                        Time = seconds
-                    });
+                    return;
                 }
-                else
+
+
+
+                using (var db = new TaiDbContext())
                 {
-                    if (hourslog.Time + seconds > 3600)
+                    var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
+                    if (res == null)
                     {
-                        hourslog.Time = 3600;
-
-                        int overflowSeconds = hourslog.Time + seconds - 3600;
-
-                        Set(processName, overflowSeconds, nowtime.AddHours(1));
+                        //数据库中没有时则创建
+                        db.DailyLog.Add(new Models.DailyLogModel()
+                        {
+                            Date = today,
+                            AppModelID = app.ID,
+                            Time = seconds,
+                        });
                     }
                     else
                     {
-                        hourslog.Time += seconds;
+                        res.Time += seconds;
                     }
+
+                    //  分时段记录数据
+
+                    var hourslog = db.HoursLog.SingleOrDefault(
+                        m =>
+                        m.DataTime == nowtime
+                        && m.AppModelID == app.ID
+                        );
+                    if (hourslog == null)
+                    {
+                        //  没有时创建
+
+                        if (seconds > 3600)
+                        {
+                            int overflowSeconds = seconds - 3600;
+                            Set(processName, overflowSeconds, nowtime.AddHours(1));
+
+                            seconds = 3600;
+                        }
+
+                        db.HoursLog.Add(new Models.HoursLogModel()
+                        {
+                            DataTime = nowtime,
+                            AppModelID = app.ID,
+                            Time = seconds
+                        });
+                    }
+                    else
+                    {
+                        if (hourslog.Time + seconds > 3600)
+                        {
+                            hourslog.Time = 3600;
+
+                            int overflowSeconds = hourslog.Time + seconds - 3600;
+
+                            Set(processName, overflowSeconds, nowtime.AddHours(1));
+                        }
+                        else
+                        {
+                            hourslog.Time += seconds;
+                        }
+                    }
+
+                    //  统计使用时长
+                    app.TotalTime += seconds;
+
+                    appData.UpdateApp(app);
+
+                    db.SaveChanges();
                 }
-
-                //  统计使用时长
-                app.TotalTime += seconds;
-
-                appData.UpdateApp(app);
-
-                db.SaveChanges();
             }
         }
 
