@@ -214,7 +214,7 @@ namespace UI.ViewModels
 
                       foreach (var item in list)
                       {
-                          item.Visibility = item.App.Description.ToLower().IndexOf(keyword) != -1 || item.App.Name.ToLower().IndexOf(keyword) != -1 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+                          item.Visibility = item.App.Description != null && item.App.Description.ToLower().IndexOf(keyword) != -1 || item.App.Name != null && item.App.Name.ToLower().IndexOf(keyword) != -1 ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
                       }
 
                       return list;
