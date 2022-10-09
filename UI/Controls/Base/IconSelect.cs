@@ -34,8 +34,16 @@ namespace UI.Controls.Base
         public static readonly DependencyProperty URLProperty =
             DependencyProperty.Register("URL",
                 typeof(string),
-                typeof(IconSelect));
+                typeof(IconSelect), new PropertyMetadata(new PropertyChangedCallback(OnURLPropertyChanged)));
 
+        private static void OnURLPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as IconSelect;
+            if(string.IsNullOrEmpty(control.URL))
+            {
+                control.URL = control.Icons[0];
+            }
+        }
 
         public bool IsOpen
         {
