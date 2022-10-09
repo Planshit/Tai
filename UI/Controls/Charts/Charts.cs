@@ -937,20 +937,23 @@ namespace UI.Controls.Charts
 
                     valueContainer.Children.Add(column);
 
-                    valuesPopupList.Add(new ChartColumnInfoModel()
+                    if (column.Value > 0)
                     {
-                        Color = item.Color,
-                        Name = item.Name,
-                        Icon = item.Icon,
-                        Text = Covervalue(column.Value) + Unit
-                    });
+                        valuesPopupList.Add(new ChartColumnInfoModel()
+                        {
+                            Color = item.Color,
+                            Name = item.Name,
+                            Icon = item.Icon,
+                            Text = Covervalue(column.Value) + Unit
+                        });
+                    }
                 }
 
                 valueContainer.MouseEnter += (e, c) =>
                 {
                     ColumnValuesInfoList = valuesPopupList;
                     ValuesPopupPlacementTarget = valueContainer;
-                    IsShowValuesPopup = true;
+                    IsShowValuesPopup = valuesPopupList.Count > 0;
 
                     ValuesPopupHorizontalOffset = -17.5 + (valueContainer.ActualWidth / 2);
                 };
