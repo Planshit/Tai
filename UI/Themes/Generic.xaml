@@ -12,6 +12,7 @@
         <ResourceDictionary Source="/Tai;component/Themes/Base/CheckBox.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Base/Text.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Base/View.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Base/IconSelect.xaml"/>
 
         <ResourceDictionary Source="/Tai;component/Themes/PageContainer.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/Charts.xaml"/>

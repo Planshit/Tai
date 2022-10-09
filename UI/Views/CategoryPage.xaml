@@ -33,7 +33,7 @@
                         <input:InputBox Error="{Binding EditErrorText}" IsShowError="{Binding IsEditError,Mode=TwoWay}" Text="{Binding EditName,Mode=TwoWay}" MaxLength="10" Margin="0,10,0,0"/>
 
                         <TextBlock Text="分类图标" Margin="0,10,0,0"/>
-                        <select:ImageSelect URL="{Binding EditIconFile,Mode=TwoWay}" ImageWidth="50" ImageHeight="50" HorizontalAlignment="Left" Margin="0,10,0,0" Width="100" Height="100" />
+                        <base:IconSelect  URL="{Binding EditIconFile,Mode=TwoWay}" HorizontalAlignment="Left" Margin="0,10,0,0" />
                     </StackPanel>
 
                     <Button:Button Grid.Row="2" HorizontalAlignment="Right" Text="?创建:更新" Value="{Binding IsCreate}" Width="120" Margin="0,0,10,0" VerticalAlignment="Center" Command="{Binding EditDoneCommand}">

@@ -129,6 +129,7 @@
     <Compile Include="Base\Color\ColorTypes.cs" />
     <Compile Include="Controls\Base\EmptyData.cs" />
     <Compile Include="Controls\Base\CheckBox.cs" />
+    <Compile Include="Controls\Base\IconSelect.cs" />
     <Compile Include="Controls\Base\Img.cs" />
     <Compile Include="Controls\Base\Placeholder.cs" />
     <Compile Include="Controls\Base\Icon.cs" />
@@ -236,6 +237,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Base\CheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Base\IconSelect.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -456,6 +461,52 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons\taibusy.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Emoji\%281%29.png" />
+    <Resource Include="Resources\Emoji\%2810%29.png" />
+    <Resource Include="Resources\Emoji\%2811%29.png" />
+    <Resource Include="Resources\Emoji\%2812%29.png" />
+    <Resource Include="Resources\Emoji\%2813%29.png" />
+    <Resource Include="Resources\Emoji\%2814%29.png" />
+    <Resource Include="Resources\Emoji\%2815%29.png" />
+    <Resource Include="Resources\Emoji\%2816%29.png" />
+    <Resource Include="Resources\Emoji\%2817%29.png" />
+    <Resource Include="Resources\Emoji\%2818%29.png" />
+    <Resource Include="Resources\Emoji\%2819%29.png" />
+    <Resource Include="Resources\Emoji\%282%29.png" />
+    <Resource Include="Resources\Emoji\%2820%29.png" />
+    <Resource Include="Resources\Emoji\%2821%29.png" />
+    <Resource Include="Resources\Emoji\%2822%29.png" />
+    <Resource Include="Resources\Emoji\%2823%29.png" />
+    <Resource Include="Resources\Emoji\%2824%29.png" />
+    <Resource Include="Resources\Emoji\%2825%29.png" />
+    <Resource Include="Resources\Emoji\%2826%29.png" />
+    <Resource Include="Resources\Emoji\%2827%29.png" />
+    <Resource Include="Resources\Emoji\%2828%29.png" />
+    <Resource Include="Resources\Emoji\%2829%29.png" />
+    <Resource Include="Resources\Emoji\%283%29.png" />
+    <Resource Include="Resources\Emoji\%2830%29.png" />
+    <Resource Include="Resources\Emoji\%2831%29.png" />
+    <Resource Include="Resources\Emoji\%2832%29.png" />
+    <Resource Include="Resources\Emoji\%2833%29.png" />
+    <Resource Include="Resources\Emoji\%2834%29.png" />
+    <Resource Include="Resources\Emoji\%2835%29.png" />
+    <Resource Include="Resources\Emoji\%2836%29.png" />
+    <Resource Include="Resources\Emoji\%2837%29.png" />
+    <Resource Include="Resources\Emoji\%2838%29.png" />
+    <Resource Include="Resources\Emoji\%2839%29.png" />
+    <Resource Include="Resources\Emoji\%284%29.png" />
+    <Resource Include="Resources\Emoji\%2840%29.png" />
+    <Resource Include="Resources\Emoji\%2841%29.png" />
+    <Resource Include="Resources\Emoji\%2842%29.png" />
+    <Resource Include="Resources\Emoji\%2843%29.png" />
+    <Resource Include="Resources\Emoji\%2844%29.png" />
+    <Resource Include="Resources\Emoji\%285%29.png" />
+    <Resource Include="Resources\Emoji\%286%29.png" />
+    <Resource Include="Resources\Emoji\%287%29.png" />
+    <Resource Include="Resources\Emoji\%288%29.png" />
+    <Resource Include="Resources\Emoji\%289%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
