@@ -15,6 +15,31 @@ using UI.Controls.DatePickerBar;
 
 namespace UI.Controls.Select
 {
+    public class DayModel
+    {
+        public DateTime Day { get; set; }
+        public string DayText
+        {
+            get
+            {
+                return Day.Day.ToString();
+            }
+        }
+        public bool IsToday
+        {
+            get
+            {
+                return Day.Date == DateTime.Now.Date;
+            }
+        }
+        public bool IsOut
+        {
+            get
+            {
+                return Day.Date > DateTime.Now.Date;
+            }
+        }
+    }
     public class DateSelect : Control
     {
         public DateSelectType SelectType
@@ -62,14 +87,14 @@ namespace UI.Controls.Select
                 typeof(DateSelect)
                 );
 
-        public string Day
+        public DayModel Day
         {
-            get { return (string)GetValue(DayProperty); }
+            get { return (DayModel)GetValue(DayProperty); }
             set { SetValue(DayProperty, value); }
         }
         public static readonly DependencyProperty DayProperty =
             DependencyProperty.Register("Day",
-                typeof(string),
+                typeof(DayModel),
                 typeof(DateSelect)
                 );
         public string DateStr
@@ -82,14 +107,14 @@ namespace UI.Controls.Select
                 typeof(string),
                 typeof(DateSelect)
                 );
-        public List<string> Days
+        public List<DayModel> Days
         {
-            get { return (List<string>)GetValue(DaysProperty); }
+            get { return (List<DayModel>)GetValue(DaysProperty); }
             set { SetValue(DaysProperty, value); }
         }
         public static readonly DependencyProperty DaysProperty =
             DependencyProperty.Register("Days",
-                typeof(List<string>),
+                typeof(List<DayModel>),
                 typeof(DateSelect)
                 );
 
@@ -122,6 +147,7 @@ namespace UI.Controls.Select
 
         private bool IsFirstClick = false;
         private Border SelectContainer;
+        private DateTime SelectedDay;
         public DateSelect()
         {
             DefaultStyleKey = typeof(DateSelect);
@@ -137,7 +163,12 @@ namespace UI.Controls.Select
 
             Month = Date.Month;
 
-            Day = Date.Day.ToString();
+            //Day = new DayModel()
+            //{
+            //    Day = Date.Date,
+            //};
+
+            SelectedDay = Date.Date;
 
             mouseProc = HookCallback;
 
@@ -200,7 +231,12 @@ namespace UI.Controls.Select
         }
         private void OnDone(object obj)
         {
-            Date = new DateTime(Year, Month, int.Parse(Day));
+
+            Date = new DateTime(Year, Month, Day != null ? int.Parse(Day.DayText) : 1);
+            if (Day != null)
+            {
+                SelectedDay = Day.Day;
+            }
 
             UpdateDateStr();
 
@@ -216,7 +252,7 @@ namespace UI.Controls.Select
             }
             Month = newMonth;
 
-            Day = "1";
+            //Day = new DayModel() { Day = new DateTime(Year, Month, 1).Date };
 
             UpdateDays();
 
@@ -232,7 +268,7 @@ namespace UI.Controls.Select
             }
             Year = newYear;
 
-            Day = "1";
+            //Day = new DayModel() { Day = new DateTime(Year, Month, 1).Date };
 
             UpdateDays();
         }
@@ -269,14 +305,15 @@ namespace UI.Controls.Select
 
         private void UpdateDays()
         {
-            var list = new List<string>();
+            var list = new List<DayModel>();
             int days = DateTime.DaysInMonth(Year, Month);
             for (int i = 1; i < days + 1; i++)
             {
-                list.Add(i.ToString());
+                list.Add(new DayModel() { Day = new DateTime(Year, Month, i).Date });
             }
             Days = list;
 
+            Day = list.Where(m => m.Day == SelectedDay).FirstOrDefault();
         }
 
         private void UpdateDateStr()

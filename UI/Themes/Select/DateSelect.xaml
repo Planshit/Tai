@@ -24,7 +24,7 @@
                                 <Border.InputBindings>
                                     <MouseBinding Gesture="LeftClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=ShowSelectCommand}"/>
                                 </Border.InputBindings>
-                               
+
                                 <StackPanel Orientation="Horizontal">
                                     <base:Icon x:Name="Icon" IconType="DateTime"/>
                                     <TextBlock Foreground="#1a1a1a" Text="{TemplateBinding DateStr}" VerticalAlignment="Center" Margin="5,0,0,0"/>
@@ -111,6 +111,15 @@
                                                                         <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                                     </Border>
                                                                     <ControlTemplate.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsOut}" Value="True">
+                                                                            <Setter  Property="Foreground" Value="#ccc"/>
+                                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding IsToday}" Value="True">
+                                                                            <Setter TargetName="Border" Property="Background" Value="#FFF2F1FF"/>
+                                                                            <Setter  Property="Foreground" Value="#2b20d9"/>
+
+                                                                        </DataTrigger>
                                                                         <Trigger Property="IsMouseOver" Value="True">
                                                                             <Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>
                                                                             <!--<Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>-->
@@ -140,12 +149,17 @@
 
                                                         <WrapPanel Orientation="Horizontal">
                                                             <Border >
-
-                                                                <TextBlock Text="{Binding}" />
+                                                                <!--<Grid>
+                                                                    <base:View Value="{Binding IsToday}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-5,-5,0">
+                                                                        <Rectangle RadiusX="10" RadiusY="10" Width="5" Height="5" Fill="Red"></Rectangle>
+                                                                    </base:View>
+                                                                </Grid>-->
+                                                                <TextBlock Text="{Binding DayText}" />
 
                                                             </Border>
 
                                                         </WrapPanel>
+                                                       
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
                                             </ListView>
