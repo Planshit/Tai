@@ -55,5 +55,8 @@ namespace UI.Models
         }
         private bool IsEditError_ = false;
         public bool IsEditError { get { return IsEditError_; } set { IsEditError_ = value; OnPropertyChanged(); } }
+
+        private string EditColor_;
+        public string EditColor { get { return EditColor_; } set { EditColor_ = value; OnPropertyChanged(); } }
     }
 }

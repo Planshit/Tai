@@ -107,7 +107,7 @@ namespace UI.ViewModels
                 mainVM.Toast("请选择一个分类图标", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
                 return;
             }
-            if (EditIconFile.IndexOf("pack://") ==-1 && new FileInfo(EditIconFile).Length > 1000000)
+            if (EditIconFile.IndexOf("pack://") == -1 && new FileInfo(EditIconFile).Length > 1000000)
             {
                 mainVM.Toast("图标文件不能超过1MB", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
                 return;
@@ -132,6 +132,7 @@ namespace UI.ViewModels
                 {
                     Name = EditName,
                     IconFile = EditIconFile,
+                    Color = EditColor,
                 });
 
                 var item = new CategoryModel()
@@ -162,7 +163,7 @@ namespace UI.ViewModels
                     mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
                     return;
                 }
-                if (EditName == SelectedItem.Data.Name && EditIconFile == SelectedItem.Data.IconFile)
+                if (EditName == SelectedItem.Data.Name && EditIconFile == SelectedItem.Data.IconFile && EditColor==SelectedItem.Data.Color)
                 {
                     mainVM.Toast("没有修改");
                     EditVisibility = System.Windows.Visibility.Collapsed;
@@ -175,6 +176,8 @@ namespace UI.ViewModels
                 {
                     category.Name = EditName;
                     category.IconFile = EditIconFile;
+                    category.Color = EditColor;
+
                     categorys.Update(category);
                     categorys.SaveChanged();
                 }
@@ -189,6 +192,7 @@ namespace UI.ViewModels
                         ID = item.Data.ID,
                         Name = EditName,
                         IconFile = EditIconFile,
+                        Color = EditColor
                     }
                 };
 
@@ -212,6 +216,7 @@ namespace UI.ViewModels
                 var select = obj as CategoryModel;
                 EditName = select.Data.Name;
                 EditIconFile = select.Data.IconFile;
+                EditColor = select.Data.Color;
             }
             else
             {

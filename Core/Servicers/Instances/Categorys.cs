@@ -90,6 +90,7 @@ namespace Core.Servicers.Instances
                     {
                         model.IconFile = item.IconFile;
                         model.Name = item.Name;
+                        model.Color = item.Color;
                     }
                 }
                 db.SaveChanges();

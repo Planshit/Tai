@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:UI.Views" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Button="clr-namespace:UI.Controls.Button" xmlns:input="clr-namespace:UI.Controls.Input" xmlns:select="clr-namespace:UI.Controls.Select"
       mc:Ignorable="d" 
-      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:converter="clr-namespace:UI.Controls.Converters"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="CategoryPage">
 
@@ -28,14 +28,24 @@
                         <Button:IconButton Foreground="#ccc" Icon="ChromeClose" HorizontalAlignment="Right" FontSize="12" Margin="0,0,10,0" Command="{Binding EditCloseCommand}"/>
                     </Grid>
                     <!--<TextBlock Text="编辑" VerticalAlignment="Center" Margin="10,0,0,0"/>-->
+                    <ScrollViewer Grid.Row="1">
                     <StackPanel Grid.Row="1" Margin="10">
                         <TextBlock Text="分类名称"/>
-                        <input:InputBox Error="{Binding EditErrorText}" IsShowError="{Binding IsEditError,Mode=TwoWay}" Text="{Binding EditName,Mode=TwoWay}" MaxLength="10" Margin="0,10,0,0"/>
 
-                        <TextBlock Text="分类图标" Margin="0,10,0,0"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <base:ColorSelect Color="{Binding EditColor,Mode=TwoWay}" ToolTip="选择分类颜色" HorizontalAlignment="Left" Margin="0,10,0,0" />
+
+                                <input:InputBox Grid.Column="1" Error="{Binding EditErrorText}" IsShowError="{Binding IsEditError,Mode=TwoWay}" Text="{Binding EditName,Mode=TwoWay}" MaxLength="10" Margin="5,10,0,0"/>
+                            </Grid>
+                        
+                        <TextBlock Text="图标" Margin="0,10,0,0"/>
                         <base:IconSelect  URL="{Binding EditIconFile,Mode=TwoWay}" HorizontalAlignment="Left" Margin="0,10,0,0" />
                     </StackPanel>
-
+                    </ScrollViewer>
                     <Button:Button Grid.Row="2" HorizontalAlignment="Right" Text="?创建:更新" Value="{Binding IsCreate}" Width="120" Margin="0,0,10,0" VerticalAlignment="Center" Command="{Binding EditDoneCommand}">
 
                     </Button:Button>
@@ -77,6 +87,8 @@
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListBox.Resources>
+                    <converter:HextoColorConverter x:Key="HextoColorConverter"/>
+
                     <Style TargetType="{x:Type ListView}">
                         <Setter Property="OverridesDefaultStyle" Value="True"/>
 
@@ -101,7 +113,7 @@
                                                 <DropShadowEffect Color="#d8d2d2" BlurRadius="10" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
                                             </Border.Effect>
                                         </Border>
-                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="5" CornerRadius="10">
+                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="5" CornerRadius="20">
                                             <ContentPresenter/>
                                         </Border>
                                     </Grid>
@@ -126,27 +138,33 @@
                 </ListBox.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate>
+                        
 
                         <WrapPanel Orientation="Vertical">
                             <Border Width="150" Height="150">
 
                                 <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="80"/>
+                                        <RowDefinition Height="40"/>
+
+                                        <RowDefinition Height="40"/>
                                         <RowDefinition Height="30"/>
                                         <RowDefinition Height="*"/>
 
                                     </Grid.RowDefinitions>
-                                    <Border>
-                                        <base:Img Radius="10" Width="50" Height="50" URL="{Binding Data.IconFile}"/>
-                                    </Border>
-                                    <TextBlock Foreground="#202020" HorizontalAlignment="Center" Grid.Row="1" Text="{Binding Data.Name}"  FontSize="14"/>
+                                    <Rectangle HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"  RadiusX="20" RadiusY="20" Width="20" Height="20" Fill="{Binding Data.Color,Converter={StaticResource HextoColorConverter}}"/>
+                                    <Grid Grid.Row="1">
+                                       
+                                        <base:Img Radius="8" Width="40" Height="40" URL="{Binding Data.IconFile}"/>
+                                    </Grid>
+                                    <TextBlock Foreground="#202020" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Text="{Binding Data.Name}"  FontSize="14"/>
 
-                                    <Border Grid.Row="2" >
-                                        <Border Margin="10,0,0,0" CornerRadius="5" Background="#f9f9f9" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="15,5">
+                                    <Border Grid.Row="3" >
+                                        <Border Margin="10,0,10,0" CornerRadius="10" Background="#f9f9f9" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10,5">
                                             <TextBlock Foreground="#FF737373">
+                                                <Run Text="×"/>
+                                                
                                                 <Run Text="{Binding Count}"/>
-                                                <Run Text="个应用"/>
                                             </TextBlock>
 
                                         </Border>

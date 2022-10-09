@@ -136,7 +136,7 @@ namespace UI.ViewModels
             DataMaximum = 3600;
             Task.Run(() =>
             {
-                
+
 
                 var list = data.GetCategoryHoursData(Date);
 
@@ -163,6 +163,7 @@ namespace UI.ViewModels
                             Name = category.Name,
                             Icon = category.IconFile,
                             Values = item.Values,
+                            Color = category.Color
                         };
                         if (category.ID == 0)
                         {
@@ -390,7 +391,7 @@ namespace UI.ViewModels
                 bindModel.Data = item;
                 bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                 bindModel.Value = item.Time;
-                bindModel.Tag =Time.ToString(item.Time);
+                bindModel.Tag = Time.ToString(item.Time);
                 bindModel.PopupText = item.AppModel?.File;
                 bindModel.Icon = item.AppModel?.IconFile;
                 resData.Add(bindModel);

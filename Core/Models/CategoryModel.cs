@@ -24,5 +24,9 @@ namespace Core.Models
         /// 分类图标路径
         /// </summary>
         public string IconFile { get; set; }
+        /// <summary>
+        /// 颜色
+        /// </summary>
+        public string Color { get; set; }
     }
 }

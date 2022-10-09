@@ -129,6 +129,7 @@
     <Compile Include="Base\Color\ColorTypes.cs" />
     <Compile Include="Controls\Base\EmptyData.cs" />
     <Compile Include="Controls\Base\CheckBox.cs" />
+    <Compile Include="Controls\Base\ColorSelect.cs" />
     <Compile Include="Controls\Base\IconSelect.cs" />
     <Compile Include="Controls\Base\Img.cs" />
     <Compile Include="Controls\Base\Placeholder.cs" />
@@ -237,6 +238,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Base\CheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Base\ColorSelect.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
