@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:UI.Views"
-      xmlns:Charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:DatePickerBar="clr-namespace:UI.Controls.DatePickerBar" x:Class="UI.Views.DataPage"
+      xmlns:Charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:DatePickerBar="clr-namespace:UI.Controls.DatePickerBar" xmlns:select="clr-namespace:UI.Controls.Select" x:Class="UI.Views.DataPage"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="IndexPage">
@@ -46,7 +46,8 @@
                         <RowDefinition Height="*"/>
 
                     </Grid.RowDefinitions>
-                    <DatePickerBar:DatePickerBar SelectedDate="{Binding DayDate,Mode=TwoWay}" ShowType="Day"/>
+                    <select:DateSelect Date="{Binding DayDate,Mode=TwoWay}"/>
+                    <!--<DatePickerBar:DatePickerBar SelectedDate="{Binding DayDate,Mode=TwoWay}" ShowType="Day"/>-->
 
                     <Charts:Charts Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
@@ -58,8 +59,8 @@
                         <RowDefinition Height="*"/>
 
                     </Grid.RowDefinitions>
-                    <DatePickerBar:DatePickerBar SelectedDate="{Binding MonthDate,Mode=TwoWay}" ShowType="Month"/>
-
+                    <!--<DatePickerBar:DatePickerBar SelectedDate="{Binding MonthDate,Mode=TwoWay}" ShowType="Month"/>-->
+                    <select:DateSelect Date="{Binding MonthDate,Mode=TwoWay}" SelectType="Month"/>
                     <Charts:Charts Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding MonthData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
             </TabItem>
@@ -70,7 +71,8 @@
                         <RowDefinition Height="*"/>
 
                     </Grid.RowDefinitions>
-                    <DatePickerBar:DatePickerBar SelectedDate="{Binding YearDate,Mode=TwoWay}" ShowType="Year"/>
+                    <!--<DatePickerBar:DatePickerBar SelectedDate="{Binding YearDate,Mode=TwoWay}" ShowType="Year"/>-->
+                    <select:DateSelect Date="{Binding YearDate,Mode=TwoWay}" SelectType="Year"/>
 
                     <Charts:Charts Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding YearData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
