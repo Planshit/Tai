@@ -230,7 +230,7 @@ namespace UI.ViewModels
                 var select = obj as CategoryModel;
                 EditName = select.Data.Name;
                 EditIconFile = select.Data.IconFile;
-                EditColor = select.Data.Color;
+                EditColor = string.IsNullOrEmpty(select.Data.Color) ? "#00FFAB" : select.Data.Color;
             }
             else
             {
