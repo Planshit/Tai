@@ -93,6 +93,9 @@ namespace Core.Servicers.Interfaces
         /// <param name="start"></param>
         /// <param name="end"></param>
         void ClearRange(DateTime start, DateTime end);
-
+        /// <summary>
+        /// 导出数据到EXCEL
+        /// </summary>
+        void ExportToExcel(string dir, DateTime start, DateTime end);
     }
 }

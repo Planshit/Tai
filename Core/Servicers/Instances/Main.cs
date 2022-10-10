@@ -103,6 +103,8 @@ namespace Core.Servicers.Instances
 
         private void DateTimeObserver_OnDateTimeChanging(object sender, DateTime time)
         {
+            Logger.Info("[time changed] status:" + sleepStatus + ",process:" + activeProcess + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
+
             if (sleepStatus == SleepStatus.Wake)
             {
                 UpdateTime(time);

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using UI.Controls;
 using UI.Models;
 
@@ -24,6 +25,7 @@ namespace UI.ViewModels
         public Command OpenURL { get; set; }
         public Command CheckUpdate { get; set; }
         public Command DelDataCommand { get; set; }
+        public Command ExportDataCommand { get; set; }
 
         public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data)
         {
@@ -34,6 +36,7 @@ namespace UI.ViewModels
             OpenURL = new Command(new Action<object>(OnOpenURL));
             CheckUpdate = new Command(new Action<object>(OnCheckUpdate));
             DelDataCommand = new Command(new Action<object>(OnDelData));
+            ExportDataCommand = new Command(new Action<object>(OnExportData));
 
             Init();
         }
@@ -101,8 +104,10 @@ namespace UI.ViewModels
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             DelDataStartMonthDate = DateTime.Now;
-
             DelDataEndMonthDate = DateTime.Now;
+
+            ExportDataStartMonthDate = DateTime.Now;
+            ExportDataEndMonthDate = DateTime.Now;
         }
 
 
@@ -168,6 +173,25 @@ namespace UI.ViewModels
             data.ClearRange(DelDataStartMonthDate, DelDataEndMonthDate);
 
             mainVM.Toast("操作已完成", Controls.Window.ToastType.Success);
+        }
+
+        private void OnExportData(object obj)
+        {
+            try
+            {
+                FolderBrowserDialog dialog = new FolderBrowserDialog();
+                dialog.Description = "请选择导出位置";
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    data.ExportToExcel(dialog.SelectedPath, ExportDataStartMonthDate, ExportDataEndMonthDate);
+                    mainVM.Toast("导出数据完成", Controls.Window.ToastType.Success);
+                }
+            }
+            catch (Exception ec)
+            {
+                Logger.Error(ec.ToString());
+                mainVM.Toast("导出数据失败", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+            }
         }
     }
 }

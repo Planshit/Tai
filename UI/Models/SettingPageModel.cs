@@ -41,5 +41,11 @@ namespace UI.Models
 
         private DateTime DelDataEndMonthDate_;
         public DateTime DelDataEndMonthDate { get { return DelDataEndMonthDate_; } set { DelDataEndMonthDate_ = value; OnPropertyChanged(); } }
+
+        private DateTime ExportDataStartMonthDate_;
+        public DateTime ExportDataStartMonthDate { get { return ExportDataStartMonthDate_; } set { ExportDataStartMonthDate_ = value; OnPropertyChanged(); } }
+
+        private DateTime ExportDataEndMonthDate_;
+        public DateTime ExportDataEndMonthDate { get { return ExportDataEndMonthDate_; } set { ExportDataEndMonthDate_ = value; OnPropertyChanged(); } }
     }
 }

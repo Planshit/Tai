@@ -9,6 +9,10 @@ using System.Data.Entity;
 using System.Windows.Threading;
 using Core.Models.Data;
 using Core.Librarys;
+using Npoi.Mapper;
+using System.IO;
+using CsvHelper;
+using System.Globalization;
 
 namespace Core.Servicers.Instances
 {
@@ -567,6 +571,60 @@ namespace Core.Servicers.Instances
                 db.Database.ExecuteSqlCommand("delete from DailyLogModels  where Date>='" + start.Date.ToString("yyyy-MM-01 00:00:00") + "' and Date<= '" + end.Date.ToString("yyyy-MM-dd 23:59:59") + "'");
 
                 db.Database.ExecuteSqlCommand("delete from HoursLogModels  where DataTime>='" + start.Date.ToString("yyyy-MM-01 00:00:00") + "' and DataTime<= '" + end.Date.ToString("yyyy-MM-dd 23:59:59") + "'");
+            }
+        }
+
+        public void ExportToExcel(string dir, DateTime start, DateTime end)
+        {
+            start = new DateTime(start.Year, start.Month, 1, 0, 0, 0);
+            end = new DateTime(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month), 23, 59, 59);
+
+            using (var db = new TaiDbContext())
+            {
+                var day = db.DailyLog.Where(m => m.Date >= start.Date && m.Date <= end.Date)
+                    .Select(m => new
+                    {
+                        日期 = m.Date,
+                        应用 = m.AppModel != null ? m.AppModel.Name : "未知",
+                        描述 = m.AppModel != null ? m.AppModel.Description : "未知",
+                        时长 = m.Time,
+                        分类 = m.AppModel != null && m.AppModel.Category != null ? m.AppModel.Category.Name : "未知"
+                    })
+                    .ToList();
+
+                var hours = db.HoursLog.Where(m => m.DataTime >= start && m.DataTime <= end)
+                    .Select(m => new
+                    {
+                        时段 = m.DataTime,
+                        应用 = m.AppModel != null ? m.AppModel.Name : "未知",
+                        描述 = m.AppModel != null ? m.AppModel.Description : "未知",
+                        时长 = m.Time,
+                        分类 = m.AppModel != null && m.AppModel.Category != null ? m.AppModel.Category.Name : "未知"
+                    })
+                    .ToList();
+                var mapper = new Mapper();
+                mapper.Put(day, "每日");
+                mapper.Put(hours, "时段");
+
+                string name = $"Tai数据({start.ToString("yyyy年MM月")}-{end.ToString("yyyy年MM月")})";
+                if (start.Year == end.Year && start.Month == end.Month)
+                {
+                    name = $"Tai数据({start.ToString("yyyy年MM月")})";
+                }
+                mapper.Save(Path.Combine(dir, $"{name}.xlsx"));
+
+                //  导出csv
+                using (var writer = new StreamWriter(Path.Combine(dir, $"{name}-每日.csv"), false, System.Text.Encoding.UTF8))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(day);
+                }
+
+                using (var writer = new StreamWriter(Path.Combine(dir, $"{name}-时段.csv"), false, System.Text.Encoding.UTF8))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(hours);
+                }
             }
         }
     }
