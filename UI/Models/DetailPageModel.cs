@@ -155,5 +155,11 @@ namespace UI.Models
         public int NameIndexStart { get { return NameIndexStart_; } set { NameIndexStart_ = value; OnPropertyChanged(); } }
         private double DataMaximum_ = 0;
         public double DataMaximum { get { return DataMaximum_; } set { DataMaximum_ = value; OnPropertyChanged(); } }
+
+        private List<AppModel> LinkApps_;
+        /// <summary>
+        /// 关联的应用
+        /// </summary>
+        public List<AppModel> LinkApps { get { return LinkApps_; } set { LinkApps_ = value; OnPropertyChanged(); } }
     }
 }

@@ -171,12 +171,13 @@ namespace UI.Servicers
             if (link != null)
             {
                 link.ProcessList.Add(app.Name);
+                appConfig.Save();
+
                 main.Toast("关联成功", Controls.Window.ToastType.Success);
             }
             else
             {
                 main.Toast("关联配置不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
-
             }
         }
         private void SetAppCategory(int appId, CategoryModel category)
