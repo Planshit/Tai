@@ -178,11 +178,7 @@ namespace Core.Librarys.SQLite
 
                 }
 
-                if (!isNew)
-                {
-                    HandleVersion1002Migrate();
-                }
-
+              
                 //  处理表字段删除
                 foreach (var dbModel in modelInfosDb)
                 {
@@ -251,72 +247,6 @@ namespace Core.Librarys.SQLite
         }
 
 
-        /// <summary>
-        /// 数据迁移，1.0.0.2升级1.0.0.3时需要转移表数据
-        /// </summary>
-        private void HandleVersion1002Migrate()
-        {
-            AppState.ActionText = "导入数据中，请勿退出...";
-            //if (ExecuteNonQuery("select count(*) from sqlite_master where type='table' and name='AppModels'") != 0)
-            //{
-            //    return;
-            //}
-            ExecuteNonQuery($"insert into AppModels(ID,Name,Description,File,TotalTime) select null,ProcessName as Name,ProcessDescription as Description,File,sum(Time) as TotalTime from DailyLogModels where 1=1 GROUP BY Name");
-
-            using (var con = new SQLiteConnection(connstr))
-            {
-                con.Open();
-                using (var cmd = new SQLiteCommand(con))
-                {
-                    cmd.CommandText = $"select ID,Name,Description from AppModels GROUP BY Name";
-
-                    List<string> sqlList = new List<string>();
-
-                    using (var rd = cmd.ExecuteReader())
-                    {
-                        while (rd.Read())
-                        {
-                            var ID = rd[0];
-                            var Name = rd[1].ToString();
-                            var Description = rd[2].ToString();
-                            var icon = Iconer.Get(Name, Description);
-
-                            Name = SQLiteEscape(Name);
-
-                            sqlList.Add($"update DailyLogModels set AppModelID={ID} where ProcessName='{Name}'");
-                            sqlList.Add($"update HoursLogModels set AppModelID={ID} where ProcessName='{Name}'");
-                            sqlList.Add($"update AppModels set IconFile='{icon}' where ID={ID}");
-                        }
-                    }
-
-                    int take = 50;
-                    bool isRuning = true;
-                    int index = 0;
-                    double count = sqlList.Count;
-                    while (isRuning)
-                    {
-                        var sqlArr = sqlList.Skip(index).Take(take).ToArray();
-                        cmd.CommandText = string.Join("; ", sqlArr);
-                        cmd.ExecuteNonQuery();
-
-                        index += take;
-
-                        if (sqlArr.Length == 0)
-                        {
-                            isRuning = false;
-                        }
-                        double num = sqlList.Skip(index).Count();
-
-                        //  更新进度
-                        AppState.ProcessValue = (int)((count - num) / count * 100);
-                        Debug.WriteLine("加载：" + AppState.ProcessValue);
-                    }
-                    Debug.WriteLine("结束！");
-
-                }
-            }
-
-        }
 
         private string SQLiteEscape(string str)
         {
