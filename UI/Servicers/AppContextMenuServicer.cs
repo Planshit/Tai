@@ -23,6 +23,7 @@ namespace UI.Servicers
 
         private ContextMenu menu;
         private MenuItem setCategory;
+        private MenuItem setLink;
         MenuItem block = new MenuItem();
 
 
@@ -51,14 +52,19 @@ namespace UI.Servicers
             setCategory = new MenuItem();
             setCategory.Header = "设置分类";
 
+            setLink = new MenuItem();
+            setLink.Header = "添加关联";
+
             block.Header = "忽略此应用";
             block.Click += Block_Click;
 
             menu.Items.Add(run);
             menu.Items.Add(new Separator());
             menu.Items.Add(setCategory);
-            menu.Items.Add(openDir);
+            menu.Items.Add(setLink);
             menu.Items.Add(new Separator());
+
+            menu.Items.Add(openDir);
             menu.Items.Add(block);
 
             menu.ContextMenuOpening += SetCategory_ContextMenuOpening;
@@ -100,6 +106,9 @@ namespace UI.Servicers
             }
 
             UpdateCategory();
+
+            setLink.IsEnabled = config.Links.Count > 0;
+            UpdateLinks();
         }
 
         private void UpdateCategory()
@@ -125,6 +134,51 @@ namespace UI.Servicers
 
         }
 
+        private void UpdateLinks()
+        {
+            setLink.Items.Clear();
+
+            var data = menu.Tag as ChartsDataModel;
+            var log = data.Data as DailyLogModel;
+            var app = log.AppModel;
+            var config = appConfig.GetConfig();
+
+            var links = config.Links;
+            foreach (var link in links)
+            {
+                var categoryMenu = new MenuItem();
+                categoryMenu.Header = link.Name;
+                categoryMenu.Click += (s, e) =>
+                {
+                    SetLink(app, link.Name);
+                };
+                setLink.Items.Add(categoryMenu);
+            }
+
+        }
+        private void SetLink(AppModel app, string linkName)
+        {
+
+            var config = appConfig.GetConfig();
+            var links = config.Links;
+            var link = links.Where(m => m.ProcessList.Contains(app.Name)).FirstOrDefault();
+            if (link != null)
+            {
+                link.ProcessList.Remove(app.Name);
+            }
+
+            link = links.Where(m => m.Name == linkName).FirstOrDefault();
+            if (link != null)
+            {
+                link.ProcessList.Add(app.Name);
+                main.Toast("关联成功", Controls.Window.ToastType.Success);
+            }
+            else
+            {
+                main.Toast("关联配置不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+
+            }
+        }
         private void SetAppCategory(int appId, CategoryModel category)
         {
             var app = appData.GetApp(appId);
