@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
 
@@ -80,5 +81,8 @@ namespace UI.Models
 
         private double DataMaximum_ = 0;
         public double DataMaximum { get { return DataMaximum_; } set { DataMaximum_ = value; OnPropertyChanged(); } }
+       
+        private ContextMenu AppContextMenu_;
+        public ContextMenu AppContextMenu { get { return AppContextMenu_; } set { AppContextMenu_ = value; OnPropertyChanged(); } }
     }
 }

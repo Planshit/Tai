@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using UI.Controls.Charts.Model;
 
 namespace UI.Models
@@ -34,7 +35,7 @@ namespace UI.Models
             }
         }
 
-      
+
         private List<ChartsDataModel> WeekData_;
         /// <summary>
         /// week data
@@ -47,5 +48,8 @@ namespace UI.Models
 
         private bool IsLoading_;
         public bool IsLoading { get { return IsLoading_; } set { IsLoading_ = value; OnPropertyChanged(); } }
+
+        private ContextMenu AppContextMenu_;
+        public ContextMenu AppContextMenu { get { return AppContextMenu_; } set { AppContextMenu_ = value; OnPropertyChanged(); } }
     }
 }

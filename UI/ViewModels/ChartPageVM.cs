@@ -10,6 +10,7 @@ using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
 using UI.Models;
+using UI.Servicers;
 using UI.Views;
 
 namespace UI.ViewModels
@@ -19,13 +20,16 @@ namespace UI.ViewModels
         private readonly ICategorys categorys;
         private readonly IData data;
         private readonly MainViewModel mainVM;
+        private readonly IAppContextMenuServicer appContextMenuServicer;
+
         public Command ToDetailCommand { get; set; }
 
-        public ChartPageVM(IData data, ICategorys categorys, MainViewModel mainVM)
+        public ChartPageVM(IData data, ICategorys categorys, MainViewModel mainVM, IAppContextMenuServicer appContextMenuServicer)
         {
             this.data = data;
             this.categorys = categorys;
             this.mainVM = mainVM;
+            this.appContextMenuServicer = appContextMenuServicer;
 
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
@@ -60,6 +64,8 @@ namespace UI.ViewModels
             LoadDayData();
 
             PropertyChanged += ChartPageVM_PropertyChanged;
+
+            AppContextMenu = appContextMenuServicer.GetContextMenu();
         }
         public override void Dispose()
         {

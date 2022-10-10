@@ -180,6 +180,7 @@
     <Compile Include="Models\CategoryPageModel.cs" />
     <Compile Include="Models\Category\CategoryModel.cs" />
     <Compile Include="Models\ChartPageModel.cs" />
+    <Compile Include="Models\ContextMenuItemModel.cs" />
     <Compile Include="Models\DataPageModel.cs" />
     <Compile Include="Models\DetailPageModel.cs" />
     <Compile Include="Models\IndexPageModel.cs" />
@@ -187,6 +188,8 @@
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\SettingPageModel.cs" />
     <Compile Include="Models\UINotifyPropertyChanged.cs" />
+    <Compile Include="Servicers\AppContextMenuServicer.cs" />
+    <Compile Include="Servicers\IAppContextMenuServicer.cs" />
     <Compile Include="ViewModels\CategoryAppListPageVM.cs" />
     <Compile Include="ViewModels\CategoryPageVM.cs" />
     <Compile Include="ViewModels\ChartPageVM.cs" />

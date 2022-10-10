@@ -219,6 +219,8 @@
                            Fill="#2B20D9"
                            Width="5"
                            Height="5"
+                               RadiusX="5"
+                               RadiusY="5"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Center"
                            Visibility="Hidden"
@@ -357,7 +359,7 @@
                                 <ScrollViewer CanContentScroll="True"
                        >
                                     <StackPanel IsItemsHost="True"
-                        KeyboardNavigation.DirectionalNavigation="Cycle" />
+                        KeyboardNavigation.DirectionalNavigation="Cycle" Margin="5"/>
                                 </ScrollViewer>
                             </Border>
                         </Grid>

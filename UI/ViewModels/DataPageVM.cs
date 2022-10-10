@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.Models;
+using UI.Servicers;
 using UI.Views;
 
 namespace UI.ViewModels
@@ -22,10 +23,13 @@ namespace UI.ViewModels
         public Command ToDetailCommand { get; set; }
         private readonly IData data;
         private readonly MainViewModel main;
-        public DataPageVM(IData data, MainViewModel main)
+        private readonly IAppContextMenuServicer appContextMenuServicer;
+
+        public DataPageVM(IData data, MainViewModel main, IAppContextMenuServicer appContextMenuServicer)
         {
             this.data = data;
             this.main = main;
+            this.appContextMenuServicer = appContextMenuServicer;
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
 
@@ -45,10 +49,12 @@ namespace UI.ViewModels
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "按天查看","按月查看","按年查看"
+                "按天","按月","按年"
             };
 
             TabbarSelectedIndex = 0;
+
+            AppContextMenu = appContextMenuServicer.GetContextMenu();
         }
 
         private void OnTodetailCommand(object obj)

@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.Models;
+using UI.Servicers;
 using UI.Views;
 
 namespace UI.ViewModels
@@ -24,13 +25,15 @@ namespace UI.ViewModels
         private readonly IData data;
         private readonly MainViewModel main;
         private readonly IMain mainServicer;
+        private readonly IAppContextMenuServicer appContextMenuServicer;
 
         public IndexPageVM(
-            IData data, MainViewModel main, IMain mainServicer)
+            IData data, MainViewModel main, IMain mainServicer, IAppContextMenuServicer appContextMenuServicer)
         {
             this.data = data;
             this.main = main;
             this.mainServicer = mainServicer;
+            this.appContextMenuServicer = appContextMenuServicer;
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
 
@@ -56,6 +59,9 @@ namespace UI.ViewModels
             PropertyChanged += IndexPageVM_PropertyChanged;
 
             LoadThisWeekData();
+
+            appContextMenuServicer.Init();
+            AppContextMenu = appContextMenuServicer.GetContextMenu();
         }
 
         private void OnTodetailCommand(object obj)

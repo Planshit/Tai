@@ -45,7 +45,7 @@
         </Border>
         <TextBlock Text="最为频繁的应用" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
         <Border Margin="0,10,0,0" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
-            <charts:Charts Height="300" Data="{Binding TopData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}"/>
+            <charts:Charts Height="300" ItemMenu="{Binding AppContextMenu}" Data="{Binding TopData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}"/>
         </Border>
     </StackPanel>
 </Page>

@@ -17,6 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Resources;
 using UI.Controls.Window;
+using UI.Servicers;
 using UI.ViewModels;
 using UI.Views;
 
@@ -189,6 +190,8 @@ namespace UI
             services.AddSingleton<IDateTimeObserver, DateTimeObserver>();
             services.AddSingleton<IAppData, AppData>();
             services.AddSingleton<ICategorys, Categorys>();
+
+            services.AddSingleton<IAppContextMenuServicer, AppContextMenuServicer>();
 
             //  主窗口
             services.AddSingleton<MainViewModel>();

@@ -372,6 +372,18 @@ namespace UI.Controls.Charts
             }
 
         }
+
+        #region 右键菜单
+        public ContextMenu ItemMenu
+        {
+            get { return (ContextMenu)GetValue(ItemMenuProperty); }
+            set { SetValue(ItemMenuProperty, value); }
+        }
+        public static readonly DependencyProperty ItemMenuProperty =
+            DependencyProperty.Register("ItemMenu",
+                typeof(ContextMenu),
+                typeof(Charts));
+        #endregion
         /// <summary>
         /// 点击项目时发生
         /// </summary>
@@ -1002,6 +1014,14 @@ namespace UI.Controls.Charts
             {
                 OnItemClick?.Invoke(data, null);
                 ClickCommand?.Execute(data);
+            };
+            el.MouseRightButtonUp += (s, e) =>
+            {
+                if (ItemMenu != null)
+                {
+                    ItemMenu.IsOpen = true;
+                    ItemMenu.Tag = data;
+                }
             };
         }
     }
