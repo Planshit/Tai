@@ -152,7 +152,7 @@
                                         <RowDefinition Height="*"/>
 
                                     </Grid.RowDefinitions>
-                                    <Rectangle HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"  RadiusX="20" RadiusY="20" Width="20" Height="20" Fill="{Binding Data.Color,Converter={StaticResource HextoColorConverter}}"/>
+                                    <Rectangle HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"  RadiusX="20" RadiusY="20" Width="15" Height="15" Fill="{Binding Data.Color,Converter={StaticResource HextoColorConverter}}"/>
                                     <Grid Grid.Row="1">
                                        
                                         <base:Img Radius="8" Width="40" Height="40" URL="{Binding Data.IconFile}"/>

@@ -107,6 +107,11 @@ namespace UI.ViewModels
                 mainVM.Toast("请选择一个分类图标", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
                 return;
             }
+            if (string.IsNullOrEmpty(EditColor))
+            {
+                mainVM.Toast("请设置一个分类颜色", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                return;
+            }
             if (EditIconFile.IndexOf("pack://") == -1 && new FileInfo(EditIconFile).Length > 1000000)
             {
                 mainVM.Toast("图标文件不能超过1MB", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
@@ -123,7 +128,11 @@ namespace UI.ViewModels
                     mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
                     return;
                 }
-
+                if (Data.Where(m => m.Data.Color == EditColor).Any())
+                {
+                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                    return;
+                }
                 mainVM.Toast("创建完成", Controls.Window.ToastType.Success);
 
                 EditVisibility = System.Windows.Visibility.Collapsed;
@@ -163,7 +172,12 @@ namespace UI.ViewModels
                     mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
                     return;
                 }
-                if (EditName == SelectedItem.Data.Name && EditIconFile == SelectedItem.Data.IconFile && EditColor==SelectedItem.Data.Color)
+                if (Data.Where(m => m.Data.Color == EditColor && m.Data.ID != SelectedItem.Data.ID).Any())
+                {
+                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                    return;
+                }
+                if (EditName == SelectedItem.Data.Name && EditIconFile == SelectedItem.Data.IconFile && EditColor == SelectedItem.Data.Color)
                 {
                     mainVM.Toast("没有修改");
                     EditVisibility = System.Windows.Visibility.Collapsed;
@@ -221,7 +235,8 @@ namespace UI.ViewModels
             else
             {
                 EditName = "";
-                EditIconFile = "";
+                EditIconFile = "pack://application:,,,/Tai;component/Resources/Emoji/(1).png";
+                EditColor = "#00FFAB";
             }
         }
 

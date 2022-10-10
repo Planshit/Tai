@@ -39,9 +39,9 @@ namespace UI.Controls.Base
         private static void OnURLPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as IconSelect;
-            if(string.IsNullOrEmpty(control.URL))
+            if (string.IsNullOrEmpty(control.URL))
             {
-                control.URL = control.Icons[0];
+                control.Reset();
             }
         }
 
@@ -142,6 +142,11 @@ namespace UI.Controls.Base
                 list.Add($"pack://application:,,,/Tai;component/Resources/Emoji/({i}).png");
             }
             Icons = list;
+        }
+
+        private void Reset()
+        {
+            URL = Icons[0];
         }
         private void OnShowSelect(object obj)
         {

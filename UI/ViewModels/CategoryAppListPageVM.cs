@@ -192,7 +192,10 @@ namespace UI.ViewModels
                     app.Value.Name = String.IsNullOrEmpty(item.Description) ? item.Name : item.Description;
                     app.Value.Img = item.IconFile;
 
-                    appList.Add(app);
+                    if (app.IsChoosed || item.CategoryID == 0)
+                    {
+                        appList.Add(app);
+                    }
                 }
                 appList = appList.OrderBy(m => m.App.Description).ToList();
 
