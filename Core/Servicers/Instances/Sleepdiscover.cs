@@ -77,6 +77,7 @@ namespace Core.Servicers.Instances
                 }
                 else
                 {
+                    playSoundStartTime = DateTime.MinValue;
                     pressKeyboardLastTime = DateTime.Now;
                 }
             }
@@ -99,6 +100,7 @@ namespace Core.Servicers.Instances
                     //电脑恢复
                     if (status == SleepStatus.Sleep)
                     {
+                        playSoundStartTime = DateTime.MinValue;
                         status = SleepStatus.Wake;
                         SleepStatusChanged?.Invoke(status);
                     }
@@ -119,6 +121,7 @@ namespace Core.Servicers.Instances
                     return;
                 }
 
+                playSoundStartTime = DateTime.MinValue;
                 status = SleepStatus.Wake;
                 SleepStatusChanged?.Invoke(status);
             }
@@ -183,7 +186,7 @@ namespace Core.Servicers.Instances
 
                         if (playSoundStartTime == DateTime.MinValue)
                         {
-                            playSoundStartTime = DateTime.Now;
+                            playSoundStartTime = DateTime.Now;//没有正确更新时间导致没超过2个小时就进入睡眠状态了
                         }
                         else
                         {
@@ -196,7 +199,7 @@ namespace Core.Servicers.Instances
                                 status = SleepStatus.Sleep;
 
                                 playSoundStartTime = DateTime.MinValue;
-
+                                Logger.Info("[sleep] [1] time:" + timeSpan.TotalHours + ",start:" + playSoundStartTime);
                                 SleepStatusChanged?.Invoke(status);
                             }
                         }
@@ -207,9 +210,15 @@ namespace Core.Servicers.Instances
                         {
                             //  没有播放声音且键盘休眠超时
                             status = SleepStatus.Sleep;
+                            Logger.Info("[sleep] [2]");
+
                             SleepStatusChanged?.Invoke(status);
                         }
                     }
+                }
+                else
+                {
+                    playSoundStartTime = DateTime.MinValue;
                 }
             }
             else
@@ -223,8 +232,6 @@ namespace Core.Servicers.Instances
                 }
             }
 
-            Logger.Info("【当前坐标】status：" + status + "，lastPoint：" + lastPoint.ToString() + "，now point：" + point.ToString());
-            
             lastPoint = point;
         }
 

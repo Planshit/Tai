@@ -105,10 +105,7 @@ namespace Core.Servicers.Instances
         {
             Logger.Info("[time changed] status:" + sleepStatus + ",process:" + activeProcess + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
 
-            if (sleepStatus == SleepStatus.Wake)
-            {
-                UpdateTime(time);
-            }
+            UpdateTime(time);
         }
 
         private void AppConfig_ConfigChanged(ConfigModel oldConfig, ConfigModel newConfig)
@@ -165,8 +162,6 @@ namespace Core.Servicers.Instances
         public void Exit()
         {
             observer?.Stop();
-
-            //appData.SaveAppChanges();
         }
 
 
@@ -201,11 +196,6 @@ namespace Core.Servicers.Instances
                 UpdateTime();
 
                 activeProcess = null;
-                //activeSeconds = 0;
-                //activeTimer.Stop();
-
-                //  更新app数据
-                //appData.SaveAppChanges();
             }
             else if (sleepStatus == SleepStatus.Wake)
             {
@@ -362,7 +352,7 @@ namespace Core.Servicers.Instances
                     HandleLinks(activeProcess, seconds, time);
                 }
 
-                Logger.Info("status:" + sleepStatus + ",process:" + activeProcess + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString());
+                Logger.Info("status:" + sleepStatus + ",process:" + activeProcess + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
 
                 activeStartTime = DateTime.Now;
 
