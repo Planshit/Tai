@@ -22,6 +22,5 @@ namespace Core.Servicers.Interfaces
         CategoryModel Create(CategoryModel category);
         void Update(CategoryModel category);
         void Delete(CategoryModel category);
-        void SaveChanged();
     }
 }

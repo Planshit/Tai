@@ -76,7 +76,6 @@ namespace UI.ViewModels
                     app.Category = null;
                     appData.UpdateApp(app);
                 }
-                categorys.SaveChanged();
 
                 //  从界面移除
 
@@ -193,7 +192,6 @@ namespace UI.ViewModels
                     category.Color = EditColor;
 
                     categorys.Update(category);
-                    categorys.SaveChanged();
                 }
 
                 var item = Data.Where(m => m.Data.ID == SelectedItem.Data.ID).FirstOrDefault();

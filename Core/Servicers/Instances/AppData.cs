@@ -16,25 +16,7 @@ namespace Core.Servicers.Instances
 
         private List<AppModel> _apps;
 
-        /// <summary>
-        /// 有数据更新的app
-        /// </summary>
-        private List<AppModel> _updateTempApps;
-        public AppData()
-        {
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Interval = new TimeSpan(0, 30, 0);
-            dispatcherTimer.Tick += DispatcherTimer_Tick;
-            dispatcherTimer.Start();
 
-            _apps = new List<AppModel>();
-        }
-
-
-        private void DispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            SaveAppChanges();
-        }
         public List<AppModel> GetAllApps()
         {
             return _apps;
@@ -65,8 +47,6 @@ namespace Core.Servicers.Instances
                     })
                     .ToList();
             }
-
-            _updateTempApps = new List<AppModel>();
         }
 
         /// <summary>
@@ -75,11 +55,11 @@ namespace Core.Servicers.Instances
         /// <param name="app"></param>
         public void UpdateApp(AppModel app)
         {
-            if (!_updateTempApps.Where(m => m.ID == app.ID).Any())
+            using (var db = new TaiDbContext())
             {
-                _updateTempApps.Add(app);
+                db.Entry(app).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
             }
-            SaveAppChanges();
         }
         public AppModel GetApp(string name)
         {
@@ -107,35 +87,6 @@ namespace Core.Servicers.Instances
             }
         }
 
-        private void SaveAppChanges()
-        {
-            Task.Run(() =>
-            {
-                if (_updateTempApps.Count > 0)
-                {
-                    using (var db = new TaiDbContext())
-                    {
-                        foreach (var item in _updateTempApps)
-                        {
-                            var app = db.App.Find(item.ID);
-                            if (app != null)
-                            {
-                                app.TotalTime = item.TotalTime;
-                                app.File = item.File;
-                                app.IconFile = item.IconFile;
-                                app.Name = item.Name;
-                                app.CategoryID = item.CategoryID;
-                                app.Description = item.Description;
-                                //app.Category = item.Category;
-                            }
-                        }
-                        db.SaveChanges();
-                    }
-                }
-            });
-
-
-        }
 
         public List<AppModel> GetAppsByCategoryID(int categoryID)
         {

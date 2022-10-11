@@ -14,24 +14,11 @@ namespace Core.Servicers.Instances
     public class Categorys : ICategorys
     {
         private List<CategoryModel> _categories;
-        private List<CategoryModel> _updateTempList;
-
         public Categorys()
         {
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Interval = new TimeSpan(0, 30, 0);
-            dispatcherTimer.Tick += DispatcherTimer_Tick;
-            dispatcherTimer.Start();
-
-
             this._categories = new List<CategoryModel>();
-            _updateTempList = new List<CategoryModel>();
-
         }
-        private void DispatcherTimer_Tick(object sender, EventArgs e)
-        {
-            SaveChanged();
-        }
+     
         public CategoryModel Create(CategoryModel category)
         {
             using (var db = new TaiDbContext())
@@ -79,35 +66,13 @@ namespace Core.Servicers.Instances
             }
         }
 
-        public void SaveChanged()
-        {
-            using (var db = new TaiDbContext())
-            {
-                foreach (var item in _updateTempList)
-                {
-                    var model = db.Categorys.Find(item.ID);
-                    if (model != null)
-                    {
-                        model.IconFile = item.IconFile;
-                        model.Name = item.Name;
-                        model.Color = item.Color;
-                    }
-                }
-                db.SaveChanges();
-
-                //_updateTempList.Clear();
-            }
-        }
 
         public void Update(CategoryModel category)
         {
-            if (!_updateTempList.Where(m => m.ID == category.ID).Any())
+            using (var db = new TaiDbContext())
             {
-                _updateTempList.Add(category);
-                Task.Run(() =>
-                {
-                    SaveChanged();
-                });
+                db.Entry(category).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
             }
         }
     }
