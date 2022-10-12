@@ -84,5 +84,14 @@ namespace UI.Models
        
         private ContextMenu AppContextMenu_;
         public ContextMenu AppContextMenu { get { return AppContextMenu_; } set { AppContextMenu_ = value; OnPropertyChanged(); } }
+
+        private string TotalHours_;
+        public string TotalHours { get { return TotalHours_; } set { TotalHours_ = value; OnPropertyChanged(); } }
+
+        private string TopHours_;
+        public string TopHours { get { return TopHours_; } set { TopHours_ = value; OnPropertyChanged(); } }
+        private string AppCount_;
+        public string AppCount { get { return AppCount_; } set { AppCount_ = value; OnPropertyChanged(); } }
+
     }
 }

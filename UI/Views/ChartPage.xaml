@@ -37,15 +37,122 @@
                 </base:View>
             </Grid>
         </Border>
-        <TextBlock Text="分类" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
+        <Grid  Width="680" HorizontalAlignment="Left" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Margin="0,5,0,0" Background="White" Padding="10" CornerRadius="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="#2b20d9" Width="40" Height="40" CornerRadius="6">
 
-        <Border Margin="0,15,0,0" Height="360" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
-            <charts:Charts DataMaximum="{Binding DataMaximum}" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}"/>
+                        <base:Icon IconType="SkypeCircleClock" Foreground="White"/>
+                    </Border>
+                    <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock >
+                            <Run Text="{Binding TotalHours}" FontSize="20"/>
+                            <Run Text="小时" FontSize="12" Foreground="#5c5c5c"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="总计" Foreground="#5c5c5c"/>
+
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" Margin="20,5,0,0" Background="White" Padding="10" CornerRadius="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="#ff305b" Width="40" Height="40" CornerRadius="6">
+
+                        <base:Icon IconType="FlameSolid" Foreground="White"/>
+                    </Border>
+                    <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock >
+                            <Run Text="{Binding TopHours}" FontSize="20"/>
+                            <Run Text="小时" FontSize="12" Foreground="#5c5c5c"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="最长使用" Foreground="#5c5c5c"/>
+
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border  Grid.Column="2" Margin="20,5,0,0" Background="White" Padding="10" CornerRadius="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="#cccccc" Width="40" Height="40" CornerRadius="6">
+
+                        <base:Icon IconType="MSNVideosSolid" Foreground="White"/>
+                    </Border>
+                    <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock >
+                            <Run Text="{Binding AppCount}" FontSize="20"/>
+                            <Run Text="个" FontSize="12" Foreground="#5c5c5c"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="应用量" Foreground="#5c5c5c"/>
+
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <TextBlock Text="时段" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
+
+        <Border Margin="0,5,0,0" Height="360" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
+            <charts:Charts IsShowTotal="False" DataMaximum="{Binding DataMaximum}" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}"/>
 
         </Border>
-        <TextBlock Text="最为频繁的应用" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
-        <Border Margin="0,10,0,0" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
-            <charts:Charts Height="300" ItemMenu="{Binding AppContextMenu}" Data="{Binding TopData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}"/>
-        </Border>
+
+        <Grid Width="680" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="分类" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
+                <Border Margin="0,5,0,0" Grid.Row="1"  Background="White" Padding="20" CornerRadius="10">
+                    <charts:Charts Margin="10,20,10,10" Height="230" Width="230" ChartsType="Radar" Data="{Binding Data}"/>
+
+                </Border>
+            </Grid>
+            <Grid Grid.Column="1"  Margin="20,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="最为频繁" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
+                <Border Grid.Row="1" Margin="0,5,0,0"  Background="White" Padding="20" CornerRadius="10">
+                    <charts:Charts  ItemMenu="{Binding AppContextMenu}" Data="{Binding TopData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}" IsCanScroll="False"/>
+                </Border>
+            </Grid>
+        </Grid>
+
+
+
     </StackPanel>
 </Page>

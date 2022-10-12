@@ -97,5 +97,13 @@ namespace Core.Servicers.Interfaces
         /// 导出数据到EXCEL
         /// </summary>
         void ExportToExcel(string dir, DateTime start, DateTime end);
+        /// <summary>
+        /// 获取指定日期范围使用应用量
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        int GetDateRangeAppCount(DateTime start, DateTime end);
+
     }
 }

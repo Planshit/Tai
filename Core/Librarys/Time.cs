@@ -8,6 +8,19 @@ namespace Core.Librarys
 {
     public class Time
     {
+        public static string ToHoursString(double seconds)
+        {
+            double hours = seconds / 60 / 60;
+
+            if (hours > 0.1)
+            {
+                return hours.ToString("f2");
+            }
+            else
+            {
+                return "0";
+            }
+        }
         public static string ToString(int seconds)
         {
             if (seconds < 60)

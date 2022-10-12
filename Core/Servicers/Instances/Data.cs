@@ -19,102 +19,99 @@ namespace Core.Servicers.Instances
     public class Data : IData
     {
         private readonly IAppData appData;
-        private readonly object setLock = new object();
         public Data(IAppData appData)
         {
             this.appData = appData;
         }
         public void Set(string processName, int seconds, DateTime? time_ = null)
         {
-            lock (setLock)
+
+            DateTime time = !time_.HasValue ? DateTime.Now : time_.Value;
+            var today = time.Date;
+
+            //  当前时段
+            var nowtime = new DateTime(today.Year, today.Month, today.Day, time.Hour, 0, 0);
+
+            if (string.IsNullOrEmpty(processName) || seconds <= 0)
             {
-                DateTime time = !time_.HasValue ? DateTime.Now : time_.Value;
-                var today = time.Date;
+                return;
+            }
 
-                //  当前时段
-                var nowtime = new DateTime(today.Year, today.Month, today.Day, time.Hour, 0, 0);
+            AppModel app = appData.GetApp(processName);
 
-                if (string.IsNullOrEmpty(processName) || seconds <= 0)
+            if (app == null)
+            {
+                return;
+            }
+
+
+
+            using (var db = new TaiDbContext())
+            {
+                var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
+                if (res == null)
                 {
-                    return;
-                }
-
-                AppModel app = appData.GetApp(processName);
-
-                if (app == null)
-                {
-                    return;
-                }
-
-
-
-                using (var db = new TaiDbContext())
-                {
-                    var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
-                    if (res == null)
+                    //数据库中没有时则创建
+                    db.DailyLog.Add(new Models.DailyLogModel()
                     {
-                        //数据库中没有时则创建
-                        db.DailyLog.Add(new Models.DailyLogModel()
-                        {
-                            Date = today,
-                            AppModelID = app.ID,
-                            Time = seconds,
-                        });
+                        Date = today,
+                        AppModelID = app.ID,
+                        Time = seconds,
+                    });
+                }
+                else
+                {
+                    res.Time += seconds;
+                }
+
+                //  分时段记录数据
+
+                var hourslog = db.HoursLog.SingleOrDefault(
+                    m =>
+                    m.DataTime == nowtime
+                    && m.AppModelID == app.ID
+                    );
+                if (hourslog == null)
+                {
+                    //  没有时创建
+
+                    if (seconds > 3600)
+                    {
+                        int overflowSeconds = seconds - 3600;
+                        Set(processName, overflowSeconds, nowtime.AddHours(1));
+
+                        seconds = 3600;
+                    }
+
+                    db.HoursLog.Add(new Models.HoursLogModel()
+                    {
+                        DataTime = nowtime,
+                        AppModelID = app.ID,
+                        Time = seconds
+                    });
+                }
+                else
+                {
+                    if (hourslog.Time + seconds > 3600)
+                    {
+                        hourslog.Time = 3600;
+
+                        int overflowSeconds = hourslog.Time + seconds - 3600;
+
+                        Set(processName, overflowSeconds, nowtime.AddHours(1));
                     }
                     else
                     {
-                        res.Time += seconds;
+                        hourslog.Time += seconds;
                     }
-
-                    //  分时段记录数据
-
-                    var hourslog = db.HoursLog.SingleOrDefault(
-                        m =>
-                        m.DataTime == nowtime
-                        && m.AppModelID == app.ID
-                        );
-                    if (hourslog == null)
-                    {
-                        //  没有时创建
-
-                        if (seconds > 3600)
-                        {
-                            int overflowSeconds = seconds - 3600;
-                            Set(processName, overflowSeconds, nowtime.AddHours(1));
-
-                            seconds = 3600;
-                        }
-
-                        db.HoursLog.Add(new Models.HoursLogModel()
-                        {
-                            DataTime = nowtime,
-                            AppModelID = app.ID,
-                            Time = seconds
-                        });
-                    }
-                    else
-                    {
-                        if (hourslog.Time + seconds > 3600)
-                        {
-                            hourslog.Time = 3600;
-
-                            int overflowSeconds = hourslog.Time + seconds - 3600;
-
-                            Set(processName, overflowSeconds, nowtime.AddHours(1));
-                        }
-                        else
-                        {
-                            hourslog.Time += seconds;
-                        }
-                    }
-
-                    //  统计使用时长
-                    app.TotalTime += seconds;
-
-                    appData.UpdateApp(app);
-
-                    db.SaveChanges();
                 }
+
+                //  统计使用时长
+                app.TotalTime += seconds;
+
+                appData.UpdateApp(app);
+
+                db.SaveChanges();
             }
         }
 
@@ -625,6 +622,21 @@ namespace Core.Servicers.Instances
                 {
                     csv.WriteRecords(hours);
                 }
+            }
+        }
+
+        public int GetDateRangeAppCount(DateTime start, DateTime end)
+        {
+            IEnumerable<AppModel> apps = appData.GetAllApps();
+
+            using (var db = new TaiDbContext())
+            {
+                var res = db.DailyLog
+                .Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
+                .GroupBy(m => m.AppModelID)
+                .Count();
+
+                return res;
             }
         }
     }
