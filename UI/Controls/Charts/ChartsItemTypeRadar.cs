@@ -18,7 +18,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UI.Controls.Charts.Model;
-using UI.Librays;
 
 namespace UI.Controls.Charts
 {
