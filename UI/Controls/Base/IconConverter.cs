@@ -123,6 +123,10 @@ namespace UI.Controls.Base
             {IconTypes.CriticalErrorSolid,"\xF5C9"},
             {IconTypes.TagGroup,"\xE3F6"},
             {IconTypes.ClipboardListMirrored,"\xF0E4"},
+            {IconTypes.MSNVideosSolid,"\xF2DA"},
+            {IconTypes.SkypeCircleClock,"\xEF7E"},
+            {IconTypes.FlameSolid,"\xF1F3"},
+            {IconTypes.PieSingleSolid,"\xF530"},
 
 
         };

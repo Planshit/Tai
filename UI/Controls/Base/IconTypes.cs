@@ -146,6 +146,10 @@ namespace UI.Controls.Base
         FileImage,
         CriticalErrorSolid,
         TagGroup,
-        ClipboardListMirrored
+        ClipboardListMirrored,
+        MSNVideosSolid,
+        SkypeCircleClock,
+        FlameSolid,
+        PieSingleSolid
     }
 }
