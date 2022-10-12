@@ -49,7 +49,7 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Background="#2b20d9" Width="40" Height="40" CornerRadius="6">
+                    <Border Background="#6c47ff" Width="40" Height="40" CornerRadius="6">
 
                         <base:Icon IconType="SkypeCircleClock" Foreground="White"/>
                     </Border>
@@ -73,31 +73,7 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Background="#ff305b" Width="40" Height="40" CornerRadius="6">
-
-                        <base:Icon IconType="FlameSolid" Foreground="White"/>
-                    </Border>
-                    <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock >
-                            <Run Text="{Binding TopHours}" FontSize="20"/>
-                            <Run Text="小时" FontSize="12" Foreground="#5c5c5c"/>
-                        </TextBlock>
-                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="最长使用" Foreground="#5c5c5c"/>
-
-                    </Grid>
-                </Grid>
-            </Border>
-            <Border  Grid.Column="2" Margin="20,5,0,0" Background="White" Padding="10" CornerRadius="10">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Background="#cccccc" Width="40" Height="40" CornerRadius="6">
+                    <Border Background="#00ffab" Width="40" Height="40" CornerRadius="6">
 
                         <base:Icon IconType="MSNVideosSolid" Foreground="White"/>
                     </Border>
@@ -112,11 +88,36 @@
                         </TextBlock>
                         <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="应用量" Foreground="#5c5c5c"/>
 
+
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border  Grid.Column="2" Margin="20,5,0,0" Background="White" Padding="10" CornerRadius="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="#ff305b" Width="40" Height="40" CornerRadius="6">
+
+                        <base:Icon IconType="FlameSolid" Foreground="White"/>
+                    </Border>
+                    <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock >
+                            <Run Text="{Binding TopHours}" FontSize="20"/>
+                            <Run Text="小时" FontSize="12" Foreground="#5c5c5c"/>
+                        </TextBlock>
+                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="最长使用" Foreground="#5c5c5c"/>
                     </Grid>
                 </Grid>
             </Border>
         </Grid>
-        
+
         <TextBlock Text="时段" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
 
         <Border Margin="0,5,0,0" Height="360" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">

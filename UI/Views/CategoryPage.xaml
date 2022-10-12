@@ -11,7 +11,7 @@
 
 
     <Grid>
-
+        
         <!--编辑-->
         <Grid Visibility="{Binding EditVisibility}" Panel.ZIndex="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Border Background="Black" Opacity=".7"/>
@@ -58,10 +58,16 @@
 
 
         <!--主内容-->
-        <StackPanel Margin="20">
+        <StackPanel Margin="20" Background="Transparent">
+            <StackPanel.ContextMenu>
+                <ContextMenu>
+
+                    <MenuItem Header="新建分类" Command="{Binding EditCommand}" />
+                </ContextMenu>
+            </StackPanel.ContextMenu>
             <TextBlock Text="分类" FontSize="18" Margin="0,0,0,20"/>
-            <TextBlock Text="管理所有应用分类"/>
-            <Button:Button Content="创建分类" HorizontalAlignment="Right" Width="150" Command="{Binding EditCommand}"/>
+            <!--<TextBlock Text="管理所有应用分类"/>-->
+            <Button:Button Content="新建分类" HorizontalAlignment="Right" Margin="0,0,20,0" Width="150" Command="{Binding EditCommand}"/>
 
             <base:View Condition="empty" Value="{Binding Data}">
                 <base:EmptyData/>
