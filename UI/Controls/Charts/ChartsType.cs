@@ -27,5 +27,9 @@ namespace UI.Controls.Charts
         /// 柱形图
         /// </summary>
         Column = 4,
+        /// <summary>
+        /// 雷达图
+        /// </summary>
+        Radar = 5,
     }
 }

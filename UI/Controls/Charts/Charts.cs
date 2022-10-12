@@ -294,7 +294,23 @@ namespace UI.Controls.Charts
 
 
         #endregion
+        #region 是否显示总计值（仅柱状图有效，默认显示）
+        /// <summary>
+        /// 是否显示总计值（仅柱状图有效，默认显示）
+        /// </summary>
+        public bool IsShowTotal
+        {
+            get { return (bool)GetValue(IsShowTotalProperty); }
+            set { SetValue(IsShowTotalProperty, value); }
+        }
+        public static readonly DependencyProperty IsShowTotalProperty =
+            DependencyProperty.Register("IsShowTotal",
+                typeof(bool),
+                typeof(Charts),
+                new PropertyMetadata(true));
 
+
+        #endregion
         public bool IsShowValuesPopup
         {
             get { return (bool)GetValue(IsShowValuesPopupProperty); }
@@ -398,6 +414,7 @@ namespace UI.Controls.Charts
         private Grid MonthContainer;
         private ScrollViewer ScrollViewer;
         private Grid ColumnContainer;
+        private Border RadarContainer;
         /// <summary>
         /// 是否在渲染中
         /// </summary>
@@ -448,6 +465,7 @@ namespace UI.Controls.Charts
             ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
             NoScrollContainer = GetTemplateChild("NoScrollContainer") as StackPanel;
             ColumnContainer = GetTemplateChild("ColumnContainer") as Grid;
+            RadarContainer = GetTemplateChild("Radar") as Border;
 
             if (IsLoading)
             {
@@ -540,12 +558,15 @@ namespace UI.Controls.Charts
             MonthContainer.Children.Clear();
             NoScrollContainer.Children.Clear();
             ColumnContainer.Children.Clear();
+            RadarContainer.Child = null;
 
             if (Data == null || Data.Count() <= 0)
             {
                 Container.Children.Add(new EmptyData());
                 NoScrollContainer.Children.Add(new EmptyData());
                 CardContainer.Children.Add(new EmptyData());
+                RadarContainer.Child = new EmptyData();
+
                 IsEmpty = true;
                 return;
             }
@@ -568,6 +589,9 @@ namespace UI.Controls.Charts
                     break;
                 case ChartsType.Column:
                     RenderColumnStyle();
+                    break;
+                case ChartsType.Radar:
+                    RenderLadarStyle();
                     break;
             }
 
@@ -991,6 +1015,44 @@ namespace UI.Controls.Charts
             }
 
             ColumnInfoList = infoList;
+
+            isRendering = false;
+        }
+        #endregion
+
+        #region 渲染雷达图
+        private void RenderLadarStyle()
+        {
+            if (Data.Count() <= 2)
+            {
+                RadarContainer.Child = new EmptyData();
+                return;
+            }
+            //  最大值
+            double total = 0;
+            //  查找最大值
+            foreach (var item in Data)
+            {
+                //  查找最大值
+                double max = item.Values.Sum();
+                if (max > maxValue)
+                {
+                    maxValue = max;
+                }
+
+                total += item.Values.Sum();
+
+            }
+            //maxValue = total;
+
+            if (DataMaximum > 0)
+            {
+                maxValue = DataMaximum;
+            }
+            var radar = new ChartsItemTypeRadar();
+            radar.Data = Data.OrderBy(m => m.Values.Sum()).ToList();
+            radar.MaxValue = maxValue;
+            RadarContainer.Child = radar;
 
             isRendering = false;
         }

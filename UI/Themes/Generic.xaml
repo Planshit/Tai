@@ -21,6 +21,7 @@
         <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeCard.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeMonth.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeColumn.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeRadar.xaml"/>
 
         <ResourceDictionary Source="/Tai;component/Themes/Tabbar/Tabbar.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/DatePickerBar/DatePickerBar.xaml"/>

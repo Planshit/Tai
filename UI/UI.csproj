@@ -142,6 +142,7 @@
     <Compile Include="Controls\Button\IconButton.cs" />
     <Compile Include="Controls\Charts\ChartDataValueType.cs" />
     <Compile Include="Controls\Charts\ChartItemTypeColumn.cs" />
+    <Compile Include="Controls\Charts\ChartsItemTypeRadar.cs" />
     <Compile Include="Controls\Charts\ChartsItemTypeMonth.cs" />
     <Compile Include="Controls\Charts\ChartsItemTypeCard.cs" />
     <Compile Include="Controls\Charts\ChartsItemTypeA.cs" />
@@ -174,6 +175,7 @@
     <Compile Include="Controls\Toggle\Toggle.cs" />
     <Compile Include="Controls\Window\ToastType.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Librays\RadarDemo.cs" />
     <Compile Include="Librays\Image\Imager.cs" />
     <Compile Include="Models\CategoryAppListPageModel.cs" />
     <Compile Include="Models\CategoryAppList\ChooseAppModel.cs" />
@@ -273,6 +275,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Button\Button.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Charts\ChartsItemTypeRadar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

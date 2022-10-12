@@ -3,6 +3,7 @@ using Core.Models;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -180,7 +181,8 @@ namespace UI.ViewModels
                 }
 
                 Data = chartData;
-
+                double totalUse = Data.Sum(m => m.Values.Sum());
+                TotalHours = Time.ToHoursString(totalUse);
                 LoadTopData();
             });
         }
@@ -236,6 +238,8 @@ namespace UI.ViewModels
                 }
 
                 Data = chartData;
+                double totalUse = Data.Sum(m => m.Values.Sum());
+                TotalHours = Time.ToHoursString(totalUse);
             });
 
 
@@ -289,7 +293,8 @@ namespace UI.ViewModels
                 }
 
                 Data = chartData;
-
+                double totalUse = Data.Sum(m => m.Values.Sum());
+                TotalHours = Time.ToHoursString(totalUse);
                 LoadTopData();
             });
 
@@ -346,7 +351,8 @@ namespace UI.ViewModels
                 }
 
                 Data = chartData;
-
+                double totalUse = Data.Sum(m => m.Values.Sum());
+                TotalHours = Time.ToHoursString(totalUse);
                 LoadTopData();
             });
         }
@@ -380,9 +386,13 @@ namespace UI.ViewModels
                     dateStart = dateArr[0];
                     dateEnd = dateArr[1];
                 }
-                var list = data.GetDateRangelogList(dateStart, dateEnd, 10);
+                var list = data.GetDateRangelogList(dateStart, dateEnd, 5);
 
                 TopData = MapToChartsData(list);
+
+                TopHours = TopData.Count > 0 ? Time.ToHoursString(TopData[0].Value) : "0";
+
+                AppCount = data.GetDateRangeAppCount(dateStart, dateEnd).ToString();
             });
         }
 
