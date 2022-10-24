@@ -13,6 +13,8 @@ namespace Core.Librarys
     {
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetForegroundWindow(IntPtr hwnd);
         public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
           IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
         [DllImport("user32.dll")]
@@ -305,5 +307,10 @@ namespace Core.Librarys
         }
 
         #endregion
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetWindowTextLength(IntPtr hWnd);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
     }
 }
