@@ -1,0 +1,65 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:UI.Controls.Charts"
+                    xmlns:base="clr-namespace:UI.Controls.Base">
+    <Style TargetType="{x:Type local:ChartsItemTypeRadar}">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+
+        <Setter Property="Background" Value="Transparent"/>
+        <!--<Setter Property="Margin" Value="0,5"/>-->
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ChartsItemTypeRadar}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Grid x:Name="Normal">
+
+                            <Canvas x:Name="Canvas" RenderTransformOrigin=".5,.5">
+                                <Canvas.RenderTransform>
+                                    <RotateTransform Angle="-90"></RotateTransform>
+                                </Canvas.RenderTransform>
+                            </Canvas>
+
+                            <Rectangle
+                            x:Name="ValueBlockObj"
+                                Width="20"
+                                Height="20"
+                               
+                                HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                           Margin="0"
+                                            RenderTransformOrigin="0.5,0.5"
+                                            
+                            >
+                                <Rectangle.Effect>
+                                                <BlurEffect RenderOptions.BitmapScalingMode="LowQuality"  Radius="35" RenderingBias="Performance"/>
+                                            </Rectangle.Effect>
+                                <Rectangle.Fill>
+                                                <LinearGradientBrush RenderOptions.BitmapScalingMode="LowQuality" EndPoint="2,1" StartPoint="-2,0">
+                                                    <GradientStop Color="White"/>
+                                                    <GradientStop Color="#ff305b" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                <Rectangle.RenderTransform>
+                                    <ScaleTransform ScaleX="3" ScaleY="3" CenterX="0" CenterY="0"/>
+                                </Rectangle.RenderTransform>
+                            </Rectangle>
+                        </Grid>
+                        <Grid x:Name="Loading">
+                        </Grid>
+                    </Grid>
+
+                    <!--</Border>-->
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsLoading" Value="True">
+                            <Setter TargetName="Loading" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

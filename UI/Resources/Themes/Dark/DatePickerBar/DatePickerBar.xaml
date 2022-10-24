@@ -1,0 +1,163 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:UI.Controls.DatePickerBar"
+                    xmlns:base="clr-namespace:UI.Controls.Base"
+                    xmlns:list="clr-namespace:UI.Controls.List">
+    <Style TargetType="{x:Type local:DatePickerBar}">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:DatePickerBar}">
+                    <Border>
+                        <StackPanel>
+                            <Grid x:Name="header">
+                                <Border
+                                    Width="{Binding ElementName=Date,Path=ActualWidth}"
+                                    Height="{Binding ElementName=Date,Path=ActualHeight}"
+                                    Background="{Binding ElementName=Date,Path=Background}"
+                                    CornerRadius="{Binding ElementName=Date,Path=CornerRadius}"
+                                    Padding="{Binding ElementName=Date,Path=Padding}"
+                                    Margin="{Binding ElementName=Date,Path=Margin}"
+                                    
+                                    HorizontalAlignment="Left"
+                                   >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                    </Border.Effect>
+                                </Border>
+                                <Border
+                                    x:Name="Date"
+                                    Background="{DynamicResource StandardBackgroundBrush}"
+                                    Padding="15,8"
+                                    CornerRadius="12"
+                                    Margin="0,0,0,10"
+                                    HorizontalAlignment="Left"
+                                    ToolTip="选择">
+                                    <!--<Border.Effect>
+                                        <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                    </Border.Effect>-->
+                                    <StackPanel Orientation="Horizontal" >
+                                        <base:Icon x:Name="DateIcon" Margin="0,0,5,0" IconType="DateTime" Foreground="{DynamicResource StandardTextBrush}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+
+                                        <TextBlock Foreground="{DynamicResource StandardTextBrush}" FontSize="15" Text="{TemplateBinding SelectedDateString}" Margin="0,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        <base:Icon x:Name="PopupIcon" Width="25" Height="25" Margin="10,0,0,0" FontSize="10" IconType="ChevronDown" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <base:Icon.RenderTransform>
+                                                <RotateTransform Angle="0" CenterX="12.5" CenterY="12.5"/>
+                                            </base:Icon.RenderTransform>
+                                        </base:Icon>
+                                    </StackPanel>
+
+                                </Border>
+                                <Popup
+                                    x:Name="DatePickerPopup"
+                                    AllowsTransparency="True"
+                                    IsOpen="{TemplateBinding IsShowDatePickerPopup}"
+                                    Placement="Bottom"
+                                    PlacementTarget="{Binding ElementName=Date}"
+                                    PopupAnimation="Slide"
+                                    StaysOpen="False">
+                                    <Border
+                                        Background="{DynamicResource StandardBackgroundBrush2}"
+                                        CornerRadius="12"
+                                        Padding="10"
+                                        Margin="10">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Direction="0" Color="Gray" Opacity=".2"/>
+                                        </Border.Effect>
+
+                                        <Grid>
+                                            <Path 
+                      Width="15"
+                      Height="15"
+                      SnapsToDevicePixels="False"
+                      Data="M 0 15 L 7.5 7.5 L 15 15" Fill="{DynamicResource StandardBackgroundBrush2}"
+                                        Stroke="{DynamicResource StandardBackgroundBrush2}"
+                                        StrokeThickness="1"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Left"
+                                        Margin="0,-25,0,0"
+                                        />
+                                            <StackPanel Orientation="Horizontal">
+                                                <!--<ScrollViewer x:Name="YearsListScrollViewer" CanContentScroll="True" VerticalScrollBarVisibility="Hidden">-->
+                                                <StackPanel >
+                                                    <TextBlock Text="年份" HorizontalAlignment="Center"/>
+                                                    <list:BaseList x:Name="YearsList" Height="120" Margin="0,5,0,0">
+
+                                                    </list:BaseList>
+                                                </StackPanel>
+                                                <StackPanel x:Name="MonthSelect" Margin="10,0,0,0" Visibility="Collapsed">
+                                                    <TextBlock Text="月份" HorizontalAlignment="Center"/>
+                                                    <list:BaseList x:Name="MonthsList" Height="120" Margin="0,5,0,0" HorizontalAlignment="Center">
+
+                                                    </list:BaseList>
+                                                </StackPanel>
+                                                <!--</ScrollViewer>-->
+
+                                            </StackPanel>
+
+                                        </Grid>
+
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                            <Grid x:Name="ItemSelect">
+                                <Border Background="{DynamicResource StandardBackgroundBrush}" Padding="10" CornerRadius="10" Margin="0,10,0,0">
+                                    <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden">
+                                        <StackPanel
+                                Orientation="Horizontal"
+                                x:Name="Container">
+
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:0.18" />
+                                    <VisualTransition GeneratedDuration="0"
+                                  To="Pressed" />
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="DateMouseOver">
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Date">
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="{DynamicResource HoverBackgroundColor}"  />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="ShowPopup">
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(base:Icon.RenderTransform).(RotateTransform.Angle)"
+                                                Storyboard.TargetName="PopupIcon">
+                                            <EasingDoubleKeyFrame KeyTime="0"
+                                         Value="-180"  />
+
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(base:Icon.Foreground).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="DateIcon">
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="{DynamicResource ThemeColor}"  />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ShowType" Value="Year">
+                            <Setter TargetName="ItemSelect" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

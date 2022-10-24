@@ -48,6 +48,7 @@ namespace UI.Controls.Button
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
+            VisualStateManager.GoToState(this, "MouseOver", true);
 
             Command?.Execute(CommandParameter);
         }
@@ -60,6 +61,11 @@ namespace UI.Controls.Button
         {
             base.OnMouseLeave(e);
             VisualStateManager.GoToState(this, "Normal", true);
+        }
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            VisualStateManager.GoToState(this, "Pressed", true);
         }
     }
 }

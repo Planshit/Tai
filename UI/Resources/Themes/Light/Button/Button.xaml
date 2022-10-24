@@ -1,0 +1,109 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:UI.Controls.Button"
+                    xmlns:base="clr-namespace:UI.Controls.Base"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <Style TargetType="{x:Type local:Button}">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+        <Setter Property="UseLayoutRounding" Value="True"/>
+
+        <Setter Property="Foreground" Value="{DynamicResource StandardTextBrush}"/>
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Background" Value="{DynamicResource StandardBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:Button}">
+                    <!--<Border x:Name="Border" SnapsToDevicePixels="True">-->
+                    <Grid SnapsToDevicePixels="True">
+
+
+                        <Border BorderBrush="#f3f3f3" BorderThickness="0" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="{TemplateBinding Background}">
+                            <!--<Border.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
+                            </Border.Effect>-->
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <base:Icon x:Name="Icon" Margin="0,0,5,0" IconType="{TemplateBinding Icon}" VerticalAlignment="Center"  FontSize="12" >
+
+                                </base:Icon>
+                                <ContentPresenter 
+                                    Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True"/>
+                            </Grid>
+
+                        </Border>
+                        <Border x:Name="Shadow" BorderBrush="{Binding ElementName=BoxBorder,Path=BorderBrush}" BorderThickness="{Binding ElementName=BoxBorder,Path=BorderThickness}" Panel.ZIndex="-1" Width="{Binding ElementName=BoxBorder,Path=ActualWidth}"  Height="{Binding ElementName=BoxBorder,Path=ActualHeight}" CornerRadius="{Binding ElementName=BoxBorder,Path=CornerRadius}" Background="{Binding ElementName=BoxBorder,Path=Background}">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
+                            </Border.Effect>
+                        </Border>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:0.18" />
+                                    <VisualTransition GeneratedDuration="0"
+                                  To="Pressed" />
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <!--<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.Color)"
+                                                Storyboard.TargetName="Shadow">
+                                                <EasingColorKeyFrame KeyTime="0"
+                                         Value="#2b20d9"  />
+                                            </ColorAnimationUsingKeyFrames>-->
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="BoxBorder">
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="{DynamicResource HoverBackgroundColor}"  />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <!--<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="BoxBorder">
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="#2b20d9"  />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Button.Foreground).(SolidColorBrush.Color)"
+                                               >
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="White"  />
+                                        </ColorAnimationUsingKeyFrames>-->
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+
+
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                               Storyboard.TargetName="BoxBorder">
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="{DynamicResource ThemeColor}"  />
+                                        </ColorAnimationUsingKeyFrames>
+                                        
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                    </Grid>
+
+                    <!--</Border>-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Icon" Value="None">
+                            <Setter TargetName="Icon" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BoxBorder" Property="BorderThickness" Value="0"/>
+                            <!--<Setter Property="Foreground" Value="White"/>-->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

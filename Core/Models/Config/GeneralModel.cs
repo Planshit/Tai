@@ -16,5 +16,8 @@ namespace Core.Models.Config
         /// 是否启用开机自启动
         /// </summary>
         public bool IsStartatboot { get; set; }
+
+        [Config(Options = "浅色|深色", Name = "主题模式", Description = "设置以浅色或深色模式显示", Group = "外观")]
+        public int Theme { get; set; } = 0;
     }
 }

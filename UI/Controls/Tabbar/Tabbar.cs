@@ -17,7 +17,13 @@ namespace UI.Controls.Tabbar
     public class Tabbar : Control
     {
 
-
+        public Color SelectedTextColor
+        {
+            get { return (Color)GetValue(SelectedTextColorProperty); }
+            set { SetValue(SelectedTextColorProperty, value); }
+        }
+        public static readonly DependencyProperty SelectedTextColorProperty =
+            DependencyProperty.Register("SelectedTextColor", typeof(Color), typeof(Tabbar));
         public int SelectedIndex
         {
             get { return (int)GetValue(SelectedIndexProperty); }
@@ -72,6 +78,7 @@ namespace UI.Controls.Tabbar
             DefaultStyleKey = typeof(Tabbar);
             ItemsDictionary = new List<TextBlock>();
             storyboard = new Storyboard();
+            //SelectedTextColor = (Color)ColorConverter.ConvertFromString("#2b20d9");
         }
 
         private void Data_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -118,7 +125,7 @@ namespace UI.Controls.Tabbar
             if (ItemsContainer != null)
             {
                 var control = new TextBlock();
-                control.TextAlignment= TextAlignment.Center;
+                control.TextAlignment = TextAlignment.Center;
                 control.Text = item;
                 control.Margin = new Thickness(0, 0, 10, 0);
                 control.FontSize = 18;
@@ -156,6 +163,8 @@ namespace UI.Controls.Tabbar
             {
                 ItemsContainer.Children.Clear();
                 ItemsContainer.ColumnDefinitions.Clear();
+                ItemsDictionary.Clear();
+
                 for (int i = 0; i < Data.Count; i++)
                 {
                     var item = Data[i];
@@ -179,12 +188,12 @@ namespace UI.Controls.Tabbar
 
         private void ScrollToActive(int oldSelectedIndex = 0)
         {
-            if (oldSelectedIndex > ItemsDictionary.Count || ItemsDictionary.Count == 0)
+            if (oldSelectedIndex > ItemsDictionary.Count || ItemsDictionary.Count == 0 || !IsLoaded)
             {
                 return;
             }
             //  获取选中项
-
+            Debug.WriteLine(IsLoaded + "");
             var item = ItemsDictionary[SelectedIndex];
             var oldSelectedItem = ItemsDictionary[oldSelectedIndex];
 
@@ -247,7 +256,7 @@ namespace UI.Controls.Tabbar
             //  文字颜色动画
             ColorAnimation fontColorAnimation = new ColorAnimation();
             //scrollAnimation.From = activeBlockTTF.Y;
-            fontColorAnimation.To = (Color)ColorConverter.ConvertFromString("#2b20d9");
+            fontColorAnimation.To = SelectedTextColor;
 
             fontColorAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
             Storyboard.SetTarget(fontColorAnimation, item);

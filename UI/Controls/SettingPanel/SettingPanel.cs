@@ -17,6 +17,7 @@ using System.Windows.Media;
 using UI.Controls.Button;
 using UI.Controls.Input;
 using UI.Controls.List;
+using UI.Controls.Select;
 
 namespace UI.Controls.SettingPanel
 {
@@ -289,9 +290,10 @@ namespace UI.Controls.SettingPanel
             }
 
             var border = new Border();
-            border.Background = new SolidColorBrush(Colors.White);
+            border.Background = Background;
             border.CornerRadius = new CornerRadius(6);
-            border.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ededed"));
+            border.BorderBrush = BorderBrush;
+            //border.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ededed"));
             border.BorderThickness = new Thickness(1);
             border.Child = item;
 
@@ -312,8 +314,54 @@ namespace UI.Controls.SettingPanel
             {
                 uIElement = RenderListStringConfigControl(attribute, pi);
             }
-
+            else if (pi.PropertyType == typeof(int))
+            {
+                uIElement = RenderOptionsConfigControl(attribute, pi);
+            }
             return uIElement;
+        }
+
+        private UIElement RenderOptionsConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
+        {
+            var control = new Select.Select();
+            var optionsArr = configAttribute.Options.Split('|');
+
+            var options = new List<SelectItemModel>();
+            for (int i = 0; i < optionsArr.Length; i++)
+            {
+                var name = optionsArr[i];
+                options.Add(new SelectItemModel()
+                {
+                    Name = name,
+                    Data = i
+                });
+            }
+            control.Options = options;
+            control.IsShowIcon = false;
+            control.SelectedItem = options[(int)pi.GetValue(Data)];
+            control.Tag = this;
+            control.OnSelectedItemChanged += (e, c) =>
+            {
+                pi.SetValue(configData, control.SelectedItem.Data);
+                Data = configData;
+            };
+            //var inputControl = new Toggle.Toggle();
+            //inputControl.ToggleChanged += (e, c) =>
+            //{
+            //    pi.SetValue(configData, inputControl.IsChecked);
+
+            //    Data = configData;
+            //};
+
+            //inputControl.IsChecked = (bool)pi.GetValue(Data);
+
+            var item = new SettingPanelItem();
+            item.Name = configAttribute.Name;
+            item.Description = configAttribute.Description;
+            item.Content = control;
+
+            pi.SetValue(configData, pi.GetValue(Data));
+            return item;
         }
 
         private UIElement RenderBooleanConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
@@ -332,7 +380,7 @@ namespace UI.Controls.SettingPanel
             item.Name = configAttribute.Name;
             item.Description = configAttribute.Description;
             item.Content = inputControl;
-
+            pi.SetValue(configData, pi.GetValue(Data));
             return item;
         }
 
@@ -459,7 +507,8 @@ namespace UI.Controls.SettingPanel
                                     MessageBox.Show("导入完成！", "提示");
                                 }
                             }
-                        }catch (Exception ex)
+                        }
+                        catch (Exception ex)
                         {
                             Logger.Error($"导入配置“{configAttribute.Name}”时失败：{ex.Message}");
                             MessageBox.Show("导入失败！", "提示");

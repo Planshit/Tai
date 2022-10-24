@@ -150,19 +150,10 @@ namespace UI.Controls
             Frame.NavigationService.Navigated += NavigationService_Navigated;
 
             Loaded += PageContainer_Loaded;
-            Unloaded += PageContainer_Unloaded;
         }
         private void NavigationService_Navigated(object sender, NavigationEventArgs e)
         {
             Frame.NavigationService.RemoveBackEntry();
-        }
-        private void PageContainer_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Loaded -= PageContainer_Loaded;
-            Unloaded -= PageContainer_Unloaded;
-            Frame.NavigationService.Navigated -= NavigationService_Navigated;
-
-            Disponse();
         }
 
         private void PageContainer_Loaded(object sender, RoutedEventArgs e)

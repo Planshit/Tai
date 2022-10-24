@@ -9,13 +9,13 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="DetailPage"
     xmlns:btn="clr-namespace:UI.Controls.Button"
-    xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar">
+    xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" Foreground="{DynamicResource StandardTextBrush}">
 
     <StackPanel Margin="20">
         <TextBlock Text="查看" FontSize="18" Margin="0,0,0,20"/>
 
         <Border
-                Background="White"
+                Background="{DynamicResource StandardBackgroundBrush}"
                 CornerRadius="12"
                 Padding="0,20">
             <Border.ContextMenu>
@@ -125,7 +125,7 @@
             </Border>-->
         <TextBlock Text="时段" Foreground="#5c5c5c" FontSize="14" Margin="0,20,0,0"/>
         <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
-        <Border Margin="0,15,0,0"  Width="680" HorizontalAlignment="Left" Background="White" Padding="20,10" CornerRadius="10">
+        <Border Margin="0,15,0,0"  Width="680" HorizontalAlignment="Left" Background="{DynamicResource StandardBackgroundBrush}" Padding="20,10" CornerRadius="10">
             <StackPanel>
 
 
@@ -161,7 +161,7 @@
         <TextBlock Text="每月" Foreground="#5c5c5c" FontSize="14" Margin="0,20,0,0"/>
 
         <Border
-                Background="White"
+                Background="{DynamicResource StandardBackgroundBrush}"
                 CornerRadius="12"
                 Padding="20,20"
                 Margin="0,10,0,0">

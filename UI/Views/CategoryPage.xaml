@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:converter="clr-namespace:UI.Controls.Converters"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="CategoryPage">
+      Title="CategoryPage" Foreground="{DynamicResource StandardTextBrush}">
 
 
     <Grid>
@@ -15,7 +15,7 @@
         <!--编辑-->
         <Grid Visibility="{Binding EditVisibility}" Panel.ZIndex="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Border Background="Black" Opacity=".7"/>
-            <Border Height="460" Background="White" CornerRadius="10" BorderBrush="#ccc" BorderThickness="1" Margin="50"  VerticalAlignment="Top">
+            <Border Height="460" Background="{DynamicResource StandardBackgroundBrush2}" CornerRadius="10" BorderBrush="{DynamicResource WindowContentBorder}" BorderThickness="1" Margin="50"  VerticalAlignment="Top">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -65,9 +65,9 @@
                     <MenuItem Header="新建分类" Command="{Binding EditCommand}" />
                 </ContextMenu>
             </StackPanel.ContextMenu>
-            <TextBlock Text="分类" FontSize="18" Margin="0,0,0,20"/>
+            <TextBlock Text="分类" FontSize="18" Margin="0,5,0,20"/>
             <!--<TextBlock Text="管理所有应用分类"/>-->
-            <Button:Button Content="新建分类" HorizontalAlignment="Right" Margin="0,0,20,0" Width="150" Command="{Binding EditCommand}"/>
+            <Button:Button Icon="CalculatorAddition" Content="新建分类" HorizontalAlignment="Right" Margin="0,0,20,0" Width="150" Command="{Binding EditCommand}"/>
 
             <base:View Condition="empty" Value="{Binding Data}">
                 <base:EmptyData/>
@@ -114,12 +114,12 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
                                     <Grid>
-                                        <Border BorderBrush="{Binding ElementName=Border,Path=BorderBrush}" BorderThickness="{Binding ElementName=Border,Path=BorderThickness}" Background="{Binding ElementName=Border,Path=Background}" Margin="{Binding ElementName=Border,Path=Margin}" CornerRadius="{Binding ElementName=Border,Path=CornerRadius}">
+                                        <Border BorderBrush="{Binding ElementName=Border,Path=BorderBrush}" BorderThickness="{Binding ElementName=Border,Path=BorderThickness}"  Margin="{Binding ElementName=Border,Path=Margin}" CornerRadius="{Binding ElementName=Border,Path=CornerRadius}">
                                             <Border.Effect>
                                                 <DropShadowEffect Color="#d8d2d2" BlurRadius="10" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
                                             </Border.Effect>
                                         </Border>
-                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="5" CornerRadius="20">
+                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="{DynamicResource StandardBackgroundBrush}" Margin="5" CornerRadius="20">
                                             <ContentPresenter/>
                                         </Border>
                                     </Grid>
@@ -127,7 +127,7 @@
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <!--<Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>-->
-                                            <Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ThemeBrush}"/>
 
                                         </Trigger>
                                     </ControlTemplate.Triggers>
@@ -163,7 +163,7 @@
                                        
                                         <base:Img Radius="8" Width="40" Height="40" URL="{Binding Data.IconFile}"/>
                                     </Grid>
-                                    <TextBlock Foreground="#202020" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Text="{Binding Data.Name}"  FontSize="14"/>
+                                    <TextBlock Foreground="{DynamicResource StandardTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Text="{Binding Data.Name}"  FontSize="14"/>
 
                                     <Border Grid.Row="3" >
                                         <Border Margin="10,0,10,0" CornerRadius="10" Background="#f9f9f9" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10,5">

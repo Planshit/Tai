@@ -1,0 +1,84 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:UI.Controls.Charts"
+                    xmlns:base="clr-namespace:UI.Controls.Base">
+    <Style TargetType="{x:Type local:ChartItemTypeColumn}">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+
+        <Setter Property="Background" Value="Transparent"/>
+        <!--<Setter Property="Margin" Value="5,0"/>-->
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ChartItemTypeColumn}">
+
+                    <Grid x:Name="Normal" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Border x:Name="ValueContainer" Background="Transparent" >
+                            <Rectangle
+                            x:Name="ValueBlockObj"
+                                RadiusX="4"
+                                RadiusY="4"
+                                Fill="#cccccc"
+                                Width="{Binding ElementName=ValueContainer,Path=ActualWidth}"
+                                        VerticalAlignment="Bottom"
+                                        HorizontalAlignment="Center"
+                            />
+                        </Border>
+                        <TextBlock Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Margin="0,10,0,0" Text="{TemplateBinding ColumnName}" Foreground="#FF8A8A8A" />
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:.2" />
+                                    <VisualTransition GeneratedDuration="0"
+                                  To="Pressed" />
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="NormalState" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard >
+                                        <ColorAnimation Storyboard.TargetProperty="(Canvas.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="ValueContainer" To="#7FF1F1F1" >
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                        <!--<ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="IconBorder" To="#2b20d9" >
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                        <ColorAnimation Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="IconBorder" To="#ffffff" >
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseInOut"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>-->
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+
+
+
+
+
+                    <ControlTemplate.Triggers>
+                        <!--<Trigger Property="IsLoading" Value="True">
+                            <Setter TargetName="Loading" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                        </Trigger>-->
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

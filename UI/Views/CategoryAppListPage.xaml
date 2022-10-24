@@ -6,13 +6,13 @@
       xmlns:local="clr-namespace:UI.Views" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:select="clr-namespace:UI.Controls.Select" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:input="clr-namespace:UI.Controls.Input"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="CategoryAppListPage">
+      Title="CategoryAppListPage" Foreground="{DynamicResource StandardTextBrush}">
 
     <Grid>
         <!--选择应用-->
         <Grid Visibility="{Binding ChooseVisibility}" Panel.ZIndex="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Border Background="Black" Opacity=".7"/>
-            <Border Height="460" Background="White" CornerRadius="10" BorderBrush="#ccc" BorderThickness="1" Margin="50" VerticalAlignment="Top">
+            <Border Height="460" Background="{DynamicResource StandardBackgroundBrush2}" CornerRadius="10" BorderBrush="{DynamicResource WindowContentBorder}" BorderThickness="1" Margin="50" VerticalAlignment="Top">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
@@ -141,7 +141,7 @@
                                             <ContentPresenter/>
                                         </Border>
 
-                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="0,0,0,10" Padding="15" CornerRadius="10">
+                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="{DynamicResource StandardBackgroundBrush2}" Margin="0,0,0,10" Padding="15" CornerRadius="10">
 
                                             <ContentPresenter/>
                                         </Border>

@@ -345,13 +345,19 @@ namespace UI.Controls.Navigation
         }
         private void Render()
         {
+            ItemsPanel.Children.Clear();
+            ItemsDictionary.Clear();
+
             if (Data != null)
             {
                 foreach (var item in Data)
                 {
                     AddItem(item);
                 }
-
+                Loaded += (e, c) =>
+                {
+                    ScrollToActive();
+                };
             }
         }
 

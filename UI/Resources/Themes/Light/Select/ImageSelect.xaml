@@ -1,0 +1,55 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:UI.Controls.Select" xmlns:base="clr-namespace:UI.Controls.Base">
+
+
+    <Style TargetType="{x:Type local:ImageSelect}">
+        <Setter Property="SnapsToDevicePixels"
+          Value="True" />
+
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="ToolTip" Value="选择图片"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ImageSelect}">
+                    <Border SnapsToDevicePixels="True" Background="{TemplateBinding Background}"  HorizontalAlignment="Left" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                        <Border.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ImageSelect}}, Path=SelectCommand}"/>
+                        </Border.InputBindings>
+                        <Grid>
+                            <Border x:Name="Choose" Background="#f7f8fa" Padding="20" CornerRadius="10">
+                                <Grid HorizontalAlignment="Center">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <base:Icon IconType="FileImage" Foreground="#2b20d9" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                                    <TextBlock Text="选择图片" Grid.Row="1" Margin="0,10,0,0"/>
+                                </Grid>
+                            </Border>
+                            <Border x:Name="Img" BorderBrush="#f7f8fa" BorderThickness="1" CornerRadius="10" Padding="10">
+                                <base:Img URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ImageSelect}}, Path=URL,Mode=TwoWay}" Width="{TemplateBinding ImageWidth}" Height="{TemplateBinding ImageHeight}"/>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="Choose" Value="#FFE8E6FF"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Visibility" TargetName="Img" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="Choose" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter Property="Visibility" TargetName="Img" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="Choose" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

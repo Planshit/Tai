@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:UI.Views" xmlns:charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:select="clr-namespace:UI.Controls.Select" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:DatePickerBar="clr-namespace:UI.Controls.DatePickerBar"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ChartPage">
+      Title="ChartPage" Foreground="{DynamicResource StandardTextBrush}">
 
     <StackPanel Margin="20">
         <TextBlock Text="统计" FontSize="18" Margin="0,5,0,20"/>
@@ -43,14 +43,19 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Border Margin="0,5,0,0" Background="White" Padding="10" CornerRadius="10">
+            <Border Margin="0,5,0,0" Background="{DynamicResource StandardBackgroundBrush}" Padding="10" CornerRadius="10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Background="#6c47ff" Width="40" Height="40" CornerRadius="6">
-
+                    <Border Width="40" Height="40" CornerRadius="6">
+                        <Border.Background>
+                            <LinearGradientBrush>
+                                <GradientStop Offset="0" Color="#6c47ff"/>
+                                <GradientStop Color="#F4A7B9" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
                         <base:Icon IconType="SkypeCircleClock" Foreground="White"/>
                     </Border>
                     <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
@@ -60,21 +65,26 @@
                         </Grid.RowDefinitions>
                         <TextBlock >
                             <Run Text="{Binding TotalHours}" FontSize="20"/>
-                            <Run Text="小时" FontSize="12" Foreground="#5c5c5c"/>
+                            <Run Text="小时" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
                         </TextBlock>
-                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="总计" Foreground="#5c5c5c"/>
+                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="总计" Foreground="{DynamicResource SubTextBrush}"/>
 
                     </Grid>
                 </Grid>
             </Border>
-            <Border Grid.Column="1" Margin="20,5,0,0" Background="White" Padding="10" CornerRadius="10">
+            <Border Grid.Column="1" Margin="20,5,0,0" Background="{DynamicResource StandardBackgroundBrush}" Padding="10" CornerRadius="10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Background="#00ffab" Width="40" Height="40" CornerRadius="6">
-
+                    <Border  Width="40" Height="40" CornerRadius="6">
+                        <Border.Background>
+                            <LinearGradientBrush>
+                                <GradientStop Offset="0" Color="#00ffab"/>
+                                <GradientStop Color="#2b20d9" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
                         <base:Icon IconType="MSNVideosSolid" Foreground="White"/>
                     </Border>
                     <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
@@ -84,22 +94,27 @@
                         </Grid.RowDefinitions>
                         <TextBlock >
                             <Run Text="{Binding AppCount}" FontSize="20"/>
-                            <Run Text="个" FontSize="12" Foreground="#5c5c5c"/>
+                            <Run Text="个" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
                         </TextBlock>
-                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="应用量" Foreground="#5c5c5c"/>
+                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="应用量" Foreground="{DynamicResource SubTextBrush}"/>
 
 
                     </Grid>
                 </Grid>
             </Border>
-            <Border  Grid.Column="2" Margin="20,5,0,0" Background="White" Padding="10" CornerRadius="10">
+            <Border  Grid.Column="2" Margin="20,5,0,0" Background="{DynamicResource StandardBackgroundBrush}" Padding="10" CornerRadius="10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Background="#ff305b" Width="40" Height="40" CornerRadius="6">
-
+                    <Border  Width="40" Height="40" CornerRadius="6">
+                        <Border.Background>
+                            <LinearGradientBrush>
+                                <GradientStop Offset="0" Color="red"/>
+                                <GradientStop Color="#E03C8A" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
                         <base:Icon IconType="FlameSolid" Foreground="White"/>
                     </Border>
                     <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
@@ -110,9 +125,9 @@
 
                         <TextBlock >
                             <Run Text="{Binding TopHours}" FontSize="20"/>
-                            <Run Text="小时" FontSize="12" Foreground="#5c5c5c"/>
+                            <Run Text="小时" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
                         </TextBlock>
-                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="最长使用" Foreground="#5c5c5c"/>
+                        <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="最长使用" Foreground="{DynamicResource SubTextBrush}"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -120,7 +135,7 @@
 
         <TextBlock Text="时段" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
 
-        <Border Margin="0,5,0,0" Height="360" Width="680" HorizontalAlignment="Left" Background="White" Padding="20" CornerRadius="10">
+        <Border Margin="0,5,0,0" Height="360" Width="680" HorizontalAlignment="Left" Background="{DynamicResource StandardBackgroundBrush}" Padding="20" CornerRadius="10">
             <charts:Charts IsShowTotal="False" DataMaximum="{Binding DataMaximum}" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}"/>
 
         </Border>
@@ -136,7 +151,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="分类" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
-                <Border Margin="0,5,0,0" Grid.Row="1"  Background="White" Padding="20" CornerRadius="10">
+                <Border Margin="0,5,0,0" Grid.Row="1"  Background="{DynamicResource StandardBackgroundBrush}" Padding="20" CornerRadius="10">
                     <charts:Charts Margin="10,20,10,10" Height="230" Width="230" ChartsType="Radar" Data="{Binding Data}"/>
 
                 </Border>
@@ -147,7 +162,7 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="最为频繁" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
-                <Border Grid.Row="1" Margin="0,5,0,0"  Background="White" Padding="20" CornerRadius="10">
+                <Border Grid.Row="1" Margin="0,5,0,0"  Background="{DynamicResource StandardBackgroundBrush}" Padding="20" CornerRadius="10">
                     <charts:Charts  ItemMenu="{Binding AppContextMenu}" Data="{Binding TopData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}" IsCanScroll="False"/>
                 </Border>
             </Grid>

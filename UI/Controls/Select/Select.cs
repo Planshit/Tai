@@ -59,6 +59,7 @@ namespace UI.Controls.Select
 
         public static readonly DependencyProperty SelectItemProperty = DependencyProperty.Register("SelectedItem", typeof(SelectItemModel), typeof(Select), new PropertyMetadata(new PropertyChangedCallback(OnPropertyChanged)));
 
+        public event EventHandler OnSelectedItemChanged;
 
         private StackPanel _optionsContainer;
         public Select()
@@ -116,6 +117,7 @@ namespace UI.Controls.Select
             {
                 SelectedItem = option.Value;
                 OnSelectedItemChange();
+                OnSelectedItemChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

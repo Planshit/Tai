@@ -276,6 +276,19 @@ namespace UI.Controls.Window
             ToastBorder = GetTemplateChild("ToastBorder") as Border;
             Masklayer = GetTemplateChild("Masklayer") as Border;
             ToastGrid = GetTemplateChild("ToastGrid") as Grid;
+
+            if (PageContainer != null)
+            {
+                IsCanBack = PageContainer.Index >= 1;
+                if (IsCanBack)
+                {
+                    VisualStateManager.GoToState(this, "CanBackState", true);
+                }
+                else
+                {
+                    VisualStateManager.GoToState(this, "Normal", true);
+                }
+            }
         }
 
 

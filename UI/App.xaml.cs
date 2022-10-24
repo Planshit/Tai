@@ -192,6 +192,7 @@ namespace UI
             services.AddSingleton<ICategorys, Categorys>();
 
             services.AddSingleton<IAppContextMenuServicer, AppContextMenuServicer>();
+            services.AddSingleton<IThemeServicer, ThemeServicer>();
 
             //  主窗口
             services.AddSingleton<MainViewModel>();
@@ -236,9 +237,11 @@ namespace UI
 
             var main = serviceProvider.GetService<IMain>();
             var observer = serviceProvider.GetService<IObserver>();
-
+            
+            main.OnStarted += Main_OnStarted;
             main.Run();
-
+            
+            
             observer.OnAppActive += (p, d, f) =>
             {
                 Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>
@@ -251,6 +254,12 @@ namespace UI
 
 
             appData = serviceProvider.GetService<IAppData>();
+        }
+
+        private void Main_OnStarted(object sender, EventArgs e)
+        {
+            var theme = serviceProvider.GetService<IThemeServicer>();
+            theme.Init();
         }
 
         private void ShowMainWindow()

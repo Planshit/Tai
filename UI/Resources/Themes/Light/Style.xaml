@@ -1,0 +1,46 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Window/HideWindow.xaml" />
+        <ResourceDictionary Source="Window/DefaultWindow.xaml" />
+        <ResourceDictionary Source="Navigation/NavigationItem.xaml"/>
+        <ResourceDictionary Source="Navigation/Navigation.xaml"/>
+        <ResourceDictionary Source="Base/Icon.xaml"/>
+        <ResourceDictionary Source="Base/Placeholder.xaml"/>
+        <ResourceDictionary Source="Base/EmptyData.xaml"/>
+        <ResourceDictionary Source="Base/Img.xaml"/>
+        <ResourceDictionary Source="Base/CheckBox.xaml"/>
+        <ResourceDictionary Source="Base/Text.xaml"/>
+        <ResourceDictionary Source="Base/View.xaml"/>
+        <ResourceDictionary Source="Base/IconSelect.xaml"/>
+        <ResourceDictionary Source="Base/ColorSelect.xaml"/>
+
+        <!--<ResourceDictionary Source="PageContainer.xaml"/>-->
+        <ResourceDictionary Source="Charts/Charts.xaml"/>
+        <ResourceDictionary Source="Charts/ChartsItemTypeA.xaml"/>
+        <ResourceDictionary Source="Charts/ChartsItemTypeCard.xaml"/>
+        <ResourceDictionary Source="Charts/ChartsItemTypeMonth.xaml"/>
+        <ResourceDictionary Source="Charts/ChartsItemTypeColumn.xaml"/>
+        <ResourceDictionary Source="Charts/ChartsItemTypeRadar.xaml"/>
+
+        <ResourceDictionary Source="Tabbar/Tabbar.xaml"/>
+        <ResourceDictionary Source="DatePickerBar/DatePickerBar.xaml"/>
+        <ResourceDictionary Source="DatePickerBar/DatePickerBarItem.xaml"/>
+        <ResourceDictionary Source="SettingPanel/SettingPanel.xaml"/>
+        <ResourceDictionary Source="Toggle/Toggle.xaml"/>
+        <ResourceDictionary Source="SettingPanel/SettingPanelItem.xaml"/>
+        <ResourceDictionary Source="SettingPanel/SettingPanelMultiItem.xaml"/>
+        <ResourceDictionary Source="Input/InputBox.xaml"/>
+        <ResourceDictionary Source="Button/IconButton.xaml"/>
+        <ResourceDictionary Source="Button/Button.xaml"/>
+        <ResourceDictionary Source="List/BaseList.xaml"/>
+        <ResourceDictionary Source="List/BaseListItem.xaml"/>
+
+        <ResourceDictionary Source="Select/Select.xaml"/>
+        <ResourceDictionary Source="Select/Option.xaml"/>
+        <ResourceDictionary Source="Select/ImageSelect.xaml"/>
+        <ResourceDictionary Source="Select/DateSelect.xaml"/>
+
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

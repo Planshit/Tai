@@ -1,0 +1,40 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:UI.Controls.List"
+                    xmlns:base="clr-namespace:UI.Controls.Base"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <Style TargetType="{x:Type local:BaseList}">
+        <Setter Property="SnapsToDevicePixels"
+          Value="true" />
+        <Setter Property="UseLayoutRounding" Value="True"/>
+
+        <!--<Setter Property="MinWidth" Value="150"/>-->
+        <Setter Property="Height" Value="auto"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:BaseList}">
+                    <Border Background="{TemplateBinding Background}" x:Name="Border">
+
+                        <Grid>
+                            <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Hidden">
+                                <StackPanel x:Name="Container">
+
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!--<Trigger Property="Icon" Value="None">
+                            <Setter TargetName="Icon" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="BoxBorder" Property="BorderThickness" Value="0"/>
+                        </Trigger>-->
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

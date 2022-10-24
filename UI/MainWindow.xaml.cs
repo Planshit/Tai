@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UI.Controls.Window;
+using UI.Servicers;
 
 namespace UI
 {
@@ -22,9 +23,13 @@ namespace UI
     /// </summary>
     public partial class MainWindow : DefaultWindow
     {
-        public MainWindow()
+        private readonly IThemeServicer themeServicer;
+        public MainWindow(IThemeServicer themeServicer)
         {
             InitializeComponent();
+            this.themeServicer = themeServicer;
+            themeServicer.SetMainWindow(this);
+            themeServicer.UpdateWindowStyle();
             Unloaded += Page_Unloaded;
         }
 

@@ -9,7 +9,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SettingPage"
     xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar"
-    xmlns:Btn="clr-namespace:UI.Controls.Button" xmlns:select="clr-namespace:UI.Controls.Select">
+    xmlns:Btn="clr-namespace:UI.Controls.Button" xmlns:select="clr-namespace:UI.Controls.Select" Foreground="{DynamicResource StandardTextBrush}">
     <StackPanel Margin="20">
 
         <TextBlock Text="设置" FontSize="18" Margin="0,5,0,20"/>
@@ -21,6 +21,7 @@
                 Margin="0,15,0,0"
                 Padding="0"
                 Background="Transparent"
+            
                 >
             <TabControl.Resources>
                 <Style TargetType="TabItem">
@@ -33,21 +34,21 @@
                 </Style>
 
             </TabControl.Resources>
-            <TabItem>
+            <TabItem Foreground="{DynamicResource StandardTextBrush}">
                 <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" />
             </TabItem>
-            <TabItem>
+            <TabItem Foreground="{DynamicResource StandardTextBrush}">
                 <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" Margin="0,0,0,10"/>
             </TabItem>
-            <TabItem>
+            <TabItem Foreground="{DynamicResource StandardTextBrush}">
                 <SettingPanel:SettingPanel Data="{Binding Data,Mode=TwoWay}" Margin="0,0,0,0"/>
             </TabItem>
-            <TabItem>
+            <TabItem Foreground="{DynamicResource StandardTextBrush}">
                 <!--数据-->
 
                 <StackPanel Margin="0,10,0,0">
                     <TextBlock Text="删除数据" Foreground="#f54f4e" FontSize="14"/>
-                    <Border Background="White" Padding="20" CornerRadius="6" Margin="0,10,0,0" BorderBrush="#ededed" BorderThickness="1">
+                    <Border Background="{DynamicResource StandardBackgroundBrush}" Padding="20" CornerRadius="6" Margin="0,10,0,0" BorderBrush="{DynamicResource CardBorder}" BorderThickness="1">
                         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                             <TextBlock Text="从" VerticalAlignment="Center"/>
                             <select:DateSelect Date="{Binding DelDataStartMonthDate,Mode=TwoWay}" Margin="10,0" SelectType="Month"/>
@@ -57,7 +58,7 @@
                         </StackPanel>
                     </Border>
                     <TextBlock Text="导出数据"  FontSize="14"  Margin="0,15,0,0"/>
-                    <Border Background="White" Padding="20" CornerRadius="6" Margin="0,10,0,0" BorderBrush="#ededed" BorderThickness="1">
+                    <Border Background="{DynamicResource StandardBackgroundBrush}" Padding="20" CornerRadius="6" Margin="0,10,0,0" BorderBrush="{DynamicResource CardBorder}" BorderThickness="1">
                         <StackPanel>
                             <TextBlock Text="导出为xlsx和csv格式，需要注意：没有设置分类的应用数据不会导出。" Foreground="#989CA1" FontSize="12"/>
                             <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
@@ -71,9 +72,9 @@
                     </Border>
                 </StackPanel>
             </TabItem>
-            <TabItem>
+            <TabItem Foreground="{DynamicResource StandardTextBrush}">
                 <!--关于-->
-                <Border Background="White" Padding="20" CornerRadius="6">
+                <Border Background="{DynamicResource StandardBackgroundBrush}" Padding="20" CornerRadius="6">
                     <StackPanel HorizontalAlignment="Left">
                         <Image Width="25" Source="/Resources/Icons/tai.ico" HorizontalAlignment="Left"/>
                         <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
