@@ -24,5 +24,9 @@ namespace Core.Servicers.Interfaces
         /// 更新某个进程时间时发生
         /// </summary>
         event EventHandler OnUpdateTime;
+        /// <summary>
+        /// 初始化完成时发生
+        /// </summary>
+        event EventHandler OnStarted;
     }
 }

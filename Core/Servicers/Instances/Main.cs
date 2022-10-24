@@ -43,7 +43,7 @@ namespace Core.Servicers.Instances
         /// <summary>
         /// 当前聚焦进程
         /// </summary>
-        private string activeProcess, activeProcessDescription, activeProcessFile = null;
+        private string activeProcess = null;
 
         /// <summary>
         /// 焦点开始时间
@@ -61,6 +61,7 @@ namespace Core.Servicers.Instances
         private ConfigModel config;
 
         public event EventHandler OnUpdateTime;
+        public event EventHandler OnStarted;
 
         /// <summary>
         /// 忽略进程缓存列表
@@ -104,8 +105,14 @@ namespace Core.Servicers.Instances
         private void DateTimeObserver_OnDateTimeChanging(object sender, DateTime time)
         {
             Logger.Info("[time changed] status:" + sleepStatus + ",process:" + activeProcess + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
-
-            UpdateTime(time);
+            if (sleepStatus == SleepStatus.Wake)
+            {
+                UpdateTime();
+            }
+            else
+            {
+                activeStartTime = DateTime.Now;
+            }
         }
 
         private void AppConfig_ConfigChanged(ConfigModel oldConfig, ConfigModel newConfig)
@@ -157,6 +164,7 @@ namespace Core.Servicers.Instances
             //  启动睡眠监测
             sleepdiscover.Start();
 
+            OnStarted?.Invoke(this, EventArgs.Empty);
         }
 
         public void Exit()
@@ -188,14 +196,11 @@ namespace Core.Servicers.Instances
         {
             this.sleepStatus = sleepStatus;
 
-            Debug.WriteLine("睡眠状态：" + sleepStatus);
-            Logger.Info("【" + sleepStatus + "】当前进程：" + activeProcess);
+            Logger.Info($"[{sleepStatus}] process:{activeProcess},start:{activeStartTime}");
             if (sleepStatus == SleepStatus.Sleep)
             {
                 //  更新时间
                 UpdateTime();
-
-                activeProcess = null;
             }
             else if (sleepStatus == SleepStatus.Wake)
             {
@@ -258,22 +263,25 @@ namespace Core.Servicers.Instances
 
         private void Observer_OnAppActive(string processName, string description, string file)
         {
+            if (sleepStatus == SleepStatus.Sleep)
+            {
+                return;
+            }
+
             bool isCheck = IsCheckApp(processName, description, file);
 
-            if (activeProcess != processName && activeProcessFile != file)
+            if (activeProcess != processName)
             {
                 UpdateTime();
             }
 
-            if (isCheck && sleepStatus != SleepStatus.Sleep)
+            if (isCheck)
             {
                 if (activeProcess == null)
                 {
                     activeStartTime = DateTime.Now;
                 }
                 activeProcess = processName;
-                activeProcessDescription = description;
-                activeProcessFile = file;
             }
             else
             {
@@ -329,10 +337,12 @@ namespace Core.Servicers.Instances
         }
         #endregion
 
-        private void UpdateTime(DateTime? time = null)
+        private void UpdateTime()
         {
             if (!string.IsNullOrEmpty(activeProcess))
             {
+                var time = activeStartTime;
+
                 //  更新计时
                 TimeSpan timeSpan = DateTime.Now - activeStartTime;
 
@@ -357,8 +367,6 @@ namespace Core.Servicers.Instances
                 activeStartTime = DateTime.Now;
 
                 OnUpdateTime?.Invoke(this, null);
-
-
             }
         }
 
