@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -35,20 +36,45 @@ namespace Core.Servicers.Instances
         /// </summary>
         private DateTime pressKeyboardLastTime;
 
-        private readonly IObserver observer;
-
+        //  键盘钩子
         private Win32API.LowLevelKeyboardProc keyboardProc;
         private static IntPtr hookKeyboardID = IntPtr.Zero;
+
+
+        //  鼠标钩子
+        private Win32API.LowLevelKeyboardProc mouseProc;
+        private static IntPtr hookMouseID = IntPtr.Zero;
+        private IntPtr mouseHook;
+
         private int emptyPointNum = 0;
-        public Sleepdiscover(IObserver observer)
+        public Sleepdiscover()
         {
-            this.observer = observer;
-            observer.OnAppActive += Observer_OnAppActive;
             SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(OnPowerModeChanged);
             SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
+
             keyboardProc = HookCallback;
+            mouseProc = HookMouseCallback;
         }
 
+        public void Start()
+        {
+            timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 5, 0);
+            //#if DEBUG
+            //            timer.Interval = new TimeSpan(0, 0, 10);
+            //#endif
+            timer.Tick += Timer_Tick;
+            timer.Start();
+
+            lastPoint = Win32API.GetCursorPosition();
+
+            playSoundStartTime = DateTime.MinValue;
+
+            pressKeyboardLastTime = DateTime.Now;
+
+            //  设置键盘钩子
+            Win32API.SetKeyboardHook(keyboardProc);
+        }
         private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
         {
             if (e.Reason == SessionSwitchReason.RemoteDisconnect || e.Reason == SessionSwitchReason.ConsoleDisconnect)
@@ -56,24 +82,38 @@ namespace Core.Servicers.Instances
                 //  与这台设备远程桌面连接断开
                 if (status == SleepStatus.Wake)
                 {
-                    status = SleepStatus.Sleep;
-                    SleepStatusChanged?.Invoke(status);
                     Logger.Warn("与这台设备远程桌面连接断开");
+                    Sleep();
                 }
             }
         }
 
+        private IntPtr HookMouseCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+
+            if (nCode >= 0)
+            {
+                if (wParam == (IntPtr)Win32API.WM_LBUTTONDBLCLK || wParam == (IntPtr)Win32API.WM_WHEEL)
+                {
+                    Logger.Info("鼠标唤醒");
+
+                    Wake();
+                }
+
+            }
+
+            return Win32API.CallNextHookEx(hookMouseID, nCode, wParam, lParam);
+        }
         private IntPtr HookCallback(
            int nCode, IntPtr wParam, IntPtr lParam)
         {
             if (nCode >= 0 && wParam == (IntPtr)Win32API.WM_KEYDOWN)
             {
-                int vkCode = Marshal.ReadInt32(lParam);
-
                 if (status == SleepStatus.Sleep)
                 {
-                    status = SleepStatus.Wake;
-                    SleepStatusChanged?.Invoke(status);
+                    Logger.Info("键盘唤醒");
+
+                    Wake();
                 }
                 else
                 {
@@ -92,65 +132,33 @@ namespace Core.Servicers.Instances
                     //  电脑休眠
                     if (status == SleepStatus.Wake)
                     {
-                        status = SleepStatus.Sleep;
-                        SleepStatusChanged?.Invoke(status);
-                        Logger.Warn("设备已休眠");
+                        Logger.Info("设备已休眠");
+
+                        Sleep();
                     }
                     break;
                 case PowerModes.Resume:
                     //  电脑恢复
                     if (status == SleepStatus.Sleep)
                     {
-                        playSoundStartTime = DateTime.MinValue;
-                        status = SleepStatus.Wake;
-                        SleepStatusChanged?.Invoke(status);
-                        Logger.Warn("设备已恢复");
+                        Logger.Info("设备已恢复");
+
+                        Wake();
                     }
                     break;
             }
         }
 
-        private void Observer_OnAppActive(string processName, string description, string file)
+
+
+        #region 指示当前是否处于睡眠状态
+        /// <summary>
+        /// 指示当前是否处于睡眠状态
+        /// </summary>
+        /// <returns>睡眠返回true</returns>
+        private async Task<bool> IsSleepAsync()
         {
-            if (status == SleepStatus.Sleep)
-            {
-                TimeSpan timeSpan = DateTime.Now - pressKeyboardLastTime;
-
-                Point point = Win32API.GetCursorPosition();
-                if (lastPoint.ToString() == point.ToString() && timeSpan.TotalSeconds > 10)
-                {
-                    //  非鼠标或键盘激活
-                    return;
-                }
-
-                playSoundStartTime = DateTime.MinValue;
-                status = SleepStatus.Wake;
-                SleepStatusChanged?.Invoke(status);
-            }
-        }
-
-        public void Start()
-        {
-            timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 2, 0);
-#if DEBUG
-            //timer.Interval = new TimeSpan(0, 0, 10);
-#endif
-            timer.Tick += Timer_Tick;
-            timer.Start();
-
-            lastPoint = Win32API.GetCursorPosition();
-
-            playSoundStartTime = DateTime.MinValue;
-
-            pressKeyboardLastTime = DateTime.Now;
-
-            //  设置键盘钩子
-            Win32API.SetKeyboardHook(keyboardProc);
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
+            //  1.先判断鼠标是否有过移动
             Point point = Win32API.GetCursorPosition();
 
             if (point.X + point.Y == 0)
@@ -160,92 +168,154 @@ namespace Core.Servicers.Instances
                 if (emptyPointNum == 2)
                 {
                     emptyPointNum = 0;
-                    status = SleepStatus.Sleep;
-                    SleepStatusChanged?.Invoke(status);
-                    Logger.Info("empty point num:" + point.ToString());
+                    return true;
                 }
-                return;
             }
 
-            if (lastPoint == null)
+            if (lastPoint.ToString() != point.ToString())
             {
+                //  鼠标在移动，更新坐标
                 lastPoint = point;
-                return;
+                return false;
             }
 
-            if (status == SleepStatus.Wake)
+            //  2.判断是否键盘超时
+            if (!IsKeyboardOuttime())
             {
+                //  十分钟内有键盘操作
+                return false;
+            }
 
-                if (lastPoint.ToString() == point.ToString())
-                {
-                    //  处于活跃状态
-                    bool isPlaySound = Win32API.IsWindowsPlayingSound();
-                    //  超过时间未活动鼠标
+            //  3.鼠标和键盘都没有操作时判断是否在播放声音
 
-                    if (isPlaySound)
-                    {
-                        //  在播放声音
+            //  持续30秒检测当前是否在播放声音
+            bool isPlaySound = await IsPlaySoundAsync();
 
-                        if (playSoundStartTime == DateTime.MinValue)
-                        {
-                            playSoundStartTime = DateTime.Now;//没有正确更新时间导致没超过2个小时就进入睡眠状态了
-                        }
-                        else
-                        {
-                            //  判断声音时间是否超过2个小时
-                            TimeSpan timeSpan = DateTime.Now - playSoundStartTime;
+            if (!isPlaySound)
+            {
+                //  没有声音判定为睡眠状态
+                return true;
+            }
 
-                            if (timeSpan.TotalHours >= 2 && IsPressKeyboardOuttime())
-                            {
-                                //  超过表示可能睡着了，切换状态
-                                status = SleepStatus.Sleep;
-                                Logger.Info("[sleep] [1] time:" + timeSpan.TotalHours + ",start:" + playSoundStartTime);
+            //  在播放声音
+            if (playSoundStartTime == DateTime.MinValue)
+            {
+                //  第一次记录声音开始时间
+                playSoundStartTime = DateTime.Now;
+                return false;
+            }
 
-                                playSoundStartTime = DateTime.MinValue;
-                                SleepStatusChanged?.Invoke(status);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (IsPressKeyboardOuttime())
-                        {
-                            //  没有播放声音且键盘休眠超时
-                            status = SleepStatus.Sleep;
-                            Logger.Info("[sleep] [2] " + pressKeyboardLastTime);
+            //  声音播放超过两个小时视为睡眠状态
+            TimeSpan timeSpan = DateTime.Now - playSoundStartTime;
 
-                            SleepStatusChanged?.Invoke(status);
-                        }
-                    }
-                }
-                else
-                {
-                    playSoundStartTime = DateTime.MinValue;
-                }
+            if (timeSpan.TotalHours >= 2)
+            {
+                //  重置声音开始时间
+                playSoundStartTime = DateTime.MinValue;
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
+
+        private async void Timer_Tick(object sender, EventArgs e)
+        {
+            timer.Stop();
+            bool isSleep = await IsSleepAsync();
+            if (isSleep)
+            {
+                Sleep();
             }
             else
             {
-                //  处于休眠状态
-                if (lastPoint.ToString() != point.ToString())
-                {
-                    //  鼠标活动了切换状态
-                    status = SleepStatus.Wake;
-                    SleepStatusChanged?.Invoke(status);
-                }
+                timer.Start();
             }
-
-            lastPoint = point;
         }
 
+        private void Sleep()
+        {
+            //  停止离开检测计时器
+            timer.Stop();
+
+            if (status == SleepStatus.Sleep)
+            {
+                return;
+            }
+            status = SleepStatus.Sleep;
+
+            //  设置鼠标钩子
+            mouseHook = Win32API.SetMouseHook(mouseProc);
+
+            //  状态通知
+            SleepStatusChanged?.Invoke(status);
+        }
+
+        private void Wake()
+        {
+            if (status == SleepStatus.Wake)
+            {
+                return;
+            }
+
+            status = SleepStatus.Wake;
+
+            //  卸载鼠标钩子
+            Win32API.UnhookWindowsHookEx(mouseHook);
+
+            //  启动离开检测
+            timer.Start();
+
+
+
+            //  重置声音播放时间
+            playSoundStartTime = DateTime.MinValue;
+
+            //  重置鼠标坐标
+            lastPoint = Win32API.GetCursorPosition();
+
+            //  状态通知
+            SleepStatusChanged?.Invoke(status);
+
+        }
+
+        private async Task<bool> IsPlaySoundAsync()
+        {
+            bool result = false;
+
+            await Task.Run(() =>
+            {
+                //  持续30秒
+                int time = 30;
+
+                while (time > 0)
+                {
+                    bool isPlay = Win32API.IsWindowsPlayingSound();
+                    if (isPlay)
+                    {
+                        result = true;
+                        break;
+                    }
+                    else
+                    {
+                        time--;
+                        Debug.WriteLine(time);
+                        Thread.Sleep(1000);
+                    }
+                }
+            });
+            return result;
+        }
 
         /// <summary>
-        /// 通过按键时间判断（超过5分钟未有键盘操作视为超时）
+        /// 指示是否键盘行为超时（超过10分钟）
         /// </summary>
-        /// <returns></returns>
-        private bool IsPressKeyboardOuttime()
+        /// <returns>超时返回true</returns>
+        private bool IsKeyboardOuttime()
         {
             TimeSpan timeSpan = DateTime.Now - pressKeyboardLastTime;
-            return timeSpan.TotalMinutes >= 5;
+
+            return timeSpan.TotalMinutes >= 10;
         }
     }
 }
