@@ -54,11 +54,11 @@ namespace Core.Servicers.Instances
             if (e.Reason == SessionSwitchReason.RemoteDisconnect || e.Reason == SessionSwitchReason.ConsoleDisconnect)
             {
                 //  与这台设备远程桌面连接断开
-                Debug.WriteLine("与这台设备远程桌面连接断开");
                 if (status == SleepStatus.Wake)
                 {
                     status = SleepStatus.Sleep;
                     SleepStatusChanged?.Invoke(status);
+                    Logger.Warn("与这台设备远程桌面连接断开");
                 }
             }
         }
@@ -89,20 +89,22 @@ namespace Core.Servicers.Instances
             switch (e.Mode)
             {
                 case PowerModes.Suspend:
-                    //电脑休眠
+                    //  电脑休眠
                     if (status == SleepStatus.Wake)
                     {
                         status = SleepStatus.Sleep;
                         SleepStatusChanged?.Invoke(status);
+                        Logger.Warn("设备已休眠");
                     }
                     break;
                 case PowerModes.Resume:
-                    //电脑恢复
+                    //  电脑恢复
                     if (status == SleepStatus.Sleep)
                     {
                         playSoundStartTime = DateTime.MinValue;
                         status = SleepStatus.Wake;
                         SleepStatusChanged?.Invoke(status);
+                        Logger.Warn("设备已恢复");
                     }
                     break;
             }
@@ -197,9 +199,9 @@ namespace Core.Servicers.Instances
                             {
                                 //  超过表示可能睡着了，切换状态
                                 status = SleepStatus.Sleep;
+                                Logger.Info("[sleep] [1] time:" + timeSpan.TotalHours + ",start:" + playSoundStartTime);
 
                                 playSoundStartTime = DateTime.MinValue;
-                                Logger.Info("[sleep] [1] time:" + timeSpan.TotalHours + ",start:" + playSoundStartTime);
                                 SleepStatusChanged?.Invoke(status);
                             }
                         }
@@ -210,7 +212,7 @@ namespace Core.Servicers.Instances
                         {
                             //  没有播放声音且键盘休眠超时
                             status = SleepStatus.Sleep;
-                            Logger.Info("[sleep] [2]");
+                            Logger.Info("[sleep] [2] " + pressKeyboardLastTime);
 
                             SleepStatusChanged?.Invoke(status);
                         }
