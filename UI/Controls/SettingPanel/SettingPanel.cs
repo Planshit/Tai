@@ -45,6 +45,7 @@ namespace UI.Controls.SettingPanel
         private StackPanel Container;
         private object configData;
         private readonly string nosetGroupKey = "noset_group";
+        private bool isCanRender = true;
         private Dictionary<string, List<Config>> configList;
         public Dictionary<string, List<string>> SettingData { get; set; }
         public SettingPanel()
@@ -52,16 +53,23 @@ namespace UI.Controls.SettingPanel
             DefaultStyleKey = typeof(SettingPanel);
             SettingData = new Dictionary<string, List<string>>();
         }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
             Container = GetTemplateChild("Container") as StackPanel;
 
+            isCanRender = true;
             Render();
         }
         private void Render()
         {
+            if (!isCanRender)
+            {
+                isCanRender = true;
+                return;
+            }
             configList = new Dictionary<string, List<Config>>();
             configList.Add(nosetGroupKey, new List<Config>());
 
@@ -169,6 +177,8 @@ namespace UI.Controls.SettingPanel
                     {
                         newList.Add(item);
                     }
+
+                    isCanRender = false;
                     Data = newList;
                 }
             };
@@ -183,6 +193,8 @@ namespace UI.Controls.SettingPanel
                   {
                       newList.Add(item);
                   }
+
+                  isCanRender = false;
                   Data = newList;
               }));
             return panel;
@@ -343,6 +355,8 @@ namespace UI.Controls.SettingPanel
             control.OnSelectedItemChanged += (e, c) =>
             {
                 pi.SetValue(configData, control.SelectedItem.Data);
+
+                isCanRender = false;
                 Data = configData;
             };
             //var inputControl = new Toggle.Toggle();
@@ -371,6 +385,7 @@ namespace UI.Controls.SettingPanel
             {
                 pi.SetValue(configData, inputControl.IsChecked);
 
+                isCanRender = false;
                 Data = configData;
             };
 
@@ -400,6 +415,8 @@ namespace UI.Controls.SettingPanel
                         newData.Add(item.ToString());
                     }
                     pi.SetValue(configData, newData);
+
+                    isCanRender = false;
                     Data = configData;
                 };
             };

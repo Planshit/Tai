@@ -294,7 +294,7 @@ namespace UI.Controls.Navigation
                 navItem.IconColor = item.IconColor;
                 navItem.BadgeText = item.BadgeText;
                 navItem.Uri = item.Uri;
-                //navItem.IsSelected = item.IsSelected;
+                
                 if (!string.IsNullOrEmpty(item.Title))
                 {
                     navItem.MouseUp += NavItem_MouseUp;
@@ -369,6 +369,7 @@ namespace UI.Controls.Navigation
                 return;
             }
             var item = ItemsDictionary[SelectedItem.ID];
+            item.IsSelected = true;
             //var index = Data.IndexOf(SelectedItem);
 
             //ActiveBlock.Height = item.ActualHeight * Data.Count;

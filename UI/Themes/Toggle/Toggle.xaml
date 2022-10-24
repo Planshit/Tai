@@ -71,6 +71,23 @@
                         </VisualStateManager.VisualStateGroups>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True">
+                            <Setter TargetName="Button" Property="Background" Value="#2b20d9"/>
+                            <Setter TargetName="Mark" Property="Background" Value="White"/>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.RenderTransform).
+               (TranslateTransform.X)"
+                                          Storyboard.TargetName="Mark">
+                                            <EasingDoubleKeyFrame KeyTime="00:00:0"
+                                   Value="28" />
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="OffText" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="OnText" Property="Visibility" Value="Visible"/>

@@ -52,17 +52,24 @@ namespace UI.Controls.Toggle
         public Toggle()
         {
             DefaultStyleKey = typeof(Toggle);
+            //Loaded += Toggle_Loaded;
         }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            VisualStateManager.GoToState(this, IsChecked ? "On" : "Off", true);
         }
+        
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
             IsChecked = !IsChecked;
             ToggleChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void Toggle_Loaded(object sender, RoutedEventArgs e)
+        {
+            //VisualStateManager.GoToState(this, IsChecked ? "On" : "Off", true);
         }
     }
 }
