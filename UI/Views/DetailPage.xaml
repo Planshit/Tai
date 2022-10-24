@@ -9,8 +9,12 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="DetailPage"
     xmlns:btn="clr-namespace:UI.Controls.Button"
-    xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" Foreground="{DynamicResource StandardTextBrush}">
-
+    xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" Foreground="{DynamicResource StandardTextBrush}" Background="Transparent">
+    <Page.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="刷新" Command="{Binding RefreshCommand}"/>
+        </ContextMenu>
+    </Page.ContextMenu>
     <StackPanel Margin="20">
         <TextBlock Text="查看" FontSize="18" Margin="0,0,0,20"/>
 

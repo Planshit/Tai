@@ -191,7 +191,12 @@
     <Compile Include="Models\UINotifyPropertyChanged.cs" />
     <Compile Include="Servicers\AppContextMenuServicer.cs" />
     <Compile Include="Servicers\IAppContextMenuServicer.cs" />
+    <Compile Include="Servicers\IInputServicer.cs" />
+    <Compile Include="Servicers\IMainServicer.cs" />
+    <Compile Include="Servicers\InputEventHandler.cs" />
+    <Compile Include="Servicers\InputServicer.cs" />
     <Compile Include="Servicers\IThemeServicer.cs" />
+    <Compile Include="Servicers\MainServicer.cs" />
     <Compile Include="Servicers\ThemeServicer.cs" />
     <Compile Include="ViewModels\CategoryAppListPageVM.cs" />
     <Compile Include="ViewModels\CategoryPageVM.cs" />

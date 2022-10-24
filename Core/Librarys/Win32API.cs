@@ -220,11 +220,24 @@ namespace Core.Librarys
         #endregion
 
         #region 键盘钩子
+        [StructLayout(LayoutKind.Sequential)]
+        public class KeyboardHookStruct
+        {
+            public int vkCode;  //定一个虚拟键码。该代码必须有一个价值的范围1至254
+            public int scanCode; // 指定的硬件扫描码的关键
+            public int flags;  // 键标志
+            public int time; // 指定的时间戳记的这个讯息
+            public int dwExtraInfo; // 指定额外信息相关的信息
+        }
+
         private const int WH_KEYBOARD_LL = 13;
         public const int WM_KEYDOWN = 0x0100;
         private const int WH_MOUSE_LL = 14;
         public const int WM_LBUTTONDBLCLK = 0x202;
         public const int WM_WHEEL = 0x20a;
+        public const int WM_KEYUP = 0x101;
+        public const int WM_SYSKEYDOWN = 0x104;
+        public const int WM_SYSKEYUP = 0x105;
         /// <summary>
         /// 设置键盘钩子
         /// </summary>

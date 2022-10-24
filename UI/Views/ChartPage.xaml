@@ -6,8 +6,12 @@
       xmlns:local="clr-namespace:UI.Views" xmlns:charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:select="clr-namespace:UI.Controls.Select" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:DatePickerBar="clr-namespace:UI.Controls.DatePickerBar"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ChartPage" Foreground="{DynamicResource StandardTextBrush}">
-
+      Title="ChartPage" Foreground="{DynamicResource StandardTextBrush}" Background="Transparent">
+    <Page.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="刷新" Command="{Binding RefreshCommand}"/>
+        </ContextMenu>
+    </Page.ContextMenu>
     <StackPanel Margin="20">
         <TextBlock Text="统计" FontSize="18" Margin="0,5,0,20"/>
         <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>

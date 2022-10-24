@@ -13,6 +13,7 @@ using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
 using UI.Models;
+using UI.Servicers;
 
 namespace UI.ViewModels
 {
@@ -23,23 +24,29 @@ namespace UI.ViewModels
         private readonly IAppConfig appConfig;
         private readonly ICategorys categories;
         private readonly IAppData appData;
+        private readonly IInputServicer inputServicer;
 
         private ConfigModel config;
         public Command BlockActionCommand { get; set; }
         public Command ClearSelectMonthDataCommand { get; set; }
         public Command InfoMenuActionCommand { get; set; }
+        public Command RefreshCommand { get; set; }
+
         public DetailPageVM(
-            IData data, MainViewModel main, IAppConfig appConfig, ICategorys categories, IAppData appData)
+            IData data, MainViewModel main, IAppConfig appConfig, ICategorys categories, IAppData appData, IInputServicer inputServicer)
         {
             this.data = data;
             this.main = main;
             this.appConfig = appConfig;
             this.categories = categories;
             this.appData = appData;
+            this.inputServicer = inputServicer;
 
             BlockActionCommand = new Command(new Action<object>(OnBlockActionCommand));
             ClearSelectMonthDataCommand = new Command(new Action<object>(OnClearSelectMonthDataCommand));
             InfoMenuActionCommand = new Command(new Action<object>(OnInfoMenuActionCommand));
+            RefreshCommand = new Command(new Action<object>(OnRefreshCommand));
+
             Init();
         }
 
@@ -89,7 +96,27 @@ namespace UI.ViewModels
             await LoadInfo();
 
             LoadDayData();
+
+            inputServicer.OnKeyUpInput += InputServicer_OnKeyUpInput;
         }
+
+        private async void InputServicer_OnKeyUpInput(object sender, System.Windows.Forms.Keys key)
+        {
+            if (key == System.Windows.Forms.Keys.F5)
+            {
+                //  刷新
+                LoadChartData();
+                await LoadData();
+            }
+        }
+
+        private async void OnRefreshCommand(object obj)
+        {
+            //  刷新
+            LoadChartData();
+            await LoadData();
+        }
+
         private void OnInfoMenuActionCommand(object obj)
         {
             switch (obj.ToString())
@@ -193,26 +220,7 @@ namespace UI.ViewModels
             }
             if (e.PropertyName == nameof(TabbarSelectedIndex))
             {
-                if (TabbarSelectedIndex == 0)
-                {
-                    NameIndexStart = 0;
-
-                    LoadDayData();
-                }
-                else if (TabbarSelectedIndex == 1)
-                {
-                    LoadWeekData();
-                }
-                else if (TabbarSelectedIndex == 2)
-                {
-                    NameIndexStart = 1;
-
-                    LoadMonthlyData();
-                }
-                else if (TabbarSelectedIndex == 3)
-                {
-                    LoadYearData();
-                }
+                LoadChartData();
 
             }
             if (e.PropertyName == nameof(SelectedWeek))
@@ -224,6 +232,33 @@ namespace UI.ViewModels
                 LoadMonthlyData();
             }
             if (e.PropertyName == nameof(YearDate))
+            {
+                LoadYearData();
+            }
+        }
+
+        /// <summary>
+        /// 加载柱状图图表数据
+        /// </summary>
+        private void LoadChartData()
+        {
+            if (TabbarSelectedIndex == 0)
+            {
+                NameIndexStart = 0;
+
+                LoadDayData();
+            }
+            else if (TabbarSelectedIndex == 1)
+            {
+                LoadWeekData();
+            }
+            else if (TabbarSelectedIndex == 2)
+            {
+                NameIndexStart = 1;
+
+                LoadMonthlyData();
+            }
+            else if (TabbarSelectedIndex == 3)
             {
                 LoadYearData();
             }
@@ -267,50 +302,8 @@ namespace UI.ViewModels
                     var link = config.Links.Where(m => m.ProcessList.Contains(App.Name)).FirstOrDefault();
                     if (link != null)
                     {
-                        LinkApps = appData.GetAllApps().Where(m => link.ProcessList.Contains(m.Name) && m.Name!=App.Name).ToList();
+                        LinkApps = appData.GetAllApps().Where(m => link.ProcessList.Contains(m.Name) && m.Name != App.Name).ToList();
                     }
-
-                    //var today = data.GetProcess(App.ID, DateTime.Now);
-                    //var yesterday = data.GetProcess(App.ID, DateTime.Now.AddDays(-1));
-
-                    //if (today != null)
-                    //{
-                    //    TodayTime = Time.ToString(today.Time);
-                    //}
-                    //else
-                    //{
-                    //    TodayTime = "暂无数据";
-                    //}
-
-                    //if (yesterday != null)
-                    //{
-                    //    int diffseconds = today != null ? today.Time - yesterday.Time : yesterday.Time;
-
-                    //    string diffText = string.Empty;
-                    //    if (diffseconds != yesterday.Time)
-                    //    {
-                    //        if (diffseconds == 0)
-                    //        {
-                    //            //  无变化
-                    //            diffText = "持平";
-                    //        }
-                    //        else if (diffseconds > 0)
-                    //        {
-                    //            //  增加
-                    //            diffText = "增加了" + Time.ToString(diffseconds);
-                    //        }
-                    //        else
-                    //        {
-                    //            //  减少
-                    //            diffText = "减少了" + Time.ToString(Math.Abs(diffseconds));
-                    //        }
-                    //    }
-                    //    Yesterday = diffseconds == yesterday.Time ? "减少100%" : diffText;
-                    //}
-                    //else
-                    //{
-                    //    Yesterday = "昨日未使用";
-                    //}
                 }
             }
             );

@@ -22,18 +22,21 @@ namespace UI.ViewModels
         private readonly IData data;
         private readonly MainViewModel mainVM;
         private readonly IAppContextMenuServicer appContextMenuServicer;
-
+        private readonly IInputServicer inputServicer;
         public Command ToDetailCommand { get; set; }
+        public Command RefreshCommand { get; set; }
 
-        public ChartPageVM(IData data, ICategorys categorys, MainViewModel mainVM, IAppContextMenuServicer appContextMenuServicer)
+        public ChartPageVM(IData data, ICategorys categorys, MainViewModel mainVM, IAppContextMenuServicer appContextMenuServicer, IInputServicer inputServicer)
         {
             this.data = data;
             this.categorys = categorys;
             this.mainVM = mainVM;
             this.appContextMenuServicer = appContextMenuServicer;
+            this.inputServicer = inputServicer;
 
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
+            RefreshCommand = new Command(new Action<object>(OnRefreshCommand));
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
@@ -65,9 +68,12 @@ namespace UI.ViewModels
             LoadDayData();
 
             PropertyChanged += ChartPageVM_PropertyChanged;
+            inputServicer.OnKeyUpInput += InputServicer_OnKeyUpInput;
 
             AppContextMenu = appContextMenuServicer.GetContextMenu();
         }
+
+       
         public override void Dispose()
         {
             base.Dispose();
@@ -90,6 +96,19 @@ namespace UI.ViewModels
 
             }
         }
+        private void OnRefreshCommand(object obj)
+        {
+            LoadData();
+        }
+
+        private void InputServicer_OnKeyUpInput(object sender, System.Windows.Forms.Keys key)
+        {
+           if(key== System.Windows.Forms.Keys.F5)
+            {
+                LoadData();
+            }
+        }
+
 
         private void ChartPageVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -99,27 +118,8 @@ namespace UI.ViewModels
             }
             if (e.PropertyName == nameof(TabbarSelectedIndex))
             {
-                if (TabbarSelectedIndex == 0)
-                {
-                    NameIndexStart = 0;
 
-                    LoadDayData();
-                }
-                else if (TabbarSelectedIndex == 1)
-                {
-                    LoadWeekData();
-                }
-                else if (TabbarSelectedIndex == 2)
-                {
-                    NameIndexStart = 1;
-
-                    LoadMonthlyData();
-                }
-                else if (TabbarSelectedIndex == 3)
-                {
-                    LoadYearData();
-                }
-
+                LoadData();
             }
             if (e.PropertyName == nameof(SelectedWeek))
             {
@@ -130,6 +130,31 @@ namespace UI.ViewModels
                 LoadMonthlyData();
             }
             if (e.PropertyName == nameof(YearDate))
+            {
+                LoadYearData();
+            }
+        }
+
+
+        private void LoadData()
+        {
+            if (TabbarSelectedIndex == 0)
+            {
+                NameIndexStart = 0;
+
+                LoadDayData();
+            }
+            else if (TabbarSelectedIndex == 1)
+            {
+                LoadWeekData();
+            }
+            else if (TabbarSelectedIndex == 2)
+            {
+                NameIndexStart = 1;
+
+                LoadMonthlyData();
+            }
+            else if (TabbarSelectedIndex == 3)
             {
                 LoadYearData();
             }

@@ -22,24 +22,31 @@ namespace UI.ViewModels
     public class IndexPageVM : IndexPageModel
     {
         public Command ToDetailCommand { get; set; }
+        public Command RefreshCommand { get; set; }
         private readonly IData data;
         private readonly MainViewModel main;
         private readonly IMain mainServicer;
         private readonly IAppContextMenuServicer appContextMenuServicer;
-
+        private readonly IInputServicer inputServicer;
         public IndexPageVM(
-            IData data, MainViewModel main, IMain mainServicer, IAppContextMenuServicer appContextMenuServicer)
+            IData data, MainViewModel main, IMain mainServicer, IAppContextMenuServicer appContextMenuServicer, IInputServicer inputServicer)
         {
             this.data = data;
             this.main = main;
             this.mainServicer = mainServicer;
             this.appContextMenuServicer = appContextMenuServicer;
+            this.inputServicer = inputServicer;
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
+            RefreshCommand = new Command(new Action<object>(OnRefreshCommand));
 
             Init();
         }
 
+        private void OnRefreshCommand(object obj)
+        {
+            LoadData();
+        }
 
         public override void Dispose()
         {
@@ -57,11 +64,21 @@ namespace UI.ViewModels
             TabbarSelectedIndex = 1;
 
             PropertyChanged += IndexPageVM_PropertyChanged;
-
             LoadThisWeekData();
 
             appContextMenuServicer.Init();
             AppContextMenu = appContextMenuServicer.GetContextMenu();
+
+            inputServicer.OnKeyUpInput += InputServicer_OnKeyUpInput;
+        }
+
+        private void InputServicer_OnKeyUpInput(object sender, System.Windows.Forms.Keys key)
+        {
+            if(key== System.Windows.Forms.Keys.F5)
+            {
+                //  重新加载数据
+                LoadData();
+            }
         }
 
         private void OnTodetailCommand(object obj)
@@ -84,18 +101,28 @@ namespace UI.ViewModels
         {
             if (e.PropertyName == nameof(TabbarSelectedIndex))
             {
-                if (TabbarSelectedIndex == 1)
-                {
-                    LoadThisWeekData();
-                }
-                else
-                {
-                    LoadLastWeekData();
-                }
+                LoadData();
             }
         }
 
         #region 读取数据
+
+        private void LoadData()
+        {
+            if (IsLoading)
+            {
+                return;
+            }
+
+            if (TabbarSelectedIndex == 1)
+            {
+                LoadThisWeekData();
+            }
+            else
+            {
+                LoadLastWeekData();
+            }
+        }
 
         #region 本周数据
         private void LoadThisWeekData()
@@ -126,7 +153,6 @@ namespace UI.ViewModels
 
         }
         #endregion
-
 
         #region 上周数据
         private void LoadLastWeekData()
