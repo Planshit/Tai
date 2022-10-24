@@ -89,6 +89,25 @@ namespace UI.Servicers
         public void SetMainWindow(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
+            mainWindow.SizeChanged += MainWindow_SizeChanged;
+
+            var config = appConfig.GetConfig();
+            if (config.General.IsSaveWindowSize)
+            {
+                mainWindow.Width = config.General.WindowWidth;
+                mainWindow.Height = config.General.WindowHeight;
+            }
+        }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var config = appConfig.GetConfig();
+            if (config.General.IsSaveWindowSize)
+            {
+                config.General.WindowWidth = mainWindow.ActualWidth;
+                config.General.WindowHeight = mainWindow.ActualHeight;
+                appConfig.Save();
+            }
         }
 
         public void UpdateWindowStyle()
