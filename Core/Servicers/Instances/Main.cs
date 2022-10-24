@@ -356,16 +356,18 @@ namespace Core.Servicers.Instances
 
                 if (seconds > 0)
                 {
-                    data.Set(activeProcess, seconds, time);
+                    Task.Run(() =>
+                    {
+                        data.Set(activeProcess, seconds, time);
 
-                    //  关联进程更新
-                    HandleLinks(activeProcess, seconds, time);
+                        //  关联进程更新
+                        HandleLinks(activeProcess, seconds, time);
+
+                        Logger.Info("status:" + sleepStatus + ",process:" + activeProcess + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
+                    });
                 }
 
-                Logger.Info("status:" + sleepStatus + ",process:" + activeProcess + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
-
                 activeStartTime = DateTime.Now;
-
                 OnUpdateTime?.Invoke(this, null);
             }
         }
