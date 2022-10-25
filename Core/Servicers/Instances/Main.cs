@@ -38,6 +38,7 @@ namespace Core.Servicers.Instances
             "OpenWith",
             "Updater",
             "LockApp",
+            "dwm",
         };
 
         /// <summary>
@@ -155,18 +156,27 @@ namespace Core.Servicers.Instances
             config = appConfig.GetConfig();
             UpdateConfigIgnoreProcess();
 
-            //  日期变化观察
-            dateTimeObserver.Start();
 
-            //  启动进程观察
-            observer.Start();
 
             //  启动睡眠监测
             sleepdiscover.Start();
+            Start();
 
             OnStarted?.Invoke(this, EventArgs.Empty);
         }
+        public void Start()
+        {
+            activeStartTime = DateTime.Now;
+            activeProcess = null;
 
+            dateTimeObserver.Start();
+            observer.Start();
+        }
+        public void Stop()
+        {
+            dateTimeObserver.Stop();
+            observer.Stop();
+        }
         public void Exit()
         {
             observer?.Stop();
@@ -199,13 +209,20 @@ namespace Core.Servicers.Instances
             Logger.Info($"[{sleepStatus}] process:{activeProcess},start:{activeStartTime}");
             if (sleepStatus == SleepStatus.Sleep)
             {
+                //  进入睡眠状态
+                Debug.WriteLine("进入睡眠状态");
+
+                //  停止服务
+                Stop();
+
                 //  更新时间
                 UpdateTime();
             }
-            else if (sleepStatus == SleepStatus.Wake)
+            else
             {
-                //  唤醒时重置计时开始时间
-                activeStartTime = DateTime.Now;
+                //  从睡眠状态唤醒
+                Debug.WriteLine("从睡眠状态唤醒");
+                Start();
             }
         }
 
@@ -339,7 +356,9 @@ namespace Core.Servicers.Instances
 
         private void UpdateTime()
         {
-            if (!string.IsNullOrEmpty(activeProcess))
+            string app = activeProcess != null ? activeProcess.ToString() : "";
+
+            if (!string.IsNullOrEmpty(app))
             {
                 var time = activeStartTime;
 
@@ -358,12 +377,12 @@ namespace Core.Servicers.Instances
                 {
                     Task.Run(() =>
                     {
-                        data.Set(activeProcess, seconds, time);
+                        data.Set(app, seconds, time);
 
                         //  关联进程更新
-                        HandleLinks(activeProcess, seconds, time);
+                        HandleLinks(app, seconds, time);
 
-                        Logger.Info("status:" + sleepStatus + ",process:" + activeProcess + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
+                        Logger.Info("status:" + sleepStatus + ",process:" + app + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
                     });
                 }
 

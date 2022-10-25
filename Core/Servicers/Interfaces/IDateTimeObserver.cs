@@ -17,6 +17,10 @@ namespace Core.Servicers.Interfaces
         /// </summary>
         void Start();
         /// <summary>
+        /// 停止
+        /// </summary>
+        void Stop();
+        /// <summary>
         /// 日期即将变化时发生（前1秒）
         /// </summary>
         event DateTimeObserverEventHandler OnDateTimeChanging;

@@ -12,13 +12,21 @@ namespace Core.Servicers.Interfaces
     public interface IMain
     {
         /// <summary>
-        /// 启动服务
+        /// 运行服务（仅首次启动调用）
         /// </summary>
         void Run();
         /// <summary>
         /// 退出服务
         /// </summary>
         void Exit();
+        /// <summary>
+        /// 启动服务
+        /// </summary>
+        void Start();
+        /// <summary>
+        /// 停止服务
+        /// </summary>
+        void Stop();
 
         /// <summary>
         /// 更新某个进程时间时发生

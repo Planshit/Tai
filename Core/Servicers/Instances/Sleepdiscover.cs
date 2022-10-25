@@ -60,9 +60,9 @@ namespace Core.Servicers.Instances
         {
             timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 5, 0);
-            //#if DEBUG
-            //            timer.Interval = new TimeSpan(0, 0, 10);
-            //#endif
+#if DEBUG
+            //timer.Interval = new TimeSpan(0, 0, 10);
+#endif
             timer.Tick += Timer_Tick;
             timer.Start();
 
@@ -158,7 +158,6 @@ namespace Core.Servicers.Instances
         /// <returns>睡眠返回true</returns>
         private async Task<bool> IsSleepAsync()
         {
-            //  1.先判断鼠标是否有过移动
             Point point = Win32API.GetCursorPosition();
 
             if (point.X + point.Y == 0)
@@ -172,21 +171,13 @@ namespace Core.Servicers.Instances
                 }
             }
 
-            if (lastPoint.ToString() != point.ToString())
+            bool isActive = await IsActiveAsync();
+            if (isActive)
             {
-                //  鼠标在移动，更新坐标
-                lastPoint = point;
                 return false;
             }
 
-            //  2.判断是否键盘超时
-            if (!IsKeyboardOuttime())
-            {
-                //  十分钟内有键盘操作
-                return false;
-            }
-
-            //  3.鼠标和键盘都没有操作时判断是否在播放声音
+            //  鼠标和键盘都没有操作时判断是否在播放声音
 
             //  持续30秒检测当前是否在播放声音
             bool isPlaySound = await IsPlaySoundAsync();
@@ -279,6 +270,10 @@ namespace Core.Servicers.Instances
 
         }
 
+        /// <summary>
+        /// 指示当前是否在播放声音（持续30秒检测）
+        /// </summary>
+        /// <returns>播放返回true</returns>
         private async Task<bool> IsPlaySoundAsync()
         {
             bool result = false;
@@ -308,13 +303,51 @@ namespace Core.Servicers.Instances
         }
 
         /// <summary>
+        /// 指示当前是否处于活跃状态（持续30秒检测）
+        /// </summary>
+        /// <returns>活跃返回true</returns>
+        private async Task<bool> IsActiveAsync()
+        {
+            bool result = false;
+
+            await Task.Run(() =>
+            {
+                //  持续30秒
+                int time = 30;
+
+                while (time > 0)
+                {
+                    Point point = Win32API.GetCursorPosition();
+                    bool isMouseMove = lastPoint.ToString() != point.ToString();
+                    bool isKeyboardActive = !IsKeyboardOuttime();
+
+                    if (isMouseMove || isKeyboardActive)
+                    {
+                        lastPoint = Win32API.GetCursorPosition();
+                        result = true;
+                        break;
+                    }
+                    else
+                    {
+                        time--;
+                        Debug.WriteLine(time);
+                        Thread.Sleep(1000);
+                    }
+                }
+            });
+            return result;
+        }
+
+        /// <summary>
         /// 指示是否键盘行为超时（超过10分钟）
         /// </summary>
         /// <returns>超时返回true</returns>
         private bool IsKeyboardOuttime()
         {
             TimeSpan timeSpan = DateTime.Now - pressKeyboardLastTime;
-
+#if DEBUG
+            //return timeSpan.TotalSeconds >= 10;
+#endif
             return timeSpan.TotalMinutes >= 10;
         }
     }
