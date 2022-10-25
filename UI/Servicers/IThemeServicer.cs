@@ -9,7 +9,7 @@ namespace UI.Servicers
     public interface IThemeServicer
     {
         void Init();
-        void LoadTheme(string themeName);
+        void LoadTheme(string themeName, bool isRefresh = false);
         void SetMainWindow(MainWindow mainWindow);
 
         void UpdateWindowStyle();

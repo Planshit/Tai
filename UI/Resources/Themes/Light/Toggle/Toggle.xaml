@@ -74,7 +74,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True">
-                            <Setter TargetName="Button" Property="Background" Value="#2b20d9"/>
+                            <Setter TargetName="Button" Property="Background" Value="{DynamicResource ThemeBrush}"/>
                             <Setter TargetName="Mark" Property="Background" Value="White"/>
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>

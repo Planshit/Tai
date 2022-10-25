@@ -41,6 +41,7 @@ namespace UI.Controls.Base
             {
                 control.Color = control.Colors[0];
             }
+            control.OnSelected?.Invoke(control, EventArgs.Empty);
         }
 
         public bool IsOpen
@@ -119,6 +120,7 @@ namespace UI.Controls.Base
 
         public Command ShowSelectCommand { get; set; }
         public Command ColorSelectCommand { get; set; }
+        public event EventHandler OnSelected;
 
         public ColorSelect()
         {

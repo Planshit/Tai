@@ -330,9 +330,48 @@ namespace UI.Controls.SettingPanel
             {
                 uIElement = RenderOptionsConfigControl(attribute, pi);
             }
+            else if (pi.PropertyType == typeof(string))
+            {
+                if (pi.Name.LastIndexOf("Color") != -1)
+                {
+                    uIElement = RenderColorConfigControl(attribute, pi);
+                }
+            }
             return uIElement;
         }
 
+        /// <summary>
+        /// 渲染颜色选择配置项
+        /// </summary>
+        /// <param name="configAttribute"></param>
+        /// <param name="pi"></param>
+        /// <returns></returns>
+        private UIElement RenderColorConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
+        {
+            var control = new Base.ColorSelect();
+            control.Color = (string)pi.GetValue(Data);
+            control.OnSelected += (e, c) =>
+            {
+                pi.SetValue(configData, control.Color);
+                isCanRender = false;
+                Data = configData;
+            };
+            
+            var item = new SettingPanelItem();
+            item.Name = configAttribute.Name;
+            item.Description = configAttribute.Description;
+            item.Content = control;
+
+            pi.SetValue(configData, pi.GetValue(Data));
+            return item;
+        }
+
+        /// <summary>
+        /// 渲染下拉选择配置项
+        /// </summary>
+        /// <param name="configAttribute"></param>
+        /// <param name="pi"></param>
+        /// <returns></returns>
         private UIElement RenderOptionsConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
         {
             var control = new Select.Select();

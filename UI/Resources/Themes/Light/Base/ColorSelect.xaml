@@ -20,7 +20,7 @@
                             <Popup 
                                 x:Name="Popup"
                                 Placement="Bottom"
-                                IsOpen="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ColorSelect}}, Path=IsOpen,Mode=TwoWay}" AllowsTransparency="True"
+                                IsOpen="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ColorSelect}}, Path=IsOpen,Mode=TwoWay}" AllowsTransparency="True" PopupAnimation="Slide"
                                >
                                 <Border 
                                     x:Name="SelectContainer"

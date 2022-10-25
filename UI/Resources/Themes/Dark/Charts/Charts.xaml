@@ -209,7 +209,7 @@
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="20"/>
-                                                                <ColumnDefinition Width="30"/>
+                                                                <ColumnDefinition Width="20"/>
                                                                 <ColumnDefinition Width="auto"/>
                                                                 <ColumnDefinition Width="auto"/>
 
@@ -219,7 +219,7 @@
                                                             </Border>
                                                             <Border Grid.Column="1">
                                                                 <!--图标-->
-                                                                <base:Img Width="20" Height="20" URL="{Binding Icon}"/>
+                                                                <base:Img Width="16" Height="16" URL="{Binding Icon}"/>
                                                             </Border>
                                                             <Border Grid.Column="2" Margin="5,0,0,0">
                                                                 <!--名称-->

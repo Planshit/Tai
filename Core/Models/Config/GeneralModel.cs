@@ -22,7 +22,11 @@ namespace Core.Models.Config
         /// </summary>
         [Config(Options = "浅色|深色", Name = "主题模式", Description = "设置以浅色或深色模式显示", Group = "外观")]
         public int Theme { get; set; } = 0;
-
+        /// <summary>
+        /// 主题颜色
+        /// </summary>
+        [Config(Name = "主题颜色", Description = "", Group = "外观")]
+        public string ThemeColor { get; set; }
         /// <summary>
         /// 是否保留界面大小
         /// </summary>

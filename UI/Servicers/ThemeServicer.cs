@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using UI.ViewModels;
 
 namespace UI.Servicers
@@ -37,12 +39,17 @@ namespace UI.Servicers
             {
                 LoadTheme(themeOptions[newConfig.General.Theme]);
             }
+
+            if (oldConfig.General.ThemeColor != newConfig.General.ThemeColor)
+            {
+                LoadTheme(themeOptions[newConfig.General.Theme], true);
+            }
         }
         public void Init()
         {
             LoadTheme(themeOptions[appConfig.GetConfig().General.Theme]);
         }
-        public void LoadTheme(string themeName)
+        public void LoadTheme(string themeName, bool isRefresh = false)
         {
             if (string.IsNullOrEmpty(themeName))
             {
@@ -50,7 +57,7 @@ namespace UI.Servicers
                 themeName = themeOptions[0];
             }
 
-            if (themeName == this.themeName)
+            if (themeName == this.themeName && !isRefresh)
             {
                 return;
             }
@@ -76,15 +83,24 @@ namespace UI.Servicers
             {
                 MergedDictionaries.Add(controlDict);
             }
+            this.themeName = themeName;
 
             UpdateWindowStyle();
-
-            this.themeName = themeName;
+            UpdateThemeColor();
 
             Debug.WriteLine("已加载主题：" + themeName);
         }
 
+        /// <summary>
+        /// 刷新主题颜色
+        /// </summary>
+        private void UpdateThemeColor()
+        {
+            var config = appConfig.GetConfig();
 
+            Application.Current.Resources["ThemeColor"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(config.General.ThemeColor);
+            Application.Current.Resources["ThemeBrush"] = UI.Base.Color.Colors.GetFromString(config.General.ThemeColor);
+        }
 
         public void SetMainWindow(MainWindow mainWindow)
         {

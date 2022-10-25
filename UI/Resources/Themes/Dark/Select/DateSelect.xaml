@@ -36,7 +36,7 @@
                                 x:Name="Popup"
                                 Placement="Bottom"
                                 PlacementTarget="{Binding ElementName=Main}"
-                                IsOpen="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=IsOpen,Mode=TwoWay}" AllowsTransparency="True" >
+                                IsOpen="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=IsOpen,Mode=TwoWay}" AllowsTransparency="True"  PopupAnimation="Slide">
                                 <Border 
                                     x:Name="SelectContainer"
                                     CornerRadius="10"
@@ -159,7 +159,7 @@
                                                             </Border>
 
                                                         </WrapPanel>
-                                                       
+
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
                                             </ListView>
