@@ -93,7 +93,13 @@ namespace UI.Servicers
         {
             var data = menu.Tag as ChartsDataModel;
             var log = data.Data as DailyLogModel;
-            var app = log.AppModel;
+            var app = log != null ? log.AppModel : null;
+
+            if (log == null)
+            {
+                app = (data.Data as HoursLogModel).AppModel;
+            }
+
 
             var config = appConfig.GetConfig();
             if (config.Behavior.IgnoreProcessList.Contains(app.Name))
@@ -117,7 +123,12 @@ namespace UI.Servicers
 
             var data = menu.Tag as ChartsDataModel;
             var log = data.Data as DailyLogModel;
-            var app = log.AppModel;
+            var app = log != null ? log.AppModel : null;
+
+            if (log == null)
+            {
+                app = (data.Data as HoursLogModel).AppModel;
+            }
 
             var categories = categorys.GetCategories();
             foreach (var category in categories)
@@ -140,7 +151,12 @@ namespace UI.Servicers
 
             var data = menu.Tag as ChartsDataModel;
             var log = data.Data as DailyLogModel;
-            var app = log.AppModel;
+            var app = log != null ? log.AppModel : null;
+
+            if (log == null)
+            {
+                app = (data.Data as HoursLogModel).AppModel;
+            }
             var config = appConfig.GetConfig();
 
             var links = config.Links;
@@ -199,8 +215,12 @@ namespace UI.Servicers
             var data = menu.Tag as ChartsDataModel;
 
             var log = data.Data as DailyLogModel;
+            var app = log != null ? log.AppModel : null;
 
-            var app = log.AppModel;
+            if (log == null)
+            {
+                app = (data.Data as HoursLogModel).AppModel;
+            }
 
             if (File.Exists(app.File))
             {
@@ -217,8 +237,12 @@ namespace UI.Servicers
             var data = menu.Tag as ChartsDataModel;
 
             var log = data.Data as DailyLogModel;
+            var app = log != null ? log.AppModel : null;
 
-            var app = log.AppModel;
+            if (log == null)
+            {
+                app = (data.Data as HoursLogModel).AppModel;
+            }
 
             if (File.Exists(app.File))
             {

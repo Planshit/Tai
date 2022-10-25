@@ -73,7 +73,7 @@ namespace UI.ViewModels
             AppContextMenu = appContextMenuServicer.GetContextMenu();
         }
 
-       
+
         public override void Dispose()
         {
             base.Dispose();
@@ -88,9 +88,16 @@ namespace UI.ViewModels
             if (data != null)
             {
                 var model = data.Data as DailyLogModel;
-                if (model != null && model.AppModel != null)
+                var app = model != null ? model.AppModel : null;
+
+                if (model == null)
                 {
-                    mainVM.Data = model.AppModel;
+                    app = (data.Data as HoursLogModel).AppModel;
+                }
+
+                if (app != null)
+                {
+                    mainVM.Data = app;
                     mainVM.Uri = nameof(DetailPage);
                 }
 
@@ -99,13 +106,21 @@ namespace UI.ViewModels
         private void OnRefreshCommand(object obj)
         {
             LoadData();
+            if (TabbarSelectedIndex == 0)
+            {
+                LoadDayHoursData();
+            }
         }
 
         private void InputServicer_OnKeyUpInput(object sender, System.Windows.Forms.Keys key)
         {
-           if(key== System.Windows.Forms.Keys.F5)
+            if (key == System.Windows.Forms.Keys.F5)
             {
                 LoadData();
+                if (TabbarSelectedIndex == 0)
+                {
+                    LoadDayHoursData();
+                }
             }
         }
 
@@ -118,7 +133,7 @@ namespace UI.ViewModels
             }
             if (e.PropertyName == nameof(TabbarSelectedIndex))
             {
-
+                IsCanColumnSelect = TabbarSelectedIndex == 0;
                 LoadData();
             }
             if (e.PropertyName == nameof(SelectedWeek))
@@ -132,6 +147,13 @@ namespace UI.ViewModels
             if (e.PropertyName == nameof(YearDate))
             {
                 LoadYearData();
+            }
+            if (e.PropertyName == nameof(ColumnSelectedIndex))
+            {
+                if (TabbarSelectedIndex == 0)
+                {
+                    LoadDayHoursData();
+                }
             }
         }
 
@@ -165,6 +187,7 @@ namespace UI.ViewModels
         /// </summary>
         private void LoadDayData()
         {
+            ColumnSelectedIndex = -1;
             DataMaximum = 3600;
             Task.Run(() =>
             {
@@ -439,6 +462,38 @@ namespace UI.ViewModels
             }
 
             return resData;
+        }
+
+        private void LoadDayHoursData()
+        {
+            if (ColumnSelectedIndex < 0)
+            {
+                DayHoursSelectedTime = String.Empty;
+                return;
+            }
+            Task.Run(() =>
+            {
+                //  加载选中时段的所有app数据
+                var time = new DateTime(Date.Year, Date.Month, Date.Day, ColumnSelectedIndex, 0, 0);
+                DayHoursSelectedTime = time.ToString("yyyy年MM月dd日 HH点");
+                var list = data.GetTimeRangelogList(time);
+
+                var chartsDatas = new List<ChartsDataModel>();
+
+                foreach (var item in list)
+                {
+                    var bindModel = new ChartsDataModel();
+                    bindModel.Data = item;
+                    bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
+                    bindModel.Value = item.Time;
+                    bindModel.Tag = Time.ToString(item.Time);
+                    bindModel.PopupText = item.AppModel?.File;
+                    bindModel.Icon = item.AppModel?.IconFile;
+                    chartsDatas.Add(bindModel);
+                }
+
+                DayHoursData = chartsDatas;
+            });
         }
     }
 }

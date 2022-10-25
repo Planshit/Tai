@@ -67,7 +67,7 @@ namespace Core.Servicers.Instances
                             {
                                 res.Time += seconds;
                             }
-                            
+
                             db.SaveChanges();
                             transcation.Commit();
                         }
@@ -101,7 +101,7 @@ namespace Core.Servicers.Instances
                 return;
             }
 
-            
+
 
             using (var db = new TaiDbContext())
             {
@@ -682,6 +682,22 @@ namespace Core.Servicers.Instances
                 .Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
                 .GroupBy(m => m.AppModelID)
                 .Count();
+
+                return res;
+            }
+        }
+
+        public IEnumerable<HoursLogModel> GetTimeRangelogList(DateTime time)
+        {
+            time = new DateTime(time.Year, time.Month, time.Day, time.Hour, 0, 0);
+            using (var db = new TaiDbContext())
+            {
+                var res = db.HoursLog.Where(m => m.DataTime == time).ToList();
+
+                foreach (var log in res)
+                {
+                    log.AppModel = appData.GetApp(log.AppModelID);
+                }
 
                 return res;
             }

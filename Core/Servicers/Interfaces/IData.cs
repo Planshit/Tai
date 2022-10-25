@@ -104,6 +104,12 @@ namespace Core.Servicers.Interfaces
         /// <param name="end"></param>
         /// <returns></returns>
         int GetDateRangeAppCount(DateTime start, DateTime end);
+        /// <summary>
+        /// 获取指定时间（小时）所有使用app数据
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        IEnumerable<HoursLogModel> GetTimeRangelogList(DateTime time);
 
     }
 }

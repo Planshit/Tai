@@ -311,6 +311,39 @@ namespace UI.Controls.Charts
 
 
         #endregion
+        #region 是否允许选择项(仅柱状图有效,默认不允许)
+        /// <summary>
+        /// 是否允许选择项(仅柱状图有效,默认不允许)
+        /// </summary>
+        public bool IsCanColumnSelect
+        {
+            get { return (bool)GetValue(IsCanColumnSelectProperty); }
+            set { SetValue(IsCanColumnSelectProperty, value); }
+        }
+        public static readonly DependencyProperty IsCanColumnSelectProperty =
+            DependencyProperty.Register("IsCanColumnSelect",
+                typeof(bool),
+                typeof(Charts),
+                new PropertyMetadata(false));
+
+
+        #endregion
+        #region 选中列索引（仅柱状图有效）
+        /// <summary>
+        /// 选中列索引（仅柱状图有效）
+        /// </summary>
+        public int ColumnSelectedIndex
+        {
+            get { return (int)GetValue(ColumnSelectedIndexProperty); }
+            set { SetValue(ColumnSelectedIndexProperty, value); }
+        }
+        public static readonly DependencyProperty ColumnSelectedIndexProperty =
+            DependencyProperty.Register("ColumnSelectedIndex",
+                typeof(int),
+                typeof(Charts), new PropertyMetadata(-1, new PropertyChangedCallback(OnPropertyChanged)));
+
+
+        #endregion
         public bool IsShowValuesPopup
         {
             get { return (bool)GetValue(IsShowValuesPopupProperty); }
@@ -385,6 +418,10 @@ namespace UI.Controls.Charts
                 {
                     charts.RenderLoadingPlaceholder();
                 }
+            }
+            if (e.Property == ColumnSelectedIndexProperty && e.OldValue != e.NewValue)
+            {
+                charts.CheckColumnItem((int)e.OldValue, (int)e.NewValue);
             }
 
         }
@@ -873,6 +910,29 @@ namespace UI.Controls.Charts
         #endregion
 
         #region 渲染柱形图
+        private void CheckColumnItem(int oldIndex, int newIndex)
+        {
+            if (!IsCanColumnSelect || ColumnContainer.Children.Count == 0)
+            {
+                return;
+            }
+
+            if (oldIndex >= 0 && oldIndex < ColumnContainer.Children.Count)
+            {
+                var oldItem = ColumnContainer.Children[oldIndex] as Grid;
+                oldItem.Background = new SolidColorBrush(Colors.Transparent);
+            }
+            if (newIndex >= 0 && newIndex < ColumnContainer.Children.Count)
+            {
+                var background = Application.Current.Resources["ThemeBrush"] as SolidColorBrush;
+
+                var checkItem = ColumnContainer.Children[newIndex] as Grid;
+                checkItem.Background = new SolidColorBrush(background.Color) { Opacity = .1 };
+            }
+        }
+        /// <summary>
+        /// 渲染柱形图
+        /// </summary>
         private void RenderColumnStyle()
         {
             ColumnContainer.Children.Clear();
@@ -996,6 +1056,12 @@ namespace UI.Controls.Charts
                 valueContainer.MouseLeave += (e, c) =>
                 {
                     IsShowValuesPopup = false;
+                };
+
+                var index = i;
+                valueContainer.MouseLeftButtonDown += (e, c) =>
+                {
+                    ColumnSelectedIndex = index;
                 };
             }
 
