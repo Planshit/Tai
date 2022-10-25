@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:UI"
              Startup="OnStartup"
+             xmlns:base="clr-namespace:UI.Controls.Base"
              >
     <Application.Resources>
         <!--上下文菜单样式-->
@@ -76,7 +77,7 @@
             <Setter Property="Height"
           Value="1" />
             <Setter Property="Margin"
-          Value="35,5,5,5" />
+          Value="45,5,15,5" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Separator}">
@@ -201,17 +202,18 @@
                     Padding="0,6">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20"
+                        <ColumnDefinition Width="30"
                           SharedSizeGroup="Icon" />
                         <ColumnDefinition Width="20" />
                         <ColumnDefinition Width="Auto"
                           SharedSizeGroup="Shortcut" />
                         <ColumnDefinition Width="13" />
                     </Grid.ColumnDefinitions>
+
                     <ContentPresenter x:Name="Icon"
                         
                         VerticalAlignment="Center"
-                                      
+                                      TextElement.Foreground="Gray"
                                       HorizontalAlignment="Center"
                         ContentSource="Icon" />
                     <Rectangle x:Name="CheckMark"
@@ -228,7 +230,9 @@
                     <ContentPresenter x:Name="HeaderHost"
                         Grid.Column="2"
                         ContentSource="Header"
-                        RecognizesAccessKey="True" />
+                                      Margin="0,0,10,0"
+                    VerticalAlignment="Center"  
+HorizontalAlignment="Left"                                      RecognizesAccessKey="True" />
                     <TextBlock x:Name="InputGestureText"
                  Grid.Column="3"
                                FontWeight="Normal"
@@ -689,14 +693,14 @@
                                 </BeginStoryboard>
                             </EventTrigger>
                         </ControlTemplate.Triggers>
-                        
+
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        
-        
-        
+
+
+
+
     </Application.Resources>
 </Application>

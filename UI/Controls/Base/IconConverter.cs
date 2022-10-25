@@ -127,6 +127,8 @@ namespace UI.Controls.Base
             {IconTypes.SkypeCircleClock,"\xEF7E"},
             {IconTypes.FlameSolid,"\xF1F3"},
             {IconTypes.PieSingleSolid,"\xF530"},
+            {IconTypes.Refresh,"\xE72C"},
+            {IconTypes.Export,"\xEDE1"},
 
 
         };

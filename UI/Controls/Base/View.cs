@@ -56,73 +56,99 @@ namespace UI.Controls.Base
 
         private void Handle()
         {
-            if (string.IsNullOrEmpty(Condition) && Value == null)
+            try
             {
-                return;
-            }
-
-            bool isShow = false;
-            if (string.IsNullOrEmpty(Condition))
-            {
-                if ((bool)Value)
+                if (string.IsNullOrEmpty(Condition) && Value == null)
                 {
-                    isShow = true;
+                    return;
                 }
-            }
-            else
-            {
 
-
-                if (Condition.IndexOf("=") != -1)
+                bool isShow = false;
+                if (string.IsNullOrEmpty(Condition))
                 {
-                    string val = Condition.Substring(Condition.IndexOf("=") + 1);
-                    isShow = val == Value.ToString();
-                }
-                else if (Condition.IndexOf("not null") != -1)
-                {
-
-                    isShow = Value != null;
-                }
-                else if (Condition.IndexOf("null") != -1)
-                {
-
-                    isShow = Value == null;
-                }
-                else if (Condition.IndexOf("empty") != -1)
-                {
-                    if (Value == null)
+                    if ((bool)Value)
                     {
                         isShow = true;
-                    }
-                    else
-                    {
-                        var data = Value as IEnumerable<object>;
-                        if (data != null)
-                        {
-                            isShow = data.Count() == 0;
-                        }
-                        else
-                        {
-                            isShow = string.IsNullOrEmpty(Value.ToString());
-                        }
                     }
                 }
                 else
                 {
-                    isShow = Condition == (Value != null ? Value.ToString() : "");
+
+
+                    if (Condition.IndexOf("=") != -1)
+                    {
+                        string val = Condition.Substring(Condition.IndexOf("=") + 1);
+                        isShow = val == Value.ToString();
+                    }
+                    else if (Condition.IndexOf("not null") != -1)
+                    {
+
+                        isShow = Value != null;
+                    }
+                    else if (Condition.IndexOf("null") != -1)
+                    {
+
+                        isShow = Value == null;
+                    }
+                    else if (Condition.IndexOf("not empty") != -1)
+                    {
+                        if (Value == null)
+                        {
+                            isShow = false;
+                        }
+                        else
+                        {
+                            var data = Value as IEnumerable<object>;
+                            if (data != null)
+                            {
+                                isShow = data.Count() > 0;
+                            }
+                            else
+                            {
+                                isShow = !string.IsNullOrEmpty(Value.ToString());
+                            }
+                        }
+                    }
+                    else if (Condition.IndexOf("empty") != -1)
+                    {
+                        if (Value == null)
+                        {
+                            isShow = true;
+                        }
+                        else
+                        {
+                            var data = Value as IEnumerable<object>;
+                            if (data != null)
+                            {
+                                isShow = data.Count() == 0;
+                            }
+                            else
+                            {
+                                isShow = string.IsNullOrEmpty(Value.ToString());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        isShow = Condition == (Value != null ? Value.ToString() : "");
+                    }
+                }
+
+
+
+                if (isShow)
+                {
+                    Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Visibility = Visibility.Collapsed;
                 }
             }
-
-
-            if (isShow)
-            {
-                Visibility = Visibility.Visible;
-            }
-            else
+            catch(Exception ex)
             {
                 Visibility = Visibility.Collapsed;
             }
-
         }
     }
 }

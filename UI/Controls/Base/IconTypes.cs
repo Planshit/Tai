@@ -150,6 +150,8 @@ namespace UI.Controls.Base
         MSNVideosSolid,
         SkypeCircleClock,
         FlameSolid,
-        PieSingleSolid
+        PieSingleSolid,
+        Refresh,
+        Export
     }
 }

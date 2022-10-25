@@ -27,7 +27,17 @@ namespace UI.Controls.Select
         public static readonly DependencyProperty IsOpenProperty =
             DependencyProperty.Register("IsOpen",
                 typeof(bool),
-                typeof(Select));
+                typeof(Select), new PropertyMetadata(new PropertyChangedCallback(OnIsOpenChanged)));
+
+        private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as Select;
+            if (control != null)
+            {
+                VisualStateManager.GoToState(control, control.IsOpen ? "ShowPopup" : "Normal", true);
+            }
+        }
+
         public List<SelectItemModel> Options
         {
             get { return (List<SelectItemModel>)GetValue(OptionsProperty); }
