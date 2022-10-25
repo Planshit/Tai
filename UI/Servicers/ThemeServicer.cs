@@ -97,7 +97,10 @@ namespace UI.Servicers
         private void UpdateThemeColor()
         {
             var config = appConfig.GetConfig();
-
+            if (string.IsNullOrEmpty(config.General.ThemeColor))
+            {
+                return;
+            }
             Application.Current.Resources["ThemeColor"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(config.General.ThemeColor);
             Application.Current.Resources["ThemeBrush"] = UI.Base.Color.Colors.GetFromString(config.General.ThemeColor);
         }

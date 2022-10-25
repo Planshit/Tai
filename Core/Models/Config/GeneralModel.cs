@@ -26,7 +26,7 @@ namespace Core.Models.Config
         /// 主题颜色
         /// </summary>
         [Config(Name = "主题颜色", Description = "", Group = "外观")]
-        public string ThemeColor { get; set; }
+        public string ThemeColor { get; set; } = "#2b20d9";
         /// <summary>
         /// 是否保留界面大小
         /// </summary>
