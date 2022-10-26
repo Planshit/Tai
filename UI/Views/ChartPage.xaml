@@ -202,7 +202,7 @@
 
                 <TextBlock Text="最为频繁" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
                 <Border Grid.Row="1" Margin="0,5,0,0"  Background="{DynamicResource StandardBackgroundBrush}" Padding="20" CornerRadius="10">
-                    <charts:Charts VerticalAlignment="Center" ItemMenu="{Binding AppContextMenu}" Data="{Binding TopData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}" IsCanScroll="False"/>
+                    <charts:Charts ItemMenu="{Binding AppContextMenu}" Data="{Binding TopData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}" IsCanScroll="False"/>
                 </Border>
             </Grid>
 

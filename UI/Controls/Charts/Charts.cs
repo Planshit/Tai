@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using UI.Controls.Base;
 using UI.Controls.Charts.Model;
+using UI.Controls.Input;
 using UI.Extensions;
 
 namespace UI.Controls.Charts
@@ -328,6 +329,23 @@ namespace UI.Controls.Charts
 
 
         #endregion
+        #region 是否显示搜索(仅列表样式有效,默认不显示)
+        /// <summary>
+        /// 是否显示搜索(仅列表样式有效,默认不显示)
+        /// </summary>
+        public bool IsSearch
+        {
+            get { return (bool)GetValue(IsSearchProperty); }
+            set { SetValue(IsSearchProperty, value); }
+        }
+        public static readonly DependencyProperty IsSearchProperty =
+            DependencyProperty.Register("IsSearch",
+                typeof(bool),
+                typeof(Charts),
+                new PropertyMetadata(false));
+
+
+        #endregion
         #region 选中列索引（仅柱状图有效）
         /// <summary>
         /// 选中列索引（仅柱状图有效）
@@ -473,11 +491,32 @@ namespace UI.Controls.Charts
         /// </summary>
         private int lazyloadedCount = 0;
         private List<ChartsDataModel> lazyloadingData;
+
+        /// <summary>
+        /// 搜索关键字（仅列表样式有效
+        /// </summary>
+        private string searchKey;
         public Charts()
         {
             DefaultStyleKey = typeof(Charts);
 
+            SizeChanged += Charts_SizeChanged;
             Unloaded += Charts_Unloaded;
+        }
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+            ScrollViewer.Height = 1;
+        }
+        private void Charts_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (ChartsType == ChartsType.HorizontalA)
+            {
+                var header = GetTemplateChild("AHeader") as Grid;
+                var h = ActualHeight - header.ActualHeight;
+
+                ScrollViewer.Height = h;
+            }
         }
 
         private void Charts_Unloaded(object sender, RoutedEventArgs e)
@@ -569,6 +608,9 @@ namespace UI.Controls.Charts
                 }
                 //  适当增加最大值
                 maxValue = Math.Round(maxValue / 2, MidpointRounding.AwayFromZero) * 2 + 2;
+
+                var countText = GetTemplateChild("ACount") as Run;
+                countText.Text = Data.Count().ToString();
             }
         }
 
@@ -640,28 +682,72 @@ namespace UI.Controls.Charts
             lazyloadingData = null;
             isLazyloading = false;
             lazyloadedCount = 0;
+
             ScrollViewer.ScrollToVerticalOffset(0);
 
             var data = Data.OrderByDescending(x => x.Value).ToList();
+            
 
-            if (data.Count < 20)
-            {
-                RenderTypeAItems(data, 0, data.Count);
-            }
-            else
-            {
-                isLazyloading = true;
-                RenderTypeAItems(data, 0, 20);
-                lazyloadingData = data;
-                ScrollViewer.ScrollChanged += ScrollViewer_ScrollChanged;
-            }
+            //if (data.Count < 20)
+            //{
+            //    RenderTypeAItems(data, 0, data.Count);
+            //}
+            //else
+            //{
+            //    isLazyloading = true;
+            //    RenderTypeAItems(data, 0, 20);
+            //    lazyloadingData = data;
+            //    ScrollViewer.ScrollChanged += ScrollViewer_ScrollChanged;
+            //}
+            RenderTypeAItems(data, 0, data.Count);
 
+            //Debug.WriteLine("【渲染】" + sw.ElapsedMilliseconds);
             if (IsCanScroll)
             {
                 Container.SizeChanged -= Container_SizeChanged;
                 Container.SizeChanged += Container_SizeChanged;
             }
+
             isRendering = false;
+
+            var searchBox = GetTemplateChild("ASearchBox") as InputBox;
+            searchBox.TextChanged += SearchBox_TextChanged;
+        }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var box = sender as InputBox;
+            if (box.Text != searchKey)
+            {
+                searchKey = box.Text.ToLower();
+                HandleSearch();
+            }
+        }
+
+        private void HandleSearch()
+        {
+            Task.Run(() =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    foreach (var item in Container.Children)
+                    {
+                        var control = item as ChartsItemTypeA;
+                        if (control != null)
+                        {
+                            var data = control.Data;
+
+                            bool show = false;
+                            if (data.Name.ToLower().IndexOf(searchKey) != -1 || data.PopupText.ToLower().IndexOf(searchKey) != -1 || string.IsNullOrEmpty(searchKey))
+                            {
+                                show = true;
+                            }
+                            control.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+                        }
+                    }
+                });
+
+            });
         }
 
         private void Container_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -719,18 +805,19 @@ namespace UI.Controls.Charts
                 }
                 //  处理点击事件
                 HandleItemClick(chartsItem, item);
-                container.Children.Insert(lazyloadedCount, chartsItem);
-
+                //container.Children.Insert(lazyloadedCount, chartsItem);
+                container.Children.Add(chartsItem);
                 if (ShowLimit > 0 && Container.Children.Count == ShowLimit)
                 {
                     break;
                 }
-                lazyloadedCount++;
-                if (i >= 20)
-                {
-                    container.Children.RemoveAt(Container.Children.Count - 1);
-                }
+                //lazyloadedCount++;
+                //if (i >= 20)
+                //{
+                //    container.Children.RemoveAt(Container.Children.Count - 1);
+                //}
             }
+
         }
 
         private void ChartsItem_Loaded(object sender, RoutedEventArgs e)

@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:UI.Controls.Charts" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:converter="clr-namespace:UI.Controls.Converters">
+                    xmlns:local="clr-namespace:UI.Controls.Charts" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:converter="clr-namespace:UI.Controls.Converters" xmlns:input="clr-namespace:UI.Controls.Input">
     <converter:HextoColorConverter x:Key="HextoColorConverter"/>
     <Style TargetType="{x:Type local:Charts}">
         <Setter Property="SnapsToDevicePixels"
@@ -16,12 +16,28 @@
                         <Border x:Name="Radar"  Visibility="Collapsed">
 
                         </Border>
-                        <Grid x:Name="HorizontalA"  Visibility="Collapsed">
-                            <ScrollViewer Visibility="Collapsed" x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" Height="{Binding ElementName=HorizontalA,Path=ActualHeight}" CanContentScroll="False">
+                        <Grid x:Name="HorizontalA"  Visibility="Collapsed" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid x:Name="AHeader" Visibility="Collapsed">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock FontSize="14" Foreground="{DynamicResource SubTextBrush}">
+                                    <Run Text="总计"/>
+                                    <Run x:Name="ACount"/>
+                                    <Run Text="个"/>
+                                </TextBlock>
+                                <input:InputBox x:Name="ASearchBox" Grid.Row="1" Placeholder="搜索" Margin="0,10,0,10"/>
+                            </Grid>
+                            <ScrollViewer Height="1" Grid.Row="1" Visibility="Collapsed" x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" CanContentScroll="False" >
                                 <StackPanel x:Name="Container">
                                 </StackPanel>
                             </ScrollViewer>
-                            <StackPanel Visibility="Collapsed" x:Name="NoScrollContainer"></StackPanel>
+                            <StackPanel Grid.Row="1" Visibility="Collapsed" x:Name="NoScrollContainer"></StackPanel>
                         </Grid>
                         <WrapPanel x:Name="CardContainer" Visibility="Collapsed">
                         </WrapPanel>
@@ -258,6 +274,13 @@
                                 <Condition Property="ChartsType" Value="Column"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="ColumnTotal"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSearch" Value="True"/>
+                                <Condition Property="ChartsType" Value="HorizontalA"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" TargetName="AHeader"/>
                         </MultiTrigger>
                         <Trigger Property="ChartsType"
                      Value="HorizontalA">
