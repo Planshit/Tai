@@ -1215,6 +1215,7 @@ namespace UI.Controls.Charts
             if (Data.Count() <= 2)
             {
                 RadarContainer.Child = new EmptyData();
+                isRendering = false;
                 return;
             }
             //  最大值

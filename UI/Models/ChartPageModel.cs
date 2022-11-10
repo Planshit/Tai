@@ -123,5 +123,11 @@ namespace UI.Models
         /// 图表数据模式（1=分类/2=汇总）
         /// </summary>
         public SelectItemModel ChartDataMode { get { return ChartDataMode_; } set { ChartDataMode_ = value; OnPropertyChanged(); } }
+
+        private List<ChartsDataModel> RadarData_;
+        /// <summary>
+        /// 雷达图数据
+        /// </summary>
+        public List<ChartsDataModel> RadarData { get { return RadarData_; } set { RadarData_ = value; OnPropertyChanged(); } }
     }
 }
