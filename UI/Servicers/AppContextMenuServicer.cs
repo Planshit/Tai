@@ -74,7 +74,12 @@ namespace UI.Servicers
         {
             var data = menu.Tag as ChartsDataModel;
             var log = data.Data as DailyLogModel;
-            var app = log.AppModel;
+            var app = log != null ? log.AppModel : null;
+
+            if (log == null)
+            {
+                app = (data.Data as HoursLogModel).AppModel;
+            }
 
             var config = appConfig.GetConfig();
             if (config.Behavior.IgnoreProcessList.Contains(app.Name))
