@@ -276,6 +276,7 @@ namespace UI.ViewModels
                             Icon = category.IconFile,
                             Values = item.Values,
                             ColumnNames = weekNames,
+                            Color = category.Color,
                         };
                         if (category.ID == 0)
                         {
@@ -331,6 +332,7 @@ namespace UI.ViewModels
                             Name = category.Name,
                             Icon = category.IconFile,
                             Values = item.Values,
+                            Color = category.Color
                         };
                         if (category.ID == 0)
                         {
@@ -389,6 +391,7 @@ namespace UI.ViewModels
                             Icon = category.IconFile,
                             Values = item.Values,
                             ColumnNames = names,
+                            Color = category.Color
                         };
                         if (category.ID == 0)
                         {
