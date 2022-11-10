@@ -766,7 +766,9 @@ namespace UI.Controls.Charts
                             bool show = false;
                             if (app != null)
                             {
-                                show = string.IsNullOrEmpty(searchKey) || app.Name.ToLower().Contains(searchKey) || app.File.ToLower().Contains(searchKey) || app.Description.ToLower().Contains(searchKey);
+                                string description = app.Description != null ? app.Description.ToLower() : string.Empty;
+
+                                show = string.IsNullOrEmpty(searchKey) || app.Name.ToLower().Contains(searchKey) || app.File.ToLower().Contains(searchKey) || description.Contains(searchKey);
                             }
                             if (!show && app.Category != null)
                             {
