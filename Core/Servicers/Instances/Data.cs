@@ -702,5 +702,71 @@ namespace Core.Servicers.Instances
                 return res;
             }
         }
+
+        public struct TimeDataModel
+        {
+            public int Total { get; set; }
+            public DateTime Time { get; set; }
+        }
+        public double[] GetRangeTotalData(DateTime start, DateTime end)
+        {
+            using (var db = new TaiDbContext())
+            {
+                if (start.Date == end.Date)
+                {
+                    //  获取24小时
+                    var data = db.Database.SqlQuery<TimeDataModel>("select sum(Time) as Total,DataTime as Time from HoursLogModels where  HoursLogModels.DataTime>='" + start.Date.ToString("yyyy-MM-dd 00:00:00") + "' and HoursLogModels.DataTime<= '" + start.Date.ToString("yyyy-MM-dd 23:59:59") + "' GROUP BY DataTime ").ToArray();
+
+                    double[] result = new double[24];
+                    for (int i = 0; i < 24; i++)
+                    {
+                        string hours = i < 10 ? "0" + i : i.ToString();
+                        var time = start.ToString($"yyyy-MM-dd {hours}:00:00");
+                        var log = data.Where(m => m.Time.ToString("yyyy-MM-dd HH:00:00") == time).FirstOrDefault();
+                        result[i] = log.Total;
+                    }
+                    return result;
+                }
+                else
+                {
+                    //  获取日期
+                    var ts = end.Date - start.Date;
+                    int days = (int)ts.TotalDays + 1;
+
+
+                    var data = db.Database.SqlQuery<TimeDataModel>("select sum(Time) as Total,Date as Time from DailyLogModels where  DailyLogModels.Date>='" + start.Date.ToString("yyyy-MM-dd 00:00:00") + "' and DailyLogModels.Date<= '" + end.Date.ToString("yyyy-MM-dd 23:59:59") + "' GROUP BY Date ").ToArray();
+
+                    double[] result = new double[days];
+                    for (int i = 0; i < days; i++)
+                    {
+                        var time = start.Date.AddDays(i).ToString($"yyyy-MM-dd 00:00:00");
+                        var log = data.Where(m => m.Time.ToString("yyyy-MM-dd 00:00:00") == time).FirstOrDefault();
+                        result[i] = log.Total;
+                    }
+
+                    return result;
+                }
+            }
+        }
+
+        public double[] GetMonthTotalData(DateTime date)
+        {
+            using (var db = new TaiDbContext())
+            {
+                var dateArr = Time.GetYearDate(date);
+                var data = db.Database.SqlQuery<TimeDataModel>("select sum(Time) as Total,Date as Time from DailyLogModels  where   Date>='" + dateArr[0].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and Date<= '" + dateArr[1].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY Date").ToArray();
+                double[] result = new double[12];
+
+                for (int i = 1; i < 13; i++)
+                {
+                    string month = i < 10 ? "0" + i : i.ToString();
+                    var dayArr = Time.GetMonthDate(new DateTime(date.Year, i, 1));
+                    var total = data.Where(m => m.Time >= dayArr[0] && m.Time <= dayArr[1]).Sum(m => m.Total);
+                    
+                    result[i - 1] = total;
+                }
+                return result;
+            }
+        }
     }
 }

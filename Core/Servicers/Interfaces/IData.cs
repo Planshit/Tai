@@ -111,5 +111,20 @@ namespace Core.Servicers.Interfaces
         /// <returns></returns>
         IEnumerable<HoursLogModel> GetTimeRangelogList(DateTime time);
 
+        /// <summary>
+        /// 获取指定时间范围内的汇总数据
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        double[] GetRangeTotalData(DateTime start, DateTime end);
+        /// <summary>
+        /// 获取指定年份按月统计数据
+        /// </summary>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        double[] GetMonthTotalData(DateTime year);
+
+
     }
 }

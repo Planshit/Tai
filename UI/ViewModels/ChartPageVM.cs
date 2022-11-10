@@ -25,7 +25,7 @@ namespace UI.ViewModels
         private readonly IInputServicer inputServicer;
         public Command ToDetailCommand { get; set; }
         public Command RefreshCommand { get; set; }
-
+        public List<SelectItemModel> ChartDataModeOptions { get; set; }
         public ChartPageVM(IData data, ICategorys categorys, MainViewModel mainVM, IAppContextMenuServicer appContextMenuServicer, IInputServicer inputServicer)
         {
             this.data = data;
@@ -53,16 +53,26 @@ namespace UI.ViewModels
                 Name = "上周"
             });
 
+            var chartDataModeOptions = new List<SelectItemModel>();
+            chartDataModeOptions.Add(new SelectItemModel()
+            {
+                Id = 1,
+                Name = "分类",
+            });
+            chartDataModeOptions.Add(new SelectItemModel()
+            {
+                Id = 2,
+                Name = "汇总"
+            });
+
+            ChartDataModeOptions = chartDataModeOptions;
+            ChartDataMode = chartDataModeOptions[0];
+
             WeekOptions = weekOptions;
-
             SelectedWeek = weekOptions[0];
-
             MonthDate = DateTime.Now;
-
             TabbarSelectedIndex = 0;
-
             Date = DateTime.Now;
-
             YearDate = DateTime.Now;
 
             LoadDayData();
@@ -106,10 +116,6 @@ namespace UI.ViewModels
         private void OnRefreshCommand(object obj)
         {
             LoadData();
-            if (TabbarSelectedIndex == 0)
-            {
-                LoadDayHoursData();
-            }
         }
 
         private void InputServicer_OnKeyUpInput(object sender, System.Windows.Forms.Keys key)
@@ -117,10 +123,6 @@ namespace UI.ViewModels
             if (key == System.Windows.Forms.Keys.F5)
             {
                 LoadData();
-                if (TabbarSelectedIndex == 0)
-                {
-                    LoadDayHoursData();
-                }
             }
         }
 
@@ -133,7 +135,7 @@ namespace UI.ViewModels
             }
             if (e.PropertyName == nameof(TabbarSelectedIndex))
             {
-                IsCanColumnSelect = TabbarSelectedIndex == 0;
+                IsCanColumnSelect = true;
                 LoadData();
             }
             if (e.PropertyName == nameof(SelectedWeek))
@@ -150,10 +152,11 @@ namespace UI.ViewModels
             }
             if (e.PropertyName == nameof(ColumnSelectedIndex))
             {
-                if (TabbarSelectedIndex == 0)
-                {
-                    LoadDayHoursData();
-                }
+                LoadSelectedColData();
+            }
+            if (e.PropertyName == nameof(ChartDataMode))
+            {
+                LoadData();
             }
         }
 
@@ -180,6 +183,8 @@ namespace UI.ViewModels
             {
                 LoadYearData();
             }
+
+            LoadSelectedColData();
         }
 
         /// <summary>
@@ -192,40 +197,54 @@ namespace UI.ViewModels
             Task.Run(() =>
             {
 
-
-                var list = data.GetCategoryHoursData(Date);
-
                 var chartData = new List<ChartsDataModel>();
 
-                var nullCategory = new CategoryModel()
+                if (ChartDataMode.Id == 1)
                 {
-                    ID = 0,
-                    Name = "未分类",
-                    IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
-                };
-                foreach (var item in list)
-                {
-                    var category = categorys.GetCategory(item.CategoryID);
-                    if (item.CategoryID == 0)
+                    var list = data.GetCategoryHoursData(Date);
+                    var nullCategory = new CategoryModel()
                     {
-                        category = nullCategory;
-                    }
-                    if (category != null)
+                        ID = 0,
+                        Name = "未分类",
+                        IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
+                    };
+                    foreach (var item in list)
                     {
-                        var dataItem = new ChartsDataModel()
+                        var category = categorys.GetCategory(item.CategoryID);
+                        if (item.CategoryID == 0)
                         {
-
-                            Name = category.Name,
-                            Icon = category.IconFile,
-                            Values = item.Values,
-                            Color = category.Color
-                        };
-                        if (category.ID == 0)
-                        {
-                            dataItem.Color = "#E5F7F6F2";
+                            category = nullCategory;
                         }
-                        chartData.Add(dataItem);
+                        if (category != null)
+                        {
+                            var dataItem = new ChartsDataModel()
+                            {
+
+                                Name = category.Name,
+                                Icon = category.IconFile,
+                                Values = item.Values,
+                                Color = category.Color
+                            };
+                            if (category.ID == 0)
+                            {
+                                dataItem.Color = "#E5F7F6F2";
+                            }
+                            chartData.Add(dataItem);
+                        }
                     }
+                }
+                else
+                {
+                    //  汇总
+                    var values = data.GetRangeTotalData(Date, Date);
+
+
+                    var dataItem = new ChartsDataModel()
+                    {
+                        Values = values,
+                    };
+
+                    chartData.Add(dataItem);
                 }
 
                 Data = chartData;
@@ -240,50 +259,65 @@ namespace UI.ViewModels
         /// </summary>
         private void LoadWeekData()
         {
+            ColumnSelectedIndex = -1;
             DataMaximum = 0;
             Task.Run(() =>
             {
                 var weekDateArr = SelectedWeek.Name == "本周" ? Time.GetThisWeekDate() : Time.GetLastWeekDate();
-
                 WeekDateStr = weekDateArr[0].ToString("yyyy年MM月dd日") + " 到 " + weekDateArr[1].ToString("yyyy年MM月dd日");
-
-                var list = data.GetCategoryRangeData(weekDateArr[0], weekDateArr[1]);
-
+                string[] weekNames = { "周一", "周二", "周三", "周四", "周五", "周六", "周日", };
                 var chartData = new List<ChartsDataModel>();
 
-                var nullCategory = new CategoryModel()
+                if (ChartDataMode.Id == 1)
                 {
-                    ID = 0,
-                    Name = "未分类",
-                    IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
-
-                };
-
-                string[] weekNames = { "周一", "周二", "周三", "周四", "周五", "周六", "周日", };
-                foreach (var item in list)
-                {
-                    var category = categorys.GetCategory(item.CategoryID);
-                    if (item.CategoryID == 0)
+                    var list = data.GetCategoryRangeData(weekDateArr[0], weekDateArr[1]);
+                    var nullCategory = new CategoryModel()
                     {
-                        category = nullCategory;
-                    }
-                    if (category != null)
-                    {
-                        var dataItem = new ChartsDataModel()
-                        {
+                        ID = 0,
+                        Name = "未分类",
+                        IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
 
-                            Name = category.Name,
-                            Icon = category.IconFile,
-                            Values = item.Values,
-                            ColumnNames = weekNames,
-                            Color = category.Color,
-                        };
-                        if (category.ID == 0)
+                    };
+
+                    foreach (var item in list)
+                    {
+                        var category = categorys.GetCategory(item.CategoryID);
+                        if (item.CategoryID == 0)
                         {
-                            dataItem.Color = "#E5F7F6F2";
+                            category = nullCategory;
                         }
-                        chartData.Add(dataItem);
+                        if (category != null)
+                        {
+                            var dataItem = new ChartsDataModel()
+                            {
+
+                                Name = category.Name,
+                                Icon = category.IconFile,
+                                Values = item.Values,
+                                ColumnNames = weekNames,
+                                Color = category.Color,
+                            };
+                            if (category.ID == 0)
+                            {
+                                dataItem.Color = "#E5F7F6F2";
+                            }
+                            chartData.Add(dataItem);
+                        }
                     }
+                }
+                else
+                {
+                    //  汇总
+                    var values = data.GetRangeTotalData(weekDateArr[0], weekDateArr[1]);
+
+
+                    var dataItem = new ChartsDataModel()
+                    {
+                        Values = values,
+                        ColumnNames = weekNames,
+                    };
+
+                    chartData.Add(dataItem);
                 }
 
                 Data = chartData;
@@ -301,45 +335,59 @@ namespace UI.ViewModels
         /// </summary>
         private void LoadMonthlyData()
         {
+            ColumnSelectedIndex = -1;
             DataMaximum = 0;
             Task.Run(() =>
             {
+                var chartData = new List<ChartsDataModel>();
                 var dateArr = Time.GetMonthDate(MonthDate);
 
-                var list = data.GetCategoryRangeData(dateArr[0], dateArr[1]);
-
-                var chartData = new List<ChartsDataModel>();
-
-                var nullCategory = new CategoryModel()
+                if (ChartDataMode.Id == 1)
                 {
-                    ID = 0,
-                    Name = "未分类",
-                    IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
-                };
+                    var list = data.GetCategoryRangeData(dateArr[0], dateArr[1]);
 
-                foreach (var item in list)
-                {
-                    var category = categorys.GetCategory(item.CategoryID);
-                    if (item.CategoryID == 0)
+                    var nullCategory = new CategoryModel()
                     {
-                        category = nullCategory;
-                    }
-                    if (category != null)
-                    {
-                        var dataItem = new ChartsDataModel()
-                        {
+                        ID = 0,
+                        Name = "未分类",
+                        IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
+                    };
 
-                            Name = category.Name,
-                            Icon = category.IconFile,
-                            Values = item.Values,
-                            Color = category.Color
-                        };
-                        if (category.ID == 0)
+                    foreach (var item in list)
+                    {
+                        var category = categorys.GetCategory(item.CategoryID);
+                        if (item.CategoryID == 0)
                         {
-                            dataItem.Color = "#E5F7F6F2";
+                            category = nullCategory;
                         }
-                        chartData.Add(dataItem);
+                        if (category != null)
+                        {
+                            var dataItem = new ChartsDataModel()
+                            {
+
+                                Name = category.Name,
+                                Icon = category.IconFile,
+                                Values = item.Values,
+                                Color = category.Color
+                            };
+                            if (category.ID == 0)
+                            {
+                                dataItem.Color = "#E5F7F6F2";
+                            }
+                            chartData.Add(dataItem);
+                        }
                     }
+                }
+                else
+                {
+                    //  汇总
+                    var values = data.GetRangeTotalData(dateArr[0], dateArr[1]);
+
+                    var dataItem = new ChartsDataModel()
+                    {
+                        Values = values,
+                    };
+                    chartData.Add(dataItem);
                 }
 
                 Data = chartData;
@@ -355,50 +403,64 @@ namespace UI.ViewModels
         /// </summary>
         private void LoadYearData()
         {
+            ColumnSelectedIndex = -1;
             DataMaximum = 0;
             Task.Run(() =>
             {
-                var list = data.GetCategoryYearData(YearDate);
-
                 var chartData = new List<ChartsDataModel>();
-
                 string[] names = new string[12];
                 for (int i = 0; i < 12; i++)
                 {
                     names[i] = (i + 1) + "月";
                 }
 
-                var nullCategory = new CategoryModel()
+                if (ChartDataMode.Id == 1)
                 {
-                    ID = 0,
-                    Name = "未分类",
-                    IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
-                };
-
-                foreach (var item in list)
-                {
-                    var category = categorys.GetCategory(item.CategoryID);
-                    if (item.CategoryID == 0)
+                    var list = data.GetCategoryYearData(YearDate);
+                    var nullCategory = new CategoryModel()
                     {
-                        category = nullCategory;
-                    }
-                    if (category != null)
-                    {
-                        var dataItem = new ChartsDataModel()
-                        {
+                        ID = 0,
+                        Name = "未分类",
+                        IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
+                    };
 
-                            Name = category.Name,
-                            Icon = category.IconFile,
-                            Values = item.Values,
-                            ColumnNames = names,
-                            Color = category.Color
-                        };
-                        if (category.ID == 0)
+                    foreach (var item in list)
+                    {
+                        var category = categorys.GetCategory(item.CategoryID);
+                        if (item.CategoryID == 0)
                         {
-                            dataItem.Color = "#E5F7F6F2";
+                            category = nullCategory;
                         }
-                        chartData.Add(dataItem);
+                        if (category != null)
+                        {
+                            var dataItem = new ChartsDataModel()
+                            {
+
+                                Name = category.Name,
+                                Icon = category.IconFile,
+                                Values = item.Values,
+                                ColumnNames = names,
+                                Color = category.Color
+                            };
+                            if (category.ID == 0)
+                            {
+                                dataItem.Color = "#E5F7F6F2";
+                            }
+                            chartData.Add(dataItem);
+                        }
                     }
+                }
+                else
+                {
+                    //  汇总
+                    var values = data.GetMonthTotalData(YearDate);
+                    var dataItem = new ChartsDataModel()
+                    {
+                        Values = values,
+                        ColumnNames = names,
+                    };
+
+                    chartData.Add(dataItem);
                 }
 
                 Data = chartData;
@@ -467,7 +529,7 @@ namespace UI.ViewModels
             return resData;
         }
 
-        private void LoadDayHoursData()
+        private void LoadSelectedColData()
         {
             if (ColumnSelectedIndex < 0)
             {
@@ -476,27 +538,77 @@ namespace UI.ViewModels
             }
             Task.Run(() =>
             {
-                //  加载选中时段的所有app数据
-                var time = new DateTime(Date.Year, Date.Month, Date.Day, ColumnSelectedIndex, 0, 0);
-                DayHoursSelectedTime = time.ToString("yyyy年MM月dd日 HH点");
-                var list = data.GetTimeRangelogList(time);
+                IEnumerable<HoursLogModel> hoursModelList = new List<HoursLogModel>();
+                IEnumerable<DailyLogModel> daysModelList = new List<DailyLogModel>();
 
                 var chartsDatas = new List<ChartsDataModel>();
 
-                foreach (var item in list)
+                if (TabbarSelectedIndex == 0)
                 {
-                    var bindModel = new ChartsDataModel();
-                    bindModel.Data = item;
-                    bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
-                    bindModel.Value = item.Time;
-                    bindModel.Tag = Time.ToString(item.Time);
-                    bindModel.PopupText = item.AppModel?.File;
-                    bindModel.Icon = item.AppModel?.IconFile;
-                    chartsDatas.Add(bindModel);
+                    //  天
+                    var time = new DateTime(Date.Year, Date.Month, Date.Day, ColumnSelectedIndex, 0, 0);
+                    DayHoursSelectedTime = time.ToString("yyyy年MM月dd日 HH点");
+                    hoursModelList = data.GetTimeRangelogList(time);
+                }
+                else if (TabbarSelectedIndex == 1)
+                {
+                    //  周
+                    var weekDateArr = SelectedWeek.Name == "本周" ? Time.GetThisWeekDate() : Time.GetLastWeekDate();
+                    var time = weekDateArr[0].AddDays(ColumnSelectedIndex);
+                    DayHoursSelectedTime = time.ToString("yyyy年MM月dd日");
+                    daysModelList = data.GetDateRangelogList(time, time);
+                }
+                else if (TabbarSelectedIndex == 2)
+                {
+                    //  月
+                    var dateArr = Time.GetMonthDate(MonthDate);
+                    var time = dateArr[0].AddDays(ColumnSelectedIndex);
+                    DayHoursSelectedTime = time.ToString("yyyy年MM月dd日");
+                    daysModelList = data.GetDateRangelogList(time, time);
+                }
+                else if (TabbarSelectedIndex == 3)
+                {
+                    //  年
+                    var dateStart = new DateTime(YearDate.Year, ColumnSelectedIndex + 1, 1);
+                    var dateEnd = new DateTime(dateStart.Year, dateStart.Month, DateTime.DaysInMonth(dateStart.Year, dateStart.Month), 23, 59, 59);
+
+                    DayHoursSelectedTime = dateStart.ToString("yyyy年MM月");
+                    daysModelList = data.GetDateRangelogList(dateStart, dateEnd);
+                }
+
+                if (TabbarSelectedIndex == 0)
+                {
+                    foreach (var item in hoursModelList)
+                    {
+                        var bindModel = new ChartsDataModel();
+                        bindModel.Data = item;
+                        bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
+                        bindModel.Value = item.Time;
+                        bindModel.Tag = Time.ToString(item.Time);
+                        bindModel.PopupText = item.AppModel?.File;
+                        bindModel.Icon = item.AppModel?.IconFile;
+                        chartsDatas.Add(bindModel);
+                    }
+                }
+                else
+                {
+                    foreach (var item in daysModelList)
+                    {
+                        var bindModel = new ChartsDataModel();
+                        bindModel.Data = item;
+                        bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
+                        bindModel.Value = item.Time;
+                        bindModel.Tag = Time.ToString(item.Time);
+                        bindModel.PopupText = item.AppModel?.File;
+                        bindModel.Icon = item.AppModel?.IconFile;
+                        chartsDatas.Add(bindModel);
+                    }
                 }
 
                 DayHoursData = chartsDatas;
             });
         }
+
+
     }
 }

@@ -117,5 +117,11 @@ namespace UI.Models
         /// 是否允许选择
         /// </summary>
         public bool IsCanColumnSelect { get { return IsCanColumnSelect_; } set { IsCanColumnSelect_ = value; OnPropertyChanged(); } }
+
+        private SelectItemModel ChartDataMode_;
+        /// <summary>
+        /// 图表数据模式（1=分类/2=汇总）
+        /// </summary>
+        public SelectItemModel ChartDataMode { get { return ChartDataMode_; } set { ChartDataMode_ = value; OnPropertyChanged(); } }
     }
 }
