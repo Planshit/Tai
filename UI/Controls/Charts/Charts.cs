@@ -1,4 +1,5 @@
 ﻿using Core.Librarys;
+using Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -754,10 +755,26 @@ namespace UI.Controls.Charts
                         {
                             var data = control.Data;
 
-                            bool show = false;
-                            if (data.Name.ToLower().IndexOf(searchKey) != -1 || data.PopupText.ToLower().IndexOf(searchKey) != -1 || string.IsNullOrEmpty(searchKey))
+                            var log = data.Data as DailyLogModel;
+                            var app = log != null ? log.AppModel : null;
+
+                            if (log == null)
                             {
-                                show = true;
+                                app = (data.Data as HoursLogModel).AppModel;
+                            }
+
+                            bool show = false;
+                            if (app != null)
+                            {
+                                show = string.IsNullOrEmpty(searchKey) || app.Name.ToLower().Contains(searchKey) || app.File.ToLower().Contains(searchKey) || app.Description.ToLower().Contains(searchKey);
+                            }
+                            if (!show && app.Category != null)
+                            {
+                                show = app.Category.Name.Contains(searchKey);
+                            }
+                            if (!show && searchKey == "忽略")
+                            {
+                                show = data.BadgeList.Where(m => m.Type == ChartBadgeType.Ignore).Any();
                             }
                             control.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
                         }
