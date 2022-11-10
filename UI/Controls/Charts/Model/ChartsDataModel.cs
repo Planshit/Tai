@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UI.Models;
 
 namespace UI.Controls.Charts.Model
 {
-    public class ChartsDataModel
+    public class ChartsDataModel : UINotifyPropertyChanged
     {
         /// <summary>
         /// 名称
@@ -56,5 +57,11 @@ namespace UI.Controls.Charts.Model
         /// 颜色
         /// </summary>
         public string Color { get; set; }
+
+        private List<ChartBadgeModel> BadgeList_;
+        /// <summary>
+        /// 徽章
+        /// </summary>
+        public List<ChartBadgeModel> BadgeList { get { return BadgeList_; } set { BadgeList_ = value; OnPropertyChanged(); } }
     }
 }

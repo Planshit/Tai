@@ -80,6 +80,12 @@ namespace UI.Servicers
             {
                 app = (data.Data as HoursLogModel).AppModel;
             }
+            var newBadgeList = new List<ChartBadgeModel>();
+            if (data.BadgeList != null)
+            {
+                var categoryBadge = data.BadgeList.Where(m => m.Type != ChartBadgeType.Ignore).ToList();
+                newBadgeList.AddRange(categoryBadge);
+            }
 
             var config = appConfig.GetConfig();
             if (config.Behavior.IgnoreProcessList.Contains(app.Name))
@@ -91,7 +97,10 @@ namespace UI.Servicers
             {
                 config.Behavior.IgnoreProcessList.Add(app.Name);
                 main.Toast($"已忽略此应用 {app.Description}", Controls.Window.ToastType.Success);
+
+                newBadgeList.Add(ChartBadgeModel.IgnoreBadge);
             }
+            data.BadgeList = newBadgeList;
         }
 
         private void SetCategory_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -143,7 +152,7 @@ namespace UI.Servicers
                 categoryMenu.IsChecked = app.CategoryID == category.ID;
                 categoryMenu.Click += (s, e) =>
                 {
-                    SetAppCategory(app.ID, category);
+                    SetAppCategory(data, app.ID, category);
                 };
                 setCategory.Items.Add(categoryMenu);
             }
@@ -201,8 +210,24 @@ namespace UI.Servicers
                 main.Toast("关联配置不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
             }
         }
-        private void SetAppCategory(int appId, CategoryModel category)
+        private void SetAppCategory(ChartsDataModel data, int appId, CategoryModel category)
         {
+            var newBadgeList = new List<ChartBadgeModel>();
+            if (data.BadgeList != null)
+            {
+                var otherBadge = data.BadgeList.Where(m => m.Type != ChartBadgeType.Category).ToList();
+                newBadgeList.AddRange(otherBadge);
+            }
+
+            newBadgeList.Add(new ChartBadgeModel()
+            {
+                Name = category.Name,
+                Color = category.Color,
+                Type = ChartBadgeType.Category
+            });
+
+            data.BadgeList = newBadgeList;
+
             var app = appData.GetApp(appId);
             app.CategoryID = category.ID;
             app.Category = category;

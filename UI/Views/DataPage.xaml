@@ -49,7 +49,7 @@
                     <select:DateSelect Date="{Binding DayDate,Mode=TwoWay}"/>
                     <!--<DatePickerBar:DatePickerBar SelectedDate="{Binding DayDate,Mode=TwoWay}" ShowType="Day"/>-->
 
-                    <Charts:Charts IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    <Charts:Charts IsShowBadge="True"  IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
             </TabItem>
             <TabItem>
@@ -61,7 +61,7 @@
                     </Grid.RowDefinitions>
                     <!--<DatePickerBar:DatePickerBar SelectedDate="{Binding MonthDate,Mode=TwoWay}" ShowType="Month"/>-->
                     <select:DateSelect Date="{Binding MonthDate,Mode=TwoWay}" SelectType="Month"/>
-                    <Charts:Charts IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding MonthData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    <Charts:Charts IsShowBadge="True" IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding MonthData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
             </TabItem>
             <TabItem>
@@ -74,7 +74,7 @@
                     <!--<DatePickerBar:DatePickerBar SelectedDate="{Binding YearDate,Mode=TwoWay}" ShowType="Year"/>-->
                     <select:DateSelect Date="{Binding YearDate,Mode=TwoWay}" SelectType="Year"/>
 
-                    <Charts:Charts IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding YearData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    <Charts:Charts IsShowBadge="True" IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding YearData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
             </TabItem>
         </TabControl>

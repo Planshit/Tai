@@ -148,6 +148,8 @@
     <Compile Include="Controls\Charts\ChartsItemTypeA.cs" />
     <Compile Include="Controls\Charts\Charts.cs" />
     <Compile Include="Controls\Charts\ChartsType.cs" />
+    <Compile Include="Controls\Charts\Model\ChartBadgeModel.cs" />
+    <Compile Include="Controls\Charts\Model\ChartBadgeType.cs" />
     <Compile Include="Controls\Charts\Model\ChartColumnInfoModel.cs" />
     <Compile Include="Controls\Charts\Model\ChartsDataModel.cs" />
     <Compile Include="Controls\Converters\ToStringConverter.cs" />

@@ -362,6 +362,23 @@ namespace UI.Controls.Charts
 
 
         #endregion
+        #region IsShowBadge 是否显示徽章
+        /// <summary>
+        /// 是否显示徽章(默认不显示)
+        /// </summary>
+        public bool IsShowBadge
+        {
+            get { return (bool)GetValue(IsShowBadgeProperty); }
+            set { SetValue(IsShowBadgeProperty, value); }
+        }
+        public static readonly DependencyProperty IsShowBadgeProperty =
+            DependencyProperty.Register("IsShowBadge",
+                typeof(bool),
+                typeof(Charts),
+                new PropertyMetadata(false));
+
+
+        #endregion
         public bool IsShowValuesPopup
         {
             get { return (bool)GetValue(IsShowValuesPopupProperty); }
@@ -686,7 +703,7 @@ namespace UI.Controls.Charts
             ScrollViewer.ScrollToVerticalOffset(0);
 
             var data = Data.OrderByDescending(x => x.Value).ToList();
-            
+
 
             //if (data.Count < 20)
             //{
@@ -799,6 +816,8 @@ namespace UI.Controls.Charts
                 chartsItem.Data = item;
                 chartsItem.ToolTip = item.PopupText;
                 chartsItem.MaxValue = maxValue;
+                chartsItem.IsShowBadge = IsShowBadge;
+
                 if (i == 19 && isLazyloading)
                 {
                     chartsItem.Loaded += ChartsItem_Loaded;

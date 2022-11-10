@@ -66,7 +66,6 @@ namespace UI.ViewModels
             PropertyChanged += IndexPageVM_PropertyChanged;
             LoadThisWeekData();
 
-            appContextMenuServicer.Init();
             AppContextMenu = appContextMenuServicer.GetContextMenu();
 
             inputServicer.OnKeyUpInput += InputServicer_OnKeyUpInput;

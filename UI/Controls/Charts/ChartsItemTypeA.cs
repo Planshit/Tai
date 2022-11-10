@@ -71,6 +71,23 @@ namespace UI.Controls.Charts
 
 
         #endregion
+
+        #region IsShowBadge 是否显示徽章
+        /// <summary>
+        /// 是否显示徽章
+        /// </summary>
+        public bool IsShowBadge
+        {
+            get { return (bool)GetValue(IsShowBadgeProperty); }
+            set { SetValue(IsShowBadgeProperty, value); }
+        }
+        public static readonly DependencyProperty IsShowBadgeProperty =
+            DependencyProperty.Register("IsShowBadge",
+                typeof(bool),
+                typeof(ChartsItemTypeA));
+
+
+        #endregion
         private TextBlock NameTextObj, ValueTextObj;
         private Rectangle ValueBlockObj;
         private StackPanel ValueContainer;

@@ -24,12 +24,14 @@ namespace UI.ViewModels
         private readonly IData data;
         private readonly MainViewModel main;
         private readonly IAppContextMenuServicer appContextMenuServicer;
+        private readonly IAppConfig appConfig;
 
-        public DataPageVM(IData data, MainViewModel main, IAppContextMenuServicer appContextMenuServicer)
+        public DataPageVM(IData data, MainViewModel main, IAppContextMenuServicer appContextMenuServicer, IAppConfig appConfig)
         {
             this.data = data;
             this.main = main;
             this.appContextMenuServicer = appContextMenuServicer;
+            this.appConfig = appConfig;
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
 
@@ -180,10 +182,10 @@ namespace UI.ViewModels
         private List<ChartsDataModel> MapToChartsData(IEnumerable<Core.Models.DailyLogModel> list)
         {
             var resData = new List<ChartsDataModel>();
+            var config = appConfig.GetConfig();
 
             foreach (var item in list)
             {
-
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
                 bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
@@ -191,6 +193,20 @@ namespace UI.ViewModels
                 bindModel.Tag = Time.ToString(item.Time);
                 bindModel.PopupText = item.AppModel?.File;
                 bindModel.Icon = item.AppModel?.IconFile;
+                bindModel.BadgeList = new List<ChartBadgeModel>();
+                if (item.AppModel.Category != null)
+                {
+                    bindModel.BadgeList.Add(new ChartBadgeModel()
+                    {
+                        Name = item.AppModel.Category.Name,
+                        Color = item.AppModel.Category.Color,
+                        Type = ChartBadgeType.Category
+                    });
+                }
+                if (config.Behavior.IgnoreProcessList.Contains(item.AppModel.Name))
+                {
+                    bindModel.BadgeList.Add(ChartBadgeModel.IgnoreBadge);
+                }
                 resData.Add(bindModel);
             }
 
