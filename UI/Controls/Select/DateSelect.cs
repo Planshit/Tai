@@ -62,8 +62,16 @@ namespace UI.Controls.Select
             DependencyProperty.Register("Date",
                 typeof(DateTime),
                 typeof(DateSelect),
-                new PropertyMetadata(DateTime.Now)
+                new PropertyMetadata(DateTime.Now, new PropertyChangedCallback(onDateChanged))
                 );
+
+        private static void onDateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as DateSelect;
+            control.Year = control.Date.Year;
+            control.Month = control.Date.Month;
+            control.SelectedDay = control.Date.Date;
+        }
 
         public int Year
         {
@@ -157,10 +165,8 @@ namespace UI.Controls.Select
             SetMonthCommand = new Command(new Action<object>(OnSetMonth));
             DoneCommand = new Command(new Action<object>(OnDone));
 
-            MouseLeftButtonUp += Select_MouseLeftButtonUp;
 
             Year = Date.Year;
-
             Month = Date.Month;
 
             //Day = new DayModel()
@@ -169,11 +175,10 @@ namespace UI.Controls.Select
             //};
 
             SelectedDay = Date.Date;
-
             mouseProc = HookCallback;
 
             Unloaded += DateSelect_Unloaded;
-
+            MouseLeftButtonUp += Select_MouseLeftButtonUp;
         }
 
 
