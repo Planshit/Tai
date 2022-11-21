@@ -845,7 +845,7 @@ namespace UI.Controls.Charts
                 HandleItemClick(chartsItem, item);
                 //container.Children.Insert(lazyloadedCount, chartsItem);
                 container.Children.Add(chartsItem);
-                if (ShowLimit > 0 && Container.Children.Count == ShowLimit)
+                if (ShowLimit > 0 && container.Children.Count == ShowLimit)
                 {
                     break;
                 }
