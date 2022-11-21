@@ -54,16 +54,7 @@ namespace UI.Controls.Tabbar
             }
         }
         public static readonly DependencyProperty DataProperty =
-            DependencyProperty.Register("Data", typeof(ObservableCollection<string>), typeof(Tabbar), new PropertyMetadata(new PropertyChangedCallback(OnDataChanged)));
-
-        private static void OnDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = d as Tabbar;
-            if (e.NewValue != e.OldValue)
-            {
-
-            }
-        }
+            DependencyProperty.Register("Data", typeof(ObservableCollection<string>), typeof(Tabbar));
 
 
         //private StackPanel ItemsPanel;
@@ -73,42 +64,16 @@ namespace UI.Controls.Tabbar
         private Border ActiveBlock;
         //  动画
         Storyboard storyboard;
+        DoubleAnimation scrollAnimation;
+        ColorAnimation fontColorAnimation;
+        ColorAnimation oldFontColorAnimation;
         public Tabbar()
         {
             DefaultStyleKey = typeof(Tabbar);
             ItemsDictionary = new List<TextBlock>();
-            storyboard = new Storyboard();
-            //SelectedTextColor = (Color)ColorConverter.ConvertFromString("#2b20d9");
         }
 
-        private void Data_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            //if (e.Action == NotifyCollectionChangedAction.Add)
-            //{
-            //    foreach (var item in e.NewItems)
-            //    {
-            //        AddItem(item as NavigationItemModel);
-            //    }
-            //}
-            //if (e.Action == NotifyCollectionChangedAction.Remove)
-            //{
-            //    foreach (var item in e.OldItems)
-            //    {
-            //        RemoveItem(item as NavigationItemModel);
-            //    }
-            //}
-            //if (e.Action == NotifyCollectionChangedAction.Replace)
-            //{
-            //    foreach (var ritem in e.NewItems)
-            //    {
-            //        var item = ritem as NavigationItemModel;
-            //        var id = item.ID;
-            //        ItemsDictionary[id].Icon = item.Icon;
-            //        ItemsDictionary[id].Title = item.Title;
-
-            //    }
-            //}
-        }
+       
 
         public override void OnApplyTemplate()
         {
@@ -116,6 +81,8 @@ namespace UI.Controls.Tabbar
             //ItemsPanel = GetTemplateChild("ItemsPanel") as StackPanel;
             ActiveBlock = GetTemplateChild("ActiveBlock") as Border;
             ItemsContainer = GetTemplateChild("ItemsContainer") as Grid;
+
+            CreateAnimations();
             Render();
         }
 
@@ -128,7 +95,7 @@ namespace UI.Controls.Tabbar
                 control.TextAlignment = TextAlignment.Center;
                 control.Text = item;
                 control.Margin = new Thickness(0, 0, 10, 0);
-                control.FontSize = 18;
+                control.FontSize = 16;
                 control.Cursor = Cursors.Hand;
                 control.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1F1F1F"));
                 control.VerticalAlignment = VerticalAlignment.Bottom;
@@ -186,118 +153,84 @@ namespace UI.Controls.Tabbar
             }
         }
 
+        #region create animations
+        private void CreateAnimations()
+        {
+            storyboard = new Storyboard();
+            scrollAnimation = new DoubleAnimation();
+            //scrollAnimation.EasingFunction = new BackEase() { EasingMode = EasingMode.EaseInOut};
+            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.15));
+
+            Storyboard.SetTarget(scrollAnimation, ActiveBlock);
+            Storyboard.SetTargetProperty(scrollAnimation, new PropertyPath("RenderTransform.Children[0].X"));
+
+
+
+
+            fontColorAnimation = new ColorAnimation();
+            //fontColorAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
+            fontColorAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
+
+            Storyboard.SetTargetProperty(fontColorAnimation, new PropertyPath("(TextBlock.Foreground).(SolidColorBrush.Color)"));
+
+
+            oldFontColorAnimation = new ColorAnimation();
+            oldFontColorAnimation.To = (Color)ColorConverter.ConvertFromString("#CCCCCC");
+            oldFontColorAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3));
+
+            //oldFontColorAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
+            Storyboard.SetTargetProperty(oldFontColorAnimation, new PropertyPath("(TextBlock.Foreground).(SolidColorBrush.Color)"));
+
+
+            //storyboard.Children.Add(oldFontColorAnimation);
+            storyboard.Children.Add(scrollAnimation);
+            storyboard.Children.Add(fontColorAnimation);
+
+        }
+        #endregion
         private void ScrollToActive(int oldSelectedIndex = 0)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             if (oldSelectedIndex > ItemsDictionary.Count || ItemsDictionary.Count == 0 || !IsLoaded)
             {
                 return;
             }
             //  获取选中项
-            Debug.WriteLine(IsLoaded + "");
             var item = ItemsDictionary[SelectedIndex];
             var oldSelectedItem = ItemsDictionary[oldSelectedIndex];
-
-            //ActiveBlock.Height = item.ActualHeight * Data.Count;
 
             //  选中项的坐标
             Point relativePoint = item.TransformToAncestor(this).Transform(new Point(0, 0));
 
-            //  创建动画
-
-            //  设定动画方向
-            //var activeBlockTTF = (ActiveBlock.RenderTransform as TransformGroup).Children[0] as TranslateTransform;
-
-            //var transformGroup = new TransformGroup();
-            //transformGroup.Children.Add(new TranslateTransform(0, activeBlockTTF.Y));
-            //transformGroup.Children.Add(new ScaleTransform(1, 1, 0, 0));
-
-            //ActiveBlock.RenderTransform = transformGroup;
-
-
-            storyboard.Children.Clear();
-
-            var activeBlockTG = ActiveBlock.RenderTransform as TransformGroup;
-            var blockOldX = (activeBlockTG.Children[0] as TranslateTransform).X;
-            DoubleAnimation scrollAnimation = new DoubleAnimation();
-            //scrollAnimation.From = activeBlockTTF.Y;
-            //double scrollX = relativePoint.X + item.ActualWidth / 2 - ActiveBlock.ActualWidth / 2;
             double scrollX = relativePoint.X;
 
             scrollX = scrollX < 0 ? 0 : scrollX;
-
-            //scrollX= scrollX + item.ActualWidth / 2 - ActiveBlock.ActualWidth / 2;
-            if (scrollX != 0)
-            {
-                //scrollX = scrollX > blockOldX ? scrollX - 10 : scrollX;
-            }
-
-            Debug.WriteLine(blockOldX + " -> " + scrollX);
             scrollAnimation.To = scrollX;
-
-            scrollAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
-            Storyboard.SetTarget(scrollAnimation, ActiveBlock);
-            Storyboard.SetTargetProperty(scrollAnimation, new PropertyPath("RenderTransform.Children[0].X"));
-
-            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.15));
-
-            //  文字大小动画
-            DoubleAnimation fontSizeAnimation = new DoubleAnimation();
-            //scrollAnimation.From = activeBlockTTF.Y;
-            fontSizeAnimation.To = 18;
-
-            fontSizeAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
-            Storyboard.SetTarget(fontSizeAnimation, item);
-            Storyboard.SetTargetProperty(fontSizeAnimation, new PropertyPath("FontSize"));
-
-            fontSizeAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
+         
+            
 
 
 
             //  文字颜色动画
-            ColorAnimation fontColorAnimation = new ColorAnimation();
-            //scrollAnimation.From = activeBlockTTF.Y;
             fontColorAnimation.To = SelectedTextColor;
-
-            fontColorAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
             Storyboard.SetTarget(fontColorAnimation, item);
-            Storyboard.SetTargetProperty(fontColorAnimation, new PropertyPath("(TextBlock.Foreground).(SolidColorBrush.Color)"));
-
-            fontColorAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
-
-
-            storyboard.Children.Add(scrollAnimation);
-            storyboard.Children.Add(fontSizeAnimation);
-
-            storyboard.Children.Add(fontColorAnimation);
 
 
             if (oldSelectedIndex != SelectedIndex)
             {
-                DoubleAnimation oldFontSizeAnimation = new DoubleAnimation();
-                //scrollAnimation.From = activeBlockTTF.Y;
-                oldFontSizeAnimation.To = 14;
-
-                oldFontSizeAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
-                Storyboard.SetTarget(oldFontSizeAnimation, oldSelectedItem);
-                Storyboard.SetTargetProperty(oldFontSizeAnimation, new PropertyPath("FontSize"));
-
-                oldFontSizeAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
-
-                ColorAnimation oldFontColorAnimation = new ColorAnimation();
-                //scrollAnimation.From = activeBlockTTF.Y;
-                oldFontColorAnimation.To = (Color)ColorConverter.ConvertFromString("#CCCCCC");
-
-                oldFontColorAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
                 Storyboard.SetTarget(oldFontColorAnimation, oldSelectedItem);
-                Storyboard.SetTargetProperty(oldFontColorAnimation, new PropertyPath("(TextBlock.Foreground).(SolidColorBrush.Color)"));
-
-                oldFontColorAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3));
-
-                storyboard.Children.Add(oldFontSizeAnimation);
                 storyboard.Children.Add(oldFontColorAnimation);
-
+            }
+            else
+            {
+                storyboard.Children.Remove(oldFontColorAnimation);
             }
             storyboard.Begin();
+
+            Debug.WriteLine("【耗时】" + sw.ElapsedMilliseconds);
+            sw.Stop();
+
         }
 
         private void Reset()
@@ -309,35 +242,11 @@ namespace UI.Controls.Tabbar
                 if (item != ItemsContainer.Children[SelectedIndex])
                 {
                     var text = item as TextBlock;
-                    text.FontSize = 14;
                     text.Foreground = UI.Base.Color.Colors.GetFromString("#ccc");
 
-                    //DoubleAnimation fontSizeAnimation = new DoubleAnimation();
-                    ////scrollAnimation.From = activeBlockTTF.Y;
-                    //fontSizeAnimation.To = 14;
-
-                    //fontSizeAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
-                    //Storyboard.SetTarget(fontSizeAnimation, (UIElement)item);
-                    //Storyboard.SetTargetProperty(fontSizeAnimation, new PropertyPath("FontSize"));
-
-                    //fontSizeAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
-
-                    //ColorAnimation oldFontColorAnimation = new ColorAnimation();
-                    ////scrollAnimation.From = activeBlockTTF.Y;
-                    //oldFontColorAnimation.To = (Color)ColorConverter.ConvertFromString("#CCCCCC");
-
-                    //oldFontColorAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
-                    //Storyboard.SetTarget(oldFontColorAnimation, (UIElement)item);
-                    //Storyboard.SetTargetProperty(oldFontColorAnimation, new PropertyPath("(TextBlock.Foreground).(SolidColorBrush.Color)"));
-
-                    //oldFontColorAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3));
-
-                    //storyboard.Children.Add(fontSizeAnimation);
-                    //storyboard.Children.Add(oldFontColorAnimation);
                 }
             }
 
-            //storyboard.Begin();
         }
     }
 }

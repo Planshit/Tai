@@ -13,6 +13,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:NavigationItem}">
                     <Border Background="Transparent" CornerRadius="5" x:Name="Border">
+                       
                         <!--<Border.Background>
                             <SolidColorBrush Color="{TemplateBinding Background}" Opacity="1"/>
                         </Border.Background>-->
@@ -115,10 +116,18 @@
                     Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" Storyboard.TargetName="Border" To="#CC383838" />
                                         <DoubleAnimation Duration="0:0:0.2"
                     Storyboard.TargetProperty="(base:Icon.RenderTransform).Children[0].(TranslateTransform.Y)" Storyboard.TargetName="Icon" To="0" />
-                                        <DoubleAnimation Duration="0:0:0.2"
-                    Storyboard.TargetProperty="(base:Icon.RenderTransform).Children[1].(ScaleTransform.ScaleX)" Storyboard.TargetName="Icon" To="1" />
-                                        <DoubleAnimation Duration="0:0:0.2"
-                    Storyboard.TargetProperty="(base:Icon.RenderTransform).Children[1].(ScaleTransform.ScaleY)" Storyboard.TargetName="Icon" To="1" />
+                                        <DoubleAnimation Duration="0:0:0.38"
+                    Storyboard.TargetProperty="(base:Icon.RenderTransform).Children[1].(ScaleTransform.ScaleX)" Storyboard.TargetName="Icon" To="1">
+                                            <DoubleAnimation.EasingFunction>
+                                                <BackEase EasingMode="EaseOut" Amplitude="2"></BackEase>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:0.38"
+                    Storyboard.TargetProperty="(base:Icon.RenderTransform).Children[1].(ScaleTransform.ScaleY)" Storyboard.TargetName="Icon" To="1" >
+                                            <DoubleAnimation.EasingFunction>
+                                                <BackEase EasingMode="EaseOut" Amplitude="2"></BackEase>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </MultiTrigger.EnterActions>

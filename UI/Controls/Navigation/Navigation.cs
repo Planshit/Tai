@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -224,18 +225,49 @@ namespace UI.Controls.Navigation
 
         private StackPanel ItemsPanel;
         private Dictionary<int, NavigationItem> ItemsDictionary;
-
         //  选中标记块
         private Border ActiveBlock;
         //  动画
         Storyboard storyboard;
+        //  滚动动画
+        DoubleAnimation scrollAnimation;
+        //  伸缩动画
+        DoubleAnimation stretchAnimation;
+
         public Navigation()
         {
             DefaultStyleKey = typeof(Navigation);
             ItemsDictionary = new Dictionary<int, NavigationItem>();
-            storyboard = new Storyboard();
         }
 
+        #region create animation
+        private void CreateAnimations()
+        {
+            storyboard = new Storyboard();
+            scrollAnimation = new DoubleAnimation();
+            stretchAnimation = new DoubleAnimation();
+
+            //  滚动动画
+            scrollAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
+            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.35));
+
+            Storyboard.SetTarget(scrollAnimation, ActiveBlock);
+            Storyboard.SetTargetProperty(scrollAnimation, new PropertyPath("RenderTransform.Children[0].Y"));
+
+            //  伸缩动画
+            stretchAnimation.AutoReverse = true;
+            stretchAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
+            stretchAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.35));
+
+            Storyboard.SetTarget(stretchAnimation, ActiveBlock);
+            Storyboard.SetTargetProperty(stretchAnimation, new PropertyPath("RenderTransform.Children[1].ScaleY"));
+
+            storyboard.Children.Add(stretchAnimation);
+            storyboard.Children.Add(scrollAnimation);
+        }
+        #endregion
+
+        #region temp region
         private void Data_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -271,6 +303,7 @@ namespace UI.Controls.Navigation
             ItemsPanel = GetTemplateChild("ItemsPanel") as StackPanel;
             ActiveBlock = GetTemplateChild("ActiveBlock") as Border;
 
+            CreateAnimations();
             Render();
         }
         private int CreateID()
@@ -294,7 +327,7 @@ namespace UI.Controls.Navigation
                 navItem.IconColor = item.IconColor;
                 navItem.BadgeText = item.BadgeText;
                 navItem.Uri = item.Uri;
-                
+
                 if (!string.IsNullOrEmpty(item.Title))
                 {
                     navItem.MouseUp += NavItem_MouseUp;
@@ -360,6 +393,7 @@ namespace UI.Controls.Navigation
                 };
             }
         }
+        #endregion
 
         private void ScrollToActive()
         {
@@ -370,58 +404,27 @@ namespace UI.Controls.Navigation
             }
             var item = ItemsDictionary[SelectedItem.ID];
             item.IsSelected = true;
-            //var index = Data.IndexOf(SelectedItem);
 
-            //ActiveBlock.Height = item.ActualHeight * Data.Count;
 
             //  选中项的坐标
             Point relativePoint = item.TransformToAncestor(this).Transform(new Point(0, 0));
 
-            //  创建动画
-
             //  设定动画方向
             var activeBlockTTF = (ActiveBlock.RenderTransform as TransformGroup).Children[0] as TranslateTransform;
-
-            //var transformGroup = new TransformGroup();
-            //transformGroup.Children.Add(new TranslateTransform(0, activeBlockTTF.Y));
-            //transformGroup.Children.Add(new ScaleTransform(1, 1, 0, 0));
-
-            //ActiveBlock.RenderTransform = transformGroup;
-
-
-            storyboard.Children.Clear();
-            DoubleAnimation scrollAnimation = new DoubleAnimation();
-            //scrollAnimation.From = activeBlockTTF.Y;
             scrollAnimation.To = relativePoint.Y + 8;
 
-            scrollAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
-            Storyboard.SetTarget(scrollAnimation, ActiveBlock);
-            Storyboard.SetTargetProperty(scrollAnimation, new PropertyPath("RenderTransform.Children[0].Y"));
-
-            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.35));
-
             //  伸缩动画
-            DoubleAnimation stretchAnimation = new DoubleAnimation();
-            stretchAnimation.AutoReverse = true;
+
             stretchAnimation.To = 1.6;
-            stretchAnimation.EasingFunction = new SineEase() { EasingMode = EasingMode.EaseIn };
-            Storyboard.SetTarget(stretchAnimation, ActiveBlock);
-            Storyboard.SetTargetProperty(stretchAnimation, new PropertyPath("RenderTransform.Children[1].ScaleY"));
-            stretchAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.35));
 
             if (relativePoint.Y > activeBlockTTF.Y)
             {
                 //  向下移动
-
                 var transformGroup = new TransformGroup();
                 transformGroup.Children.Add(new TranslateTransform(0, activeBlockTTF.Y));
                 transformGroup.Children.Add(new ScaleTransform(1, 1, 0, 200));
 
                 ActiveBlock.RenderTransform = transformGroup;
-
-                //stretchAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3));
-
-
             }
             else
             {
@@ -430,18 +433,9 @@ namespace UI.Controls.Navigation
                 transformGroup.Children.Add(new ScaleTransform(1, 1, 0, 0));
 
                 ActiveBlock.RenderTransform = transformGroup;
-                //var transformGroup = new TransformGroup();
-                //transformGroup.Children.Add(new TranslateTransform(0, activeBlockTTF.Y));
-                //transformGroup.Children.Add(new ScaleTransform(1, .1, 0, 0));
 
-                //ActiveBlock.RenderTransform = transformGroup;
             }
-
-
-            storyboard.Children.Add(stretchAnimation);
-
-            storyboard.Children.Add(scrollAnimation);
-
+            
             storyboard.Begin();
         }
     }
