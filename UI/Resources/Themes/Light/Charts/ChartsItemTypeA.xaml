@@ -21,37 +21,10 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Grid Margin="0,0,10,0">
-                                <Border x:Name="IconBorder" BorderBrush="Transparent" BorderThickness="2" Background="#f3f3f3" CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
-                                    <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </Grid>
-                            <!--<Grid  Grid.Column="1" x:Name="ValueContainer"  VerticalAlignment="Center" >
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
+                            <Border Margin="0,0,10,0" x:Name="IconBorder" BorderBrush="Transparent" BorderThickness="2" Background="#f3f3f3" CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
+                                <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
 
-                                    </Grid.RowDefinitions>
-                                    <TextBlock x:Name="NameTextObj" Foreground="#5c5c5c" HorizontalAlignment="Left"/>
-                                    <Grid Grid.Row="1" >
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition Width="auto"/>
-
-                                        </Grid.ColumnDefinitions>
-                                        <Rectangle
-                            x:Name="ValueBlockObj"
-                                RadiusX="4"
-                                RadiusY="4"
-                                Fill="#cccccc"
-                                Height="8"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Left"
-                            />
-
-                                        <TextBlock Grid.Column="1" x:Name="ValueTextObj" VerticalAlignment="Center" Foreground="#5c5c5c" FontSize="12" Margin="5,0,0,0"/>
-                                    </Grid>
-                                </Grid>-->
                             <StackPanel Grid.Column="1" x:Name="ValueContainer" VerticalAlignment="Center" >
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -137,27 +110,17 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Grid Margin="0,0,10,0">
-
-                                <base:Placeholder  CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
-                                    <!--<Rectangle Height="25" Fill="" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
-                                </base:Placeholder>
-                            </Grid>
+                            <base:Placeholder Margin="0,0,10,0" CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left"/>
                             <StackPanel  Grid.Column="1"  VerticalAlignment="Center" >
                                 <base:Placeholder Width="100" Height="12" HorizontalAlignment="Left" Margin="0,0,0,6"/>
-                                <StackPanel Orientation="Horizontal" >
-                                    <Rectangle
+                                <Rectangle
                                 RadiusX="0"
                                 RadiusY="0"
                                 Fill="#e0e0e0"
                                 Height="8"
-                                            Width="256"
                                         VerticalAlignment="Center"
-                                        HorizontalAlignment="Left"
+                                        HorizontalAlignment="Stretch"
                             />
-
-                                    <!--<TextBlock VerticalAlignment="Center" Foreground="#5c5c5c" FontSize="12" Margin="5,0,0,0"/>-->
-                                </StackPanel>
                             </StackPanel>
                         </Grid>
 

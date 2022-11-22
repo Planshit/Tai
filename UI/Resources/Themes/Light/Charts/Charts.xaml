@@ -221,35 +221,19 @@
                                             <DataTemplate>
 
                                                 <WrapPanel Orientation="Vertical">
-                                                    <Border Width="auto" Height="30" Margin="0,0,10,0">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="20"/>
-                                                                <ColumnDefinition Width="20"/>
-                                                                <ColumnDefinition Width="auto"/>
-                                                                <ColumnDefinition Width="auto"/>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,10,5">
+                                                        <Rectangle Width="12" RadiusX="4" RadiusY="4" Height="12" Fill="{Binding Color,Converter={StaticResource HextoColorConverter}}">
+                                                            <!--颜色-->
+                                                        </Rectangle>
 
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Width="12" CornerRadius="4" Height="12" Background="{Binding Color,Converter={StaticResource HextoColorConverter}}">
-                                                                <!--颜色-->
-                                                            </Border>
-                                                            <Border Grid.Column="1">
-                                                                <!--图标-->
-                                                                <base:Img Width="16" Height="16" URL="{Binding Icon}"/>
-                                                            </Border>
-                                                            <Border Grid.Column="2" Margin="5,0,0,0">
-                                                                <!--名称-->
-                                                                <TextBlock Foreground="#5c5c5c" VerticalAlignment="Center" Text="{Binding Name}"/>
-                                                            </Border>
-                                                            <Border Grid.Column="3">
-                                                                <!--总计和百分比-->
-                                                                <TextBlock FontSize="12" Margin="5,0,0,0" Foreground="#FF8A8A8A" VerticalAlignment="Center" Text="{Binding Text}"/>
+                                                        <base:Img Margin="5,0,0,0"  Width="16" Height="16" URL="{Binding Icon}"/>
+                                                        <!--名称-->
+                                                        <TextBlock Margin="5,0,0,0" Foreground="#5c5c5c" VerticalAlignment="Center" Text="{Binding Name}"/>
 
-                                                            </Border>
+                                                        <!--总计和百分比-->
+                                                        <TextBlock FontSize="12" Margin="5,0,0,0" Foreground="#FF8A8A8A" VerticalAlignment="Center" Text="{Binding Text}"/>
 
-                                                        </Grid>
-                                                    </Border>
-
+                                                    </StackPanel>
                                                 </WrapPanel>
                                             </DataTemplate>
                                         </ListView.ItemTemplate>

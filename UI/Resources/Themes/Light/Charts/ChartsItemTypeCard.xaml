@@ -13,21 +13,20 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:ChartsItemTypeCard}">
                     <Grid >
-                        <Grid x:Name="Normal">
-                            <Border x:Name="ShadowBorder" CornerRadius="12">
-                                <Border.Effect>
-                                    <DropShadowEffect RenderingBias="Performance" Color="{DynamicResource ThemeColor}" BlurRadius="17" Direction="0" ShadowDepth="0" Opacity="0"/>
-                                </Border.Effect>
-                                <Border x:Name="Border" BorderBrush="Transparent" BorderThickness="2" Margin="0" Background="{DynamicResource StandardBackgroundBrush}"  CornerRadius="12"  Width="150" Height="150" >
+                        <Border x:Name="Normal" CornerRadius="12">
+                            <Border.Effect>
+                                <DropShadowEffect RenderingBias="Performance" Color="{DynamicResource ThemeColor}" BlurRadius="17" Direction="0" ShadowDepth="0" Opacity="0"/>
+                            </Border.Effect>
+                            <Border x:Name="Border" BorderBrush="Transparent" BorderThickness="2" Margin="0" Background="{DynamicResource StandardBackgroundBrush}"  CornerRadius="12"  Width="150" Height="150" >
 
-                                    <Border.Clip>
-                                        <RectangleGeometry RadiusX="12" RadiusY="12" Rect="0,0,150,150"/>
-                                    </Border.Clip>
-                                    <!--<Border.RenderTransform>
+                                <Border.Clip>
+                                    <RectangleGeometry RadiusX="12" RadiusY="12" Rect="0,0,150,150"/>
+                                </Border.Clip>
+                                <!--<Border.RenderTransform>
                                         
                                     </Border.RenderTransform>-->
-                                    <Grid>
-                                        <Rectangle
+                                <Grid>
+                                    <Rectangle
                             x:Name="ValueBlockObj"
                                 
                                
@@ -38,43 +37,39 @@
                                             Fill="#ff305b"
                                             
                             >
-                                            <!--<Rectangle.Effect>
+                                        <!--<Rectangle.Effect>
                                                 <BlurEffect RenderOptions.BitmapScalingMode="LowQuality"  Radius="35" RenderingBias="Performance"/>
                                             </Rectangle.Effect>-->
-                                            <!--<Rectangle.Fill>
+                                        <!--<Rectangle.Fill>
                                                 <LinearGradientBrush RenderOptions.BitmapScalingMode="LowQuality" EndPoint="2,1" StartPoint="-2,0">
                                                     <GradientStop Color="White"/>
                                                     <GradientStop Color="#ff305b" Offset="1"/>
                                                 </LinearGradientBrush>
                                             </Rectangle.Fill>-->
-                                            <Rectangle.RenderTransform>
-                                                <ScaleTransform ScaleX="3" ScaleY="3" CenterX="0" CenterY="0"/>
-                                            </Rectangle.RenderTransform>
-                                        </Rectangle>
-                                        <!--<Border VerticalAlignment="Center" HorizontalAlignment="Center">-->
-                                        <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="LowQuality"/>
-                                        <!--</Border>-->
+                                        <Rectangle.RenderTransform>
+                                            <ScaleTransform ScaleX="3" ScaleY="3" CenterX="0" CenterY="0"/>
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                    <!--<Border VerticalAlignment="Center" HorizontalAlignment="Center">-->
+                                    <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="LowQuality"/>
+                                    <!--</Border>-->
 
-                                        <TextBlock x:Name="NameTextObj" Foreground="#5c5c5c" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10"/>
+                                    <TextBlock x:Name="NameTextObj" Foreground="#5c5c5c" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10"/>
 
-                                        <Border VerticalAlignment="Top" CornerRadius="5" Padding="5" HorizontalAlignment="Left" Margin="10" >
-                                            <Border.Background>
-                                                <SolidColorBrush Color="#ff305b" Opacity="0.7"/>
-                                            </Border.Background>
-                                            <TextBlock x:Name="ValueTextObj" Foreground="White" FontSize="12" />
+                                    <Border VerticalAlignment="Top" CornerRadius="5" Padding="5" HorizontalAlignment="Left" Margin="10" >
+                                        <Border.Background>
+                                            <SolidColorBrush Color="#ff305b" Opacity="0.7"/>
+                                        </Border.Background>
+                                        <TextBlock x:Name="ValueTextObj" Foreground="White" FontSize="12" />
 
-                                        </Border>
+                                    </Border>
 
-                                    </Grid>
+                                </Grid>
 
-                                </Border>
                             </Border>
+                        </Border>
 
-                        </Grid>
-
-                        <Grid x:Name="Loading" Visibility="Collapsed">
-                            <base:Placeholder CornerRadius="12"  Width="150" Height="150"/>
-                        </Grid>
+                        <base:Placeholder x:Name="Loading" Visibility="Collapsed" CornerRadius="12"  Width="150" Height="150"/>
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
@@ -94,7 +89,7 @@
                                         </ColorAnimation>
 
                                         <DoubleAnimation Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.Opacity)"
-                                                Storyboard.TargetName="ShadowBorder" To="0.3" >
+                                                Storyboard.TargetName="Normal" To="0.3" >
                                             <DoubleAnimation.EasingFunction>
                                                 <CubicEase EasingMode="EaseInOut"/>
                                             </DoubleAnimation.EasingFunction>

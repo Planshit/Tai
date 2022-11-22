@@ -139,7 +139,7 @@
         </Grid>
 
         <WrapPanel Margin="-10">
-           
+
             <!--时段-->
             <Grid Margin="10,0,0,0">
                 <Grid.RowDefinitions>
@@ -152,34 +152,32 @@
                     <StackPanel >
                         <select:Select Height="30" IsShowIcon="False" SelectedItem="{Binding ChartDataMode,Mode=TwoWay}" Options="{Binding ChartDataModeOptions}"/>
                         <charts:Charts Height="310" ColumnSelectedIndex="{Binding ColumnSelectedIndex,Mode=TwoWay}" IsShowTotal="False" DataMaximum="{Binding DataMaximum}" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}" IsCanColumnSelect="{Binding IsCanColumnSelect}"/>
-                        <!--<base:View Value="{Binding TabbarSelectedIndex}" Condition="0">-->
-                            <base:View Value="{Binding DayHoursSelectedTime}" Condition="not empty">
-                                <StackPanel>
-                                    <Border   Margin="0,10,0,5" HorizontalAlignment="Left" Padding="10" CornerRadius="10">
-                                        <Border.Background>
-                                            <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".05"/>
-                                        </Border.Background>
-                                        <StackPanel Orientation="Horizontal">
-                                            <base:Icon Foreground="{DynamicResource SubTextBrush}" IconType="Timer" VerticalAlignment="Center"/>
-                                            <TextBlock Foreground="{DynamicResource SubTextBrush}" VerticalAlignment="Center" Text="{Binding DayHoursSelectedTime}"  FontSize="13" Margin="5,0,0,0"/>
+                        <base:View Value="{Binding DayHoursSelectedTime}" Condition="not empty">
+                            <StackPanel>
+                                <Border   Margin="0,10,0,5" HorizontalAlignment="Left" Padding="10" CornerRadius="10">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".05"/>
+                                    </Border.Background>
+                                    <StackPanel Orientation="Horizontal">
+                                        <base:Icon Foreground="{DynamicResource SubTextBrush}" IconType="Timer" VerticalAlignment="Center"/>
+                                        <TextBlock Foreground="{DynamicResource SubTextBrush}" VerticalAlignment="Center" Text="{Binding DayHoursSelectedTime}"  FontSize="13" Margin="5,0,0,0"/>
 
-                                        </StackPanel>
-                                    </Border>
-                                    <base:View Value="{Binding DayHoursData}" Condition="not empty">
-                                        <charts:Charts Margin="0,0,0,0" Height="300" ItemMenu="{Binding AppContextMenu}" Data="{Binding DayHoursData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}" />
-                                    </base:View>
-                                    <base:View Value="{Binding DayHoursData}" Condition="empty">
-                                        <base:EmptyData/>
-                                    </base:View>
-                                </StackPanel>
-                            </base:View>
-                        <!--</base:View>-->
+                                    </StackPanel>
+                                </Border>
+                                <base:View Value="{Binding DayHoursData}" Condition="not empty">
+                                    <charts:Charts Margin="0,0,0,0" Height="300" ItemMenu="{Binding AppContextMenu}" Data="{Binding DayHoursData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}" />
+                                </base:View>
+                                <base:View Value="{Binding DayHoursData}" Condition="empty">
+                                    <base:EmptyData/>
+                                </base:View>
+                            </StackPanel>
+                        </base:View>
                     </StackPanel>
                 </Border>
 
             </Grid>
-            
-            
+
+
             <!--雷达图-->
             <Grid Margin="10,0,0,0" Width="350" Height="400" VerticalAlignment="Top">
                 <Grid.RowDefinitions>
