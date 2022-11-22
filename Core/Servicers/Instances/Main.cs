@@ -39,6 +39,7 @@ namespace Core.Servicers.Instances
             "Updater",
             "LockApp",
             "dwm",
+            "SystemSettingsAdminFlows"
         };
 
         /// <summary>
