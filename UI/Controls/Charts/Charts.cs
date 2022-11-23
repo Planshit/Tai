@@ -571,13 +571,16 @@ namespace UI.Controls.Charts
                 Render();
             }
 
-            var parent = VisualTreeHelper.GetParent(this);
-            while (!(parent is System.Windows.Window))
+            if (ChartsType == ChartsType.HorizontalA && IsSearch)
             {
-                parent = VisualTreeHelper.GetParent(parent);
+                var parent = VisualTreeHelper.GetParent(this);
+                while (!(parent is System.Windows.Window))
+                {
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+                var page = parent as System.Windows.Window;
+                page.SizeChanged += Page_SizeChanged;
             }
-            var page = parent as System.Windows.Window;
-            page.SizeChanged += Page_SizeChanged;
         }
 
         private void _typeColumnCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1193,7 +1196,7 @@ namespace UI.Controls.Charts
                         colValueRect.Height = value / maxValue * canvasHeight;
                         colValueRect.Fill = UI.Base.Color.Colors.GetFromString(colColor);
                         colValueRect.RadiusX = 4;
-                        colValueRect.RadiusY= 4;
+                        colValueRect.RadiusY = 4;
                         Canvas.SetLeft(colValueRect, i * columnBorderWidth + margin);
                         Canvas.SetBottom(colValueRect, colNameHeight);
 
