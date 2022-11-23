@@ -193,22 +193,11 @@
                                             </Grid>
                                         </Border>
                                     </Popup>
-                                    <TextBlock Panel.ZIndex="2" Margin="0,-8,0,0" HorizontalAlignment="Right" VerticalAlignment="Top" Text="{TemplateBinding Maximum}" Foreground="#ccc" FontSize="12"/>
-
-                                    <TextBlock Panel.ZIndex="2" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{TemplateBinding Median}" Foreground="#ccc" FontSize="12" Margin="0,0,0,30"/>
-                                    <Line Stroke="#ccc" Opacity="1" HorizontalAlignment="Stretch"
-                  X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
-                  StrokeDashArray="2 5" StrokeThickness=".8" VerticalAlignment="Center" Margin="10,0,10,30"/>
-
-                                    <Line Stroke="#ccc" Opacity="1" HorizontalAlignment="Stretch"
-                  X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
-                  StrokeDashArray="2 5" StrokeThickness=".8" VerticalAlignment="Top" Margin="10,0"/>
 
                                     <Border BorderThickness="1,0,0,1" BorderBrush="#eeeef2">
-                                        <Grid x:Name="ColumnContainer">
-
-                                        </Grid>
+                                        <Canvas x:Name="TypeColumnCanvas"/>
                                     </Border>
+                                    
                                 </Grid>
                                 <!--信息-->
                                 <Grid Grid.Row="2" Margin="0,5,0,0">

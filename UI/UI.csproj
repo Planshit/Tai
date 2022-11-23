@@ -127,6 +127,7 @@
     </ApplicationDefinition>
     <Compile Include="Base\Color\Colors.cs" />
     <Compile Include="Base\Color\ColorTypes.cs" />
+    <Compile Include="Base\UIHelper.cs" />
     <Compile Include="Controls\Base\EmptyData.cs" />
     <Compile Include="Controls\Base\CheckBox.cs" />
     <Compile Include="Controls\Base\ColorSelect.cs" />

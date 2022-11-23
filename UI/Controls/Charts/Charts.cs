@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using UI.Base;
 using UI.Controls.Base;
 using UI.Controls.Charts.Model;
 using UI.Controls.Input;
@@ -475,7 +476,7 @@ namespace UI.Controls.Charts
             }
             if (e.Property == ColumnSelectedIndexProperty && e.OldValue != e.NewValue)
             {
-                charts.CheckColumnItem((int)e.OldValue, (int)e.NewValue);
+                charts.SetColBorderActiveBg((int)e.OldValue, (int)e.NewValue);
             }
 
         }
@@ -502,9 +503,12 @@ namespace UI.Controls.Charts
         private StackPanel _typeATempContainer;
         private WrapPanel CardContainer;
         private Grid MonthContainer;
-        private Grid ColumnContainer;
         private Border RadarContainer;
         private ListView _listView;
+        private Canvas _typeColumnCanvas;
+
+        private Dictionary<int, List<Rectangle>> _typeColValueRectMap;
+        private Dictionary<int, Rectangle> _typeColBorderRectMap;
         /// <summary>
         /// 是否在渲染中
         /// </summary>
@@ -522,7 +526,7 @@ namespace UI.Controls.Charts
         {
             DefaultStyleKey = typeof(Charts);
 
-            
+
             SizeChanged += Charts_SizeChanged;
             Unloaded += Charts_Unloaded;
         }
@@ -547,10 +551,14 @@ namespace UI.Controls.Charts
             base.OnApplyTemplate();
             CardContainer = GetTemplateChild("CardContainer") as WrapPanel;
             MonthContainer = GetTemplateChild("MonthContainer") as Grid;
-            ColumnContainer = GetTemplateChild("ColumnContainer") as Grid;
             RadarContainer = GetTemplateChild("Radar") as Border;
             _listView = GetTemplateChild("ListView") as ListView;
             _typeATempContainer = GetTemplateChild("TypeATempContainer") as StackPanel;
+            if (ChartsType == ChartsType.Column)
+            {
+                _typeColumnCanvas = GetTemplateChild("TypeColumnCanvas") as Canvas;
+                _typeColumnCanvas.SizeChanged += _typeColumnCanvas_SizeChanged;
+            }
 
             UpdateListViewHeight();
 
@@ -570,6 +578,11 @@ namespace UI.Controls.Charts
             }
             var page = parent as System.Windows.Window;
             page.SizeChanged += Page_SizeChanged;
+        }
+
+        private void _typeColumnCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            RenderColumnStyle();
         }
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -634,7 +647,7 @@ namespace UI.Controls.Charts
 
         private void Render()
         {
-            if (isRendering || CardContainer == null || ColumnContainer == null)
+            if (isRendering || CardContainer == null)
             {
                 return;
             }
@@ -643,7 +656,6 @@ namespace UI.Controls.Charts
             Calculate();
             CardContainer.Children.Clear();
             MonthContainer.Children.Clear();
-            ColumnContainer.Children.Clear();
             _typeATempContainer.Children.Clear();
 
             RadarContainer.Child = null;
@@ -662,11 +674,7 @@ namespace UI.Controls.Charts
             {
                 IsEmpty = false;
             }
-            ListViewBindingData = Data.OrderByDescending(x => x.Value).ToList();
-            if (ShowLimit > 0)
-            {
-                ListViewBindingData = ListViewBindingData.Take(ShowLimit);
-            }
+
             isRendering = true;
             switch (ChartsType)
             {
@@ -702,6 +710,12 @@ namespace UI.Controls.Charts
         }
         private void RenderHorizontalAStyle()
         {
+            ListViewBindingData = Data.OrderByDescending(x => x.Value).ToList();
+            if (ShowLimit > 0)
+            {
+                ListViewBindingData = ListViewBindingData.Take(ShowLimit);
+            }
+
             isRendering = false;
             var searchBox = GetTemplateChild("ASearchBox") as InputBox;
             searchBox.TextChanged += SearchBox_TextChanged;
@@ -1026,24 +1040,24 @@ namespace UI.Controls.Charts
         #endregion
 
         #region 渲染柱形图
-        private void CheckColumnItem(int oldIndex, int newIndex)
+        private void SetColBorderActiveBg(int oldIndex, int newIndex)
         {
-            if (!IsCanColumnSelect || ColumnContainer.Children.Count == 0)
+            if (!IsCanColumnSelect || _typeColBorderRectMap == null)
             {
                 return;
             }
 
-            if (oldIndex >= 0 && oldIndex < ColumnContainer.Children.Count)
+            if (_typeColBorderRectMap.ContainsKey(oldIndex))
             {
-                var oldItem = ColumnContainer.Children[oldIndex] as Grid;
-                oldItem.Background = new SolidColorBrush(Colors.Transparent);
+                var oldItem = _typeColBorderRectMap[oldIndex];
+                oldItem.Fill = new SolidColorBrush(Colors.Transparent);
             }
-            if (newIndex >= 0 && newIndex < ColumnContainer.Children.Count)
+            if (_typeColBorderRectMap.ContainsKey(newIndex))
             {
                 var background = Application.Current.Resources["ThemeBrush"] as SolidColorBrush;
 
-                var checkItem = ColumnContainer.Children[newIndex] as Grid;
-                checkItem.Background = new SolidColorBrush(background.Color) { Opacity = .1 };
+                var checkItem = _typeColBorderRectMap[newIndex];
+                checkItem.Fill = new SolidColorBrush(background.Color) { Opacity = .1 };
             }
         }
         /// <summary>
@@ -1051,11 +1065,17 @@ namespace UI.Controls.Charts
         /// </summary>
         private void RenderColumnStyle()
         {
-            ColumnContainer.Children.Clear();
-            ColumnInfoList = new List<ChartColumnInfoModel>();
-            ColumnContainer.ColumnDefinitions.Clear();
-            maxValue = 0;
+            if (_typeColumnCanvas == null || _typeColumnCanvas.ActualHeight == 0)
+            {
+                return;
+            }
 
+            _typeColumnCanvas.Children.Clear();
+            ColumnInfoList = null;
+            _typeColValueRectMap = new Dictionary<int, List<Rectangle>>();
+            _typeColBorderRectMap = new Dictionary<int, Rectangle>();
+
+            maxValue = 0;
             Maximum = string.Empty;
             Median = string.Empty;
             Total = string.Empty;
@@ -1064,8 +1084,6 @@ namespace UI.Controls.Charts
             {
                 return;
             }
-
-
 
 
             double total = 0;
@@ -1089,20 +1107,16 @@ namespace UI.Controls.Charts
             }
 
             Maximum = Covervalue(maxValue);
-
             Median = Covervalue((maxValue / 2));
-
             Total = Covervalue(total);
 
-            int margin = 5;
-
-
-
-            //  创建列
+            //  列数
             int columns = Data.FirstOrDefault().Values.Length;
 
 
-            //  调整间距
+            //  间距
+            int margin = 5;
+
             if (columns <= 7)
             {
                 margin = 25;
@@ -1117,74 +1131,185 @@ namespace UI.Controls.Charts
             }
 
             int columnCount = Data.Count();
-
             var list = Data.ToList();
+
+            //  列名高度
+            const double colNameHeight = 30;
+            //  列名下边距
+            const double colNameBottomMargin = 5;
+            //  画布高度
+            double canvasHeight = _typeColumnCanvas.ActualHeight - colNameHeight - colNameBottomMargin;
+            //  画布宽度
+            double canvasWidth = _typeColumnCanvas.ActualWidth;
+            //  边框宽度
+            double columnBorderWidth = _typeColumnCanvas.ActualWidth / columns;
+            //  列值宽度
+            double colValueRectWidth = _typeColumnCanvas.ActualWidth / columns - (margin * 2);
 
             for (int i = 0; i < columns; i++)
             {
-                ColumnContainer.ColumnDefinitions.Add(new ColumnDefinition()
-                {
-                    Width = new GridLength(1, GridUnitType.Star)
-                });
+                //  绘制列边框
+                var columnBorder = new Rectangle();
+                columnBorder.Width = columnBorderWidth;
+                columnBorder.Height = canvasHeight;
+                columnBorder.Fill = new SolidColorBrush(Colors.Transparent);
+                Canvas.SetLeft(columnBorder, i * columnBorderWidth);
+                Canvas.SetTop(columnBorder, colNameBottomMargin);
+                Panel.SetZIndex(columnBorder, 999);
+                _typeColumnCanvas.Children.Add(columnBorder);
+                _typeColBorderRectMap.Add(i, columnBorder);
 
-                var valueContainer = new Grid();
+                //  列名
+                string colName = list[0].ColumnNames != null && list[0].ColumnNames.Length > 0 ? list[0].ColumnNames[i] : (i + NameIndexStart).ToString();
+                //  绘制列名
+                TextBlock colNameText = new TextBlock();
+                colNameText.TextAlignment = TextAlignment.Center;
+                colNameText.Width = columnBorderWidth;
+                colNameText.FontSize = 12;
+                colNameText.Text = colName;
+                colNameText.Foreground = UI.Base.Color.Colors.GetFromString("#FF8A8A8A");
 
-                Grid.SetColumn(valueContainer, i);
-                ColumnContainer.Children.Add(valueContainer);
+                Canvas.SetLeft(colNameText, i * columnBorderWidth);
+                Canvas.SetBottom(colNameText, colNameBottomMargin);
+                _typeColumnCanvas.Children.Add(colNameText);
+
 
                 var valuesPopupList = new List<ChartColumnInfoModel>();
+
+                _typeColValueRectMap.Add(i, new List<Rectangle>());
 
                 for (int di = 0; di < columnCount; di++)
                 {
                     var item = list[di];
-                    item.Color = item.Color == null ? UI.Base.Color.Colors.MainColors[di] : item.Color;
-                    var column = new ChartItemTypeColumn();
-                    column.Value = item.Values[i];
-                    column.MaxValue = maxValue;
-                    column.Margin = new Thickness(margin, 0, margin, 0);
+                    string colColor = item.Color == null ? UI.Base.Color.Colors.MainColors[di] : item.Color;
+                    double value = item.Values[i];
 
-                    column.Color = item.Color;
-                    column.ColumnName = item.ColumnNames != null && item.ColumnNames.Length > 0 ? item.ColumnNames[i] : (i + NameIndexStart).ToString();
-                    Panel.SetZIndex(column, column.Value > 0 ? -(int)column.Value : 0);
 
-                    valueContainer.Children.Add(column);
-
-                    if (column.Value > 0)
+                    if (value > 0)
                     {
+                        //  绘制列
+                        var colValueRect = new Rectangle();
+                        colValueRect.Width = colValueRectWidth;
+                        colValueRect.Height = value / maxValue * canvasHeight;
+                        colValueRect.Fill = UI.Base.Color.Colors.GetFromString(colColor);
+                        colValueRect.RadiusX = 4;
+                        colValueRect.RadiusY= 4;
+                        Canvas.SetLeft(colValueRect, i * columnBorderWidth + margin);
+                        Canvas.SetBottom(colValueRect, colNameHeight);
+
+                        _typeColumnCanvas.Children.Add(colValueRect);
+                        _typeColValueRectMap[i].Add(colValueRect);
+
+                        //  列分类统计数据
                         valuesPopupList.Add(new ChartColumnInfoModel()
                         {
                             Color = item.Color,
                             Name = item.Name,
                             Icon = item.Icon,
-                            Text = Covervalue(column.Value) + Unit
+                            Text = Covervalue(value) + Unit,
+                            Value = value,
                         });
                     }
                 }
+                var index = i;
 
-                valueContainer.MouseEnter += (e, c) =>
+                columnBorder.MouseEnter += (e, c) =>
                 {
-                    ColumnValuesInfoList = valuesPopupList;
-                    ValuesPopupPlacementTarget = valueContainer;
+                    ColumnValuesInfoList = valuesPopupList.OrderByDescending(m => m.Value).ToList();
+                    ValuesPopupPlacementTarget = columnBorder;
                     IsShowValuesPopup = valuesPopupList.Count > 0;
 
-                    ValuesPopupHorizontalOffset = -17.5 + (valueContainer.ActualWidth / 2);
+                    ValuesPopupHorizontalOffset = -17.5 + (columnBorder.ActualWidth / 2);
+
+                    if (ColumnSelectedIndex != index)
+                    {
+                        var themeBrush = Application.Current.Resources["ThemeBrush"] as SolidColorBrush;
+                        columnBorder.Fill = new SolidColorBrush(themeBrush.Color) { Opacity = .05 };
+                    }
                 };
-                valueContainer.MouseLeave += (e, c) =>
+                columnBorder.MouseLeave += (e, c) =>
                 {
                     IsShowValuesPopup = false;
-                };
+                    if (ColumnSelectedIndex != index)
+                    {
+                        columnBorder.Fill = new SolidColorBrush(Colors.Transparent);
 
-                var index = i;
-                valueContainer.MouseLeftButtonDown += (e, c) =>
-                {
-                    ColumnSelectedIndex = index;
+                    }
                 };
+                if (IsCanColumnSelect)
+                {
+                    columnBorder.MouseLeftButtonDown += (e, c) =>
+                    {
+                        ColumnSelectedIndex = index;
+                    };
+                }
+            }
+            //  调整列值 zindex
+            foreach (var item in _typeColValueRectMap)
+            {
+                var rectList = item.Value.OrderByDescending(m => m.Height).ToList();
+                for (int i = 0; i < rectList.Count; i++)
+                {
+                    var rect = rectList[i];
+                    Panel.SetZIndex(rect, i);
+                }
             }
 
+
+            //  最高
+            var topValueText = new TextBlock();
+            topValueText.Text = Maximum;
+            topValueText.FontSize = 12;
+            topValueText.Foreground = UI.Base.Color.Colors.GetFromString("#ccc");
+            topValueText.ToolTip = "最高值";
+
+            var topValueTextSize = UIHelper.MeasureString(topValueText);
+            Panel.SetZIndex(topValueText, 1000);
+            Canvas.SetRight(topValueText, 0);
+            Canvas.SetTop(topValueText, colNameBottomMargin - topValueTextSize.Height / 2);
+            _typeColumnCanvas.Children.Add(topValueText);
+
+            var topValueLine = new Line();
+            topValueLine.Stroke = UI.Base.Color.Colors.GetFromString("#ccc");
+            topValueLine.StrokeDashArray = new DoubleCollection() { 2, 5 };
+            topValueLine.X1 = colNameBottomMargin;
+            topValueLine.X2 = canvasWidth - colNameBottomMargin - (topValueTextSize.Width);
+            topValueLine.Y1 = colNameBottomMargin;
+            topValueLine.Y2 = colNameBottomMargin;
+            topValueLine.StrokeThickness = 1;
+            _typeColumnCanvas.Children.Add(topValueLine);
+
+            //  中间值
+            double midY = (maxValue / 2) / maxValue * canvasHeight + colNameBottomMargin;
+
+            var midValueText = new TextBlock();
+            midValueText.Text = Median;
+            midValueText.FontSize = 12;
+            midValueText.Foreground = UI.Base.Color.Colors.GetFromString("#ccc");
+            midValueText.ToolTip = "中间值";
+
+            var midValueTextSize = UIHelper.MeasureString(midValueText);
+            Panel.SetZIndex(midValueText, 1000);
+            Canvas.SetRight(midValueText, 0);
+            Canvas.SetTop(midValueText, midY - midValueTextSize.Height / 2);
+            _typeColumnCanvas.Children.Add(midValueText);
+
+            var midValueLine = new Line();
+            midValueLine.Stroke = UI.Base.Color.Colors.GetFromString("#ccc");
+            midValueLine.StrokeDashArray = new DoubleCollection() { 2, 5 };
+            midValueLine.StrokeThickness = 1;
+
+
+            midValueLine.X1 = colNameBottomMargin;
+            midValueLine.X2 = canvasWidth - colNameBottomMargin - (midValueTextSize.Width);
+            midValueLine.Y1 = midY;
+            midValueLine.Y2 = midY;
+            _typeColumnCanvas.Children.Add(midValueLine);
+
+
+            //  组装分类统计数据
             var infoList = new List<ChartColumnInfoModel>();
-
             list = list.OrderByDescending(m => m.Values.Sum()).ToList();
-
             foreach (var item in list)
             {
                 infoList.Add(new ChartColumnInfoModel()
@@ -1195,9 +1320,7 @@ namespace UI.Controls.Charts
                     Text = Covervalue(item.Values.Sum()) + Unit
                 });
             }
-
             ColumnInfoList = infoList;
-
             isRendering = false;
         }
         #endregion
