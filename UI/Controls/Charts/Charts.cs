@@ -91,7 +91,15 @@ namespace UI.Controls.Charts
                 new PropertyMetadata(null, new PropertyChangedCallback(OnPropertyChanged))
                 );
 
-
+        public IEnumerable<ChartsDataModel> ListViewBindingData
+        {
+            get { return (IEnumerable<ChartsDataModel>)GetValue(ListViewBindingDataProperty); }
+            set { SetValue(ListViewBindingDataProperty, value); }
+        }
+        public static readonly DependencyProperty ListViewBindingDataProperty =
+            DependencyProperty.Register("ListViewBindingData",
+                typeof(IEnumerable<ChartsDataModel>),
+                typeof(Charts));
         #endregion
         #region LoadingPlaceholderCount 加载中时占位显示条数
         /// <summary>
@@ -435,7 +443,17 @@ namespace UI.Controls.Charts
                 typeof(Charts),
                 new PropertyMetadata((double)0)
                 );
-
+        public double DataMaxValue
+        {
+            get { return (double)GetValue(DataMaxValueProperty); }
+            set { SetValue(DataMaxValueProperty, value); }
+        }
+        public static readonly DependencyProperty DataMaxValueProperty =
+            DependencyProperty.Register("DataMaxValue",
+                typeof(double),
+                typeof(Charts),
+                new PropertyMetadata((double)0)
+                );
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -481,13 +499,12 @@ namespace UI.Controls.Charts
         /// <summary>
         /// 容器
         /// </summary>
-        private StackPanel Container;
-        private StackPanel NoScrollContainer;
+        private StackPanel _typeATempContainer;
         private WrapPanel CardContainer;
         private Grid MonthContainer;
-        private ScrollViewer ScrollViewer;
         private Grid ColumnContainer;
         private Border RadarContainer;
+        private ListView _listView;
         /// <summary>
         /// 是否在渲染中
         /// </summary>
@@ -496,19 +513,6 @@ namespace UI.Controls.Charts
         /// 计算最大值
         /// </summary>
         private double maxValue = 0;
-        /// <summary>
-        /// 是否启用懒加载
-        /// </summary>
-        private bool isLazyloading = false;
-        /// <summary>
-        /// 项目真实高度
-        /// </summary>
-        private double itemHeight = 0;
-        /// <summary>
-        /// 懒加载完成条数
-        /// </summary>
-        private int lazyloadedCount = 0;
-        private List<ChartsDataModel> lazyloadingData;
 
         /// <summary>
         /// 搜索关键字（仅列表样式有效
@@ -518,48 +522,37 @@ namespace UI.Controls.Charts
         {
             DefaultStyleKey = typeof(Charts);
 
+            
             SizeChanged += Charts_SizeChanged;
             Unloaded += Charts_Unloaded;
         }
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            ScrollViewer.Height = 1;
+            _listView.Height = 1;
+
         }
         private void Charts_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (ChartsType == ChartsType.HorizontalA)
-            {
-                var header = GetTemplateChild("AHeader") as Grid;
-                var h = ActualHeight - header.ActualHeight;
-
-                ScrollViewer.Height = h;
-            }
+            UpdateListViewHeight();
         }
 
         private void Charts_Unloaded(object sender, RoutedEventArgs e)
         {
             Unloaded -= Charts_Unloaded;
-            if (Container != null)
-            {
-                Container.SizeChanged -= Container_SizeChanged;
-            }
-            if (ScrollViewer != null)
-            {
-                ScrollViewer.ScrollChanged -= ScrollViewer_ScrollChanged;
-            }
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            Container = GetTemplateChild("Container") as StackPanel;
             CardContainer = GetTemplateChild("CardContainer") as WrapPanel;
             MonthContainer = GetTemplateChild("MonthContainer") as Grid;
-            ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
-            NoScrollContainer = GetTemplateChild("NoScrollContainer") as StackPanel;
             ColumnContainer = GetTemplateChild("ColumnContainer") as Grid;
             RadarContainer = GetTemplateChild("Radar") as Border;
+            _listView = GetTemplateChild("ListView") as ListView;
+            _typeATempContainer = GetTemplateChild("TypeATempContainer") as StackPanel;
+
+            UpdateListViewHeight();
 
             if (IsLoading)
             {
@@ -569,18 +562,28 @@ namespace UI.Controls.Charts
             {
                 Render();
             }
+
+            var parent = VisualTreeHelper.GetParent(this);
+            while (!(parent is System.Windows.Window))
+            {
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+            var page = parent as System.Windows.Window;
+            page.SizeChanged += Page_SizeChanged;
+        }
+
+        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            _listView.Height = 1;
         }
 
         private void RenderLoadingPlaceholder()
         {
-            if (Container != null && LoadingPlaceholderCount > 0)
+            if (LoadingPlaceholderCount > 0 && CardContainer != null)
             {
-                Container.Children.Clear();
                 CardContainer.Children.Clear();
-                if (!IsCanScroll)
-                {
-                    NoScrollContainer.Visibility = Visibility.Visible;
-                }
+                _typeATempContainer.Children.Clear();
+
                 for (int i = 0; i < LoadingPlaceholderCount; i++)
                 {
                     switch (ChartsType)
@@ -588,14 +591,7 @@ namespace UI.Controls.Charts
                         case ChartsType.HorizontalA:
                             var item = new ChartsItemTypeA();
                             item.IsLoading = true;
-                            if (IsCanScroll)
-                            {
-                                Container.Children.Add(item);
-                            }
-                            else
-                            {
-                                NoScrollContainer.Children.Add(item);
-                            }
+                            _typeATempContainer.Children.Add(item);
                             break;
                         case ChartsType.Card:
                             var card = new ChartsItemTypeCard();
@@ -630,39 +626,34 @@ namespace UI.Controls.Charts
                 var countText = GetTemplateChild("ACount") as Run;
                 countText.Text = Data.Count().ToString();
             }
+
+            DataMaxValue = maxValue;
+
+
         }
 
         private void Render()
         {
-            if (isRendering || Container == null || CardContainer == null || ColumnContainer == null)
+            if (isRendering || CardContainer == null || ColumnContainer == null)
             {
                 return;
             }
 
-            if (IsCanScroll)
-            {
-                ScrollViewer.Visibility = Visibility.Visible;
-                NoScrollContainer.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ScrollViewer.Visibility = Visibility.Collapsed;
-                NoScrollContainer.Visibility = Visibility.Visible;
-            }
+
             Calculate();
-            Container.Children.Clear();
             CardContainer.Children.Clear();
             MonthContainer.Children.Clear();
-            NoScrollContainer.Children.Clear();
             ColumnContainer.Children.Clear();
+            _typeATempContainer.Children.Clear();
+
             RadarContainer.Child = null;
+            ListViewBindingData = null;
 
             if (Data == null || Data.Count() <= 0)
             {
-                Container.Children.Add(new EmptyData());
-                NoScrollContainer.Children.Add(new EmptyData());
                 CardContainer.Children.Add(new EmptyData());
                 RadarContainer.Child = new EmptyData();
+                _typeATempContainer.Children.Add(new EmptyData());
 
                 IsEmpty = true;
                 return;
@@ -671,7 +662,11 @@ namespace UI.Controls.Charts
             {
                 IsEmpty = false;
             }
-
+            ListViewBindingData = Data.OrderByDescending(x => x.Value).ToList();
+            if (ShowLimit > 0)
+            {
+                ListViewBindingData = ListViewBindingData.Take(ShowLimit);
+            }
             isRendering = true;
             switch (ChartsType)
             {
@@ -695,42 +690,67 @@ namespace UI.Controls.Charts
         }
 
         #region 渲染横向样式A
+        private void UpdateListViewHeight()
+        {
+            if (ChartsType == ChartsType.HorizontalA)
+            {
+                var header = GetTemplateChild("AHeader") as Grid;
+                var h = ActualHeight - header.ActualHeight;
+
+                _listView.Height = h;
+            }
+        }
         private void RenderHorizontalAStyle()
         {
-            lazyloadingData = null;
-            isLazyloading = false;
-            lazyloadedCount = 0;
-
-            ScrollViewer.ScrollToVerticalOffset(0);
-
-            var data = Data.OrderByDescending(x => x.Value).ToList();
-
-
-            //if (data.Count < 20)
-            //{
-            //    RenderTypeAItems(data, 0, data.Count);
-            //}
-            //else
-            //{
-            //    isLazyloading = true;
-            //    RenderTypeAItems(data, 0, 20);
-            //    lazyloadingData = data;
-            //    ScrollViewer.ScrollChanged += ScrollViewer_ScrollChanged;
-            //}
-            RenderTypeAItems(data, 0, data.Count);
-
-            //Debug.WriteLine("【渲染】" + sw.ElapsedMilliseconds);
-            if (IsCanScroll)
-            {
-                Container.SizeChanged -= Container_SizeChanged;
-                Container.SizeChanged += Container_SizeChanged;
-            }
-
             isRendering = false;
-
             var searchBox = GetTemplateChild("ASearchBox") as InputBox;
             searchBox.TextChanged += SearchBox_TextChanged;
+
+            _listView.MouseLeftButtonUp += _listView_MouseLeftButtonUp;
+            _listView.MouseRightButtonUp += _listView_MouseRightButtonUp;
+
+            if (!IsCanScroll)
+            {
+                _listView.PreviewMouseWheel += _listView_PreviewMouseWheel;
+            }
         }
+
+        private void _listView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = true;
+
+                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+                eventArg.Source = sender;
+
+                var parent = ((Control)sender).Parent as UIElement;
+                parent.RaiseEvent(eventArg);
+            }
+        }
+
+        private void _listView_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_listView.SelectedItem != null)
+            {
+                if (ItemMenu != null)
+                {
+                    ItemMenu.IsOpen = true;
+                    ItemMenu.Tag = _listView.SelectedItem;
+                }
+            }
+        }
+
+        private void _listView_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_listView.SelectedItem != null)
+            {
+                OnItemClick?.Invoke(_listView.SelectedItem, null);
+                ClickCommand?.Execute(_listView.SelectedItem);
+            }
+        }
+
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -748,131 +768,102 @@ namespace UI.Controls.Charts
             {
                 Dispatcher.Invoke(() =>
                 {
-                    foreach (var item in Container.Children)
+                    var newListData = new List<ChartsDataModel>();
+
+
+
+                    foreach (var data in Data)
                     {
-                        var control = item as ChartsItemTypeA;
-                        if (control != null)
+                        var log = data.Data as DailyLogModel;
+                        var app = log != null ? log.AppModel : null;
+
+                        if (log == null)
                         {
-                            var data = control.Data;
+                            app = (data.Data as HoursLogModel).AppModel;
+                        }
 
-                            var log = data.Data as DailyLogModel;
-                            var app = log != null ? log.AppModel : null;
+                        bool show = false;
+                        if (app != null)
+                        {
+                            string description = app.Description != null ? app.Description.ToLower() : string.Empty;
 
-                            if (log == null)
-                            {
-                                app = (data.Data as HoursLogModel).AppModel;
-                            }
-
-                            bool show = false;
-                            if (app != null)
-                            {
-                                string description = app.Description != null ? app.Description.ToLower() : string.Empty;
-
-                                show = string.IsNullOrEmpty(searchKey) || app.Name.ToLower().Contains(searchKey) || app.File.ToLower().Contains(searchKey) || description.Contains(searchKey);
-                            }
-                            if (!show && app.Category != null)
-                            {
-                                show = app.Category.Name.Contains(searchKey);
-                            }
-                            if (!show && searchKey == "忽略")
-                            {
-                                show = data.BadgeList.Where(m => m.Type == ChartBadgeType.Ignore).Any();
-                            }
-                            control.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+                            show = string.IsNullOrEmpty(searchKey) || app.Name.ToLower().Contains(searchKey) || app.File.ToLower().Contains(searchKey) || description.Contains(searchKey);
+                        }
+                        if (!show && app.Category != null)
+                        {
+                            show = app.Category.Name.Contains(searchKey);
+                        }
+                        if (!show && searchKey == "忽略")
+                        {
+                            show = data.BadgeList.Where(m => m.Type == ChartBadgeType.Ignore).Any();
+                        }
+                        if (show)
+                        {
+                            newListData.Add(data);
                         }
                     }
+
+                    ListViewBindingData = newListData;
                 });
 
             });
         }
 
-        private void Container_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            foreach (var item in Container.Children)
-            {
-                var control = item as ChartsItemTypeA;
-                if (control != null)
-                {
-                    control.UpdateValueBlockWidth();
-                }
-            }
-        }
 
-        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            if (ScrollViewer.VerticalOffset > 0 && e.VerticalChange > 0)
-            {
-                double a = ScrollViewer.VerticalOffset * itemHeight;
-                double b = itemHeight * lazyloadedCount;
-                if (b - a <= ScrollViewer.ActualHeight)
-                {
-                    RenderTypeAItems(lazyloadingData, lazyloadedCount, 20);
-                }
-            }
+        //private void RenderTypeAItems(List<ChartsDataModel> data, int start, int count)
+        //{
 
-            if (lazyloadedCount == Data.Count())
-            {
-                ScrollViewer.ScrollChanged -= ScrollViewer_ScrollChanged;
-            }
-        }
+        //    for (int i = start; i < start + count; i++)
+        //    {
 
-        private void RenderTypeAItems(List<ChartsDataModel> data, int start, int count)
-        {
-            StackPanel container = Container;
-            if (!IsCanScroll)
-            {
-                container = NoScrollContainer;
-            }
-            for (int i = start; i < start + count; i++)
-            {
+        //        if (i >= data.Count)
+        //        {
+        //            break;
+        //        }
+        //        ChartsDataModel item = data[i];
+        //        var chartsItem = new ChartsItemTypeA();
+        //        chartsItem.Data = item;
+        //        chartsItem.ToolTip = item.PopupText;
+        //        chartsItem.MaxValue = maxValue;
+        //        chartsItem.IsShowBadge = IsShowBadge;
 
-                if (i >= data.Count)
-                {
-                    break;
-                }
-                ChartsDataModel item = data[i];
-                var chartsItem = new ChartsItemTypeA();
-                chartsItem.Data = item;
-                chartsItem.ToolTip = item.PopupText;
-                chartsItem.MaxValue = maxValue;
-                chartsItem.IsShowBadge = IsShowBadge;
+        //        if (i == 19 && isLazyloading)
+        //        {
+        //            chartsItem.Loaded += ChartsItem_Loaded;
+        //        }
+        //        //  处理点击事件
+        //        HandleItemClick(chartsItem, item);
+        //        if (!IsCanScroll)
+        //        {
+        //            NoScrollContainer.Children.Add(chartsItem);
+        //        }
+        //        else
+        //        {
+        //            Container.Children.Add(chartsItem);
+        //        }
+        //        if (ShowLimit > 0 && i == ShowLimit - 1)
+        //        {
+        //            break;
+        //        }
 
-                if (i == 19 && isLazyloading)
-                {
-                    chartsItem.Loaded += ChartsItem_Loaded;
-                }
-                //  处理点击事件
-                HandleItemClick(chartsItem, item);
-                //container.Children.Insert(lazyloadedCount, chartsItem);
-                container.Children.Add(chartsItem);
-                if (ShowLimit > 0 && container.Children.Count == ShowLimit)
-                {
-                    break;
-                }
-                //lazyloadedCount++;
-                //if (i >= 20)
-                //{
-                //    container.Children.RemoveAt(Container.Children.Count - 1);
-                //}
-            }
+        //    }
 
-        }
+        //}
 
-        private void ChartsItem_Loaded(object sender, RoutedEventArgs e)
-        {
-            var chartsItem = (ChartsItemTypeA)sender;
-            chartsItem.Loaded -= ChartsItem_Loaded;
+        //private void ChartsItem_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    var chartsItem = (ChartsItemTypeA)sender;
+        //    chartsItem.Loaded -= ChartsItem_Loaded;
 
-            int count = Data.Count() - 20;
-            for (int i = 0; i < count; i++)
-            {
-                var pl = new TextBlock();
-                pl.Height = chartsItem.ActualHeight;
-                Container.Children.Add(pl);
-            }
+        //    int count = Data.Count() - 20;
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var pl = new TextBlock();
+        //        pl.Height = chartsItem.ActualHeight;
+        //    }
 
-            itemHeight = chartsItem.ActualHeight;
-        }
+        //    itemHeight = chartsItem.ActualHeight;
+        //}
         #endregion
         #region 渲染卡片样式Card
         private void RenderCardStyle()
@@ -979,10 +970,10 @@ namespace UI.Controls.Charts
                     Grid.SetColumn(chartsItem, location[0]);
                     Grid.SetRow(chartsItem, location[1]);
                     dataGrid.Children.Add(chartsItem);
-                    if (ShowLimit > 0 && Container.Children.Count == ShowLimit)
-                    {
-                        break;
-                    }
+                    //if (ShowLimit > 0 && Container.Children.Count == ShowLimit)
+                    //{
+                    //    break;
+                    //}
                 }
             }
 

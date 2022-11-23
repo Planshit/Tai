@@ -63,5 +63,10 @@ namespace UI.Controls.Charts.Model
         /// 徽章
         /// </summary>
         public List<ChartBadgeModel> BadgeList { get { return BadgeList_; } set { BadgeList_ = value; OnPropertyChanged(); } }
+
+        /// <summary>
+        /// 最大值
+        /// </summary>
+        public double MaxValue { get; set; }
     }
 }

@@ -123,6 +123,14 @@ namespace UI.Controls.Charts
                 Loaded += ChartsItemTypeA_Loaded;
                 IsAddEvent = true;
             }
+
+            var parent = Parent as FrameworkElement;
+            parent.SizeChanged += Parent_SizeChanged;
+        }
+
+        private void Parent_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateValueBlockWidth();
         }
 
         private void ChartsItemTypeA_Loaded(object sender, RoutedEventArgs e)
@@ -160,7 +168,7 @@ namespace UI.Controls.Charts
 
         public void UpdateValueBlockWidth()
         {
-            if (Data == null)
+            if (Data == null || !IsLoaded)
             {
                 return;
             }

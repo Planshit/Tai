@@ -33,11 +33,50 @@
                                 </TextBlock>
                                 <input:InputBox x:Name="ASearchBox" Grid.Row="1" Placeholder="搜索" Margin="0,10,0,10"/>
                             </Grid>
-                            <ScrollViewer Height="1" Grid.Row="1" Visibility="Collapsed" x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" CanContentScroll="False" >
-                                <StackPanel x:Name="Container">
-                                </StackPanel>
-                            </ScrollViewer>
-                            <StackPanel Grid.Row="1" Visibility="Collapsed" x:Name="NoScrollContainer"></StackPanel>
+                            <StackPanel x:Name="TypeATempContainer" Grid.Row="1" Visibility="Collapsed"/>
+                            <!--list-->
+                            <ListView x:Name="ListView" Height="1" Grid.Row="1" ItemsSource="{TemplateBinding ListViewBindingData}" VirtualizingPanel.IsVirtualizing="True" >
+                                <ListBox.Resources>
+                                    <Style TargetType="{x:Type ListView}">
+                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListView}">
+                                                    <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True">
+                                                        <ItemsPresenter />
+                                                    </ScrollViewer>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                    <ContentPresenter/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                    </Style>
+                                </ListBox.Resources>
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <VirtualizingStackPanel>
+                                            <local:ChartsItemTypeA Data="{Binding}" MaxValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=DataMaxValue}" IsShowBadge="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=IsShowBadge}"/>
+                                        </VirtualizingStackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <!--end-->
+                            <!--<StackPanel Grid.Row="1" Visibility="Collapsed" x:Name="NoScrollContainer"></StackPanel>-->
                         </Grid>
                         <WrapPanel x:Name="CardContainer" Visibility="Collapsed">
                         </WrapPanel>
@@ -286,6 +325,22 @@
                      Value="Radar">
                             <Setter TargetName="Radar" Property="Visibility" Value="Visible"/>
                         </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsLoading" Value="True"/>
+                                <Condition Property="ChartsType" Value="HorizontalA"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" TargetName="TypeATempContainer"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="ListView"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEmpty" Value="True"/>
+                                <Condition Property="ChartsType" Value="HorizontalA"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" TargetName="TypeATempContainer"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="ListView"/>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
