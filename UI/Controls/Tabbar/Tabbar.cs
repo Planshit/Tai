@@ -190,8 +190,6 @@ namespace UI.Controls.Tabbar
         #endregion
         private void ScrollToActive(int oldSelectedIndex = 0)
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
             if (oldSelectedIndex > ItemsDictionary.Count || ItemsDictionary.Count == 0 || !IsLoaded)
             {
                 return;
@@ -227,10 +225,6 @@ namespace UI.Controls.Tabbar
                 storyboard.Children.Remove(oldFontColorAnimation);
             }
             storyboard.Begin();
-
-            Debug.WriteLine("【耗时】" + sw.ElapsedMilliseconds);
-            sw.Stop();
-
         }
 
         private void Reset()
