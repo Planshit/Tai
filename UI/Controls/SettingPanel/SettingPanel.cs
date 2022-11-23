@@ -194,6 +194,7 @@ namespace UI.Controls.SettingPanel
                       newList.Add(item);
                   }
 
+                  Container.Children.Remove(panel);
                   isCanRender = false;
                   Data = newList;
               }));
@@ -356,7 +357,7 @@ namespace UI.Controls.SettingPanel
                 isCanRender = false;
                 Data = configData;
             };
-            
+
             var item = new SettingPanelItem();
             item.Name = configAttribute.Name;
             item.Description = configAttribute.Description;
