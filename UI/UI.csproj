@@ -177,6 +177,7 @@
     <Compile Include="Controls\SettingPanel\SettingPanel.cs" />
     <Compile Include="Controls\Tabbar\Tabbar.cs" />
     <Compile Include="Controls\Toggle\Toggle.cs" />
+    <Compile Include="Controls\TPage.cs" />
     <Compile Include="Controls\Window\ToastType.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Librays\Image\Imager.cs" />
@@ -401,6 +402,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Toggle\Toggle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\TPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
