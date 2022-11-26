@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UI.Controls;
 using UI.ViewModels;
 
 namespace UI.Views
@@ -19,7 +20,7 @@ namespace UI.Views
     /// <summary>
     /// CategoryAppListPage.xaml 的交互逻辑
     /// </summary>
-    public partial class CategoryAppListPage : Page
+    public partial class CategoryAppListPage : TPage
     {
         public CategoryAppListPage(CategoryAppListPageVM vm)
         {
