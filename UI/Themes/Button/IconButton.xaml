@@ -17,9 +17,14 @@
                     <!--<Border Background="{TemplateBinding Background}"  x:Name="Border">-->
 
                     <Border  Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Padding="5" Background="Transparent">
-                        <base:Icon x:Name="Icon" IconType="{TemplateBinding Icon}" Foreground="{DynamicResource StandardTextBrush}" VerticalAlignment="Center"  FontSize="{TemplateBinding FontSize}" >
+                        <Grid>
+                          
+                            <base:Icon x:Name="Icon" IconType="{TemplateBinding Icon}" Foreground="{DynamicResource StandardTextBrush}" VerticalAlignment="Center"  FontSize="{TemplateBinding FontSize}" >
 
-                        </base:Icon>
+                            </base:Icon>
+                            <ContentPresenter />
+                        </Grid>
+                        
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualStateGroup.Transitions>

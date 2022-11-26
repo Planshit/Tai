@@ -40,6 +40,7 @@
         <ResourceDictionary Source="/Tai;component/Themes/Select/Option.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Select/ImageSelect.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Select/DateSelect.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Expander/Expander.xaml"/>
 
     </ResourceDictionary.MergedDictionaries>
 

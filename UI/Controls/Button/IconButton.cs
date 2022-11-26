@@ -10,7 +10,7 @@ using UI.Controls.Base;
 
 namespace UI.Controls.Button
 {
-    public class IconButton : Control
+    public class IconButton : ContentControl
     {
         public ICommand Command
         {

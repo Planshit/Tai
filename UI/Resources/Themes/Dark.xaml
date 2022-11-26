@@ -103,4 +103,10 @@
     <SolidColorBrush x:Key="InputBoxHoverBrush" Color="{StaticResource InputBoxHoverColor}" />
     <Color x:Key="InputBoxFocusedBgColor">#4F4E4E</Color>
     <SolidColorBrush x:Key="InputBoxFocusedBgBrush" Color="{StaticResource InputBoxFocusedBgColor}" />
+
+    <!--expander-->
+    <Color x:Key="ExpanderBgColor">#4F4F4F</Color>
+    <SolidColorBrush x:Key="ExpanderBgBrush" Color="{StaticResource ExpanderBgColor}" />
+    <Color x:Key="ExpanderContentBgColor">#7e7e7e</Color>
+    <SolidColorBrush x:Key="ExpanderContentBgBrush" Color="{StaticResource ExpanderContentBgColor}" />
 </ResourceDictionary>
