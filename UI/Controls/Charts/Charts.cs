@@ -590,7 +590,10 @@ namespace UI.Controls.Charts
 
         private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            _listView.Height = 1;
+            if (double.IsNaN(Height))
+            {
+                _listView.Height = 1;
+            }
         }
 
         private void RenderLoadingPlaceholder()
@@ -724,7 +727,7 @@ namespace UI.Controls.Charts
 
             isRendering = false;
             var searchBox = GetTemplateChild("ASearchBox") as InputBox;
-            if(searchBox != null)
+            if (searchBox != null)
             {
                 searchBox.TextChanged += SearchBox_TextChanged;
             }
