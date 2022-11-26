@@ -165,7 +165,7 @@
                                     </StackPanel>
                                 </Border>
                                 <base:View Value="{Binding DayHoursData}" Condition="not empty">
-                                    <charts:Charts Margin="0,0,0,0" Height="300" ItemMenu="{Binding AppContextMenu}" Data="{Binding DayHoursData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}" />
+                                    <charts:Charts IsSearch="True" Margin="0,0,0,0" Height="300" ItemMenu="{Binding AppContextMenu}" Data="{Binding DayHoursData}" ChartsType="HorizontalA"  ClickCommand="{Binding ToDetailCommand}" />
                                 </base:View>
                                 <base:View Value="{Binding DayHoursData}" Condition="empty">
                                     <base:EmptyData/>
