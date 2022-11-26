@@ -17,13 +17,13 @@
                     <!--<Border Background="{TemplateBinding Background}"  x:Name="Border">-->
 
                     <Border  Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Padding="5" Background="Transparent">
-                        <base:Icon x:Name="Icon" IconType="{TemplateBinding Icon}" Foreground="#5c5c5c" VerticalAlignment="Center"  FontSize="{TemplateBinding FontSize}" >
+                        <base:Icon x:Name="Icon" IconType="{TemplateBinding Icon}" Foreground="{DynamicResource StandardTextBrush}" VerticalAlignment="Center"  FontSize="{TemplateBinding FontSize}" >
 
                         </base:Icon>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualStateGroup.Transitions>
-                                    <VisualTransition GeneratedDuration="0:0:0.15" />
+                                    <VisualTransition GeneratedDuration="0:0:0" />
                                     <VisualTransition GeneratedDuration="0"
                                   To="Pressed" />
                                 </VisualStateGroup.Transitions>
@@ -33,12 +33,23 @@
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
                                                 Storyboard.TargetName="BoxBorder">
                                             <EasingColorKeyFrame KeyTime="0"
-                                         Value="#eaeaea"  />
+                                         Value="{DynamicResource HoverBackgroundColor}"  />
                                         </ColorAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
-
+                                    <Storyboard>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="BoxBorder">
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="{DynamicResource ThemeColor}"  />
+                                        </ColorAnimationUsingKeyFrames>
+                                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(base:Icon.Foreground).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Icon">
+                                            <EasingColorKeyFrame KeyTime="0"
+                                         Value="#fff"  />
+                                        </ColorAnimationUsingKeyFrames>
+                                    </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>

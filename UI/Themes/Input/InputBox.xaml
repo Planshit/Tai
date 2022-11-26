@@ -2,9 +2,186 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:UI.Controls.Input"
                     xmlns:base="clr-namespace:UI.Controls.Base"
-                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    >
     <Style TargetType="{x:Type local:InputBox}">
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Width" Value="AUTO"/>
+        <Setter Property="Height" Value="37"/>
         <Setter Property="SnapsToDevicePixels"
+          Value="True" />
+        <Setter Property="IconMargin" Value="5,0,0,0"/>
+        <Setter Property="IconColor" Value="#333"/>
+        <Setter Property="TitleColor" Value="#333"/>
+        <Setter Property="IconSize" Value="16"/>
+        <Setter Property="TitleSize" Value="12"/>
+        <Setter Property="TitleMargin" Value="0,0,0,5"/>
+        <Setter Property="BoxPadding" Value="0"/>
+        <Setter Property="Foreground" Value="{DynamicResource DefaultTextBrush}"/>
+
+        <Setter Property="Background" Value="{DynamicResource InputBoxBgBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:InputBox}">
+                    <Grid>
+                        <Border x:Name="Shadow" Visibility="Collapsed" BorderBrush="{Binding ElementName=BoxBorder,Path=BorderBrush}" BorderThickness="{Binding ElementName=BoxBorder,Path=BorderThickness}" Panel.ZIndex="-1" Width="{Binding ElementName=BoxBorder,Path=ActualWidth}"  Height="{Binding ElementName=BoxBorder,Path=ActualHeight}" CornerRadius="{Binding ElementName=BoxBorder,Path=CornerRadius}" Background="{Binding ElementName=BoxBorder,Path=Background}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                            </Border.Effect>
+                        </Border>
+                        <Border x:Name="BoxBorder" BorderBrush="Transparent" Background="{TemplateBinding Background}" BorderThickness="2" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding BoxPadding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <base:Icon x:Name="Icon" IconType="{TemplateBinding Icon}" Margin="{TemplateBinding IconMargin}" Foreground="{TemplateBinding IconColor}" RenderTransformOrigin=".5,.5" FontSize="{TemplateBinding IconSize}">
+                                    <base:Icon.RenderTransform>
+                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                    </base:Icon.RenderTransform>
+                                </base:Icon>
+
+                                <StackPanel Grid.Column="1" Margin="5,0" 
+VerticalAlignment="Center" >
+                                    <TextBlock x:Name="Title" Text="{TemplateBinding Title}" Foreground="{TemplateBinding TitleColor}" FontSize="{TemplateBinding TitleSize}" Margin="{TemplateBinding TitleMargin}"/>
+                                    <Grid>
+                                        <TextBlock x:Name="Placeholder" Text="{TemplateBinding Placeholder}" Foreground="#a3a3a3" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" 
+Visibility="Collapsed" Padding="{TemplateBinding Padding}"/>
+                                        <ScrollViewer 
+                        x:Name="PART_ContentHost" VerticalAlignment="Center" />
+                                    </Grid>
+                                </StackPanel>
+                                <base:Icon x:Name="ErrorIcon" IconType="Error" Grid.Column="2" Visibility="Collapsed" Margin="0,0,5,0" Foreground="White"/>
+                            </Grid>
+
+                        </Border>
+                        <Popup
+                                    x:Name="ErrorPopup"
+                                    AllowsTransparency="True"
+                                    IsOpen="{TemplateBinding IsShowError}"
+                                    Placement="Bottom"
+                                    PlacementTarget="{Binding ElementName=BoxBorder}"
+                                    PopupAnimation="Slide"
+                                    StaysOpen="False">
+                            <Border
+                                        Background="Red"
+                                        CornerRadius="12"
+                                        Padding="10"
+                                        Margin="10">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Direction="0" Color="Gray" Opacity=".2"/>
+                                </Border.Effect>
+
+                                <Grid>
+                                    <Path 
+                      Width="15"
+                      Height="15"
+                      SnapsToDevicePixels="False"
+                      Data="M 0 15 L 7.5 7.5 L 15 15" Fill="Red"
+                                        Stroke="Red"
+                                        StrokeThickness="1"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Left"
+                                        Margin="0,-25,0,0"
+                                        />
+                                    <TextBlock Foreground="White" Text="{TemplateBinding Error}"/>
+                                </Grid>
+
+                            </Border>
+                        </Popup>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="Disabled"/>
+                                <!--Right here-->
+
+                                <!--<VisualState Name="Unfocused"/>-->
+
+                                <VisualState Name="Focused">
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="0:0:.3" Storyboard.TargetName="Icon" Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)" To="0.8">
+                                            <DoubleAnimation.EasingFunction>
+                                                <BackEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Duration="0:0:.3" Storyboard.TargetName="Icon" Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)" To="0.8">
+                                            <DoubleAnimation.EasingFunction>
+                                                <BackEase EasingMode="EaseIn"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <ColorAnimation Storyboard.TargetName="BoxBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                             To="{DynamicResource InputBoxFocusedBgColor}" 
+                             Duration="0:0:.18">
+                                        </ColorAnimation>
+                                        <ColorAnimation Storyboard.TargetName="BoxBorder" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                             To="{DynamicResource ThemeColor}" 
+                             Duration="0:0:.18">
+                                        </ColorAnimation>
+                                        <ColorAnimation Storyboard.TargetName="Icon" Storyboard.TargetProperty="(Foreground).(SolidColorBrush.Color)"
+                             To="{DynamicResource ThemeColor}" 
+                             Duration="0:0:.18">
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </VisualState>
+
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <!--<ColorAnimation Storyboard.TargetName="BoxBorder" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                             To="{DynamicResource ThemeColor}" 
+                             Duration="0:0:.18">
+                                        </ColorAnimation>-->
+                                        <ColorAnimation Storyboard.TargetName="BoxBorder" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                             To="{DynamicResource InputBoxHoverColor}" 
+                             Duration="0:0:.18">
+                                        </ColorAnimation>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="{x:Static sys:String.Empty}">
+                            <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Shadow" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="ErrorIcon" Property="Visibility" Value="Collapsed"/>
+
+                        </Trigger>
+                        <Trigger Property="Title" Value="{x:Null}">
+                            <Setter TargetName="Title" Property="Visibility" Value="Collapsed"/>
+
+                        </Trigger>
+                        <Trigger Property="Icon" Value="None">
+                            <Setter TargetName="Icon" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsError" Value="True">
+                            <Setter TargetName="BoxBorder" Property="Background" Value="red"/>
+                            <Setter TargetName="Shadow" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="ErrorIcon" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsError" Value="True"/>
+                                <Condition Property="IsFocused" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter TargetName="Icon" Property="Foreground" Value="White"/>
+                            <Setter TargetName="Title" Property="Foreground" Value="White"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Icon" Property="Foreground" Value="{DynamicResource DisabledTextBrush}"/>
+                            <Setter TargetName="Placeholder" Property="Foreground" Value="{DynamicResource DisabledTextBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource DisabledTextBrush}"/>
+                            <Setter TargetName="BoxBorder" Property="Background" Value="{DynamicResource DisabledBackgroundBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <!--<Setter Property="SnapsToDevicePixels"
           Value="true" />
         <Setter Property="Width" Value="auto"/>
 
@@ -65,11 +242,11 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup Name="FocusStates">
                                 <VisualState Name="Unfocused"/>
-                                <!--Right here-->
+                                --><!--Right here--><!--
                                 <VisualState Name="Focused">
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetName="BoxBorder" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
-                             To="#2b20d9" 
+                             To="{DynamicResource ThemeColor}" 
                              Duration="0:0:.4">
                                             <ColorAnimation.EasingFunction>
                                                 <QuadraticEase/>
@@ -87,6 +264,6 @@
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
-        </Setter>
+        </Setter>-->
     </Style>
 </ResourceDictionary>

@@ -18,7 +18,7 @@
                 <ControlTemplate TargetType="{x:Type local:BaseListItem}">
                     <Grid Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
 
-                        <Border BorderBrush="#f3f3f3" BorderThickness="1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="White" >
+                        <Border BorderBrush="#f3f3f3" BorderThickness="0" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="{DynamicResource BaseListItemBgBrush}" >
                             <Grid VerticalAlignment="Center" Margin="10,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="9*"/>
@@ -47,12 +47,12 @@
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Effect).(DropShadowEffect.Color)"
                                                 Storyboard.TargetName="Shadow">
                                             <EasingColorKeyFrame KeyTime="0"
-                                         Value="#2b20d9"/>
+                                         Value="{DynamicResource ThemeColor}"/>
                                         </ColorAnimationUsingKeyFrames>
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
                                                 Storyboard.TargetName="BoxBorder">
                                             <EasingColorKeyFrame KeyTime="0"
-                                         Value="#192B20D9"  />
+                                         Value="{DynamicResource BaseListItemHoverBgColor}"  />
                                         </ColorAnimationUsingKeyFrames>
                                         <!--<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Button.Foreground).(SolidColorBrush.Color)"
                                                >
@@ -70,7 +70,7 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="BoxBorder" Property="Background" Value="#2b20d9"/>
+                            <Setter TargetName="BoxBorder" Property="Background" Value="{DynamicResource ThemeBrush}"/>
                             <Setter  Property="Foreground" Value="White"/>
 
                         </Trigger>

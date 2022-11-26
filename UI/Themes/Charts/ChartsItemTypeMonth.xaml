@@ -20,7 +20,7 @@
                                 <!--<Border.Effect>
                                 <DropShadowEffect BlurRadius="14" ShadowDepth="0" Direction="0" Opacity="0.05"/>
                             </Border.Effect>-->
-                                <Border x:Name="Border" Margin="0" Background="#f3f3f3"  CornerRadius="4"  Width="20" Height="20" BorderThickness="0" BorderBrush="#2b20d9">
+                                <Border x:Name="Border" Margin="0" Background="{DynamicResource ChartMonthGridItemBgBrush}"  CornerRadius="4"  Width="20" Height="20" BorderThickness="0" BorderBrush="{DynamicResource ThemeBrush}">
 
                                     <Border.Clip>
                                         <RectangleGeometry RadiusX="4" RadiusY="4" Rect="0,0,20,20"/>
@@ -40,7 +40,7 @@
                                             </Rectangle.Effect>
                                             <Rectangle.Fill>
                                                 <LinearGradientBrush EndPoint="2,1" StartPoint="-2,0">
-                                                    <GradientStop Color="White"/>
+                                                    <GradientStop Color="Transparent"/>
                                                     <GradientStop Color="#ff305b" Offset="1"/>
                                                 </LinearGradientBrush>
                                             </Rectangle.Fill>
@@ -63,7 +63,7 @@
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
-                            <Setter TargetName="Border" Property="Background" Value="White"/>
+                            <!--<Setter TargetName="Border" Property="Background" Value="White"/>-->
 
                         </Trigger>
                     </ControlTemplate.Triggers>

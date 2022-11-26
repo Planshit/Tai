@@ -13,5 +13,9 @@ namespace UI.Servicers
         void SetMainWindow(MainWindow mainWindow);
 
         void UpdateWindowStyle();
+        /// <summary>
+        /// 切换主题时发生
+        /// </summary>
+        event EventHandler OnThemeChanged;
     }
 }

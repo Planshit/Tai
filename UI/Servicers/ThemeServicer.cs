@@ -24,6 +24,9 @@ namespace UI.Servicers
         private Collection<ResourceDictionary> MergedDictionaries;
         private readonly string[] themeOptions = { "Light", "Dark" };
         private readonly IAppConfig appConfig;
+
+        public event EventHandler OnThemeChanged;
+
         public ThemeServicer(IAppConfig appConfig)
         {
             this.appConfig = appConfig;
@@ -38,11 +41,13 @@ namespace UI.Servicers
             if (oldConfig.General.Theme != newConfig.General.Theme)
             {
                 LoadTheme(themeOptions[newConfig.General.Theme]);
+                OnThemeChanged?.Invoke(this, EventArgs.Empty);
             }
 
             if (oldConfig.General.ThemeColor != newConfig.General.ThemeColor)
             {
                 LoadTheme(themeOptions[newConfig.General.Theme], true);
+                OnThemeChanged?.Invoke(this, EventArgs.Empty);
             }
         }
         public void Init()
@@ -62,27 +67,53 @@ namespace UI.Servicers
                 return;
             }
 
-            var configDict = GetResourceDictionary($"pack://application:,,,/Tai;component/Resources/Themes/{themeName}/Config.xaml");
-            var controlDict = GetResourceDictionary($"pack://application:,,,/Tai;component/Resources/Themes/{themeName}/Style.xaml");
-
-
-            //清除旧主题
-            var oldStyles = MergedDictionaries.Where(m => m.Source.OriginalString.Contains(themeName)).ToList();
-            if (oldStyles != null)
+            var themeDict = GetResourceDictionary($"pack://application:,,,/Tai;component/Resources/Themes/{themeName}.xaml");
+            var controlDict = GetResourceDictionary($"pack://application:,,,/Tai;component/Themes/Generic.xaml");
+            if (themeDict == null || controlDict == null)
             {
-                foreach (var oldStyle in oldStyles)
+                return;
+            }
+
+            //Collection<ResourceDictionary> resourceDictionaries = Application.Current.Resources.MergedDictionaries;
+            //for (int i = 0; i < resourceDictionaries.Count; i++)
+            //{
+            //    ResourceDictionary resourceDictionary = resourceDictionaries[i];
+            //    //if (resourceDictionary.FindName(""))
+            //    //{
+            //    if (resourceDictionary.Contains("ThemeName"))
+            //    {
+            //        foreach(var key in resourceDictionary.Keys)
+            //        {
+            //            resourceDictionary[key] = themeDict[key];
+            //        }
+            //        //resourceDictionary["ThemeColor"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#ff0000");
+            //    }
+            //    //}
+            //}
+            //清除旧主题
+            if (this.themeName != null)
+            {
+                var oldStyles = MergedDictionaries.Where(m => m.Source.OriginalString.Contains(this.themeName) || m.Source.OriginalString.Contains("Generic")).ToList();
+                if (oldStyles != null)
                 {
-                    MergedDictionaries.Remove(oldStyle);
+                    foreach (var oldStyle in oldStyles)
+                    {
+                        MergedDictionaries.Remove(oldStyle);
+                    }
                 }
             }
-            if (configDict != null)
-            {
-                MergedDictionaries.Add(configDict);
-            }
-            if (controlDict != null)
-            {
-                MergedDictionaries.Add(controlDict);
-            }
+
+            MergedDictionaries.Add(themeDict);
+            MergedDictionaries.Add(controlDict);
+            
+            //if (configDict != null)
+            //{
+            //    //MergedDictionaries.Add(configDict);
+            //}
+            //if (controlDict != null)
+            //{
+            //    MergedDictionaries.Add(controlDict);
+            //}
             this.themeName = themeName;
 
             UpdateWindowStyle();

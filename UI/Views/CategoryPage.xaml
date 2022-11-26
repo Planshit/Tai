@@ -166,8 +166,8 @@
                                     <TextBlock Foreground="{DynamicResource StandardTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Text="{Binding Data.Name}"  FontSize="14"/>
 
                                     <Border Grid.Row="3" >
-                                        <Border Margin="10,0,10,0" CornerRadius="10" Background="#f9f9f9" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10,5">
-                                            <TextBlock Foreground="#FF737373">
+                                        <Border Margin="10,0,10,0" CornerRadius="10" Background="{DynamicResource CategoryAppNumBgBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10,5">
+                                            <TextBlock Foreground="{DynamicResource DefaultTextBrush}">
                                                 <Run Text="×"/>
                                                 
                                                 <Run Text="{Binding Count}"/>

@@ -166,7 +166,7 @@ namespace UI.ViewModels
         {
             if (DelDataStartMonthDate > DelDataEndMonthDate)
             {
-                mainVM.Toast("时间范围选择错误", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                mainVM.Toast("时间范围选择错误", Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
                 return;
             }
 
@@ -190,7 +190,7 @@ namespace UI.ViewModels
             catch (Exception ec)
             {
                 Logger.Error(ec.ToString());
-                mainVM.Toast("导出数据失败", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                mainVM.Toast("导出数据失败", Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
             }
         }
     }

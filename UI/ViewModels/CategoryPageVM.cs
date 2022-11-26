@@ -103,17 +103,17 @@ namespace UI.ViewModels
             }
             if (string.IsNullOrEmpty(EditIconFile))
             {
-                mainVM.Toast("请选择一个分类图标", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                mainVM.Toast("请选择一个分类图标", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
                 return;
             }
             if (string.IsNullOrEmpty(EditColor))
             {
-                mainVM.Toast("请设置一个分类颜色", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                mainVM.Toast("请设置一个分类颜色", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
                 return;
             }
             if (EditIconFile.IndexOf("pack://") == -1 && new FileInfo(EditIconFile).Length > 1000000)
             {
-                mainVM.Toast("图标文件不能超过1MB", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                mainVM.Toast("图标文件不能超过1MB", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
                 return;
             }
 
@@ -124,12 +124,12 @@ namespace UI.ViewModels
                 //  判断重复分类名称
                 if (Data.Where(m => m.Data.Name == EditName).Any())
                 {
-                    mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                    mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
                     return;
                 }
                 if (Data.Where(m => m.Data.Color == EditColor).Any())
                 {
-                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
                     return;
                 }
                 mainVM.Toast("创建完成", Controls.Window.ToastType.Success);
@@ -168,12 +168,12 @@ namespace UI.ViewModels
                 //  判断重复分类名称
                 if (Data.Where(m => m.Data.Name == EditName && m.Data.ID != SelectedItem.Data.ID).Any())
                 {
-                    mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                    mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
                     return;
                 }
                 if (Data.Where(m => m.Data.Color == EditColor && m.Data.ID != SelectedItem.Data.ID).Any())
                 {
-                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.CriticalErrorSolid);
+                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
                     return;
                 }
                 if (EditName == SelectedItem.Data.Name && EditIconFile == SelectedItem.Data.IconFile && EditColor == SelectedItem.Data.Color)

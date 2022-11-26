@@ -533,7 +533,7 @@ namespace UI.Controls.Charts
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            _listView.Height = 1;
+            //_listView.Height = 1;
 
         }
         private void Charts_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -640,7 +640,10 @@ namespace UI.Controls.Charts
                 maxValue = Math.Round(maxValue / 2, MidpointRounding.AwayFromZero) * 2 + 2;
 
                 var countText = GetTemplateChild("ACount") as Run;
-                countText.Text = Data.Count().ToString();
+                if (countText != null)
+                {
+                    countText.Text = Data.Count().ToString();
+                }
             }
 
             DataMaxValue = maxValue;
@@ -1107,6 +1110,10 @@ namespace UI.Controls.Charts
             if (DataMaximum > 0)
             {
                 maxValue = DataMaximum;
+            }
+            if (maxValue == 0)
+            {
+                maxValue = 10;
             }
 
             Maximum = Covervalue(maxValue);

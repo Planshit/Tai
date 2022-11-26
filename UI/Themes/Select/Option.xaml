@@ -29,19 +29,21 @@
                                         <Border 
                                             Width="20"
                                             Height="20"
-                                            Background="#FFA9A4FD"
-                                            BorderBrush="#2b21d9"
+                                            Background="{DynamicResource ThemeBrush}"
+                                            BorderBrush="{DynamicResource ThemeBrush}"
                                             BorderThickness="2"
                                             CornerRadius="20"
                                             x:Name="CheckStyle" Visibility="Collapsed">
-                                            <Rectangle Width="10" Height="10" RadiusX="10" RadiusY="10" Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="10" ShadowDepth="0" Direction="0" Color="Gray" Opacity=".3"/>
+                                            </Border.Effect>
                                         </Border>
 
                                         <!--未选中-->
                                         <Border 
                                             Width="20"
                                             Height="20"
-                                            BorderBrush="#FFECECEC"
+                                            BorderBrush="#ccc"
                                             BorderThickness="2"
                                             CornerRadius="20"
                                             x:Name="UnCheckStyle" Visibility="Collapsed">
@@ -51,7 +53,7 @@
                                 </Border>
                                 <!--图标-->
                                 <Border Grid.Column="1" Margin="5,0,0,0" x:Name="Img">
-                                    <base:Img URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Option}}, Path=Value.Img}" Width="25" Height="25"  VerticalAlignment="Center"/>
+                                    <base:Img URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Option}}, Path=Value.Img}" Width="16" Height="16"  VerticalAlignment="Center"/>
                                 </Border>
                                 <!--文字-->
                                 <Border Grid.Column="2">
@@ -77,7 +79,7 @@
                             <Setter TargetName="UnCheckStyle" Property="Visibility" Value="Visible"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#F7F6F9"/>
+                            <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
 

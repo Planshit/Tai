@@ -16,8 +16,8 @@
 
                         <Grid Margin="2">
 
-                            <Border x:Name="Bg" Background="#f9f9f9" Width="45" Height="45" CornerRadius="25">
-                                <TextBlock x:Name="Text" Foreground="#5c5c5c" Text="{TemplateBinding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border x:Name="Bg" Background="{DynamicResource DatePickerItemBgBrush}" Width="45" Height="45" CornerRadius="25">
+                                <TextBlock x:Name="Text" Foreground="{DynamicResource DefaultTextBrush}" Text="{TemplateBinding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
                         <VisualStateManager.VisualStateGroups>
@@ -31,9 +31,15 @@
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard>
                                         <ColorAnimation Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                Storyboard.TargetName="Bg" To="#192B20D9">
+                                                Storyboard.TargetName="Bg" To="{DynamicResource HoverBackgroundColor}">
                                             <ColorAnimation.EasingFunction>
-                                                <CubicEase EasingMode="EaseInOut"/>
+                                                <CubicEase EasingMode="EaseIn"/>
+                                            </ColorAnimation.EasingFunction>
+                                        </ColorAnimation>
+                                        <ColorAnimation Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Text" To="#ffffff">
+                                            <ColorAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseIn"/>
                                             </ColorAnimation.EasingFunction>
                                         </ColorAnimation>
                                         <!--<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
@@ -54,13 +60,13 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected"
                      Value="True">
-                            <Setter TargetName="Bg" Property="Background" Value="#2b20d9"/>
+                            <Setter TargetName="Bg" Property="Background" Value="{DynamicResource ThemeBrush}"/>
                             <Setter TargetName="Text" Property="Foreground" Value="white"/>
 
                         </Trigger>
                         <Trigger Property="IsDisabled"
                      Value="True">
-                            <!--<Setter TargetName="Bg" Property="Background" Value="#2b20d9"/>-->
+                            <Setter TargetName="Bg" Property="Background" Value="Transparent"/>
                             <Setter TargetName="Text" Property="Foreground" Value="#ccc"/>
 
                         </Trigger>

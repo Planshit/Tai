@@ -8,7 +8,7 @@
           Value="true" />
         <Setter Property="Margin" Value="0,0,0,20"/>
 
-        <Setter Property="Background" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource StandardBackgroundBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:SettingPanelMultiItem}">
@@ -24,8 +24,8 @@
                                 <TextBlock Text="{TemplateBinding Title}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                    <btn:IconButton ToolTip="收起" x:Name="FoldBtn" Command="{TemplateBinding OnFoldAction}" Icon="ChevronUp" Margin="0"></btn:IconButton>
-                                    <btn:IconButton Icon="Delete" Command="{TemplateBinding OnRemoveAction}"  ToolTip="移除此项"></btn:IconButton>
+                                    <btn:IconButton ToolTip="收起" x:Name="FoldBtn" FontSize="14" Command="{TemplateBinding OnFoldAction}" Icon="ChevronUp" Margin="0"></btn:IconButton>
+                                    <btn:IconButton Icon="Delete" FontSize="14" Command="{TemplateBinding OnRemoveAction}"  ToolTip="移除此项"></btn:IconButton>
                                 </StackPanel>
                                 
                             </Grid>

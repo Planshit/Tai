@@ -6,8 +6,8 @@
     <Style TargetType="{x:Type local:Select}">
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
-
-        <Setter Property="Background" Value="White"/>
+        <Setter Property="Padding" Value="18,10"/>
+        <Setter Property="Background" Value="{DynamicResource StandardBackgroundBrush}"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -16,22 +16,23 @@
 
                         <Grid >
                             <!--当前选择项-->
-                            <Border Background="{TemplateBinding Background}" Panel.ZIndex="-1" Width="{Binding ElementName=Main,Path=ActualWidth}"  Height="{Binding ElementName=Main,Path=ActualHeight}" CornerRadius="{Binding ElementName=Main,Path=CornerRadius}">
+                            <Border Background="{TemplateBinding Background}" Panel.ZIndex="-1" Width="{Binding ElementName=Main,Path=ActualWidth}"  Height="{Binding ElementName=Main,Path=ActualHeight}" CornerRadius="{Binding ElementName=Main,Path=CornerRadius}" Padding="{TemplateBinding Padding}">
                                 <Border.Effect>
                                     <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
                                 </Border.Effect>
                                 
                             </Border>
-                            <Border x:Name="Main" Background="{TemplateBinding Background}" Padding="18,10" CornerRadius="5">
-                                <StackPanel Orientation="Horizontal" >
+                            <Border x:Name="Main" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="6">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <!--<TextBlock x:Name="PlaceholderText" Text="请选择" Visibility="Collapsed"/>-->
-                                    <base:Img x:Name="Img" URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Img}" Width="20" Height="20"  VerticalAlignment="Center"/>
+                                    <base:Img x:Name="Img" URL="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Img}" Width="16" Height="16"  VerticalAlignment="Center"/>
                                     <TextBlock TextOptions.TextFormattingMode="Display" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=SelectedItem.Name}" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                                    <base:Icon x:Name="PopupIcon" Width="15" Height="15" Margin="5,0,0,0" FontSize="10" IconType="ChevronDown" VerticalAlignment="Center" RenderTransformOrigin=".5,.5">
+                                    <base:Icon x:Name="PopupIcon" Width="15" Height="15" Margin="5,0,0,0" FontSize="8" IconType="CaretDownSolid8" VerticalAlignment="Center" RenderTransformOrigin=".5,.5">
                                         <base:Icon.RenderTransform>
                                             <RotateTransform Angle="0" />
                                         </base:Icon.RenderTransform>
                                     </base:Icon>
+
                                 </StackPanel>
                             </Border>
 
@@ -42,11 +43,11 @@
                                 IsOpen="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Select}}, Path=IsOpen,Mode=TwoWay}" AllowsTransparency="True" StaysOpen="False" PopupAnimation="Slide">
                                 <Border 
                                     CornerRadius="10"
-                                      BorderBrush="#CCC"
+                                      BorderBrush="{DynamicResource PopupBorderBrush}"
                                             BorderThickness="1"
-                                    Background="White" Padding="10" MaxHeight="300" Margin="10">
+                                    Background="{DynamicResource StandardBackgroundBrush2}" Padding="5" MaxHeight="300" Margin="10">
                                     <Border.Effect>
-                                        <DropShadowEffect BlurRadius="6" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
                                     </Border.Effect>
                                     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
                                         <StackPanel x:Name="OptionsContainer">
@@ -80,7 +81,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" TargetName="Main" Value="#FFE8E6FF"/>
+                            <Setter Property="Background" TargetName="Main" Value="{DynamicResource HoverBackgroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsShowIcon" Value="False">
                             <Setter Property="Visibility" TargetName="Img" Value="Collapsed"/>

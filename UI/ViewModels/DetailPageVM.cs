@@ -135,7 +135,7 @@ namespace UI.ViewModels
                     }
                     else
                     {
-                        main.Toast("应用文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                        main.Toast("应用文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
                     }
                     break;
                 case "open exe":
@@ -145,7 +145,7 @@ namespace UI.ViewModels
                     }
                     else
                     {
-                        main.Toast("应用似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                        main.Toast("应用似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
                     }
                     break;
                     //case "geticon":

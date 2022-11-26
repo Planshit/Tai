@@ -21,8 +21,10 @@
 
                             <Grid>
                                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
-                                    <TextBlock Text="{TemplateBinding Name}" FontSize="14" Foreground="#060606"/>
-                                    <TextBlock Text="{TemplateBinding Description}" FontSize="12" Margin="0,4,0,0" Foreground="#989CA1"/>
+                                    <TextBlock Text="{TemplateBinding Name}" FontSize="14" Foreground="{DynamicResource StandardTextBrush}" VerticalAlignment="Center"/>
+                                    <base:View Value="{TemplateBinding Description}" Condition="not empty">
+                                        <TextBlock Text="{TemplateBinding Description}" FontSize="12" Margin="0,4,0,0" Foreground="{DynamicResource SubTextBrush}" VerticalAlignment="Center"/>
+                                    </base:View>
                                 </StackPanel>
                             </Grid>
                             <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">

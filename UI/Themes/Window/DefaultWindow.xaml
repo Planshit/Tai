@@ -8,7 +8,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="FontFamily" Value="/Tai;component/Resources/Fonts/#Segoe MDL2 Assets"/>
-        <Setter Property="Foreground" Value="{DynamicResource StandardTextBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TitleBarBtnBrush}"/>
         <!--<Setter Property="FontWeight" Value="Bold"/>-->
         <Setter Property="FontSize" Value="10"/>
 
@@ -29,11 +29,11 @@
                             <!--<Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}"/>-->
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#eaeaea" />
+                            <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}" />
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryColorBrush}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#2b20d9" />
+                            <Setter Property="Background" Value="{DynamicResource ThemeBrush}" />
                             <!--<Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
                             <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderPressed}"/>-->
                             <Setter Property="Foreground" Value="White"/>
@@ -46,10 +46,10 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type w:DefaultWindow}">
+    <Style  TargetType="{x:Type w:DefaultWindow}">
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="{DynamicResource StandardColorBrush}" />
-        <Setter Property="Background" Value="White" />
+        <Setter Property="Background" Value="Transparent" />
         <!--<Setter Property="Logo" Value="{DynamicResource WindowLogo}" />-->
         <Setter Property="Foreground" Value="{DynamicResource StandardTextBrush}" />
 
@@ -80,7 +80,7 @@
                             
                             BorderThickness="{TemplateBinding BorderThickness}" 
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                Background="#f3f3f3"
+                                Background="{DynamicResource WindowBackground}"
                                 >
                             <AdornerDecorator>
                                 <Grid x:Name="WindowContent">
@@ -111,9 +111,9 @@
                                                 <button:IconButton Width="0" VerticalAlignment="Center" ToolTip="返回" FontSize="10" x:Name="BackBtn" Icon="Back"  WindowChrome.IsHitTestVisibleInChrome="True" Command="{x:Static w:DefaultWindowCommands.BackCommand}"/>
 
                                                 <Image Source="{TemplateBinding Icon}" VerticalAlignment="Center" Stretch="Uniform" Width="18"/>
-                                                <TextBlock VerticalAlignment="Center" Text="{TemplateBinding Title}" IsEnabled="{TemplateBinding IsActive}" Foreground="#5c5c5c" Margin="15,0,0,0"/>
+                                                <TextBlock VerticalAlignment="Center" Text="{TemplateBinding Title}" IsEnabled="{TemplateBinding IsActive}" Foreground="{DynamicResource DefaultTextBrush}" Margin="15,0,0,0"/>
                                             </StackPanel>
-                                            <!--<TextBlock Text="{TemplateBinding Title}" IsEnabled="{TemplateBinding IsActive}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="15,0,0,0"/>-->
+                                          
 
                                         </Grid>
                                         <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -123,42 +123,42 @@
 
                                             <StackPanel Orientation="Horizontal">
                                                 <!--最小化-->
-                                                <Button
+                                                <button:IconButton
                                                     ToolTip="最小化"
                                                     Width="46"
                                                     Height="32"
-                                                    Style="{StaticResource WindowSystemButton}"
-                                                    Content="&#xE921;"
+                                                    FontSize="10"
+                                                    Icon="ChromeMinimize"
                                                     Command="{x:Static w:DefaultWindowCommands.MinimizeWindowCommand}"
                                                     Visibility="{TemplateBinding MinimizeVisibility}"/>
 
                                                 <!--最大化-->
-                                                <Button
+                                                <button:IconButton
                                                     x:Name="MaximizeButton"
                                                     ToolTip="最大化"
                                                     Width="46"
                                                     Height="32"
-                                                    Style="{StaticResource WindowSystemButton}"
-                                                    Content="&#xE922;"
+                                                    FontSize="10"
+                                                    Icon="ChromeMaximize"
                                                     Command="{x:Static w:DefaultWindowCommands.MaximizeWindowCommand}"
                                                     Visibility="{TemplateBinding MaximizeVisibility}"/>
                                                 <!--还原-->
-                                                <Button
+                                                <button:IconButton
                                                     x:Name="RestoreButton"
                                                     ToolTip="向下还原"
                                                     Width="46"
                                                     Height="32"
-                                                    Style="{StaticResource WindowSystemButton}"
-                                                    Content="&#xE923;"
+                                                    FontSize="10"
+                                                    Icon="ChromeRestore"
                                                     Command="{x:Static w:DefaultWindowCommands.RestoreWindowCommand}"
                                                     Visibility="Collapsed"/>
                                                 <!--关闭-->
-                                                <Button
+                                                <button:IconButton
                                                     ToolTip="关闭"
                                                     Width="46"
                                                     Height="32"
-                                                    Style="{StaticResource WindowSystemButton}"
-                                                    Content="&#xE8BB;"
+                                                    FontSize="10"
+                                                    Icon="ChromeClose"
                                                     Command="{x:Static w:DefaultWindowCommands.CloseWindowCommand}"
                                                     Visibility="{TemplateBinding CloseVisibility}"/>
 

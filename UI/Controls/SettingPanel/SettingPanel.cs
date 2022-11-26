@@ -32,6 +32,9 @@ namespace UI.Controls.SettingPanel
         public object Data { get { return (object)GetValue(DataProperty); } set { SetValue(DataProperty, value); } }
         public static readonly DependencyProperty DataProperty = DependencyProperty.Register("Data", typeof(object), typeof(SettingPanel), new PropertyMetadata(new PropertyChangedCallback(OnDataChanged)));
 
+        public SolidColorBrush SpliteLineBrush { get { return (SolidColorBrush)GetValue(SpliteLineBrushProperty); } set { SetValue(SpliteLineBrushProperty, value); } }
+        public static readonly DependencyProperty SpliteLineBrushProperty = DependencyProperty.Register("SpliteLineBrush", typeof(SolidColorBrush), typeof(SettingPanel));
+
         private static void OnDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as SettingPanel;
@@ -277,7 +280,7 @@ namespace UI.Controls.SettingPanel
                         //  添加分割线
                         var spliteLine = new Border();
                         spliteLine.Height = 1;
-                        spliteLine.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ededed"));
+                        spliteLine.Background = SpliteLineBrush;
                         itemContainer.Children.Add(spliteLine);
                     }
                 }

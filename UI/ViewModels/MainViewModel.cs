@@ -79,7 +79,8 @@ namespace UI.ViewModels
 
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
-                Icon = Controls.Base.IconTypes.AppIconDefaultList,
+                UnSelectedIcon = Controls.Base.IconTypes.Home,
+                SelectedIcon = IconTypes.HomeSolid,
                 Title = "概览",
                 Uri = nameof(IndexPage),
                 ID = -1
@@ -87,7 +88,8 @@ namespace UI.ViewModels
             });
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
-                Icon = Controls.Base.IconTypes.BIDashboard,
+                UnSelectedIcon = Controls.Base.IconTypes.ZeroBars,
+                SelectedIcon= IconTypes.FourBars,
                 Title = "统计",
                 ID = 1,
                 Uri = nameof(ChartPage),
@@ -95,7 +97,8 @@ namespace UI.ViewModels
             });
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
-                Icon = Controls.Base.IconTypes.ClipboardListMirrored,
+                UnSelectedIcon = Controls.Base.IconTypes.Calendar,
+                SelectedIcon= IconTypes.CalendarSolid,
                 //Icon = Controls.Base.IconTypes.BIDashboard,
                 Title = "详细",
                 ID = 2,
@@ -104,7 +107,8 @@ namespace UI.ViewModels
             });
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
-                Icon = Controls.Base.IconTypes.TagGroup,
+                UnSelectedIcon = Controls.Base.IconTypes.EndPoint,
+                SelectedIcon= IconTypes.EndPointSolid,
                 Title = "分类",
                 ID = 3,
                 Uri = nameof(CategoryPage),

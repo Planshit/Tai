@@ -66,7 +66,7 @@
                                 <select:DateSelect Date="{Binding ExportDataStartMonthDate,Mode=TwoWay}" Margin="10,0" SelectType="Month"/>
                                 <TextBlock Text="到" VerticalAlignment="Center"/>
                                 <select:DateSelect Date="{Binding ExportDataEndMonthDate,Mode=TwoWay}" Margin="10,0" SelectType="Month"/>
-                                <Btn:Button Margin="20,0,0,0" Icon="Export" Content="导出" Width="80" Command="{Binding ExportDataCommand}"/>
+                                <Btn:Button Margin="20,0,0,0" Icon="Share" Content="导出" Width="80" Command="{Binding ExportDataCommand}"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -81,7 +81,7 @@
                             <TextBlock VerticalAlignment="Center">
                                 <Run Text="Tai 版本号 "/><Run Text="{Binding Version}"/>
                             </TextBlock>
-                            <Btn:Button Visibility="{Binding CheckUpdateBtnVisibility}" Command="{Binding CheckUpdate}" Margin="20,0,0,0" VerticalAlignment="Center" Width="120" Icon="CloudImportExport" Content="检查更新"/>
+                            <Btn:Button Visibility="{Binding CheckUpdateBtnVisibility}" Command="{Binding CheckUpdate}" Margin="20,0,0,0" VerticalAlignment="Center" Width="120" Icon="SetlockScreen" Content="检查更新"/>
                         </StackPanel>
                         <TextBlock Margin="0,30,0,0">
                                 <Run Text="开源 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai">https://github.com/Planshit/Tai</Hyperlink>

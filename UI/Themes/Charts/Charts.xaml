@@ -16,13 +16,6 @@
                         <Border x:Name="Radar"  Visibility="Collapsed">
 
                         </Border>
-                        <!--<Grid x:Name="HorizontalA"  Visibility="Collapsed">
-                            <ScrollViewer Visibility="Collapsed" x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" Height="{Binding ElementName=HorizontalA,Path=ActualHeight}" CanContentScroll="False">
-                                <StackPanel x:Name="Container">
-                                </StackPanel>
-                            </ScrollViewer>
-                            <StackPanel Visibility="Collapsed" x:Name="NoScrollContainer"></StackPanel>
-                        </Grid>-->
                         <Grid x:Name="HorizontalA"  Visibility="Collapsed" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
@@ -38,13 +31,52 @@
                                     <Run x:Name="ACount"/>
                                     <Run Text="个"/>
                                 </TextBlock>
-                                <input:InputBox x:Name="ASearchBox"  Grid.Row="1" Placeholder="搜索" Margin="0,10,0,10"/>
+                                <input:InputBox x:Name="ASearchBox" Grid.Row="1" Placeholder="搜索" Margin="0,10,0,10" BoxPadding="5,0" Icon="Search"/>
                             </Grid>
-                            <ScrollViewer Height="1" Grid.Row="1" Visibility="Collapsed" x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto" CanContentScroll="False" >
-                                <StackPanel x:Name="Container">
-                                </StackPanel>
-                            </ScrollViewer>
-                            <StackPanel Grid.Row="1" Visibility="Collapsed" x:Name="NoScrollContainer"></StackPanel>
+                            <StackPanel x:Name="TypeATempContainer" Grid.Row="1" Visibility="Collapsed"/>
+                            <!--list-->
+                            <ListView x:Name="ListView" Height="1" Grid.Row="1" ItemsSource="{TemplateBinding ListViewBindingData}" VirtualizingPanel.IsVirtualizing="True" >
+                                <ListBox.Resources>
+                                    <Style TargetType="{x:Type ListView}">
+                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListView}">
+                                                    <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True">
+                                                        <ItemsPresenter />
+                                                    </ScrollViewer>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                    <ContentPresenter/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                    </Style>
+                                </ListBox.Resources>
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <VirtualizingStackPanel>
+                                            <local:ChartsItemTypeA Data="{Binding}" MaxValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=DataMaxValue}" IsShowBadge="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=IsShowBadge}"/>
+                                        </VirtualizingStackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <!--end-->
+                            <!--<StackPanel Grid.Row="1" Visibility="Collapsed" x:Name="NoScrollContainer"></StackPanel>-->
                         </Grid>
                         <WrapPanel x:Name="CardContainer" Visibility="Collapsed">
                         </WrapPanel>
@@ -60,8 +92,8 @@
                                     <RowDefinition Height="auto"/>
                                 </Grid.RowDefinitions>
                                 <StackPanel x:Name="ColumnTotal">
-                                    <TextBlock Text="总计" Foreground="#626262"/>
-                                    <TextBlock Margin="0,10,0,0" Text="{TemplateBinding Total}" FontSize="20" Foreground="#1a1919"/>
+                                    <TextBlock Text="总计" Foreground="{DynamicResource SubTextBrush}"/>
+                                    <TextBlock Margin="0,10,0,0" Text="{TemplateBinding Total}" FontSize="20" Foreground="{DynamicResource DefaultTextBrush}"/>
                                 </StackPanel>
                                 <Grid Grid.Row="1" Margin="0,20,0,0">
                                     <Popup
@@ -144,7 +176,7 @@
 
                                                                     <Border Grid.Column="1" Margin="5,0,0,0">
                                                                         <!--名称-->
-                                                                        <TextBlock Foreground="#5c5c5c" VerticalAlignment="Center" Text="{Binding Name}" FontSize="12"/>
+                                                                        <TextBlock Foreground="#3d3d3d" VerticalAlignment="Center" Text="{Binding Name}" FontSize="12"/>
                                                                     </Border>
                                                                     <Border Grid.Column="2">
                                                                         <!--总计和百分比-->
@@ -161,22 +193,11 @@
                                             </Grid>
                                         </Border>
                                     </Popup>
-                                    <TextBlock Panel.ZIndex="2" Margin="0,-8,0,0" HorizontalAlignment="Right" VerticalAlignment="Top" Text="{TemplateBinding Maximum}" Foreground="#ccc" FontSize="12"/>
 
-                                    <TextBlock Panel.ZIndex="2" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{TemplateBinding Median}" Foreground="#ccc" FontSize="12" Margin="0,0,0,30"/>
-                                    <Line Stroke="#ccc" Opacity="1" HorizontalAlignment="Stretch"
-                  X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
-                  StrokeDashArray="2 5" StrokeThickness=".8" VerticalAlignment="Center" Margin="10,0,10,30"/>
-
-                                    <Line Stroke="#ccc" Opacity="1" HorizontalAlignment="Stretch"
-                  X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
-                  StrokeDashArray="2 5" StrokeThickness=".8" VerticalAlignment="Top" Margin="10,0"/>
-
-                                    <Border BorderThickness="1,0,0,1" BorderBrush="#eeeef2">
-                                        <Grid x:Name="ColumnContainer">
-
-                                        </Grid>
+                                    <Border BorderThickness="1,0,0,1" BorderBrush="{DynamicResource ChartColBorderBrush}">
+                                        <Canvas x:Name="TypeColumnCanvas"/>
                                     </Border>
+                                    
                                 </Grid>
                                 <!--信息-->
                                 <Grid Grid.Row="2" Margin="0,5,0,0">
@@ -200,7 +221,7 @@
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                            <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="0" CornerRadius="10">
+                                                            <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="Transparent" Margin="0" CornerRadius="10">
 
                                                                 <ContentPresenter/>
                                                             </Border>
@@ -228,35 +249,19 @@
                                             <DataTemplate>
 
                                                 <WrapPanel Orientation="Vertical">
-                                                    <Border Width="auto" Height="30" Margin="0,0,10,0">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="20"/>
-                                                                <ColumnDefinition Width="30"/>
-                                                                <ColumnDefinition Width="auto"/>
-                                                                <ColumnDefinition Width="auto"/>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,10,5">
+                                                        <Rectangle Width="12" RadiusX="4" RadiusY="4" Height="12" Fill="{Binding Color,Converter={StaticResource HextoColorConverter}}">
+                                                            <!--颜色-->
+                                                        </Rectangle>
 
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Width="12" CornerRadius="4" Height="12" Background="{Binding Color,Converter={StaticResource HextoColorConverter}}">
-                                                                <!--颜色-->
-                                                            </Border>
-                                                            <Border Grid.Column="1">
-                                                                <!--图标-->
-                                                                <base:Img Width="20" Height="20" URL="{Binding Icon}"/>
-                                                            </Border>
-                                                            <Border Grid.Column="2" Margin="5,0,0,0">
-                                                                <!--名称-->
-                                                                <TextBlock Foreground="#5c5c5c" VerticalAlignment="Center" Text="{Binding Name}"/>
-                                                            </Border>
-                                                            <Border Grid.Column="3">
-                                                                <!--总计和百分比-->
-                                                                <TextBlock FontSize="12" Margin="5,0,0,0" Foreground="#FF8A8A8A" VerticalAlignment="Center" Text="{Binding Text}"/>
+                                                        <base:Img Margin="5,0,0,0"  Width="16" Height="16" URL="{Binding Icon}"/>
+                                                        <!--名称-->
+                                                        <TextBlock Margin="5,0,0,0" Foreground="{DynamicResource DefaultTextBrush}" VerticalAlignment="Center" Text="{Binding Name}"/>
 
-                                                            </Border>
+                                                        <!--总计和百分比-->
+                                                        <TextBlock FontSize="12" Margin="5,0,0,0" Foreground="{DynamicResource SubTextBrush}" VerticalAlignment="Center" Text="{Binding Text}"/>
 
-                                                        </Grid>
-                                                    </Border>
-
+                                                    </StackPanel>
                                                 </WrapPanel>
                                             </DataTemplate>
                                         </ListView.ItemTemplate>
@@ -309,6 +314,22 @@
                      Value="Radar">
                             <Setter TargetName="Radar" Property="Visibility" Value="Visible"/>
                         </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsLoading" Value="True"/>
+                                <Condition Property="ChartsType" Value="HorizontalA"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" TargetName="TypeATempContainer"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="ListView"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEmpty" Value="True"/>
+                                <Condition Property="ChartsType" Value="HorizontalA"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" TargetName="TypeATempContainer"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="ListView"/>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

@@ -8,9 +8,9 @@
           Value="true" />
         <Setter Property="UseLayoutRounding" Value="True"/>
 
-        <!--<Setter Property="MinWidth" Value="150"/>-->
+        <Setter Property="Foreground" Value="{DynamicResource StandardTextBrush}"/>
         <Setter Property="Height" Value="35"/>
-        <Setter Property="Background" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource StandardBackgroundBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Button}">
@@ -18,7 +18,7 @@
                     <Grid SnapsToDevicePixels="True">
 
 
-                        <Border BorderBrush="#f3f3f3" BorderThickness="1" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="{TemplateBinding Background}">
+                        <Border BorderBrush="#f3f3f3" BorderThickness="0" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" x:Name="BoxBorder" CornerRadius="4" Background="{TemplateBinding Background}">
                             <!--<Border.Effect>
                                 <DropShadowEffect BlurRadius="5" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
                             </Border.Effect>-->
@@ -61,7 +61,7 @@
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
                                                 Storyboard.TargetName="BoxBorder">
                                             <EasingColorKeyFrame KeyTime="0"
-                                         Value="#2b20d9"  />
+                                         Value="{DynamicResource HoverBackgroundColor}"  />
                                         </ColorAnimationUsingKeyFrames>
                                         <!--<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
                                                 Storyboard.TargetName="BoxBorder">
@@ -82,8 +82,9 @@
                                         <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
                                                Storyboard.TargetName="BoxBorder">
                                             <EasingColorKeyFrame KeyTime="0"
-                                         Value="#eaeaea"  />
+                                         Value="{DynamicResource ThemeColor}"  />
                                         </ColorAnimationUsingKeyFrames>
+                                        
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
@@ -98,7 +99,7 @@
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="BoxBorder" Property="BorderThickness" Value="0"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <!--<Setter Property="Foreground" Value="White"/>-->
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

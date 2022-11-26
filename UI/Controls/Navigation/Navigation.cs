@@ -238,11 +238,24 @@ namespace UI.Controls.Navigation
         {
             DefaultStyleKey = typeof(Navigation);
             ItemsDictionary = new Dictionary<int, NavigationItem>();
+            Loaded += Navigation_Loaded;
+        }
+
+        private void Navigation_Loaded(object sender, RoutedEventArgs e)
+        {
+            ScrollToActive();
         }
 
         #region create animation
         private void CreateAnimations()
         {
+            if (ActiveBlock != null)
+            {
+                var tfg = new TransformGroup();
+                tfg.Children.Add(new TranslateTransform() { X = 0, Y = 0 });
+                tfg.Children.Add(new ScaleTransform() { ScaleX = 0, ScaleY = 0 });
+                ActiveBlock.RenderTransform = tfg;
+            }
             storyboard = new Storyboard();
             scrollAnimation = new DoubleAnimation();
             stretchAnimation = new DoubleAnimation();
@@ -290,8 +303,9 @@ namespace UI.Controls.Navigation
                 {
                     var item = ritem as NavigationItemModel;
                     var id = item.ID;
-                    ItemsDictionary[id].Icon = item.Icon;
+                    ItemsDictionary[id].Icon = item.UnSelectedIcon;
                     ItemsDictionary[id].Title = item.Title;
+                    ItemsDictionary[id].SelectedIcon = item.SelectedIcon;
 
                 }
             }
@@ -323,7 +337,8 @@ namespace UI.Controls.Navigation
                 item.ID = id;
                 navItem.ID = id;
                 navItem.Title = item.Title;
-                navItem.Icon = item.Icon;
+                navItem.Icon = item.UnSelectedIcon;
+                navItem.SelectedIcon = item.SelectedIcon;
                 navItem.IconColor = item.IconColor;
                 navItem.BadgeText = item.BadgeText;
                 navItem.Uri = item.Uri;
@@ -387,15 +402,28 @@ namespace UI.Controls.Navigation
                 {
                     AddItem(item);
                 }
-                Loaded += (e, c) =>
-                {
-                    ScrollToActive();
-                };
             }
+
+            UpdateActiveLocation();
         }
         #endregion
+        private void UpdateActiveLocation()
+        {
+            if (SelectedItem == null || !IsLoaded)
+            {
+                return;
+            }
+            var item = ItemsDictionary[SelectedItem.ID];
+            item.Loaded += (e, c) =>
+            {
+                ScrollToActive(0);
+            };
 
-        private void ScrollToActive()
+
+
+
+        }
+        private void ScrollToActive(double animationDuration = 0.35)
         {
             //  获取选中项
             if (SelectedItem == null)
@@ -404,6 +432,9 @@ namespace UI.Controls.Navigation
             }
             var item = ItemsDictionary[SelectedItem.ID];
             item.IsSelected = true;
+
+            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(animationDuration));
+            stretchAnimation.Duration = new Duration(TimeSpan.FromSeconds(animationDuration));
 
 
             //  选中项的坐标
@@ -435,7 +466,7 @@ namespace UI.Controls.Navigation
                 ActiveBlock.RenderTransform = transformGroup;
 
             }
-            
+
             storyboard.Begin();
         }
     }

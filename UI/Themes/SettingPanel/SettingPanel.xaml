@@ -5,12 +5,14 @@
     <Style TargetType="{x:Type local:SettingPanel}">
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
-        
-        <Setter Property="Background" Value="Transparent"/>
+
+        <Setter Property="Background" Value="{DynamicResource StandardBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SettingPanelBorderBrush}"/>
+        <Setter Property="SpliteLineBrush" Value="{DynamicResource SettingPanelSpliteLineBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:SettingPanel}">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="5" x:Name="Border">
+                    <Border CornerRadius="5" x:Name="Border">
                         <StackPanel x:Name="Container">
 
                         </StackPanel>

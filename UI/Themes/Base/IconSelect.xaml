@@ -5,16 +5,18 @@
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Width" Value="80"/>
+        <Setter Property="Height" Value="80"/>
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:IconSelect}">
-                    <Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True" BorderBrush="#f7f8fa" CornerRadius="20" BorderThickness="2" Width="100" Height="100">
+                    <Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True" BorderBrush="#f7f8fa" CornerRadius="10" BorderThickness="2" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
                         <Border.InputBindings>
                             <MouseBinding Gesture="LeftClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconSelect}}, Path=ShowSelectCommand}"/>
                         </Border.InputBindings>
                         <Grid>
-                            <local:Img HorizontalAlignment="Center" VerticalAlignment="Center" URL="{TemplateBinding URL}" Width="50" Height="50"/>
+                            <local:Img HorizontalAlignment="Center" VerticalAlignment="Center" URL="{TemplateBinding URL}" Width="30" Height="30"/>
 
                             <Popup 
                                 x:Name="Popup"
@@ -24,11 +26,11 @@
                                 <Border 
                                     x:Name="SelectContainer"
                                     CornerRadius="10"
-                                      BorderBrush="#CCC"
+                                      BorderBrush="{DynamicResource PopupBorderBrush}"
                                             BorderThickness="1"
-                                    Background="White" Padding="10" Width="275" MaxHeight="300" Margin="10">
+                                    Background="{DynamicResource PopupBackgroundBrush}" Padding="10" Width="275" MaxHeight="300" Margin="10">
                                     <Border.Effect>
-                                        <DropShadowEffect BlurRadius="6" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".3"/>
                                     </Border.Effect>
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -36,84 +38,119 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-                                     
-                                            <TextBlock Text="选择图标" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+
+                                        <TextBlock Text="选择图标" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{DynamicResource DefaultTextBrush}"/>
 
                                         <ScrollViewer Grid.Row="1">
-                                        <ListView Grid.Row="1" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconSelect}}, Path=Icons}" SelectedItem="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconSelect}}, Path=URL,Mode=TwoWay}" Margin="0,10,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                            <!--<i:Interaction.Triggers>
+                                            <ListView Grid.Row="1" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconSelect}}, Path=Icons}" SelectedItem="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconSelect}}, Path=URL,Mode=TwoWay}" Margin="0,10,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                                <!--<i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="MouseLeftButtonUp">
                                                         <i:InvokeCommandAction Command="{Binding GotoDetailCommand}"
                              CommandParameter="{Binding SelectedItem}" />
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>-->
-                                            <ListBox.Resources>
-                                                <Style TargetType="{x:Type ListView}">
-                                                    <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                                <ListBox.Resources>
+                                                    <Style TargetType="{x:Type ListView}">
+                                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
 
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type ListView}">
-                                                                <Border>
-                                                                    <ItemsPresenter />
-                                                                </Border>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                                <Style TargetType="{x:Type ListViewItem}">
-                                                    <Setter Property="OverridesDefaultStyle" Value="True"/>
-                                                    <Setter  Property="Foreground" Value="#1a1a1a"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type ListView}">
+                                                                    <Border>
+                                                                        <ItemsPresenter />
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                    <Style TargetType="{x:Type ListViewItem}">
+                                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                                        <Setter  Property="Foreground" Value="#1a1a1a"/>
 
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                                <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="0,0,0,0" Padding="0" Width="35" Height="35" CornerRadius="5">
-                                                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                                </Border>
-                                                                <ControlTemplate.Triggers>
-                                                                    
-                                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>
-                                                                        <!--<Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>-->
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                                    <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="Transparent" Margin="0,0,0,0" Padding="0" Width="35" Height="35" CornerRadius="5">
 
-                                                                    </Trigger>
-                                                                    <Trigger Property="IsSelected" Value="True">
-                                                                        <Setter TargetName="Border" Property="Background" Value="#2b20d9"/>
-                                                                        <Setter  Property="Foreground" Value="White"/>
+                                                                        <!--<Canvas Width="20" Height="20"  x:Name="Icon" RenderTransformOrigin=".5,.5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                            <Canvas.RenderTransform>
+                                                                                <ScaleTransform ScaleX=".7" ScaleY=".7"/>
+                                                                            </Canvas.RenderTransform>-->
+                                                                        <ContentPresenter x:Name="Icon" VerticalAlignment="Center" HorizontalAlignment="Center" RenderTransformOrigin=".5,.5" >
+                                                                            <ContentPresenter.RenderTransform>
+                                                                                <ScaleTransform ScaleX=".7" ScaleY=".7"/>
+                                                                            </ContentPresenter.RenderTransform>
+                                                                        </ContentPresenter>
+                                                                        <!--</Canvas>-->
+                                                                    </Border>
+                                                                    <ControlTemplate.Triggers>
 
-                                                                        <!--<Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>-->
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
+                                                                            <!--<Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>-->
 
-                                                                    </Trigger>
-                                                                </ControlTemplate.Triggers>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
+                                                                        </Trigger>
+                                                                        <Trigger Property="IsSelected" Value="True">
+                                                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeBrush}"/>
+                                                                            <Setter  Property="Foreground" Value="White"/>
 
-                                                </Style>
-                                            </ListBox.Resources>
-                                            <ListBox.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <WrapPanel/>
-                                                </ItemsPanelTemplate>
-                                            </ListBox.ItemsPanel>
-                                            <ListView.ItemTemplate>
-                                                <DataTemplate>
+                                                                            <!--<Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>-->
 
-                                                    <WrapPanel Orientation="Horizontal">
-                                                        <Border >
-                                                          
-                                                            <local:Img URL="{Binding}" Width="25" Height="25"/>
+                                                                        </Trigger>
+                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="True">
+                                                                            <DataTrigger.EnterActions>
+                                                                                <BeginStoryboard>
+                                                                                    <Storyboard>
+                                                                                        <DoubleAnimation Storyboard.TargetProperty="(ContentPresenter.RenderTransform).
+               (ScaleTransform.ScaleX)"
+                                          Storyboard.TargetName="Icon" Duration="00:00:0.3" To="1"/>
+                                                                                        <DoubleAnimation Storyboard.TargetProperty="(ContentPresenter.RenderTransform).
+               (ScaleTransform.ScaleY)"
+                                          Storyboard.TargetName="Icon" Duration="00:00:0.3" To="1"/>
+                                                                                    </Storyboard>
+                                                                                </BeginStoryboard>
+                                                                            </DataTrigger.EnterActions>
+                                                                            <DataTrigger.ExitActions>
+                                                                                <BeginStoryboard>
+                                                                                    <Storyboard>
+                                                                                        <DoubleAnimation Storyboard.TargetProperty="(ContentPresenter.RenderTransform).
+               (ScaleTransform.ScaleX)"
+                                          Storyboard.TargetName="Icon" Duration="00:00:0.3" To=".7"/>
+                                                                                        <DoubleAnimation Storyboard.TargetProperty="(ContentPresenter.RenderTransform).
+               (ScaleTransform.ScaleY)"
+                                          Storyboard.TargetName="Icon" Duration="00:00:0.3" To=".7"/>
+                                                                                    </Storyboard>
+                                                                                </BeginStoryboard>
+                                                                            </DataTrigger.ExitActions>
+                                                                        </DataTrigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
 
-                                                        </Border>
+                                                    </Style>
+                                                </ListBox.Resources>
+                                                <ListBox.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel/>
+                                                    </ItemsPanelTemplate>
+                                                </ListBox.ItemsPanel>
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
 
-                                                    </WrapPanel>
+                                                        <WrapPanel Orientation="Horizontal">
+                                                            <Border >
 
-                                                </DataTemplate>
-                                            </ListView.ItemTemplate>
-                                        </ListView>
+                                                                <local:Img URL="{Binding}" Width="25" Height="25"/>
+
+                                                            </Border>
+
+                                                        </WrapPanel>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
                                         </ScrollViewer>
-                                        <button:Button Grid.Row="2" Icon="FileImage" HorizontalAlignment="Right" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconSelect}}, Path=FileSelectCommand}" Content="自定义图片" Width="120"/>
+                                        <button:Button Grid.Row="2" Icon="Photo" HorizontalAlignment="Right" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconSelect}}, Path=FileSelectCommand}" Content="自定义图片" Width="120"/>
                                     </Grid>
                                 </Border>
 
@@ -123,7 +160,7 @@
                     <ControlTemplate.Triggers>
 
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#FFE8E6FF"/>
+                            <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

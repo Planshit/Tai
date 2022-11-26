@@ -73,7 +73,7 @@ namespace UI.Controls.Tabbar
             ItemsDictionary = new List<TextBlock>();
         }
 
-       
+
 
         public override void OnApplyTemplate()
         {
@@ -158,8 +158,8 @@ namespace UI.Controls.Tabbar
         {
             storyboard = new Storyboard();
             scrollAnimation = new DoubleAnimation();
-            //scrollAnimation.EasingFunction = new BackEase() { EasingMode = EasingMode.EaseInOut};
-            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.15));
+            scrollAnimation.EasingFunction = new BackEase() { EasingMode = EasingMode.EaseOut, Amplitude = .8 };
+            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.38));
 
             Storyboard.SetTarget(scrollAnimation, ActiveBlock);
             Storyboard.SetTargetProperty(scrollAnimation, new PropertyPath("RenderTransform.Children[0].X"));
@@ -205,8 +205,8 @@ namespace UI.Controls.Tabbar
 
             scrollX = scrollX < 0 ? 0 : scrollX;
             scrollAnimation.To = scrollX;
-         
-            
+
+
 
 
 

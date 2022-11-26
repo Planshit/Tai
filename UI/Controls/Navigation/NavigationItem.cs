@@ -51,6 +51,16 @@ namespace UI.Controls.Navigation
             DependencyProperty.Register("Icon",
                 typeof(IconTypes),
                 typeof(NavigationItem), new PropertyMetadata(IconTypes.None));
+
+        public IconTypes SelectedIcon
+        {
+            get { return (IconTypes)GetValue(SelectedIconIconProperty); }
+            set { SetValue(SelectedIconIconProperty, value); }
+        }
+        public static readonly DependencyProperty SelectedIconIconProperty =
+            DependencyProperty.Register("SelectedIconIcon",
+                typeof(IconTypes),
+                typeof(NavigationItem), new PropertyMetadata(IconTypes.None));
         public ColorTypes IconColor
         {
             get { return (ColorTypes)GetValue(IconColorProperty); }

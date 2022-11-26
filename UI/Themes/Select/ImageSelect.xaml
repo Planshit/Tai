@@ -24,7 +24,7 @@
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <base:Icon IconType="FileImage" Foreground="#2b20d9" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <base:Icon IconType="Photo" Foreground="#2b20d9" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
                                     <TextBlock Text="选择图片" Grid.Row="1" Margin="0,10,0,0"/>
                                 </Grid>

@@ -249,6 +249,12 @@ namespace UI
                     contextMenu.IsOpen = false;
                 }));
             };
+
+            var theme = serviceProvider.GetService<IThemeServicer>();
+            theme.OnThemeChanged += (a, c) =>
+            {
+                contextMenu.UpdateDefaultStyle();
+            };
             //  创建保活窗口
             keepaliveWindow = new HideWindow();
         }

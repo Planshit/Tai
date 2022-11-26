@@ -58,7 +58,7 @@
                         </StackPanel>-->
                     <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该应用将不再统计使用时长">
                         <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
-                            <base:Icon IconType="Blocked" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
+                            <base:Icon IconType="StatusCircleBlock" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
                             <TextBlock Text="已被忽略" Foreground="White" VerticalAlignment="Center" Margin="5,0,0,0"/>
                         </StackPanel>
                     </Border>
@@ -78,7 +78,7 @@
                         </Border>-->
 
                     <base:View Condition="not null" Value="{Binding Category}" HorizontalAlignment="Left">
-                        <Select:Select Margin="0,10,0,0" ToolTip="分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categorys}"/>
+                        <Select:Select Margin="0,10,0,0" ToolTip="分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categorys}"  Padding="10,0" Height="30"/>
 
                     </base:View>
 
@@ -86,7 +86,7 @@
                 </StackPanel>
                 <Grid Grid.Column="2">
                     <StackPanel Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,20,0">
-                        <btn:Button Command="{Binding BlockActionCommand}" CommandParameter="block" Width="120" Visibility="{Binding BlockBtnVisibility}" Icon="Blocked">忽略此应用</btn:Button>
+                        <btn:Button Command="{Binding BlockActionCommand}" CommandParameter="block" Width="120" Visibility="{Binding BlockBtnVisibility}" Icon="StatusCircleBlock">忽略此应用</btn:Button>
                         <btn:Button Command="{Binding BlockActionCommand}"  CommandParameter="unblock" Width="120" Visibility="{Binding CancelBlockBtnVisibility}" Icon="Remove">取消忽略</btn:Button>
 
                     </StackPanel>
@@ -146,7 +146,7 @@
                             <base:View Condition="1" Value="{Binding TabbarSelectedIndex}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <Select:Select  IsShowIcon="False" SelectedItem="{Binding SelectedWeek,Mode=TwoWay}" Options="{Binding WeekOptions}"/>
-                                    <TextBlock Foreground="#626262" Margin="20,0,0,0" FontSize="14" Text="{Binding WeekDateStr}" VerticalAlignment="Center"/>
+                                    <TextBlock Foreground="{DynamicResource DefaultTextBrush}" Margin="20,0,0,0" FontSize="14" Text="{Binding WeekDateStr}" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </base:View>
                             <!--按月-->
@@ -192,10 +192,10 @@
                             <StackPanel Grid.Column="1" >
                                 <Border Padding="15" CornerRadius="10" BorderThickness="0">
                                     <Border.Background>
-                                        <SolidColorBrush Color="#2b20d9" Opacity=".02"/>
+                                        <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".02"/>
                                     </Border.Background>
                                     <Border.BorderBrush>
-                                        <SolidColorBrush Color="#2b20d9" Opacity=".5"/>
+                                        <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".5"/>
                                     </Border.BorderBrush>
                                     <Grid>
                                         <Grid>
@@ -203,20 +203,20 @@
                                                 <RowDefinition Height="auto"/>
                                                 <RowDefinition Height="auto"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock  FontSize="14"><Run Text="该月累计使用 " Foreground="Gray" /><Run FontSize="16" Text="{Binding Total}"/>
+                                            <TextBlock  FontSize="14"><Run Text="该月累计使用 " Foreground="{DynamicResource SubTextBrush}" /><Run Foreground="{DynamicResource DefaultTextBrush}"  FontSize="16" Text="{Binding Total}"/>
                                             </TextBlock>
                                             <TextBlock Grid.Row="1"  Margin="0,5,0,0" FontSize="14"><Run Text="{Binding LongDay}"/>
                                             </TextBlock>
                                         </Grid>
-                                        <base:Icon IconType="SkypeCircleClock" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="30" Foreground="#2b20d9" Opacity=".1"/>
+                                        <base:Icon IconType="DateTimeMirrored" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="30" Foreground="{DynamicResource ThemeBrush}" Opacity=".1"/>
                                     </Grid>
                                 </Border>
                                 <Border Margin="0,10,0,0" Padding="15" CornerRadius="10" BorderThickness="0">
                                     <Border.Background>
-                                        <SolidColorBrush Color="#2b20d9" Opacity=".02"/>
+                                        <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".02"/>
                                     </Border.Background>
                                     <Border.BorderBrush>
-                                        <SolidColorBrush Color="#2b20d9" Opacity=".5"/>
+                                        <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".5"/>
                                     </Border.BorderBrush>
                                     <Grid>
                                         <Grid>
@@ -224,12 +224,12 @@
                                                 <RowDefinition Height="auto"/>
                                                 <RowDefinition Height="auto"/>
                                             </Grid.RowDefinitions>
-                                            <TextBlock Foreground="Gray"  Text="在当月所有使用应用时长中占比" FontSize="14" />
+                                            <TextBlock Foreground="{DynamicResource SubTextBrush}"  Text="在当月所有使用应用时长中占比" FontSize="14" />
 
-                                            <TextBlock Grid.Row="1" Margin="0,10,0,0" FontSize="24"><Run Text="{Binding Ratio}"/>
+                                            <TextBlock Foreground="{DynamicResource DefaultTextBrush}" Grid.Row="1" Margin="0,10,0,0" FontSize="24"><Run Text="{Binding Ratio}"/>
                                             </TextBlock>
                                         </Grid>
-                                        <base:Icon IconType="PieSingleSolid" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="30" Foreground="#2b20d9" Opacity=".1"/>
+                                        <base:Icon IconType="ReportDocument" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="30" Foreground="{DynamicResource ThemeBrush}" Opacity=".1"/>
                                     </Grid>
                                 </Border>
 

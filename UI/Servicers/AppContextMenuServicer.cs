@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 using UI.Controls.Charts.Model;
 using UI.ViewModels;
 
@@ -20,25 +21,38 @@ namespace UI.Servicers
         private readonly ICategorys categorys;
         private readonly IAppData appData;
         private readonly IAppConfig appConfig;
-
+        private readonly IThemeServicer theme;
         private ContextMenu menu;
         private MenuItem setCategory;
         private MenuItem setLink;
         MenuItem block = new MenuItem();
 
 
-        public AppContextMenuServicer(MainViewModel main, ICategorys categorys, IAppData appData, IAppConfig appConfig)
+        public AppContextMenuServicer(MainViewModel main, ICategorys categorys, IAppData appData, IAppConfig appConfig, IThemeServicer theme)
         {
             this.main = main;
             this.categorys = categorys;
             this.appData = appData;
             this.appConfig = appConfig;
+            this.theme = theme;
 
-            menu = new ContextMenu();
         }
 
         public void Init()
         {
+            CreateMenu();
+            theme.OnThemeChanged += Theme_OnThemeChanged;
+        }
+
+        private void CreateMenu()
+        {
+            if (menu != null)
+            {
+                menu.ContextMenuOpening -= SetCategory_ContextMenuOpening;
+
+                var test = VisualTreeHelper.GetParent(menu);
+            }
+            menu = new ContextMenu();
             menu.Items.Clear();
 
             MenuItem run = new MenuItem();
@@ -68,6 +82,13 @@ namespace UI.Servicers
             menu.Items.Add(block);
 
             menu.ContextMenuOpening += SetCategory_ContextMenuOpening;
+        }
+
+      
+
+        private void Theme_OnThemeChanged(object sender, EventArgs e)
+        {
+            menu.UpdateDefaultStyle();
         }
 
         private void Block_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -105,6 +126,10 @@ namespace UI.Servicers
 
         private void SetCategory_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
+            if (menu.Tag == null)
+            {
+                return;
+            }
             var data = menu.Tag as ChartsDataModel;
             var log = data.Data as DailyLogModel;
             var app = log != null ? log.AppModel : null;
@@ -207,7 +232,7 @@ namespace UI.Servicers
             }
             else
             {
-                main.Toast("关联配置不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                main.Toast("关联配置不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
             }
         }
         private void SetAppCategory(ChartsDataModel data, int appId, CategoryModel category)
@@ -258,7 +283,7 @@ namespace UI.Servicers
             }
             else
             {
-                main.Toast("应用文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                main.Toast("应用文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
             }
         }
 
@@ -282,7 +307,7 @@ namespace UI.Servicers
             }
             else
             {
-                main.Toast("应用文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.Blocked);
+                main.Toast("应用文件似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
             }
         }
 

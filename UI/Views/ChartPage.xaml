@@ -26,7 +26,7 @@
                 <base:View Condition="1" Value="{Binding TabbarSelectedIndex}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <select:Select  IsShowIcon="False" SelectedItem="{Binding SelectedWeek,Mode=TwoWay}" Options="{Binding WeekOptions}"/>
-                        <TextBlock Foreground="#626262" Margin="20,0,0,0" FontSize="14" Text="{Binding WeekDateStr}" VerticalAlignment="Center"/>
+                        <TextBlock Foreground="{DynamicResource DefaultTextBrush}" Margin="20,0,0,0" FontSize="14" Text="{Binding WeekDateStr}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </base:View>
                 <!--按月-->
@@ -42,7 +42,7 @@
             </Grid>
         </Border>
 
-        <Grid  Width="680" HorizontalAlignment="Left" Margin="0,20,0,0">
+        <Grid  Width="680" HorizontalAlignment="Left" Margin="0,5,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -54,14 +54,14 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Width="40" Height="40" CornerRadius="6">
+                    <Border Width="40" Height="40" CornerRadius="14">
                         <Border.Background>
                             <LinearGradientBrush>
-                                <GradientStop Offset="0" Color="#6c47ff"/>
-                                <GradientStop Color="#F4A7B9" Offset="1"/>
+                                <GradientStop Offset="0" Color="{DynamicResource ThemeColor}"/>
+                                <!--<GradientStop Color="#F4A7B9" Offset="1"/>-->
                             </LinearGradientBrush>
                         </Border.Background>
-                        <base:Icon IconType="SkypeCircleClock" Foreground="White"/>
+                        <base:Icon IconType="ScreenTime" Foreground="White"/>
                     </Border>
                     <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
                         <Grid.RowDefinitions>
@@ -83,14 +83,14 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border  Width="40" Height="40" CornerRadius="6">
+                    <Border  Width="40" Height="40" CornerRadius="14">
                         <Border.Background>
                             <LinearGradientBrush>
-                                <GradientStop Offset="0" Color="#00ffab"/>
-                                <GradientStop Color="#2b20d9" Offset="1"/>
+                                <GradientStop Offset="0" Color="{DynamicResource ThemeColor}"/>
+                                <!--<GradientStop Color="#2b20d9" Offset="1"/>-->
                             </LinearGradientBrush>
                         </Border.Background>
-                        <base:Icon IconType="MSNVideosSolid" Foreground="White"/>
+                        <base:Icon IconType="FavoriteStarFill" Foreground="White"/>
                     </Border>
                     <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
                         <Grid.RowDefinitions>
@@ -113,14 +113,14 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border  Width="40" Height="40" CornerRadius="6">
+                    <Border  Width="40" Height="40" CornerRadius="14">
                         <Border.Background>
                             <LinearGradientBrush>
-                                <GradientStop Offset="0" Color="red"/>
-                                <GradientStop Color="#E03C8A" Offset="1"/>
+                                <GradientStop Offset="0" Color="{DynamicResource ThemeColor}"/>
+                                <!--<GradientStop Color="#E03C8A" Offset="1"/>-->
                             </LinearGradientBrush>
                         </Border.Background>
-                        <base:Icon IconType="FlameSolid" Foreground="White"/>
+                        <base:Icon IconType="StockUp" Foreground="White"/>
                     </Border>
                     <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
                         <Grid.RowDefinitions>
@@ -159,7 +159,7 @@
                                         <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".05"/>
                                     </Border.Background>
                                     <StackPanel Orientation="Horizontal">
-                                        <base:Icon Foreground="{DynamicResource SubTextBrush}" IconType="Timer" VerticalAlignment="Center"/>
+                                        <base:Icon Foreground="{DynamicResource SubTextBrush}" IconType="DateTime" VerticalAlignment="Center"/>
                                         <TextBlock Foreground="{DynamicResource SubTextBrush}" VerticalAlignment="Center" Text="{Binding DayHoursSelectedTime}"  FontSize="13" Margin="5,0,0,0"/>
 
                                     </StackPanel>
