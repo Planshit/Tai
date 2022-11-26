@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 using UI.Controls.Models;
 using UI.Models;
@@ -138,6 +140,8 @@ namespace UI.Controls
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
             PageCache = new Dictionary<string, PageModel>();
+
+            CreateAnimations();
         }
 
 
@@ -148,9 +152,15 @@ namespace UI.Controls
             ScrollViewer = GetTemplateChild("ScrollViewer") as ScrollViewer;
             Frame = GetTemplateChild("Frame") as Frame;
             Frame.NavigationService.Navigated += NavigationService_Navigated;
-
+            Frame.NavigationService.LoadCompleted += NavigationService_LoadCompleted;
             Loaded += PageContainer_Loaded;
         }
+
+        private void NavigationService_LoadCompleted(object sender, NavigationEventArgs e)
+        {
+            animation.Begin();
+        }
+
         private void NavigationService_Navigated(object sender, NavigationEventArgs e)
         {
             Frame.NavigationService.RemoveBackEntry();
@@ -312,6 +322,49 @@ namespace UI.Controls
             Content = null;
             DataContext = null;
             Instance = null;
+        }
+
+        private Storyboard animation;
+        private void CreateAnimations()
+        {
+            ClipToBounds = true;
+
+            ScaleTransform scaleTransform = new ScaleTransform();
+            TranslateTransform translateTransform = new TranslateTransform();
+
+            TransformGroup tfg = new TransformGroup();
+            tfg.Children.Add(scaleTransform);
+            tfg.Children.Add(translateTransform);
+            RenderTransform = tfg;
+            RenderTransformOrigin = new Point(.5, .5);
+
+            animation = new Storyboard();
+
+            DoubleAnimation scrollAnimation = new DoubleAnimation();
+            scrollAnimation.From = 50;
+            scrollAnimation.To = 0;
+            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.14));
+
+            Storyboard.SetTarget(scrollAnimation, this);
+            Storyboard.SetTargetProperty(scrollAnimation, new PropertyPath("RenderTransform.Children[1].Y"));
+            animation.Children.Add(scrollAnimation);
+            //DoubleAnimation scaleXAnimation = new DoubleAnimation();
+            //scaleXAnimation.From = .8;
+            //scaleXAnimation.To = 1;
+            //scaleXAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.14));
+
+            //DoubleAnimation scaleYAnimation = new DoubleAnimation();
+            //scaleYAnimation.From = .8;
+            //scaleYAnimation.To = 1;
+            //scaleYAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.14));
+
+            //Storyboard.SetTarget(scaleXAnimation, this);
+            //Storyboard.SetTargetProperty(scaleXAnimation, new PropertyPath("RenderTransform.Children[0].ScaleX"));
+            //Storyboard.SetTarget(scaleYAnimation, this);
+            //Storyboard.SetTargetProperty(scaleYAnimation, new PropertyPath("RenderTransform.Children[0].ScaleY"));
+
+            //animation.Children.Add(scaleXAnimation);
+            //animation.Children.Add(scaleYAnimation);
         }
     }
 }
