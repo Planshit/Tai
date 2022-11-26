@@ -127,11 +127,15 @@ namespace UI.Servicers
         /// </summary>
         private void UpdateThemeColor()
         {
+
             var config = appConfig.GetConfig();
             if (string.IsNullOrEmpty(config.General.ThemeColor))
             {
+                StateData.ThemeColor = ((System.Windows.Media.Color)Application.Current.Resources["ThemeColor"]).ToString();
                 return;
             }
+
+            StateData.ThemeColor = config.General.ThemeColor;
             Application.Current.Resources["ThemeColor"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(config.General.ThemeColor);
             Application.Current.Resources["ThemeBrush"] = UI.Base.Color.Colors.GetFromString(config.General.ThemeColor);
         }

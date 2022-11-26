@@ -276,8 +276,9 @@ namespace UI.Controls.Charts
                 var dataPoint = new Ellipse();
                 dataPoint.Width = 5;
                 dataPoint.Height = 5;
-                dataPoint.Fill = UI.Base.Color.Colors.GetFromString("#2b20d9");
-                dataPoint.Stroke = UI.Base.Color.Colors.GetFromString("#2b20d9");
+
+                dataPoint.Fill = UI.Base.Color.Colors.GetFromString(StateData.ThemeColor);
+                dataPoint.Stroke = UI.Base.Color.Colors.GetFromString(StateData.ThemeColor);
                 dataPoint.StrokeThickness = 1;
                 Canvas.SetLeft(dataPoint, x - dataPoint.Width / 2);
                 Canvas.SetTop(dataPoint, y - dataPoint.Width / 2);
@@ -285,8 +286,8 @@ namespace UI.Controls.Charts
             }
 
             var p = new Polygon();
-            p.Stroke = UI.Base.Color.Colors.GetFromString("#2b20d9");
-            p.Fill = UI.Base.Color.Colors.GetFromString("#2b20d9", .3);
+            p.Stroke = UI.Base.Color.Colors.GetFromString(StateData.ThemeColor);
+            p.Fill = UI.Base.Color.Colors.GetFromString(StateData.ThemeColor, .3);
             p.StrokeThickness = 1;
             p.HorizontalAlignment = HorizontalAlignment.Left;
             p.VerticalAlignment = VerticalAlignment.Center;

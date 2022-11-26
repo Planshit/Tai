@@ -6,7 +6,7 @@
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
 
-        <Setter Property="Background" Value="{DynamicResource StandardBackgroundBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource SettingPanelBgBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource SettingPanelBorderBrush}"/>
         <Setter Property="SpliteLineBrush" Value="{DynamicResource SettingPanelSpliteLineBrush}"/>
         <Setter Property="Template">

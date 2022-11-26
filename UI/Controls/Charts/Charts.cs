@@ -724,7 +724,10 @@ namespace UI.Controls.Charts
 
             isRendering = false;
             var searchBox = GetTemplateChild("ASearchBox") as InputBox;
-            searchBox.TextChanged += SearchBox_TextChanged;
+            if(searchBox != null)
+            {
+                searchBox.TextChanged += SearchBox_TextChanged;
+            }
 
             _listView.MouseLeftButtonUp += _listView_MouseLeftButtonUp;
             _listView.MouseRightButtonUp += _listView_MouseRightButtonUp;

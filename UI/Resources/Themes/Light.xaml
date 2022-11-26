@@ -39,6 +39,8 @@
     <SolidColorBrush x:Key="NavUnselectedTextBrush" Color="{StaticResource NavUnselectedTextColor}" />
     
     <!--设置面板-->
+    <Color x:Key="SettingPanelBgColor">#ffffff</Color>
+    <SolidColorBrush x:Key="SettingPanelBgBrush" Color="{StaticResource SettingPanelBgColor}" />
     <Color x:Key="SettingPanelBorderColor">#ededed</Color>
     <SolidColorBrush x:Key="SettingPanelBorderBrush" Color="{StaticResource SettingPanelBorderColor}" />
     <Color x:Key="SettingPanelSpliteLineColor">#ededed</Color>

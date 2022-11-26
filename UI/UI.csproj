@@ -203,6 +203,7 @@
     <Compile Include="Servicers\IThemeServicer.cs" />
     <Compile Include="Servicers\MainServicer.cs" />
     <Compile Include="Servicers\ThemeServicer.cs" />
+    <Compile Include="StateData.cs" />
     <Compile Include="ViewModels\CategoryAppListPageVM.cs" />
     <Compile Include="ViewModels\CategoryPageVM.cs" />
     <Compile Include="ViewModels\ChartPageVM.cs" />
