@@ -53,17 +53,24 @@ namespace UI.ViewModels
                 Name = "上周"
             });
 
-            var chartDataModeOptions = new List<SelectItemModel>();
-            chartDataModeOptions.Add(new SelectItemModel()
+            var chartDataModeOptions = new List<SelectItemModel>
             {
-                Id = 1,
-                Name = "分类",
-            });
-            chartDataModeOptions.Add(new SelectItemModel()
-            {
-                Id = 2,
-                Name = "汇总"
-            });
+                new SelectItemModel()
+                {
+                    Id = 1,
+                    Name = "默认视图",
+                },
+                new SelectItemModel()
+                {
+                    Id = 2,
+                    Name = "汇总视图"
+                },
+                new SelectItemModel()
+                {
+                    Id = 3,
+                    Name = "分类视图"
+                }
+            };
 
             ChartDataModeOptions = chartDataModeOptions;
             ChartDataMode = chartDataModeOptions[0];
@@ -156,6 +163,14 @@ namespace UI.ViewModels
             }
             if (e.PropertyName == nameof(ChartDataMode))
             {
+                if (ChartDataMode.Id == 1)
+                {
+                    IsChartStack = true;
+                }
+                else
+                {
+                    IsChartStack = false;
+                }
                 LoadData();
             }
         }
@@ -231,7 +246,7 @@ namespace UI.ViewModels
                         chartData.Add(dataItem);
                     }
                 }
-                if (ChartDataMode.Id == 1)
+                if (ChartDataMode.Id == 1 || ChartDataMode.Id == 3)
                 {
                     Data = chartData;
                 }
@@ -308,7 +323,7 @@ namespace UI.ViewModels
                     }
                 }
 
-                if (ChartDataMode.Id == 1)
+                if (ChartDataMode.Id == 1 || ChartDataMode.Id == 3)
                 {
                     Data = chartData;
                 }
@@ -384,7 +399,7 @@ namespace UI.ViewModels
                         chartData.Add(dataItem);
                     }
                 }
-                if (ChartDataMode.Id == 1)
+                if (ChartDataMode.Id == 1 || ChartDataMode.Id == 3)
                 {
                     Data = chartData;
                 }
@@ -463,7 +478,7 @@ namespace UI.ViewModels
 
 
 
-                if (ChartDataMode.Id == 1)
+                if (ChartDataMode.Id == 1 || ChartDataMode.Id == 3)
                 {
                     Data = chartData;
                 }

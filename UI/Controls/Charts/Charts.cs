@@ -456,6 +456,24 @@ namespace UI.Controls.Charts
                 new PropertyMetadata((double)0)
                 );
 
+        #region 是否以堆叠的形式展示（仅柱状图有效）
+        /// <summary>
+        /// 是否以堆叠的形式展示（仅柱状图有效）
+        /// </summary>
+        public bool IsStack
+        {
+            get { return (bool)GetValue(IsStackProperty); }
+            set { SetValue(IsStackProperty, value); }
+        }
+        public static readonly DependencyProperty IsStackProperty =
+            DependencyProperty.Register("IsStack",
+                typeof(bool),
+                typeof(Charts),
+                new PropertyMetadata(false, new PropertyChangedCallback(OnPropertyChanged)));
+
+
+        #endregion
+
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var charts = (d as Charts);
@@ -1097,8 +1115,17 @@ namespace UI.Controls.Charts
 
             double total = 0;
             //  查找最大值
+            int colValueCount = Data.FirstOrDefault().Values.Length;
+            double[] tempValueArr = new double[colValueCount];
+
             foreach (var item in Data)
             {
+
+                for (int i = 0; i < colValueCount; i++)
+                {
+                    tempValueArr[i] += item.Values[i];
+                }
+
                 //  查找最大值
                 double max = item.Values.Max();
                 if (max > maxValue)
@@ -1113,6 +1140,13 @@ namespace UI.Controls.Charts
             if (DataMaximum > 0)
             {
                 maxValue = DataMaximum;
+            }
+            else
+            {
+                if (IsStack)
+                {
+                    maxValue = tempValueArr.Max();
+                }
             }
             if (maxValue == 0)
             {
@@ -1205,8 +1239,11 @@ namespace UI.Controls.Charts
                         colValueRect.Width = colValueRectWidth;
                         colValueRect.Height = value / maxValue * canvasHeight;
                         colValueRect.Fill = UI.Base.Color.Colors.GetFromString(colColor);
-                        colValueRect.RadiusX = 4;
-                        colValueRect.RadiusY = 4;
+                        if (!IsStack)
+                        {
+                            colValueRect.RadiusX = 4;
+                            colValueRect.RadiusY = 4;
+                        }
                         Canvas.SetLeft(colValueRect, i * columnBorderWidth + margin);
                         Canvas.SetBottom(colValueRect, colNameHeight);
 
@@ -1264,7 +1301,20 @@ namespace UI.Controls.Charts
                 for (int i = 0; i < rectList.Count; i++)
                 {
                     var rect = rectList[i];
-                    Panel.SetZIndex(rect, i);
+                    if (IsStack)
+                    {
+                        double marginBottom = 0;
+                        if (i > 0)
+                        {
+                            var lastRect = rectList[i - 1];
+                            marginBottom = Canvas.GetBottom(lastRect) + lastRect.Height;
+                            Canvas.SetBottom(rect, marginBottom);
+                        }
+                    }
+                    else
+                    {
+                        Panel.SetZIndex(rect, i);
+                    }
                 }
             }
 
@@ -1319,6 +1369,35 @@ namespace UI.Controls.Charts
             midValueLine.Y2 = midY;
             _typeColumnCanvas.Children.Add(midValueLine);
 
+
+            //  平均
+            double avg = tempValueArr.Average();
+            double avgY = (avg) / maxValue * canvasHeight;
+
+            var avgValueText = new TextBlock();
+            avgValueText.Text = Covervalue(avg);
+            avgValueText.FontSize = 12;
+            avgValueText.Foreground = UI.Base.Color.Colors.GetFromString(StateData.ThemeColor);
+            avgValueText.ToolTip = "平均值";
+
+            var avgValueTextSize = UIHelper.MeasureString(avgValueText);
+            Panel.SetZIndex(avgValueText, 1000);
+            Canvas.SetRight(avgValueText, 0);
+            Canvas.SetBottom(avgValueText, avgY + colNameHeight - avgValueTextSize.Height / 2);
+            _typeColumnCanvas.Children.Add(avgValueText);
+
+            var avgValueLine = new Line();
+            avgValueLine.Stroke = UI.Base.Color.Colors.GetFromString(StateData.ThemeColor);
+            avgValueLine.StrokeDashArray = new DoubleCollection() { 2, 5 };
+            avgValueLine.StrokeThickness = 1;
+            avgValueLine.X1 = colNameBottomMargin;
+            avgValueLine.X2 = canvasWidth - colNameBottomMargin - (avgValueTextSize.Width);
+            avgValueLine.Y1 = canvasHeight - avgY + colNameBottomMargin + avgValueLine.StrokeThickness;
+            avgValueLine.Y2 = canvasHeight - avgY + colNameBottomMargin + avgValueLine.StrokeThickness;
+            //avgValueLine.Width = canvasWidth;
+            //avgValueLine.Height = 10;
+            //Canvas.SetBottom(avgValueLine, avgY + colNameHeight);
+            _typeColumnCanvas.Children.Add(avgValueLine);
 
             //  组装分类统计数据
             var infoList = new List<ChartColumnInfoModel>();

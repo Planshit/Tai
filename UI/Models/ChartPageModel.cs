@@ -129,5 +129,10 @@ namespace UI.Models
         /// 雷达图数据
         /// </summary>
         public List<ChartsDataModel> RadarData { get { return RadarData_; } set { RadarData_ = value; OnPropertyChanged(); } }
+        private bool IsChartStack_ = true;
+        /// <summary>
+        /// 是否以堆叠形式展示
+        /// </summary>
+        public bool IsChartStack { get { return IsChartStack_; } set { IsChartStack_ = value; OnPropertyChanged(); } }
     }
 }

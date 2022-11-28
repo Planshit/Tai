@@ -151,7 +151,7 @@
                 <Border Grid.Row="1" Margin="0,20,0,0"  Width="680" HorizontalAlignment="Left" Background="{DynamicResource SettingPanelBgBrush}" Padding="20" CornerRadius="10">
                     <StackPanel >
                         <select:Select Height="30" IsShowIcon="False" SelectedItem="{Binding ChartDataMode,Mode=TwoWay}" Options="{Binding ChartDataModeOptions}"/>
-                        <charts:Charts Height="310" ColumnSelectedIndex="{Binding ColumnSelectedIndex,Mode=TwoWay}" IsShowTotal="False" DataMaximum="{Binding DataMaximum}" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}" IsCanColumnSelect="{Binding IsCanColumnSelect}"/>
+                        <charts:Charts IsStack="{Binding IsChartStack}" Height="310" ColumnSelectedIndex="{Binding ColumnSelectedIndex,Mode=TwoWay}" IsShowTotal="False" DataMaximum="{Binding DataMaximum}" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}" IsCanColumnSelect="{Binding IsCanColumnSelect}"/>
                         <base:View Value="{Binding DayHoursSelectedTime}" Condition="not empty">
                             <StackPanel>
                                 <Border   Margin="0,10,0,5" HorizontalAlignment="Left" Padding="10" CornerRadius="10">

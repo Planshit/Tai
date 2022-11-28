@@ -103,7 +103,7 @@
                                         PlacementTarget="{TemplateBinding ValuesPopupPlacementTarget}"
                                         HorizontalOffset="{TemplateBinding ValuesPopupHorizontalOffset}">
                                         <Border
-                                        Background="White"
+                                        Background="{DynamicResource PopupBackgroundBrush}"
                                         CornerRadius="12"
                                         Padding="10"
                                         Margin="10">
@@ -116,8 +116,8 @@
                       Width="15"
                       Height="15"
                       SnapsToDevicePixels="False"
-                      Data="M 0 0 L 7.5 7.5 L 15 0" Fill="White"
-                                        Stroke="White"
+                      Data="M 0 0 L 7.5 7.5 L 15 0" Fill="{DynamicResource PopupBackgroundBrush}"
+                                        Stroke="{DynamicResource PopupBackgroundBrush}"
                                         StrokeThickness="1"
                                         VerticalAlignment="Bottom"
                                         HorizontalAlignment="Left"
@@ -144,7 +144,7 @@
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
                                                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="White" Margin="0" CornerRadius="10">
+                                                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Margin="0" CornerRadius="10">
 
                                                                             <ContentPresenter/>
                                                                         </Border>
@@ -176,11 +176,11 @@
 
                                                                     <Border Grid.Column="1" Margin="5,0,0,0">
                                                                         <!--名称-->
-                                                                        <TextBlock Foreground="#3d3d3d" VerticalAlignment="Center" Text="{Binding Name}" FontSize="12"/>
+                                                                        <TextBlock Foreground="{DynamicResource DefaultTextBrush}" VerticalAlignment="Center" Text="{Binding Name}" FontSize="12"/>
                                                                     </Border>
                                                                     <Border Grid.Column="2">
                                                                         <!--总计和百分比-->
-                                                                        <TextBlock FontSize="12" Margin="5,0,0,0" Foreground="#FF8A8A8A" VerticalAlignment="Center" Text="{Binding Text}"/>
+                                                                        <TextBlock FontSize="12" Margin="5,0,0,0" Foreground="{DynamicResource SubTextBrush}" VerticalAlignment="Center" Text="{Binding Text}"/>
 
                                                                     </Border>
 
