@@ -78,6 +78,10 @@ namespace Core.Servicers.Instances
         /// 配置忽略进程名称列表
         /// </summary>
         private List<string> ConfigIgnoreProcessList;
+        //  更新应用日期
+        private DateTime updadteAppDateTime_ = DateTime.Now.Date;
+        //  已经更新过的应用列表
+        private List<string> updatedAppList = new List<string>();
         public Main(
             IObserver observer,
             IData data,
@@ -274,6 +278,31 @@ namespace Core.Servicers.Instances
                     CategoryID = 0,
                     IconFile = iconFile,
                 });
+            }
+            else
+            {
+                if (updadteAppDateTime_ != DateTime.Now.Date)
+                {
+                    updadteAppDateTime_ = DateTime.Now.Date;
+                    updatedAppList.Clear();
+                }
+
+                if (!updatedAppList.Contains(processName))
+                {
+                    //  更新应用信息
+                    app.IconFile = Iconer.ExtractFromFile(file, processName, description);
+
+                    if (app.Description != description)
+                    {
+                        app.Description = description;
+                    }
+                    if (app.File != file)
+                    {
+                        app.File = file;
+                    }
+                    appData.UpdateApp(app);
+                    updatedAppList.Add(processName);
+                }
             }
 
             return true;
