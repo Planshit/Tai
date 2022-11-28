@@ -730,7 +730,37 @@ namespace UI.Controls.Charts
                 var h = ActualHeight - header.ActualHeight;
 
                 _listView.Height = h;
+
+                if (!IsCanScroll && double.IsNaN(Height))
+                {
+                    //  显示全部内容
+                    var item = GetChild<ChartsItemTypeA>(this) as ChartsItemTypeA;
+                    if (item != null)
+                    {
+                        double height = item.ActualHeight + item.Margin.Top + item.Margin.Bottom;
+
+                        _listView.Height = height * _listView.Items.Count;
+                    }
+                }
             }
+        }
+        private DependencyObject GetChild<T>(DependencyObject e) where T : DependencyObject
+        {
+            if (e == null)
+            {
+                return e;
+            }
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(e); i++)
+            {
+                var c = VisualTreeHelper.GetChild(e, i);
+
+                var result = c as T ?? GetChild<T>(c);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            return null;
         }
         private void RenderHorizontalAStyle()
         {

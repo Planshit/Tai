@@ -69,9 +69,9 @@
                                 </ListBox.ItemsPanel>
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <VirtualizingStackPanel>
+                                        <Border>
                                             <local:ChartsItemTypeA Data="{Binding}" MaxValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=DataMaxValue}" IsShowBadge="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=IsShowBadge}"/>
-                                        </VirtualizingStackPanel>
+                                        </Border>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
