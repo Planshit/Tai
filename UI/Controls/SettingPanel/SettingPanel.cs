@@ -484,6 +484,14 @@ namespace UI.Controls.SettingPanel
             {
                 listControl.Items.Remove(listControl.SelectedItem);
             };
+            var contextMenuItemCopy = new MenuItem();
+            contextMenuItemCopy.Header = "复制内容";
+            contextMenuItemCopy.Click += (e, c) =>
+            {
+                Clipboard.SetText(listControl.SelectedItem);
+            };
+            contextMenu.Items.Add(contextMenuItemCopy);
+            contextMenu.Items.Add(new Separator());
             contextMenu.Items.Add(contextMenuItemDel);
             listControl.ContextMenu = contextMenu;
 

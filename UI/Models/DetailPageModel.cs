@@ -161,5 +161,10 @@ namespace UI.Models
         /// 关联的应用
         /// </summary>
         public List<AppModel> LinkApps { get { return LinkApps_; } set { LinkApps_ = value; OnPropertyChanged(); } }
+        private bool IsRegexIgnore_;
+        /// <summary>
+        /// 是否已被正则忽略
+        /// </summary>
+        public bool IsRegexIgnore { get { return IsRegexIgnore_; } set { IsRegexIgnore_ = value; OnPropertyChanged(); } }
     }
 }

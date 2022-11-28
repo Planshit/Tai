@@ -254,10 +254,9 @@ namespace Core.Servicers.Instances
             //  正则表达式
             foreach (string reg in ConfigIgnoreProcessRegxList)
             {
-                if (Regex.IsMatch(processName, reg))
+                if (RegexHelper.IsMatch(processName, reg) || RegexHelper.IsMatch(file, reg))
                 {
                     IgnoreProcessCacheList.Add(processName);
-
                     return false;
                 }
             }

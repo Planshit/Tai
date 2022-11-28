@@ -56,13 +56,22 @@
                             <TextBlock ToolTip="进程名" Text="{Binding ProcessName}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
                         </StackPanel>-->
-                    <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该应用将不再统计使用时长">
-                        <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
-                            <base:Icon IconType="StatusCircleBlock" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="已被忽略" Foreground="White" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                        </StackPanel>
-                    </Border>
-
+                    <base:View Condition="=false" Value="{Binding IsRegexIgnore}">
+                        <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该应用将不再统计使用时长">
+                            <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                                <base:Icon IconType="StatusCircleBlock" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
+                                <TextBlock Text="已被忽略" Foreground="White" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </base:View>
+                    <base:View Value="{Binding IsRegexIgnore}">
+                        <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" ToolTip="该应用将不再统计使用时长">
+                            <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
+                                <base:Icon IconType="StatusCircleBlock" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
+                                <TextBlock Text="已被正则忽略匹配" Foreground="White" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </base:View>
                     <TextBlock ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
 
                     <TextBlock ToolTip="应用进程名称" Text="{Binding App.Name}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
@@ -85,12 +94,13 @@
 
                 </StackPanel>
                 <Grid Grid.Column="2">
-                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,20,0">
+                    <base:View Grid.Column="2" Condition="=false" Value="{Binding IsRegexIgnore}">
+                    <StackPanel  HorizontalAlignment="Right" Margin="0,0,20,0">
                         <btn:Button Command="{Binding BlockActionCommand}" CommandParameter="block" Width="120" Visibility="{Binding BlockBtnVisibility}" Icon="StatusCircleBlock">忽略此应用</btn:Button>
                         <btn:Button Command="{Binding BlockActionCommand}"  CommandParameter="unblock" Width="120" Visibility="{Binding CancelBlockBtnVisibility}" Icon="Remove">取消忽略</btn:Button>
 
                     </StackPanel>
-
+                    </base:View>
                     <ItemsControl Margin="0,20,10,0"  VerticalAlignment="Bottom"  ItemsSource="{Binding LinkApps}" HorizontalAlignment="Right">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using UI.Controls;
@@ -98,7 +99,19 @@ namespace UI.ViewModels
             LoadDayData();
 
             inputServicer.OnKeyUpInput += InputServicer_OnKeyUpInput;
+
+            //  判断正则忽略
+            var regexList = config.Behavior.IgnoreProcessList.Where(m => Regex.IsMatch(m, @"[\.|\*|\?|\{|\\|\[|\^|\|]"));
+            foreach (string reg in regexList)
+            {
+                if (RegexHelper.IsMatch(App.Name, reg) || RegexHelper.IsMatch(App.File, reg))
+                {
+                    IsRegexIgnore = true;
+                    break;
+                }
+            }
         }
+
 
         private async void InputServicer_OnKeyUpInput(object sender, System.Windows.Forms.Keys key)
         {
