@@ -31,9 +31,9 @@
         <TextBlock Text="概览" FontSize="18" Margin="0,5,0,20"/>
         <Tabbar:Tabbar Width="100" HorizontalAlignment="Left" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
         <TextBlock Text="最为频繁" FontSize="15" Margin="0,20,0,10"/>
-        <Charts:Charts IsCanScroll="False" Height="180" Data="{Binding WeekData}" ChartsType="HorizontalA" ShowLimit="3" IsLoading="{Binding IsLoading,Mode=TwoWay}"  ClickCommand="{Binding ToDetailCommand}" ItemMenu="{Binding AppContextMenu}"/>
+        <Charts:Charts IsCanScroll="False"  Data="{Binding WeekData}" ChartsType="HorizontalA" ShowLimit="{Binding FrequentUseNum}" IsLoading="{Binding IsLoading,Mode=TwoWay}"  ClickCommand="{Binding ToDetailCommand}" ItemMenu="{Binding AppContextMenu}"/>
         <TextBlock Text="更多" FontSize="15" Margin="0,20,0,10"/>
-        <Charts:Charts Data="{Binding WeekData}"  ItemMenu="{Binding AppContextMenu}" ChartsType="Card" ShowLimit="12" IsLoading="{Binding IsLoading,Mode=TwoWay}" ClickCommand="{Binding ToDetailCommand}"/>
+        <Charts:Charts Data="{Binding WeekData}"  ItemMenu="{Binding AppContextMenu}" ChartsType="Card" ShowLimit="{Binding MoreNum}" IsLoading="{Binding IsLoading,Mode=TwoWay}" ClickCommand="{Binding ToDetailCommand}"/>
 
 
     </StackPanel>

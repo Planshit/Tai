@@ -28,14 +28,16 @@ namespace UI.ViewModels
         private readonly IMain mainServicer;
         private readonly IAppContextMenuServicer appContextMenuServicer;
         private readonly IInputServicer inputServicer;
+        private readonly IAppConfig appConfig;
         public IndexPageVM(
-            IData data, MainViewModel main, IMain mainServicer, IAppContextMenuServicer appContextMenuServicer, IInputServicer inputServicer)
+            IData data, MainViewModel main, IMain mainServicer, IAppContextMenuServicer appContextMenuServicer, IInputServicer inputServicer, IAppConfig appConfig)
         {
             this.data = data;
             this.main = main;
             this.mainServicer = mainServicer;
             this.appContextMenuServicer = appContextMenuServicer;
             this.inputServicer = inputServicer;
+            this.appConfig = appConfig;
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
             RefreshCommand = new Command(new Action<object>(OnRefreshCommand));
@@ -58,22 +60,21 @@ namespace UI.ViewModels
         {
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "上周","本周"
+                "今日","本周"
             };
 
-            TabbarSelectedIndex = 1;
-
-            PropertyChanged += IndexPageVM_PropertyChanged;
-            LoadThisWeekData();
-
+            TabbarSelectedIndex = 0;
             AppContextMenu = appContextMenuServicer.GetContextMenu();
 
+            PropertyChanged += IndexPageVM_PropertyChanged;
             inputServicer.OnKeyUpInput += InputServicer_OnKeyUpInput;
+
+            LoadData();
         }
 
         private void InputServicer_OnKeyUpInput(object sender, System.Windows.Forms.Keys key)
         {
-            if(key== System.Windows.Forms.Keys.F5)
+            if (key == System.Windows.Forms.Keys.F5)
             {
                 //  重新加载数据
                 LoadData();
@@ -113,31 +114,44 @@ namespace UI.ViewModels
                 return;
             }
 
-            if (TabbarSelectedIndex == 1)
+            FrequentUseNum = appConfig.GetConfig().General.IndexPageFrequentUseNum + 1;
+            MoreNum = appConfig.GetConfig().General.IndexPageMoreNum + 1;
+
+            if (TabbarSelectedIndex == 0)
+            {
+                LoadTodayData();
+            }
+            else if (TabbarSelectedIndex == 1)
             {
                 LoadThisWeekData();
             }
-            else
-            {
-                LoadLastWeekData();
-            }
+            //else
+            //{
+            //    LoadLastWeekData();
+            //}
         }
+
+        #region 今日数据
+        private void LoadTodayData()
+        {
+            IsLoading = true;
+
+            Task.Run(() =>
+            {
+                var list = data.GetDateRangelogList(DateTime.Now.Date, DateTime.Now.Date);
+                var res = MapToChartsData(list);
+                IsLoading = false;
+                WeekData = res;
+            });
+
+
+
+        }
+        #endregion
 
         #region 本周数据
         private void LoadThisWeekData()
         {
-            //IsLoading = true;
-
-            //var task = Task.Run(() =>
-            // {
-            //     var list = data.GetThisWeeklogList();
-            //     var res = MapToChartsData(list);
-            //     IsLoading = false;
-            //     return res;
-
-            // });
-
-            //WeekData = await task;
             IsLoading = true;
 
             Task.Run(() =>

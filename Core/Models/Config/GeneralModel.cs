@@ -40,5 +40,21 @@ namespace Core.Models.Config
         /// 窗口高度
         /// </summary>
         public double WindowHeight { get; set; } = 585;
+
+        /// <summary>
+        /// 启动页选择
+        /// </summary>
+        [Config(Options = "概览|统计|详细|分类", Name = "启动页", Description = "设置打开主界面时显示的页面", Group = "基础")]
+        public int StartPage { get; set; } = 0;
+        /// <summary>
+        /// 概览页最为频繁显示条数
+        /// </summary>
+        [Config(Options = "1|2|3|4|5|6|7|8|9|10", Name = "最为频繁显示条数", Description = "", Group = "概览页")]
+        public int IndexPageFrequentUseNum { get; set; } = 2;
+        /// <summary>
+        /// 概览页最为频繁显示条数
+        /// </summary>
+        [Config(Options = "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20", Name = "更多显示条数", Description = "", Group = "概览页")]
+        public int IndexPageMoreNum { get; set; } = 11;
     }
 }

@@ -259,7 +259,7 @@ namespace UI
             keepaliveWindow = new HideWindow();
         }
 
-     
+
 
         private void ShowMainWindow()
         {
@@ -271,8 +271,7 @@ namespace UI
                 mainWindow = serviceProvider.GetService<MainWindow>();
 
                 mainWindow.DataContext = dataContext;
-                dataContext.SelectGroup(-1);
-                dataContext.Uri = nameof(IndexPage);
+                dataContext.LoadDefaultPage();
             }
 
             mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;

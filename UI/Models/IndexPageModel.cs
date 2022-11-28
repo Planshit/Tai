@@ -51,5 +51,17 @@ namespace UI.Models
 
         private ContextMenu AppContextMenu_;
         public ContextMenu AppContextMenu { get { return AppContextMenu_; } set { AppContextMenu_ = value; OnPropertyChanged(); } }
+
+        private int FrequentUseNum_;
+        /// <summary>
+        /// 最为频繁条数
+        /// </summary>
+        public int FrequentUseNum { get { return FrequentUseNum_; } set { FrequentUseNum_ = value; OnPropertyChanged(); } }
+        private int MoreNum_;
+        /// <summary>
+        /// 更多条数
+        /// </summary>
+        public int MoreNum { get { return MoreNum_; } set { MoreNum_ = value; OnPropertyChanged(); } }
+
     }
 }

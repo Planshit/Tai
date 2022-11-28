@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Servicers.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,18 +16,22 @@ namespace UI.ViewModels
     public class MainViewModel : MainWindowModel
     {
         private readonly IServiceProvider serviceProvider;
-
+        private readonly IAppConfig appConfig;
         public Command OnSelectedCommand { get; set; }
         public Command GotoPageCommand { get; set; }
 
+        private string[] pages = { nameof(IndexPage), nameof(ChartPage), nameof(DataPage), nameof(CategoryPage) };
         public MainViewModel(
-            IServiceProvider serviceProvider
+            IServiceProvider serviceProvider,
+            IAppConfig appConfig,
+            IMain main
             )
         {
             this.serviceProvider = serviceProvider;
+            this.appConfig = appConfig;
 
             ServiceProvider = serviceProvider;
-            Uri = nameof(IndexPage);
+
             OnSelectedCommand = new Command(new Action<object>(OnSelectedCommandHandle));
             GotoPageCommand = new Command(new Action<object>(OnGotoPageCommand));
 
@@ -37,6 +42,8 @@ namespace UI.ViewModels
 
             InitNavigation();
         }
+
+
 
         private void MainViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -49,9 +56,11 @@ namespace UI.ViewModels
             }
         }
 
-        public void SelectGroup(int ID)
+        public void LoadDefaultPage()
         {
-            NavSelectedItem = Items.Where(m => m.ID == ID).FirstOrDefault();
+            int startPageIndex = appConfig.GetConfig().General.StartPage;
+            NavSelectedItem = Items[startPageIndex];
+            Uri = NavSelectedItem.Uri;
         }
 
 
@@ -71,11 +80,7 @@ namespace UI.ViewModels
         private void InitNavigation()
         {
             IndexUriList = new List<string>();
-            IndexUriList.Add(nameof(IndexPage));
-            IndexUriList.Add(nameof(DataPage));
-            IndexUriList.Add(nameof(CategoryPage));
-            IndexUriList.Add(nameof(ChartPage));
-
+            IndexUriList.AddRange(pages);
 
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
@@ -89,7 +94,7 @@ namespace UI.ViewModels
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
                 UnSelectedIcon = Controls.Base.IconTypes.ZeroBars,
-                SelectedIcon= IconTypes.FourBars,
+                SelectedIcon = IconTypes.FourBars,
                 Title = "统计",
                 ID = 1,
                 Uri = nameof(ChartPage),
@@ -98,7 +103,7 @@ namespace UI.ViewModels
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
                 UnSelectedIcon = Controls.Base.IconTypes.Calendar,
-                SelectedIcon= IconTypes.CalendarSolid,
+                SelectedIcon = IconTypes.CalendarSolid,
                 //Icon = Controls.Base.IconTypes.BIDashboard,
                 Title = "详细",
                 ID = 2,
@@ -108,13 +113,12 @@ namespace UI.ViewModels
             Items.Add(new Controls.Navigation.Models.NavigationItemModel()
             {
                 UnSelectedIcon = Controls.Base.IconTypes.EndPoint,
-                SelectedIcon= IconTypes.EndPointSolid,
+                SelectedIcon = IconTypes.EndPointSolid,
                 Title = "分类",
                 ID = 3,
                 Uri = nameof(CategoryPage),
 
             });
-            NavSelectedItem = Items[0];
         }
 
         public void Toast(string content, ToastType type = ToastType.Info, IconTypes icon = IconTypes.Accept)
