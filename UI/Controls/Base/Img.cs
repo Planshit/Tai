@@ -33,6 +33,17 @@ namespace UI.Controls.Base
                 typeof(CornerRadius),
                 typeof(Img));
 
+        public string Src
+        {
+            get { return (string)GetValue(SrcProperty); }
+            set { SetValue(SrcProperty, value); }
+        }
+        public static readonly DependencyProperty SrcProperty =
+            DependencyProperty.Register("Src",
+                typeof(string),
+                typeof(Img), new PropertyMetadata("pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png", new PropertyChangedCallback(OnPropertyChanged)));
+
+
 
         /// <summary>
         /// 图片链接
@@ -50,29 +61,32 @@ namespace UI.Controls.Base
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (d as Img);
-            if (e.Property == URLProperty && e.OldValue != e.NewValue)
+            if (e.Property == URLProperty && e.OldValue != e.NewValue && e.NewValue != null)
             {
-                control.Handle();
+                control.Handle(e.NewValue.ToString());
             }
         }
-      
+
         public Img()
         {
             DefaultStyleKey = typeof(Img);
-
         }
 
-        private void Handle()
+        private void Handle(string path)
         {
-            if (URL != null && URL.Length > 8 && URL.Substring(0, 8) == "AppIcons")
+            if (path != null && path.Length > 8 && path.Substring(0, 8) == "AppIcons")
             {
-                URL = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, URL);
+                Src = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
             }
-            if (URL == null || (URL.IndexOf("pack://") == -1 && !File.Exists(URL)))
+            else if (path == null || (path.IndexOf("pack://") == -1 && !File.Exists(path)))
             {
-                URL = "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png";
+                Src = "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png";
+            }
+            else
+            {
+                Src = path;
             }
         }
-      
+
     }
 }

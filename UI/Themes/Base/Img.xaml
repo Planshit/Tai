@@ -20,7 +20,7 @@
 
                     <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" CornerRadius="{TemplateBinding Radius}">
                         <Border.Background>
-                            <ImageBrush Stretch="Fill" x:Name="image" ImageSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Img}}, Path=URL}"/>
+                            <ImageBrush Stretch="Fill" x:Name="image" ImageSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Img}}, Path=Src}"/>
                         </Border.Background>
                     </Border>
 
