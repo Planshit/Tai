@@ -31,7 +31,7 @@
                                     <Run x:Name="ACount"/>
                                     <Run Text="个"/>
                                 </TextBlock>
-                                <input:InputBox x:Name="ASearchBox" Grid.Row="1" Placeholder="搜索" Margin="0,10,0,10" BoxPadding="5,0" Icon="Search"/>
+                                <input:InputBox IconColor="{DynamicResource DefaultTextBrush}" x:Name="ASearchBox" Grid.Row="1" Placeholder="搜索" Margin="0,10,0,10" BoxPadding="5,0" Icon="Search"/>
                             </Grid>
                             <StackPanel x:Name="TypeATempContainer" Grid.Row="1" Visibility="Collapsed"/>
                             <!--list-->
