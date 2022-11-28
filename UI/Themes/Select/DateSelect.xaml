@@ -3,6 +3,8 @@
                     xmlns:local="clr-namespace:UI.Controls.Select" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:button="clr-namespace:UI.Controls.Button" xmlns:converter="clr-namespace:UI.Controls.Converters">
     <converter:ToStringConverter x:Key="ToStringConverter"/>
 
+    <SolidColorBrush x:Key="ThemeLightBrush" Color="{DynamicResource ThemeColor}" Opacity=".1"/>
+
     <Style TargetType="{x:Type local:DateSelect}">
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
@@ -42,7 +44,7 @@
                                     CornerRadius="10"
                                       BorderBrush="{DynamicResource PopupBorderBrush}"
                                             BorderThickness="1"
-                                    Background="{DynamicResource StandardBackgroundBrush2}" Padding="10" MaxHeight="300" Margin="10">
+                                    Background="{DynamicResource PopupBackgroundBrush}" Padding="10" Margin="10">
                                     <Border.Effect>
                                         <DropShadowEffect BlurRadius="10" ShadowDepth="2" Direction="315" Color="Gray" Opacity=".1"/>
                                     </Border.Effect>
@@ -63,15 +65,22 @@
                                                 </Grid.ColumnDefinitions>
                                                 <!--年份选择-->
                                                 <StackPanel Orientation="Horizontal">
-                                                    <button:IconButton Icon="Back" FontSize="12" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SetYearCommand}" CommandParameter="-1"/>
-                                                    <TextBlock Width="50" Foreground="{DynamicResource StandardTextBrush}" TextAlignment="Center" Margin="5,0" VerticalAlignment="Center" Text="{TemplateBinding Year ,Converter= {StaticResource ToStringConverter}}"/>
-                                                    <button:IconButton Icon="Forward" FontSize="12" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SetYearCommand}" CommandParameter="1"/>
+                                                    <button:IconButton Icon="ChevronLeft" FontSize="12" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SetYearCommand}" CommandParameter="-1"/>
+                                                    <TextBlock Width="50" Foreground="{DynamicResource StandardTextBrush}" TextAlignment="Center" Margin="5,0" VerticalAlignment="Center" >
+                                                        <Run Text="{TemplateBinding Year ,Converter= {StaticResource ToStringConverter}}"/>
+                                                        <Run Text="年"/>
+                                                    </TextBlock>
+                                                    <button:IconButton Icon="ChevronRight" FontSize="12" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SetYearCommand}" CommandParameter="1"/>
 
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="1" Orientation="Horizontal" x:Name="MonthSelect" Visibility="Collapsed">
-                                                    <button:IconButton Icon="Back" FontSize="12" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SetMonthCommand}" CommandParameter="-1"/>
-                                                    <TextBlock Width="30" Foreground="{DynamicResource StandardTextBrush}" TextAlignment="Center" Margin="5,0" VerticalAlignment="Center" Text="{TemplateBinding Month ,Converter= {StaticResource ToStringConverter}}"/>
-                                                    <button:IconButton Icon="Forward" FontSize="12" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SetMonthCommand}" CommandParameter="1"/>
+                                                    <button:IconButton Icon="ChevronLeft" FontSize="12" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SetMonthCommand}" CommandParameter="-1"/>
+                                                    <TextBlock Width="30" Foreground="{DynamicResource StandardTextBrush}" TextAlignment="Center" Margin="5,0" VerticalAlignment="Center">
+                                                         <Run Text="{TemplateBinding Month ,Converter= {StaticResource ToStringConverter}}"/>
+                                                        <Run Text="月"/>
+                                                    </TextBlock>
+
+                                                    <button:IconButton Icon="ChevronRight" FontSize="12" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SetMonthCommand}" CommandParameter="1"/>
 
                                                 </StackPanel>
                                             </Grid>
@@ -79,92 +88,118 @@
                                         </Border>
                                         <!--日选择-->
                                         <Border Grid.Row="1" Width="250" x:Name="DaySelect" Visibility="Collapsed">
-                                            <ListView ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=Days}" SelectedItem="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=Day,Mode=TwoWay}" Margin="0,10,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                                <!--<i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                                                        <i:InvokeCommandAction Command="{Binding GotoDetailCommand}"
-                             CommandParameter="{Binding SelectedItem}" />
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>-->
-                                                <ListBox.Resources>
-                                                    <Style TargetType="{x:Type ListView}">
-                                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Border Grid.Row="0" Margin="0,15,0,0" BorderBrush="{DynamicResource SettingPanelSpliteLineBrush}" BorderThickness="0,0,0,.5" Padding="0,0,0,10">
+                                                    <Grid >
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="35"/>
+                                                            <ColumnDefinition Width="35"/>
+                                                            <ColumnDefinition Width="35"/>
+                                                            <ColumnDefinition Width="35"/>
+                                                            <ColumnDefinition Width="35"/>
+                                                            <ColumnDefinition Width="35"/>
+                                                            <ColumnDefinition Width="35"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="一" HorizontalAlignment="Center" Foreground="{DynamicResource SubTextBrush}"/>
+                                                        <TextBlock Grid.Column="1" Text="二" HorizontalAlignment="Center" Foreground="{DynamicResource SubTextBrush}"/>
+                                                        <TextBlock Grid.Column="2" Text="三" HorizontalAlignment="Center" Foreground="{DynamicResource SubTextBrush}"/>
+                                                        <TextBlock Grid.Column="3" Text="四" HorizontalAlignment="Center" Foreground="{DynamicResource SubTextBrush}"/>
+                                                        <TextBlock Grid.Column="4" Text="五" HorizontalAlignment="Center" Foreground="{DynamicResource SubTextBrush}"/>
+                                                        <TextBlock Grid.Column="5" Text="六" HorizontalAlignment="Center" Foreground="{DynamicResource SubTextBrush}"/>
+                                                        <TextBlock Grid.Column="6" Text="日" HorizontalAlignment="Center" Foreground="{DynamicResource SubTextBrush}"/>
 
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="{x:Type ListView}">
-                                                                    <Border>
-                                                                        <ItemsPresenter />
-                                                                    </Border>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style>
-                                                    <Style TargetType="{x:Type ListViewItem}">
-                                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
-                                                        <Setter  Property="Foreground" Value="{DynamicResource StandardTextBrush}"/>
+                                                    </Grid>
+                                                </Border>
+                                                <ListView Grid.Row="1" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=Days}" SelectedItem="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=Day,Mode=TwoWay}" Margin="0,10,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                                    <ListBox.Resources>
+                                                        <Style TargetType="{x:Type ListView}">
+                                                            <Setter Property="OverridesDefaultStyle" Value="True"/>
 
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                                    <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="{DynamicResource StandardBackgroundBrush}" Margin="0,0,0,0" Padding="0" Width="35" Height="35" CornerRadius="5">
-                                                                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                                    </Border>
-                                                                    <ControlTemplate.Triggers>
-                                                                        <DataTrigger Binding="{Binding IsOut}" Value="True">
-                                                                            <Setter  Property="Foreground" Value="#ccc"/>
-                                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding IsToday}" Value="True">
-                                                                            <Setter TargetName="Border" Property="Background" Value="#FFF2F1FF"/>
-                                                                            <Setter  Property="Foreground" Value="{DynamicResource ThemeBrush}"/>
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="{x:Type ListView}">
+                                                                        <Border>
+                                                                            <ItemsPresenter />
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                        <Style TargetType="{x:Type ListViewItem}">
+                                                            <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                                            <Setter  Property="Foreground" Value="{DynamicResource StandardTextBrush}"/>
 
-                                                                        </DataTrigger>
-                                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
-                                                                            <!--<Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>-->
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="Transparent" Margin="0,0,0,0" Padding="0" Width="35" Height="35" CornerRadius="5">
+                                                                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsOut}" Value="True">
+                                                                                <Setter  Property="Foreground" Value="{DynamicResource DisabledTextBrush}"/>
+                                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding IsDisabled}" Value="True">
+                                                                                <Setter  Property="Foreground" Value="{DynamicResource DisabledTextBrush}"/>
+                                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                                            </DataTrigger>
+                                                                            <DataTrigger Binding="{Binding IsToday}" Value="True">
+                                                                                <Setter TargetName="Border" Property="Background" Value="{StaticResource ThemeLightBrush}"/>
+                                                                                <Setter  Property="Foreground" Value="{DynamicResource ThemeBrush}"/>
 
-                                                                        </Trigger>
-                                                                        <Trigger Property="IsSelected" Value="True">
-                                                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeBrush}"/>
-                                                                            <Setter  Property="Foreground" Value="White"/>
+                                                                            </DataTrigger>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
+                                                                                <!--<Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>-->
 
-                                                                            <!--<Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>-->
+                                                                            </Trigger>
+                                                                            <Trigger Property="IsSelected" Value="True">
+                                                                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource ThemeBrush}"/>
+                                                                                <Setter  Property="Foreground" Value="White"/>
 
-                                                                        </Trigger>
-                                                                    </ControlTemplate.Triggers>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
+                                                                                <!--<Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>-->
 
-                                                    </Style>
-                                                </ListBox.Resources>
-                                                <ListBox.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <WrapPanel/>
-                                                    </ItemsPanelTemplate>
-                                                </ListBox.ItemsPanel>
-                                                <ListView.ItemTemplate>
-                                                    <DataTemplate>
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
 
-                                                        <WrapPanel Orientation="Horizontal">
-                                                            <Border >
-                                                                <!--<Grid>
+                                                        </Style>
+                                                    </ListBox.Resources>
+                                                    <ListBox.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <WrapPanel/>
+                                                        </ItemsPanelTemplate>
+                                                    </ListBox.ItemsPanel>
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate>
+
+                                                            <WrapPanel Orientation="Horizontal">
+                                                                <Border >
+                                                                    <!--<Grid>
                                                                     <base:View Value="{Binding IsToday}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-5,-5,0">
                                                                         <Rectangle RadiusX="10" RadiusY="10" Width="5" Height="5" Fill="Red"></Rectangle>
                                                                     </base:View>
                                                                 </Grid>-->
-                                                                <TextBlock Text="{Binding DayText}" />
+                                                                    <TextBlock Text="{Binding DayText}" />
 
-                                                            </Border>
+                                                                </Border>
 
-                                                        </WrapPanel>
-                                                       
-                                                    </DataTemplate>
-                                                </ListView.ItemTemplate>
-                                            </ListView>
+                                                            </WrapPanel>
+
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>
+                                                </ListView>
+                                            </Grid>
+
                                         </Border>
-                                        <Border Grid.Row="2" HorizontalAlignment="Right">
+                                        <Border Grid.Row="2" HorizontalAlignment="Right" Margin="0,10,0,0">
                                             <StackPanel Orientation="Horizontal">
                                                 <button:Button Content="确认" Width="100" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=DoneCommand}"/>
                                             </StackPanel>

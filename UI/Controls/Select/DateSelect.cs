@@ -39,6 +39,7 @@ namespace UI.Controls.Select
                 return Day.Date > DateTime.Now.Date;
             }
         }
+        public bool IsDisabled { get; set; }
     }
     public class DateSelect : Control
     {
@@ -311,13 +312,37 @@ namespace UI.Controls.Select
         private void UpdateDays()
         {
             var list = new List<DayModel>();
+
+            var startDay = new DateTime(Year, Month, 1);
+            var startWeekNum = (int)startDay.DayOfWeek;
+            startWeekNum = startWeekNum == 0 ? 7 : startWeekNum;
+            startWeekNum -= 1;
+
+            //  该月天数
             int days = DateTime.DaysInMonth(Year, Month);
+            //  该月最后一天的日期
+            var lastDay = new DateTime(Year, Month, days);
+
+            var preAppendDays = new List<DayModel>();
+            //  需要向前补日期
+            for (int i = startWeekNum; i > 0; i--)
+            {
+                var date = startDay.AddDays(-i);
+                preAppendDays.Add(new DayModel()
+                {
+                    Day = date.Date,
+                    IsDisabled = true,
+                });
+            }
+            list.AddRange(preAppendDays);
+
+            //  当月日期
             for (int i = 1; i < days + 1; i++)
             {
                 list.Add(new DayModel() { Day = new DateTime(Year, Month, i).Date });
             }
-            Days = list;
 
+            Days = list;
             Day = list.Where(m => m.Day == SelectedDay).FirstOrDefault();
         }
 

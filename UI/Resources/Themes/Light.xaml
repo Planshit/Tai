@@ -116,4 +116,10 @@
     <SolidColorBrush x:Key="PlaceholderRectBgBrush" Color="{StaticResource PlaceholderRectBgColor}" />
     <Color x:Key="PlaceholderRectBgFlashColor">#ffffff</Color>
     <SolidColorBrush x:Key="PlaceholderRectBgFlashBrush" Color="{StaticResource PlaceholderRectBgFlashColor}" />
+
+
+    <!--禁用颜色-->
+    <Color x:Key="DisabledTextColor">#ccc</Color>
+    <SolidColorBrush x:Key="DisabledTextBrush" Color="{StaticResource DisabledTextColor}" />
+    
 </ResourceDictionary>
