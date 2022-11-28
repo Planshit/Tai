@@ -134,5 +134,32 @@ namespace UI.Models
         /// 是否以堆叠形式展示
         /// </summary>
         public bool IsChartStack { get { return IsChartStack_; } set { IsChartStack_ = value; OnPropertyChanged(); } }
+
+        private Core.Models.AppModel Top1App_;
+        /// <summary>
+        /// 使用时间最长的应用
+        /// </summary>
+        public Core.Models.AppModel Top1App { get { return Top1App_; } set { Top1App_ = value; OnPropertyChanged(); } }
+
+        private string DiffTotalTimeType_;
+        /// <summary>
+        /// 时长对比上一周期变化（0无变化，1增加，-1减少）
+        /// </summary>
+        public string DiffTotalTimeType { get { return DiffTotalTimeType_; } set { DiffTotalTimeType_ = value;OnPropertyChanged(); } }
+        private string DiffAppCountType_;
+        /// <summary>
+        /// 应用量对比上一周期变化（0无变化，1增加，-1减少）
+        /// </summary>
+        public string DiffAppCountType { get { return DiffAppCountType_; } set { DiffAppCountType_ = value; OnPropertyChanged(); } }
+        private string DiffTotalTimeValue_;
+        /// <summary>
+        /// 时长差异值
+        /// </summary>
+        public string DiffTotalTimeValue { get { return DiffTotalTimeValue_; } set { DiffTotalTimeValue_ = value;OnPropertyChanged(); } }
+        private string DiffAppCountValue_;
+        /// <summary>
+        /// 应用量差异值
+        /// </summary>
+        public string DiffAppCountValue { get { return DiffAppCountValue_; } set { DiffAppCountValue_ = value; OnPropertyChanged(); } }
     }
 }

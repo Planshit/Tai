@@ -53,6 +53,8 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+
                     </Grid.ColumnDefinitions>
                     <Border Width="40" Height="40" CornerRadius="14">
                         <Border.Background>
@@ -75,6 +77,20 @@
                         <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="总计" Foreground="{DynamicResource SubTextBrush}"/>
 
                     </Grid>
+                    <Border Grid.Column="2" VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <base:View Condition="=1" Value="{Binding DiffTotalTimeType}">
+                                <base:Icon VerticalAlignment="Center" IconType="ArrowUp8" FontSize="10" />
+                            </base:View>
+                            <base:View Condition="=0" Value="{Binding DiffTotalTimeType}">
+                                <base:Icon VerticalAlignment="Center" IconType="SubtractBold" FontSize="10" />
+                            </base:View>
+                            <base:View Condition="=-1" Value="{Binding DiffTotalTimeType}">
+                                <base:Icon VerticalAlignment="Center" IconType="ArrowDown8" FontSize="10" />
+                            </base:View>
+                            <TextBlock Text="{Binding DiffTotalTimeValue}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </Border>
             <Border Grid.Column="1" Margin="20,5,0,0" Background="{DynamicResource SettingPanelBgBrush}" Padding="10" CornerRadius="10">
@@ -82,6 +98,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <Border  Width="40" Height="40" CornerRadius="14">
                         <Border.Background>
@@ -90,7 +107,7 @@
                                 <!--<GradientStop Color="#2b20d9" Offset="1"/>-->
                             </LinearGradientBrush>
                         </Border.Background>
-                        <base:Icon IconType="FavoriteStarFill" Foreground="White"/>
+                        <base:Icon IconType="Apps" Foreground="White"/>
                     </Border>
                     <Grid Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
                         <Grid.RowDefinitions>
@@ -105,13 +122,29 @@
 
 
                     </Grid>
+                    <Border Grid.Column="2" VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <base:View Condition="=1" Value="{Binding DiffAppCountType}">
+                                <base:Icon VerticalAlignment="Center" IconType="ArrowUp8" FontSize="10" />
+                            </base:View>
+                            <base:View Condition="=0" Value="{Binding DiffAppCountType}">
+                                <base:Icon VerticalAlignment="Center" IconType="SubtractBold" FontSize="10" />
+                            </base:View>
+                            <base:View Condition="=-1" Value="{Binding DiffAppCountType}">
+                                <base:Icon VerticalAlignment="Center" IconType="ArrowDown8" FontSize="10" />
+                            </base:View>
+                            <TextBlock Text="{Binding DiffAppCountValue}" VerticalAlignment="Center"/>
+
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </Border>
-            <Border  Grid.Column="2" Margin="20,5,0,0" Background="{DynamicResource SettingPanelBgBrush}" Padding="10" CornerRadius="10">
+            <Border  Grid.Column="2" Margin="20,5,0,0" Background="{DynamicResource SettingPanelBgBrush}" Padding="10" CornerRadius="10" ToolTip="{Binding Top1App.Description}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <Border  Width="40" Height="40" CornerRadius="14">
                         <Border.Background>
@@ -128,12 +161,26 @@
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock >
+                        <TextBlock>
                             <Run Text="{Binding TopHours}" FontSize="20"/>
                             <Run Text="小时" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
                         </TextBlock>
                         <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="最长使用" Foreground="{DynamicResource SubTextBrush}"/>
                     </Grid>
+                    <Border Grid.Column="2">
+                        <!--<Border Width="16" Height="16">
+                            <Border.Background>
+                                <ImageBrush Stretch="Fill" x:Name="image" ImageSource="{Binding Top1App.IconFile}"/>
+                            </Border.Background>
+                        </Border>-->
+                        <Border   CornerRadius="6" VerticalAlignment="Bottom" >
+                            <base:View Value="{Binding Top1App}" Condition="not null">
+                                <base:Img  URL="{Binding Top1App.IconFile}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16"/>
+                            </base:View>
+                            
+                        </Border>
+
+                    </Border>
                 </Grid>
             </Border>
         </Grid>
@@ -150,7 +197,7 @@
 
                 <Border Grid.Row="1" Margin="0,20,0,0"  Width="680" HorizontalAlignment="Left" Background="{DynamicResource SettingPanelBgBrush}" Padding="20" CornerRadius="10">
                     <StackPanel >
-                        <select:Select Height="30" IsShowIcon="False" SelectedItem="{Binding ChartDataMode,Mode=TwoWay}" Options="{Binding ChartDataModeOptions}"/>
+                        <select:Select Padding="0" Height="30" IsShowIcon="False" SelectedItem="{Binding ChartDataMode,Mode=TwoWay}" Options="{Binding ChartDataModeOptions}"/>
                         <charts:Charts IsStack="{Binding IsChartStack}" Height="310" ColumnSelectedIndex="{Binding ColumnSelectedIndex,Mode=TwoWay}" IsShowTotal="False" DataMaximum="{Binding DataMaximum}" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding Data}" IsCanColumnSelect="{Binding IsCanColumnSelect}"/>
                         <base:View Value="{Binding DayHoursSelectedTime}" Condition="not empty">
                             <StackPanel>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UI.Controls;
 using UI.Controls.Charts.Model;
@@ -23,6 +24,9 @@ namespace UI.ViewModels
         private readonly MainViewModel mainVM;
         private readonly IAppContextMenuServicer appContextMenuServicer;
         private readonly IInputServicer inputServicer;
+
+        private double totalTime_ = 0;
+        private int appCount_ = 0;
         public Command ToDetailCommand { get; set; }
         public Command RefreshCommand { get; set; }
         public List<SelectItemModel> ChartDataModeOptions { get; set; }
@@ -268,6 +272,7 @@ namespace UI.ViewModels
                 RadarData = chartData;
 
                 double totalUse = Data.Sum(m => m.Values.Sum());
+                totalTime_ = totalUse;
                 TotalHours = Time.ToHoursString(totalUse);
                 LoadTopData();
             });
@@ -345,6 +350,7 @@ namespace UI.ViewModels
 
                 RadarData = chartData;
                 double totalUse = Data.Sum(m => m.Values.Sum());
+                totalTime_ = totalUse;
                 TotalHours = Time.ToHoursString(totalUse);
             });
 
@@ -418,6 +424,7 @@ namespace UI.ViewModels
 
                 RadarData = chartData;
                 double totalUse = Data.Sum(m => m.Values.Sum());
+                totalTime_ = totalUse;
                 TotalHours = Time.ToHoursString(totalUse);
                 LoadTopData();
             });
@@ -499,6 +506,7 @@ namespace UI.ViewModels
                 RadarData = chartData;
 
                 double totalUse = Data.Sum(m => m.Values.Sum());
+                totalTime_ = totalUse;
                 TotalHours = Time.ToHoursString(totalUse);
                 LoadTopData();
             });
@@ -539,8 +547,90 @@ namespace UI.ViewModels
 
                 TopHours = TopData.Count > 0 ? Time.ToHoursString(TopData[0].Value) : "0";
 
-                AppCount = data.GetDateRangeAppCount(dateStart, dateEnd).ToString();
+                appCount_ = data.GetDateRangeAppCount(dateStart, dateEnd);
+                AppCount = appCount_.ToString();
+
+                Top1App = null;
+
+                if (TopData.Count > 0)
+                {
+                    var model = TopData[0].Data as DailyLogModel;
+                    Top1App = model != null ? model.AppModel : null;
+                }
+
+                LoadDiffData();
             });
+        }
+
+        private void LoadDiffData()
+        {
+            var dateStart = Date.Date.AddDays(-1);
+            var dateEnd = Date.Date.AddDays(-1);
+            if (TabbarSelectedIndex == 1)
+            {
+                //  周
+                var weekDateArr = Time.GetLastWeekDate();
+                dateStart = weekDateArr[0];
+                dateEnd = weekDateArr[1];
+
+            }
+            else if (TabbarSelectedIndex == 2)
+            {
+                //  月
+                var dateArr = Time.GetMonthDate(MonthDate.AddMonths(-1));
+                dateStart = dateArr[0];
+                dateEnd = dateArr[1];
+            }
+            else if (TabbarSelectedIndex == 3)
+            {
+                //  年
+                var dateArr = Time.GetYearDate(YearDate.AddYears(-1));
+                dateStart = dateArr[0];
+                dateEnd = dateArr[1];
+            }
+
+            //  应用量
+            int lastAppCount = data.GetDateRangeAppCount(dateStart, dateEnd);
+            //  使用总时长
+            var lastTotalTime = data.GetRangeTotalData(dateStart, dateEnd).Sum();
+
+            double diffTotalTime = ((totalTime_ - lastTotalTime) / lastTotalTime) * 100;
+            if (totalTime_ > 0 && lastTotalTime == 0)
+            {
+                diffTotalTime = 100;
+            }
+            else if (totalTime_ == 0 && lastTotalTime == 0)
+            {
+                diffTotalTime = 0;
+            }
+            if (diffTotalTime > 0)
+            {
+                DiffTotalTimeType = "1";
+            }
+            else if (diffTotalTime < 0)
+            {
+                DiffTotalTimeType = "-1";
+            }
+            else
+            {
+                DiffTotalTimeType = "0";
+            }
+            DiffTotalTimeValue = DiffTotalTimeType == "0" ? string.Empty : diffTotalTime == 100 ? "100%" : Math.Abs(diffTotalTime).ToString("f2") + "%";
+
+            int diffAppCount = appCount_ - lastAppCount;
+            if (diffAppCount > 0)
+            {
+                DiffAppCountType = "1";
+            }
+            else if (diffAppCount < 0)
+            {
+                DiffAppCountType = "-1";
+            }
+            else
+            {
+                DiffAppCountType = "0";
+            }
+            DiffAppCountValue = DiffAppCountType == "0" ? string.Empty : Math.Abs(diffAppCount).ToString();
         }
 
         private List<ChartsDataModel> MapToChartsData(IEnumerable<Core.Models.DailyLogModel> list)
