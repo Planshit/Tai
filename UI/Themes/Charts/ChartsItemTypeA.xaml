@@ -116,7 +116,7 @@
                                 <Rectangle
                                 RadiusX="0"
                                 RadiusY="0"
-                                Fill="#e0e0e0"
+                                Fill="{DynamicResource PlaceholderRectBgBrush}"
                                 Height="8"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Stretch"

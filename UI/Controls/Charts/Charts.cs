@@ -465,14 +465,7 @@ namespace UI.Controls.Charts
             }
             if (e.Property == IsLoadingProperty)
             {
-                if (!charts.IsLoading || e.Property == IsCanScrollProperty)
-                {
-                    charts.Render();
-                }
-                else
-                {
-                    charts.RenderLoadingPlaceholder();
-                }
+                charts.Render();
             }
             if (e.Property == ColumnSelectedIndexProperty && e.OldValue != e.NewValue)
             {
@@ -562,14 +555,7 @@ namespace UI.Controls.Charts
 
             UpdateListViewHeight();
 
-            if (IsLoading)
-            {
-                RenderLoadingPlaceholder();
-            }
-            else
-            {
-                Render();
-            }
+            Render();
 
             if (ChartsType == ChartsType.HorizontalA && IsSearch)
             {
@@ -596,6 +582,17 @@ namespace UI.Controls.Charts
             }
         }
 
+        private void Render()
+        {
+            if (IsLoading)
+            {
+                RenderLoadingPlaceholder();
+            }
+            else
+            {
+                RenderData();
+            }
+        }
         private void RenderLoadingPlaceholder()
         {
             if (LoadingPlaceholderCount > 0 && CardContainer != null)
@@ -654,7 +651,7 @@ namespace UI.Controls.Charts
 
         }
 
-        private void Render()
+        private void RenderData()
         {
             if (isRendering || CardContainer == null)
             {

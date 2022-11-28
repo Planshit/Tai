@@ -10,8 +10,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Placeholder}">
-                    <Border CornerRadius="{TemplateBinding CornerRadius}" Background="#e0e0e0" ClipToBounds="True">
-                        <Border x:Name="Flash" Background="White" Width="10" Height="{TemplateBinding Height}" Opacity=".5" RenderTransformOrigin="0,0.5">
+                    <Border CornerRadius="{TemplateBinding CornerRadius}" Background="{DynamicResource PlaceholderRectBgBrush}" ClipToBounds="True">
+                        <Border x:Name="Flash" Background="{DynamicResource PlaceholderRectBgFlashBrush}" Width="10" Height="{TemplateBinding Height}" Opacity=".5" RenderTransformOrigin="0,0.5">
                             <Border.Effect>
                                 <BlurEffect Radius="30" ></BlurEffect>
                             </Border.Effect>

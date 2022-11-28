@@ -111,4 +111,9 @@
     <Color x:Key="ExpanderContentBgColor">#f7f7f7</Color>
     <SolidColorBrush x:Key="ExpanderContentBgBrush" Color="{StaticResource ExpanderContentBgColor}" />
 
+    <!--占位框-->
+    <Color x:Key="PlaceholderRectBgColor">#e0e0e0</Color>
+    <SolidColorBrush x:Key="PlaceholderRectBgBrush" Color="{StaticResource PlaceholderRectBgColor}" />
+    <Color x:Key="PlaceholderRectBgFlashColor">#ffffff</Color>
+    <SolidColorBrush x:Key="PlaceholderRectBgFlashBrush" Color="{StaticResource PlaceholderRectBgFlashColor}" />
 </ResourceDictionary>
