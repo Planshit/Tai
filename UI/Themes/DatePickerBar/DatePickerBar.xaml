@@ -40,7 +40,7 @@
                                         <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
                                     </Border.Effect>-->
                                     <StackPanel Orientation="Horizontal" >
-                                        <base:Icon x:Name="DateIcon" Margin="0,0,5,0" IconType="DateTime" Foreground="{DynamicResource StandardTextBrush}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                        <base:Icon x:Name="DateIcon" Margin="0,0,5,0" IconType="Calendar" Foreground="{DynamicResource StandardTextBrush}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
 
                                         <TextBlock Foreground="{DynamicResource StandardTextBrush}" FontSize="15" Text="{TemplateBinding SelectedDateString}" Margin="0,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                         <base:Icon x:Name="PopupIcon" Width="25" Height="25" Margin="10,0,0,0" FontSize="10" IconType="ChevronDown" VerticalAlignment="Center" HorizontalAlignment="Right">

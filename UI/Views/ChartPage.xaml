@@ -206,7 +206,7 @@
                                         <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".05"/>
                                     </Border.Background>
                                     <StackPanel Orientation="Horizontal">
-                                        <base:Icon Foreground="{DynamicResource SubTextBrush}" IconType="DateTime" VerticalAlignment="Center"/>
+                                        <base:Icon Foreground="{DynamicResource SubTextBrush}" IconType="Calendar" VerticalAlignment="Center"/>
                                         <TextBlock Foreground="{DynamicResource SubTextBrush}" VerticalAlignment="Center" Text="{Binding DayHoursSelectedTime}"  FontSize="13" Margin="5,0,0,0"/>
 
                                     </StackPanel>

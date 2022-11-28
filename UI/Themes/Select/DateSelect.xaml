@@ -28,7 +28,7 @@
                                 </Border.InputBindings>
 
                                 <StackPanel Orientation="Horizontal">
-                                    <base:Icon x:Name="Icon" IconType="DateTime" Foreground="{DynamicResource StandardTextBrush}"/>
+                                    <base:Icon x:Name="Icon" IconType="Calendar"  Foreground="{DynamicResource StandardTextBrush}"/>
                                     <TextBlock Foreground="{DynamicResource StandardTextBrush}" Text="{TemplateBinding DateStr}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                 </StackPanel>
                             </Border>
