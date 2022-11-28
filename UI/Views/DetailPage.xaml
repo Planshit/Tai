@@ -56,7 +56,7 @@
                             <TextBlock ToolTip="进程名" Text="{Binding ProcessName}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0"/>
 
                         </StackPanel>-->
-                    <base:View Condition="=false" Value="{Binding IsRegexIgnore}">
+                    <base:View Condition="=False" Value="{Binding IsRegexIgnore}">
                         <Border Background="#f51837" Padding="10,5" CornerRadius="4" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="{Binding CancelBlockBtnVisibility}" ToolTip="该应用将不再统计使用时长">
                             <StackPanel Orientation="Horizontal"  VerticalAlignment="Center">
                                 <base:Icon IconType="StatusCircleBlock" FontSize="12" VerticalAlignment="Center" Foreground="White"/>
@@ -94,12 +94,12 @@
 
                 </StackPanel>
                 <Grid Grid.Column="2">
-                    <base:View Grid.Column="2" Condition="=false" Value="{Binding IsRegexIgnore}">
-                    <StackPanel  HorizontalAlignment="Right" Margin="0,0,20,0">
-                        <btn:Button Command="{Binding BlockActionCommand}" CommandParameter="block" Width="120" Visibility="{Binding BlockBtnVisibility}" Icon="StatusCircleBlock">忽略此应用</btn:Button>
-                        <btn:Button Command="{Binding BlockActionCommand}"  CommandParameter="unblock" Width="120" Visibility="{Binding CancelBlockBtnVisibility}" Icon="Remove">取消忽略</btn:Button>
+                    <base:View Condition="=False" Value="{Binding IsRegexIgnore}" HorizontalAlignment="Right" Margin="0,0,20,0">
+                        <StackPanel>
+                            <btn:Button Command="{Binding BlockActionCommand}" CommandParameter="block" Width="120" Visibility="{Binding BlockBtnVisibility}" Icon="StatusCircleBlock">忽略此应用</btn:Button>
+                            <btn:Button Command="{Binding BlockActionCommand}"  CommandParameter="unblock" Width="120" Visibility="{Binding CancelBlockBtnVisibility}" Icon="Remove">取消忽略</btn:Button>
 
-                    </StackPanel>
+                        </StackPanel>
                     </base:View>
                     <ItemsControl Margin="0,20,10,0"  VerticalAlignment="Bottom"  ItemsSource="{Binding LinkApps}" HorizontalAlignment="Right">
                         <ItemsControl.ItemsPanel>
