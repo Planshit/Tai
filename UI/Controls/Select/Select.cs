@@ -75,17 +75,7 @@ namespace UI.Controls.Select
         public Select()
         {
             DefaultStyleKey = typeof(Select);
-
             MouseLeftButtonUp += Select_MouseLeftButtonUp;
-
-            Unloaded += Select_Unloaded;
-        }
-
-        private void Select_Unloaded(object sender, RoutedEventArgs e)
-        {
-            MouseLeftButtonUp -= Select_MouseLeftButtonUp;
-
-            Unloaded -= Select_Unloaded;
         }
 
         private void Select_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
