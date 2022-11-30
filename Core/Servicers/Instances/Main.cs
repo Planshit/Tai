@@ -20,7 +20,7 @@ namespace Core.Servicers.Instances
 {
     public class Main : IMain
     {
-        private readonly IObserver observer;
+        private readonly IAppObserver appObserver;
         private readonly IData data;
         private readonly ISleepdiscover sleepdiscover;
         private readonly IAppConfig appConfig;
@@ -83,14 +83,14 @@ namespace Core.Servicers.Instances
         //  已经更新过的应用列表
         private List<string> updatedAppList = new List<string>();
         public Main(
-            IObserver observer,
+            IAppObserver appObserver,
             IData data,
             ISleepdiscover sleepdiscover,
             IAppConfig appConfig,
             IDateTimeObserver dateTimeObserver,
             IAppData appData, ICategorys categories)
         {
-            this.observer = observer;
+            this.appObserver = appObserver;
             this.data = data;
             this.sleepdiscover = sleepdiscover;
             this.appConfig = appConfig;
@@ -102,7 +102,7 @@ namespace Core.Servicers.Instances
             ConfigIgnoreProcessRegxList = new List<string>();
             ConfigIgnoreProcessList = new List<string>();
 
-            observer.OnAppActive += Observer_OnAppActive;
+            appObserver.OnAppActive += Observer_OnAppActive;
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
             appConfig.ConfigChanged += AppConfig_ConfigChanged;
             dateTimeObserver.OnDateTimeChanging += DateTimeObserver_OnDateTimeChanging;
@@ -175,16 +175,16 @@ namespace Core.Servicers.Instances
             activeProcess = null;
 
             dateTimeObserver.Start();
-            observer.Start();
+            appObserver.Start();
         }
         public void Stop()
         {
             dateTimeObserver.Stop();
-            observer.Stop();
+            appObserver.Stop();
         }
         public void Exit()
         {
-            observer?.Stop();
+            appObserver?.Stop();
         }
 
 

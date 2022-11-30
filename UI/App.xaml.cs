@@ -182,7 +182,7 @@ namespace UI
         private void ConfigureServices(IServiceCollection services)
         {
             //  核心服务
-            services.AddSingleton<IObserver, Observer>();
+            services.AddSingleton<IAppObserver, AppObserver>();
             services.AddSingleton<IMain, Main>();
             services.AddSingleton<IData, Data>();
             services.AddSingleton<ISleepdiscover, Sleepdiscover>();
@@ -241,7 +241,7 @@ namespace UI
             var main = serviceProvider.GetService<IMainServicer>();
             main.Start();
 
-            var observer = serviceProvider.GetService<IObserver>();
+            var observer = serviceProvider.GetService<IAppObserver>();
             observer.OnAppActive += (p, d, f) =>
             {
                 Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>

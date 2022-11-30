@@ -13,14 +13,14 @@ using System.Threading.Tasks;
 
 namespace Core.Servicers.Instances
 {
-    public class Observer : IObserver
+    public class AppObserver : IAppObserver
     {
         private IntPtr hook;
         Win32API.WinEventDelegate winEventDelegate;
 
         public event ObserverEventHandler OnAppActive;
 
-        public Observer()
+        public AppObserver()
         {
             winEventDelegate = new Win32API.WinEventDelegate(WinEventProc);
         }
@@ -40,6 +40,7 @@ namespace Core.Servicers.Instances
 
         private async void Handle(IntPtr hwnd)
         {
+            Debug.WriteLine(hwnd);
             string processName = String.Empty, processFileName = String.Empty, processDescription = String.Empty;
 
             var processResult = await Task.Run(() =>

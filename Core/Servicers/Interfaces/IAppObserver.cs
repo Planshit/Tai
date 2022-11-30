@@ -10,7 +10,7 @@ namespace Core.Servicers.Interfaces
     /// <summary>
     /// 观察者，用于监听应用程序获取焦点事件
     /// </summary>
-    public interface IObserver
+    public interface IAppObserver
     {
         /// <summary>
         /// 启动观察

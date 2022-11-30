@@ -171,7 +171,7 @@
     <Compile Include="Librarys\Logger.cs" />
     <Compile Include="Servicers\Instances\DateTimeObserver.cs" />
     <Compile Include="Servicers\Instances\Main.cs" />
-    <Compile Include="Servicers\Instances\Observer.cs" />
+    <Compile Include="Servicers\Instances\AppObserver.cs" />
     <Compile Include="Servicers\Instances\Sleepdiscover.cs" />
     <Compile Include="Servicers\Interfaces\IAppConfig.cs" />
     <Compile Include="Servicers\Interfaces\ICategorys.cs" />
@@ -179,7 +179,7 @@
     <Compile Include="Servicers\Interfaces\IData.cs" />
     <Compile Include="Servicers\Interfaces\IDateTimeObserver.cs" />
     <Compile Include="Servicers\Interfaces\IMain.cs" />
-    <Compile Include="Servicers\Interfaces\IObserver.cs" />
+    <Compile Include="Servicers\Interfaces\IAppObserver.cs" />
     <Compile Include="Servicers\Interfaces\ISleepdiscover.cs" />
   </ItemGroup>
   <ItemGroup>
