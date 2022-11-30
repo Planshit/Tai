@@ -121,4 +121,8 @@
     <Color x:Key="DisabledTextColor">#504f4f</Color>
     <SolidColorBrush x:Key="DisabledTextBrush" Color="{StaticResource DisabledTextColor}" />
 
+    <!--滚动条-->
+    <Color x:Key="ScrollBarColor">#a0a0a0</Color>
+    <SolidColorBrush x:Key="ScrollBarBrush" Color="{StaticResource ScrollBarColor}" />
+
 </ResourceDictionary>

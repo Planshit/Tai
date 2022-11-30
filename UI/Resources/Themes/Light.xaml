@@ -121,5 +121,7 @@
     <!--禁用颜色-->
     <Color x:Key="DisabledTextColor">#ccc</Color>
     <SolidColorBrush x:Key="DisabledTextBrush" Color="{StaticResource DisabledTextColor}" />
-    
+
+    <Color x:Key="ScrollBarColor">#8A8A8A</Color>
+    <SolidColorBrush x:Key="ScrollBarBrush" Color="{StaticResource ScrollBarColor}" />
 </ResourceDictionary>

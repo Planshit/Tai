@@ -445,7 +445,7 @@ HorizontalAlignment="Left"                                      RecognizesAccess
                     <Grid>
                         <Rectangle  
                             x:Name="Bar"
-                            Fill="#8a8a8a"  
+                            Fill="{DynamicResource ScrollBarBrush}"  
                             RadiusX="4"  
                             RadiusY="4"/>
                     </Grid>
@@ -589,6 +589,7 @@ HorizontalAlignment="Left"                                      RecognizesAccess
     <!-- ScrollViewer -->
     <Style  
            TargetType="{x:Type ScrollViewer}">
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="OverridesDefaultStyle"
           Value="True" />
         <Setter Property="Template">
@@ -618,8 +619,10 @@ HorizontalAlignment="Left"                                      RecognizesAccess
                                 ContentTemplate="{TemplateBinding ContentTemplate}"/>
                             <ScrollBar x:Name="PART_VerticalScrollBar"  
                                        HorizontalAlignment="Right"  
+                                       Margin="0,0,3,0"
                                        Maximum="{TemplateBinding ScrollableHeight}"  
                                        Opacity="0"
+                                       Width="2"
                                        Orientation="Vertical"  
                                       ScrollViewer.IsDeferredScrollingEnabled="True"
                                        ViewportSize="{TemplateBinding ViewportHeight}"  
@@ -636,30 +639,48 @@ HorizontalAlignment="Left"                                      RecognizesAccess
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PART_VerticalScrollBar" Property="Opacity" Value=".5" />
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation  
+                                        Storyboard.TargetName="PART_VerticalScrollBar"  
+                                        Storyboard.TargetProperty="Opacity"  
+                                        To="1"  
+                                        Duration="0:0:0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation  
+                                        Storyboard.TargetName="PART_VerticalScrollBar"  
+                                        Storyboard.TargetProperty="Opacity"  
+                                        To="0"  
+                                        Duration="0:0:0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                        <!--<Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_VerticalScrollBar" Property="Opacity" Value="1" />
 
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="False">
                             <Setter TargetName="PART_VerticalScrollBar" Property="Opacity" Value="0" />
 
-                        </Trigger>
+                        </Trigger>-->
                         <EventTrigger RoutedEvent="MouseEnter"  
                                       SourceName="PART_VerticalScrollBar">
                             <BeginStoryboard>
                                 <Storyboard>
-
+                                    
                                     <DoubleAnimation  
-                                        Storyboard.TargetName="PART_VerticalScrollBar"  
-                                        Storyboard.TargetProperty="Opacity"  
-                                        To="1"  
-                                        Duration="0:0:0.3"/>
-
-                                    <!--<DoubleAnimation  
                                         Storyboard.TargetName="PART_VerticalScrollBar"  
                                         Storyboard.TargetProperty="Width"  
                                         To="8"  
-                                        Duration="0:0:0.1"/>-->
+                                        Duration="0:0:0.1"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -669,20 +690,9 @@ HorizontalAlignment="Left"                                      RecognizesAccess
                                 <Storyboard>
                                     <DoubleAnimation  
                                         Storyboard.TargetName="PART_VerticalScrollBar"  
-                                        Storyboard.TargetProperty="Opacity"  
-                                        To=".5"  
-                                        Duration="0:0:0.3"/>
-                                    <!--<DoubleAnimation  
-                                        Storyboard.TargetName="PART_VerticalScrollBar"  
-                                        Storyboard.TargetProperty="Opacity"  
-                                        To="0.5"  
-                                        Duration="0:0:0.3"/>-->
-
-                                    <!--<DoubleAnimation  
-                                        Storyboard.TargetName="PART_VerticalScrollBar"  
                                         Storyboard.TargetProperty="Width"  
                                         To="2"  
-                                        Duration="0:0:0.1"/>-->
+                                        Duration="0:0:0.1"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
