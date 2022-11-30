@@ -139,14 +139,14 @@
             </Border>-->
 
         <WrapPanel Margin="-10">
-            <StackPanel Margin="10,0,0,0">
-                <TextBlock Text="时段" Foreground="#5c5c5c" FontSize="14" Margin="0,20,0,0"/>
-                <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
-                <Border Margin="0,15,0,0"  Width="680" HorizontalAlignment="Left" Background="{DynamicResource SettingPanelBgBrush}" Padding="20,10" CornerRadius="10">
+            <StackPanel Margin="10,10,0,0">
+                <TextBlock Text="使用时长" Foreground="#5c5c5c" FontSize="14" Margin="0,20,0,0"/>
+                
+                <Border Margin="0,10,0,0"  Width="680" HorizontalAlignment="Left" Background="{DynamicResource SettingPanelBgBrush}" Padding="20" CornerRadius="10">
                     <StackPanel>
+                        <Tabbar:Tabbar Margin="0,-10,0,0" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
 
-
-                        <Grid Margin="0,15,0,0">
+                        <Grid >
                             <!--按天-->
                             <base:View Condition="0" Value="{Binding TabbarSelectedIndex}">
                                 <Select:DateSelect Date="{Binding ChartDate,Mode=TwoWay}"/>
@@ -170,7 +170,7 @@
 
                             </base:View>
                         </Grid>
-                        <Charts:Charts DataMaximum="{Binding DataMaximum}" Height="305" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding ChartData}" Margin="0,20,0,0"/>
+                        <Charts:Charts IsShowCategory="False" DataMaximum="{Binding DataMaximum}" Height="305" NameIndexStart="{Binding NameIndexStart}" ChartsType="Column" Data="{Binding ChartData}" Margin="0,20,0,0"/>
 
                     </StackPanel>
 

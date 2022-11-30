@@ -473,6 +473,23 @@ namespace UI.Controls.Charts
 
 
         #endregion
+        #region 是否显示分类信息
+        /// <summary>
+        /// 是否显示分类信息（仅柱状图有效）
+        /// </summary>
+        public bool IsShowCategory
+        {
+            get { return (bool)GetValue(IsShowCategoryProperty); }
+            set { SetValue(IsShowCategoryProperty, value); }
+        }
+        public static readonly DependencyProperty IsShowCategoryProperty =
+            DependencyProperty.Register("IsShowCategory",
+                typeof(bool),
+                typeof(Charts),
+                new PropertyMetadata(true, new PropertyChangedCallback(OnPropertyChanged)));
+
+
+        #endregion
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

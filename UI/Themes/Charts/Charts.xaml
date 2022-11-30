@@ -93,7 +93,7 @@
                                 </Grid.RowDefinitions>
                                 <StackPanel x:Name="ColumnTotal">
                                     <TextBlock Text="总计" Foreground="{DynamicResource SubTextBrush}"/>
-                                    <TextBlock Margin="0,10,0,0" Text="{TemplateBinding Total}" FontSize="20" Foreground="{DynamicResource DefaultTextBrush}"/>
+                                    <TextBlock Margin="0,5,0,0" Text="{TemplateBinding Total}" FontSize="20" Foreground="{DynamicResource DefaultTextBrush}"/>
                                 </StackPanel>
                                 <Grid Grid.Row="1" Margin="0,20,0,0">
                                     <Popup
@@ -165,16 +165,19 @@
                                                             <StackPanel>
                                                                 <Grid>
                                                                     <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="20"/>
+                                                                        <ColumnDefinition Width="auto"/>
                                                                         <ColumnDefinition Width="auto"/>
                                                                         <ColumnDefinition Width="auto"/>
 
                                                                     </Grid.ColumnDefinitions>
-                                                                    <Border Width="10" CornerRadius="4" Height="10" Background="{Binding Color,Converter={StaticResource HextoColorConverter}}">
-                                                                        <!--颜色-->
-                                                                    </Border>
+                                                                    <base:View Condition="not null" Value="{Binding Color}">
+                                                                        <Border Margin="0,0,5,0" Width="10" CornerRadius="4" Height="10" Background="{Binding Color,Converter={StaticResource HextoColorConverter}}">
+                                                                            <!--颜色-->
+                                                                        </Border>
+                                                                    </base:View>
 
-                                                                    <Border Grid.Column="1" Margin="5,0,0,0">
+
+                                                                    <Border Grid.Column="1" Margin="0,0,0,0">
                                                                         <!--名称-->
                                                                         <TextBlock Foreground="{DynamicResource DefaultTextBrush}" VerticalAlignment="Center" Text="{Binding Name}" FontSize="12"/>
                                                                     </Border>
@@ -197,10 +200,10 @@
                                     <Border BorderThickness="1,0,0,1" BorderBrush="{DynamicResource ChartColBorderBrush}">
                                         <Canvas x:Name="TypeColumnCanvas"/>
                                     </Border>
-                                    
+
                                 </Grid>
                                 <!--信息-->
-                                <Grid Grid.Row="2" Margin="0,5,0,0">
+                                <Grid Grid.Row="2" Margin="0,5,0,0" x:Name="Category" Visibility="Collapsed">
                                     <ListView ItemsSource="{TemplateBinding ColumnInfoList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
                                         <ListBox.Resources>
                                             <Style TargetType="{x:Type ListView}">
@@ -272,6 +275,9 @@
                     </Grid>
 
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsShowCategory" Value="True">
+                            <Setter Property="Visibility" Value="Visible" TargetName="Category"/>
+                        </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEmpty" Value="True"/>
