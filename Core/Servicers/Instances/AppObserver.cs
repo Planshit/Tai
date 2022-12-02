@@ -1,5 +1,6 @@
 ﻿using Core.Event;
 using Core.Librarys;
+using Core.Models.AppObserver;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,6 @@ namespace Core.Servicers.Instances
 
         private async void Handle(IntPtr hwnd)
         {
-            Debug.WriteLine(hwnd);
             string processName = String.Empty, processFileName = String.Empty, processDescription = String.Empty;
 
             var processResult = await Task.Run(() =>
@@ -102,7 +102,7 @@ namespace Core.Servicers.Instances
                 return processName;
             });
 
-            EventInvoke(processName, processDescription, processFileName);
+            EventInvoke(processName, processDescription, processFileName, hwnd);
         }
 
         /// <summary>
@@ -170,9 +170,10 @@ namespace Core.Servicers.Instances
             }
             return new string[] { processName, processFileName, processID.ToString() };
         }
-        private void EventInvoke(string processName, string description, string filename)
+        private void EventInvoke(string processName, string description, string filename, IntPtr handle)
         {
-            OnAppActive?.Invoke(processName, description, filename);
+            var args = new AppObserverEventArgs(processName, description, filename, handle);
+            OnAppActive?.Invoke(args);
         }
 
         public void Stop()
