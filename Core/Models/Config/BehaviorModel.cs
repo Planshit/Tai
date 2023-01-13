@@ -16,5 +16,8 @@ namespace Core.Models.Config
         /// 忽略的进程列表
         /// </summary>
         public List<string> IgnoreProcessList { get; set; } = new List<string>();
+
+        [Config(IsCanImportExport = true, Name = "匹配规则", NameAddition = "分类名称", Description = "文件夹路径或正则表达式对进程进行匹配", Group = "自动分类", Placeholder = "匹配规则，输入文件夹路径或正则表达式", PlaceholderAddition = "分组名")]
+        public List<KeyValuePair<string, int>> AutoCategoryProcessList { get; set; } = new List<KeyValuePair<string, int>>();
     }
 }

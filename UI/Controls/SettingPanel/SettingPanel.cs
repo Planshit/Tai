@@ -329,6 +329,9 @@ namespace UI.Controls.SettingPanel
             else if (pi.PropertyType == typeof(List<string>))
             {
                 uIElement = RenderListStringConfigControl(attribute, pi);
+            }else if(pi.PropertyType == typeof(List<KeyValuePair<string, int>>))
+            {
+                uIElement = RenderListStringPairConfigControl(attribute, pi);
             }
             else if (pi.PropertyType == typeof(int))
             {
@@ -442,6 +445,268 @@ namespace UI.Controls.SettingPanel
             return item;
         }
 
+        //TODO: 临时占位
+        // 待重写此处界面
+        private UIElement RenderListStringPairConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
+        {
+            var list = pi.GetValue(Data) as List<KeyValuePair<string,int>>;
+
+            var listControl = new BaseList();
+            listControl.MaxHeight = 200;
+            listControl.Loaded += (sender, args) =>
+            {
+                listControl.Items.CollectionChanged += (o, e) =>
+                {
+                    var newData = new List<KeyValuePair<string,int>>();
+                    foreach (var item in listControl.Items)
+                    {
+                        newData.Add(JsonConvert.DeserializeObject<KeyValuePair<string,int>>(item));
+                    }
+                    pi.SetValue(configData, newData);
+
+                    isCanRender = false;
+                    Data = configData;
+                };
+            };
+            listControl.Margin = new Thickness(15, 0, 15, 10);
+
+            if (list != null)
+            {
+                foreach (KeyValuePair<string,int> item in list)
+                {
+                    listControl.Items.Add(JsonConvert.SerializeObject(item));
+                }
+            }
+            else
+            {
+                list = new List<KeyValuePair<string,int>>();
+            }
+            var contextMenu = new ContextMenu();
+
+            var contextMenuItemDel = new MenuItem();
+            contextMenuItemDel.Header = "移除";
+            contextMenuItemDel.Click += (e, c) =>
+            {
+                listControl.Items.Remove(listControl.SelectedItem);
+            };
+            var contextMenuItemCopy = new MenuItem();
+            contextMenuItemCopy.Header = "复制内容";
+            contextMenuItemCopy.Click += (e, c) =>
+            {
+                Clipboard.SetText(listControl.SelectedItem);
+            };
+            contextMenu.Items.Add(contextMenuItemCopy);
+            contextMenu.Items.Add(new Separator());
+            contextMenu.Items.Add(contextMenuItemDel);
+            listControl.ContextMenu = contextMenu;
+
+
+            //  添加输入框
+            var keyInputBox = new InputBox();
+            keyInputBox.Placeholder = configAttribute.Placeholder;
+            keyInputBox.Margin = new Thickness(0, 0, 10, 0);
+
+            var valueInputBox = new InputBox();
+            valueInputBox.Placeholder = configAttribute.PlaceholderAddition;
+            valueInputBox.Margin = new Thickness(0, 0, 10, 0);
+
+            //添加
+            var addBtn = new Button.Button();
+            //addBtn.Margin = new Thickness(15, 0, 15, 10);
+            addBtn.Content = "添加";
+
+            addBtn.Click += (e, c) =>
+            {
+                if (keyInputBox.Text == String.Empty)
+                {
+                    keyInputBox.Error = configAttribute.Name + "不能为空";
+                    keyInputBox.ShowError();
+                    return;
+                }
+                if(valueInputBox.Text == String.Empty)
+                {
+                    valueInputBox.Error = configAttribute.NameAddition + "不能为空";
+                    valueInputBox.ShowError();
+                    return;
+                }
+
+                if (!int.TryParse(valueInputBox.Text, out var categoryId))
+                {
+                    valueInputBox.Error = configAttribute.NameAddition + "只能为数字";
+                    valueInputBox.ShowError();
+                    return;
+                }
+
+                var value = new KeyValuePair<string, int>(keyInputBox.Text, categoryId);
+
+                if (list.Contains(value))
+                {
+                    keyInputBox.Error = "已存在相同规则";
+                    keyInputBox.ShowError();
+                    return;
+                }
+                //list.Add(addInputBox.Text);
+                listControl.Items.Add(JsonConvert.SerializeObject(value));
+                keyInputBox.Text = String.Empty;
+                valueInputBox.Text = String.Empty;
+
+            };
+            pi.SetValue(configData, list);
+
+            IconButton moreActionBtn = new IconButton();
+            moreActionBtn.VerticalAlignment = VerticalAlignment.Center;
+            moreActionBtn.HorizontalAlignment = HorizontalAlignment.Right;
+            moreActionBtn.Margin = new Thickness(0, 5, 5, 0);
+            moreActionBtn.Icon = Base.IconTypes.More;
+
+            var moreActionMenu = new ContextMenu();
+
+            moreActionBtn.MouseLeftButtonUp += (e, c) =>
+            {
+                moreActionMenu.IsOpen = true;
+            };
+            bool isHasMoreAction = false;
+            if (configAttribute.IsCanImportExport)
+            {
+                //  允许导入导出
+                isHasMoreAction = true;
+
+                //  导入操作
+                var importMenuItem = new MenuItem();
+                importMenuItem.Header = "导入";
+                importMenuItem.Click += (e, c) =>
+                {
+                    Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+                    ofd.Title = "选择文件";
+                    ofd.Filter = "json(*.json)|*.json";
+                    ofd.FileName = configAttribute.Name;
+
+                    bool? result = ofd.ShowDialog();
+                    if (result == true)
+                    {
+                        try
+                        {
+                            List<string> data = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(ofd.FileName));
+                            if (data == null)
+                            {
+                                MessageBox.Show("文件格式有误或者数据为空，请选择有效的导出文件。");
+                            }
+                            else
+                            {
+                                if (MessageBox.Show("导入将覆盖现有配置，确定吗？", "注意", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                                {
+                                    pi.SetValue(configData, data);
+                                    listControl.Items.Clear();
+                                    foreach (string item in data)
+                                    {
+                                        listControl.Items.Add(item);
+                                    }
+                                    MessageBox.Show("导入完成！", "提示");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error($"导入配置“{configAttribute.Name}”时失败：{ex.Message}");
+                            MessageBox.Show("导入失败！", "提示");
+                        }
+                    }
+
+                };
+
+                //  导出操作
+                var exportMenuItem = new MenuItem();
+                exportMenuItem.Header = "导出";
+                exportMenuItem.Click += (e, c) =>
+                {
+                    try
+                    {
+                        Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog();
+                        sfd.Title = "选择文件";
+                        sfd.Filter = "json(*.json)|*.json";
+                        sfd.FileName = configAttribute.Name + "导出配置";
+
+                        bool? result = sfd.ShowDialog();
+                        if (result == true)
+                        {
+                            File.WriteAllText(sfd.FileName, JsonConvert.SerializeObject(listControl.Items));
+                            MessageBox.Show("导出完成", "提示");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"导出配置“{configAttribute.Name}”时失败：{ex.Message}");
+                        MessageBox.Show("导出失败！", "提示");
+                    }
+
+                };
+
+
+                moreActionMenu.Items.Add(importMenuItem);
+                moreActionMenu.Items.Add(exportMenuItem);
+            }
+
+
+            var inputPanel = new Grid();
+            inputPanel.ColumnDefinitions.Add(
+                new ColumnDefinition()
+                {
+                    Width = new GridLength(6, GridUnitType.Star)
+                });
+            inputPanel.ColumnDefinitions.Add(
+                new ColumnDefinition()
+                {
+                    Width = new GridLength(4, GridUnitType.Star)
+                });
+            inputPanel.ColumnDefinitions.Add(
+               new ColumnDefinition()
+               {
+                   Width = new GridLength(2, GridUnitType.Star)
+               });
+
+            inputPanel.Margin = new Thickness(15, 10, 15, 10);
+            Grid.SetColumn(keyInputBox, 0);
+            Grid.SetColumn(valueInputBox, 1);
+            Grid.SetColumn(addBtn, 2);
+
+            inputPanel.Children.Add(keyInputBox);
+            inputPanel.Children.Add(valueInputBox);
+            inputPanel.Children.Add(addBtn);
+
+            //  标题和说明
+
+            var description = new TextBlock();
+            description.Text = configAttribute.Description;
+            description.Margin = new Thickness(10, 10, 10, 0);
+            description.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#989CA1"));
+            var container = new StackPanel();
+
+            var head = new Grid();
+            head.ColumnDefinitions.Add(
+                 new ColumnDefinition()
+                 {
+                     Width = new GridLength(10, GridUnitType.Star)
+                 });
+            head.ColumnDefinitions.Add(
+               new ColumnDefinition()
+               {
+                   Width = new GridLength(2, GridUnitType.Star)
+               });
+            Grid.SetColumn(description, 0);
+            head.Children.Add(description);
+
+            //  更多操作按钮
+            if (isHasMoreAction)
+            {
+                Grid.SetColumn(moreActionBtn, 1);
+                head.Children.Add(moreActionBtn);
+            }
+
+            container.Children.Add(head);
+            container.Children.Add(inputPanel);
+            container.Children.Add(listControl);
+            return container;
+        }
         private UIElement RenderListStringConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
         {
             var list = pi.GetValue(Data) as List<string>;

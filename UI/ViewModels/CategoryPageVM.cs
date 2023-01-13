@@ -65,7 +65,7 @@ namespace UI.ViewModels
             {
                 return;
             }
-            var category = categorys.GetCategory(SelectedItem.Data.ID);
+            var category = categorys.GetCategoryByID(SelectedItem.Data.ID);
             if (category != null)
             {
                 categorys.Delete(category);
@@ -184,7 +184,7 @@ namespace UI.ViewModels
                 }
                 mainVM.Toast("已更新", Controls.Window.ToastType.Success);
 
-                var category = categorys.GetCategory(SelectedItem.Data.ID);
+                var category = categorys.GetCategoryByID(SelectedItem.Data.ID);
                 if (category != null)
                 {
                     category.Name = EditName;

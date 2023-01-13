@@ -20,9 +20,7 @@
                 BorderThickness="0"
                 Margin="0,15,0,0"
                 Padding="0"
-                Background="Transparent"
-            
-                >
+                Background="Transparent">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">

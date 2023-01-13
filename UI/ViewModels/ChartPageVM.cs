@@ -228,7 +228,7 @@ namespace UI.ViewModels
                 };
                 foreach (var item in list)
                 {
-                    var category = categorys.GetCategory(item.CategoryID);
+                    var category = categorys.GetCategoryByID(item.CategoryID);
                     if (item.CategoryID == 0)
                     {
                         category = nullCategory;
@@ -304,7 +304,7 @@ namespace UI.ViewModels
 
                 foreach (var item in list)
                 {
-                    var category = categorys.GetCategory(item.CategoryID);
+                    var category = categorys.GetCategoryByID(item.CategoryID);
                     if (item.CategoryID == 0)
                     {
                         category = nullCategory;
@@ -383,7 +383,7 @@ namespace UI.ViewModels
 
                 foreach (var item in list)
                 {
-                    var category = categorys.GetCategory(item.CategoryID);
+                    var category = categorys.GetCategoryByID(item.CategoryID);
                     if (item.CategoryID == 0)
                     {
                         category = nullCategory;
@@ -458,7 +458,7 @@ namespace UI.ViewModels
 
                 foreach (var item in list)
                 {
-                    var category = categorys.GetCategory(item.CategoryID);
+                    var category = categorys.GetCategoryByID(item.CategoryID);
                     if (item.CategoryID == 0)
                     {
                         category = nullCategory;

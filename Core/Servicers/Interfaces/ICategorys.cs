@@ -18,7 +18,8 @@ namespace Core.Servicers.Interfaces
         /// 加载已存储的分类数据，仅建议在启动时调用一次，无必要请勿再次调用
         /// </summary>
         void Load();
-        CategoryModel GetCategory(int id);
+        CategoryModel GetCategoryByID(int id);
+        CategoryModel GetCategoryByName(string name);
         CategoryModel Create(CategoryModel category);
         void Update(CategoryModel category);
         void Delete(CategoryModel category);
