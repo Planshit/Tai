@@ -475,7 +475,7 @@ namespace Core.Servicers.Instances
                             "sum(Time) as Total," +
                             "AppModels.CategoryID," +
                             "AppModels.ID as AppId, " +
-                            "lDailyLogModels.Date as Time " +
+                            "DailyLogModels.Date as Time " +
                             "from DailyLogModels join AppModels on AppModels.ID=DailyLogModels.AppModelID " +
                             "where  DailyLogModels.Date>='" +
                             start.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DailyLogModels.Date<= '" +
