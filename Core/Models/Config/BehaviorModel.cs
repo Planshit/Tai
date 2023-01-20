@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Models.Config.Category;
 
 namespace Core.Models.Config
 {
@@ -17,7 +18,7 @@ namespace Core.Models.Config
         /// </summary>
         public List<string> IgnoreProcessList { get; set; } = new List<string>();
 
-        [Config(IsCanImportExport = true, Name = "匹配规则", NameAddition = "分类名称", Description = "文件夹路径或正则表达式对进程进行匹配", Group = "自动分类", Placeholder = "匹配规则，输入文件夹路径或正则表达式", PlaceholderAddition = "分组名")]
-        public List<KeyValuePair<string, int>> AutoCategoryProcessList { get; set; } = new List<KeyValuePair<string, int>>();
+        [Config(IsCanImportExport = true, Name = "匹配规则", Description = "文件夹路径或正则表达式对进程进行匹配", Group = "自动分类")]
+        public List<AutoCategoryModel> AutoCategoryProcessList { get; set; } = new List<AutoCategoryModel>();
     }
 }

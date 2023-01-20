@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Core.Models;
 using UI.Controls;
 using UI.Models;
 
@@ -22,16 +23,23 @@ namespace UI.ViewModels
         private readonly IAppConfig appConfig;
         private readonly MainViewModel mainVM;
         private readonly IData data;
+        private readonly ICategorys categorys;
         public Command OpenURL { get; set; }
         public Command CheckUpdate { get; set; }
         public Command DelDataCommand { get; set; }
         public Command ExportDataCommand { get; set; }
 
-        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data)
+        public List<CategoryModel> GetCategories()
+        {
+            return categorys.GetCategories();
+        }
+
+        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data, ICategorys categorys)
         {
             this.appConfig = appConfig;
             this.mainVM = mainVM;
             this.data = data;
+            this.categorys = categorys;
 
             OpenURL = new Command(new Action<object>(OnOpenURL));
             CheckUpdate = new Command(new Action<object>(OnCheckUpdate));

@@ -14,10 +14,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Core.Models.Config.Category;
 using UI.Controls.Button;
 using UI.Controls.Input;
 using UI.Controls.List;
 using UI.Controls.Select;
+using UI.ViewModels;
 
 namespace UI.Controls.SettingPanel
 {
@@ -329,9 +331,9 @@ namespace UI.Controls.SettingPanel
             else if (pi.PropertyType == typeof(List<string>))
             {
                 uIElement = RenderListStringConfigControl(attribute, pi);
-            }else if(pi.PropertyType == typeof(List<KeyValuePair<string, int>>))
+            }else if(pi.PropertyType == typeof(List<AutoCategoryModel>))
             {
-                uIElement = RenderListStringPairConfigControl(attribute, pi);
+                uIElement = RenderAutoCategoryConfigControl(attribute, pi);
             }
             else if (pi.PropertyType == typeof(int))
             {
@@ -445,41 +447,26 @@ namespace UI.Controls.SettingPanel
             return item;
         }
 
-        //TODO: 临时占位
-        // 待重写此处界面
-        private UIElement RenderListStringPairConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
+        private UIElement RenderAutoCategoryConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
         {
-            var list = pi.GetValue(Data) as List<KeyValuePair<string,int>>;
+
+            var model = DataContext as SettingPageVM;
+            var list = pi.GetValue(Data) as List<AutoCategoryModel>;
 
             var listControl = new BaseList();
             listControl.MaxHeight = 200;
-            listControl.Loaded += (sender, args) =>
-            {
-                listControl.Items.CollectionChanged += (o, e) =>
-                {
-                    var newData = new List<KeyValuePair<string,int>>();
-                    foreach (var item in listControl.Items)
-                    {
-                        newData.Add(JsonConvert.DeserializeObject<KeyValuePair<string,int>>(item));
-                    }
-                    pi.SetValue(configData, newData);
-
-                    isCanRender = false;
-                    Data = configData;
-                };
-            };
             listControl.Margin = new Thickness(15, 0, 15, 10);
 
             if (list != null)
             {
-                foreach (KeyValuePair<string,int> item in list)
+                foreach (AutoCategoryModel value in list)
                 {
-                    listControl.Items.Add(JsonConvert.SerializeObject(item));
+                    listControl.Items.Add($"将 {value.RegexRule} 添加到 \"{value.CategoryName}\"");
                 }
             }
             else
             {
-                list = new List<KeyValuePair<string,int>>();
+                list = new List<AutoCategoryModel>();
             }
             var contextMenu = new ContextMenu();
 
@@ -487,28 +474,35 @@ namespace UI.Controls.SettingPanel
             contextMenuItemDel.Header = "移除";
             contextMenuItemDel.Click += (e, c) =>
             {
+                var index = listControl.Items.IndexOf(listControl.SelectedItem);
                 listControl.Items.Remove(listControl.SelectedItem);
+                list.RemoveAt(index);
             };
-            var contextMenuItemCopy = new MenuItem();
-            contextMenuItemCopy.Header = "复制内容";
-            contextMenuItemCopy.Click += (e, c) =>
-            {
-                Clipboard.SetText(listControl.SelectedItem);
-            };
-            contextMenu.Items.Add(contextMenuItemCopy);
-            contextMenu.Items.Add(new Separator());
             contextMenu.Items.Add(contextMenuItemDel);
             listControl.ContextMenu = contextMenu;
 
 
             //  添加输入框
-            var keyInputBox = new InputBox();
-            keyInputBox.Placeholder = configAttribute.Placeholder;
-            keyInputBox.Margin = new Thickness(0, 0, 10, 0);
+            var regexInputBox = new InputBox();
+            regexInputBox.Placeholder = "自动分类规则，指定正则表达式和目标分组";
+            regexInputBox.Margin = new Thickness(0, 0, 10, 0);
 
-            var valueInputBox = new InputBox();
-            valueInputBox.Placeholder = configAttribute.PlaceholderAddition;
-            valueInputBox.Margin = new Thickness(0, 0, 10, 0);
+            var targetCategoryOptionBox = new Select.Select();
+            targetCategoryOptionBox.Margin = new Thickness(0, 0, 10, 0);
+            var options = new List<SelectItemModel>();
+            options.AddRange(model.GetCategories().Select((item) => new SelectItemModel() {
+                Img = item.IconFile,
+                Name = item.Name,
+                Data = item.ID 
+            }));
+            targetCategoryOptionBox.Options = options;
+            targetCategoryOptionBox.IsShowIcon = true;
+            targetCategoryOptionBox.SelectedItem = new SelectItemModel()
+            {
+                Img = "",
+                Name = "未指定",
+                Data = 0
+            };
 
             //添加
             var addBtn = new Button.Button();
@@ -517,38 +511,40 @@ namespace UI.Controls.SettingPanel
 
             addBtn.Click += (e, c) =>
             {
-                if (keyInputBox.Text == String.Empty)
+                if (regexInputBox.Text == String.Empty)
                 {
-                    keyInputBox.Error = configAttribute.Name + "不能为空";
-                    keyInputBox.ShowError();
-                    return;
-                }
-                if(valueInputBox.Text == String.Empty)
-                {
-                    valueInputBox.Error = configAttribute.NameAddition + "不能为空";
-                    valueInputBox.ShowError();
+                    regexInputBox.Error = "规则不能为空";
+                    regexInputBox.ShowError();
                     return;
                 }
 
-                if (!int.TryParse(valueInputBox.Text, out var categoryId))
+                var selectItem = targetCategoryOptionBox.SelectedItem.Data as int?;
+                
+                if(selectItem == null || selectItem == 0)
                 {
-                    valueInputBox.Error = configAttribute.NameAddition + "只能为数字";
-                    valueInputBox.ShowError();
+                    regexInputBox.Error = "必须在右侧指定目标分类";
+                    regexInputBox.ShowError();
                     return;
                 }
-
-                var value = new KeyValuePair<string, int>(keyInputBox.Text, categoryId);
+                var value = new AutoCategoryModel()
+                {
+                    RegexRule = regexInputBox.Text,
+                    CategoryID = selectItem.Value,
+                    CategoryName = targetCategoryOptionBox.SelectedItem.Name
+                };
 
                 if (list.Contains(value))
                 {
-                    keyInputBox.Error = "已存在相同规则";
-                    keyInputBox.ShowError();
+                    regexInputBox.Error = "已存在相同规则";
+                    regexInputBox.ShowError();
                     return;
                 }
                 //list.Add(addInputBox.Text);
-                listControl.Items.Add(JsonConvert.SerializeObject(value));
-                keyInputBox.Text = String.Empty;
-                valueInputBox.Text = String.Empty;
+                list.Add(value);
+                listControl.Items.Add($"将 {value.RegexRule} 添加到 \"{value.CategoryName}\"");
+                pi.SetValue(configData, list);
+                regexInputBox.Text = String.Empty;
+                targetCategoryOptionBox.SelectedItem = targetCategoryOptionBox.Options[0];
 
             };
             pi.SetValue(configData, list);
@@ -651,12 +647,12 @@ namespace UI.Controls.SettingPanel
             inputPanel.ColumnDefinitions.Add(
                 new ColumnDefinition()
                 {
-                    Width = new GridLength(6, GridUnitType.Star)
+                    Width = new GridLength(8, GridUnitType.Star)
                 });
             inputPanel.ColumnDefinitions.Add(
                 new ColumnDefinition()
                 {
-                    Width = new GridLength(4, GridUnitType.Star)
+                    Width = new GridLength(3, GridUnitType.Star)
                 });
             inputPanel.ColumnDefinitions.Add(
                new ColumnDefinition()
@@ -665,12 +661,12 @@ namespace UI.Controls.SettingPanel
                });
 
             inputPanel.Margin = new Thickness(15, 10, 15, 10);
-            Grid.SetColumn(keyInputBox, 0);
-            Grid.SetColumn(valueInputBox, 1);
+            Grid.SetColumn(regexInputBox, 0);
+            Grid.SetColumn(targetCategoryOptionBox, 1);
             Grid.SetColumn(addBtn, 2);
 
-            inputPanel.Children.Add(keyInputBox);
-            inputPanel.Children.Add(valueInputBox);
+            inputPanel.Children.Add(regexInputBox);
+            inputPanel.Children.Add(targetCategoryOptionBox);
             inputPanel.Children.Add(addBtn);
 
             //  标题和说明

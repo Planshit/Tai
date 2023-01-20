@@ -13,6 +13,7 @@ using Npoi.Mapper;
 using System.IO;
 using CsvHelper;
 using System.Globalization;
+using Core.Models.Config.Category;
 
 namespace Core.Servicers.Instances
 {
@@ -369,14 +370,14 @@ namespace Core.Servicers.Instances
                         };
                     }
 
-                    foreach (KeyValuePair<string, int> rule in
+                    foreach (AutoCategoryModel rule in
                              appConfig.GetConfig().Behavior.AutoCategoryProcessList)
                     {
-                        if (RegexHelper.IsMatch(appData.GetApp(item.AppId).File, rule.Key))
+                        if (RegexHelper.IsMatch(appData.GetApp(item.AppId).File, rule.RegexRule))
                         {
                             return new CategoryHoursDataModel()
                             {
-                                CategoryID = rule.Value,
+                                CategoryID = rule.CategoryID,
                                 Total = item.Total,
                                 Time = item.Time
                             };
@@ -417,7 +418,7 @@ namespace Core.Servicers.Instances
                     "from HoursLogModels join AppModels on AppModels.ID=HoursLogModels.AppModelID " +
                     "where HoursLogModels.DataTime>='" + date.Date.ToString("yyyy-MM-dd HH:mm:ss") +
                     "' and HoursLogModels.DataTime<= '" + date.Date.ToString("yyyy-MM-dd 23:59:59") +
-                    "' GROUP BY AppModels.CategoryID,HoursLogModels.DataTime "
+                    "' GROUP BY AppModels.ID, HoursLogModels.DataTime "
                 ).ToList());
 
                 // 无 Time 数据!
@@ -480,7 +481,7 @@ namespace Core.Servicers.Instances
                             "where  DailyLogModels.Date>='" +
                             start.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DailyLogModels.Date<= '" +
                             end.Date.ToString("yyyy-MM-dd HH:mm:ss") +
-                            "' GROUP BY AppModels.CategoryID,DailyLogModels.Date ")
+                            "' GROUP BY AppModels.ID, DailyLogModels.Date ")
                         .ToList());
 
                 // 无 Time 数据!
@@ -551,7 +552,7 @@ namespace Core.Servicers.Instances
                     "where DailyLogModels.Date>='" +
                     dateArr[0].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DailyLogModels.Date<= '" +
                     dateArr[1].Date.ToString("yyyy-MM-dd HH:mm:ss") +
-                    "' GROUP BY AppModels.CategoryID,DailyLogModels.Date ").ToList());
+                    "' GROUP BY AppModels.ID, DailyLogModels.Date ").ToList());
 
 
                 // 无 Time 数据!

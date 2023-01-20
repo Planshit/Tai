@@ -15,7 +15,6 @@ namespace Core.Models.Config
     public class ConfigAttribute : System.Attribute
     {
         public string Name;
-        public string NameAddition; // 用于 RenderStringPairList ，表示第二项的名称
         public string Description;
         public string ToggleTrueText;
         public string ToggleFalseText;
@@ -23,7 +22,6 @@ namespace Core.Models.Config
         public int Index;
         public bool IsName;
         public string Placeholder;
-        public string PlaceholderAddition; // 用于 RenderStringPairList，表示第二项的 Placeholder
         public bool IsCanRepeat;
         public bool IsCanImportExport;
         public string Options;

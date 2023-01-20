@@ -205,7 +205,7 @@ namespace UI.Controls.Window
             if (Icon == null)
             {
                 Icon = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(
-             System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name));
+             System.Reflection.Assembly.GetEntryAssembly().ManifestModule.FullyQualifiedName));
             }
 
             Loaded += window_Loaded;
