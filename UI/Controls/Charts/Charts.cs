@@ -490,6 +490,21 @@ namespace UI.Controls.Charts
 
 
         #endregion
+        #region 图标大小（仅列表样式有效）
+        /// <summary>
+        /// 图标大小（仅列表样式有效）
+        /// </summary>
+        public double IconSize
+        {
+            get { return (double)GetValue(IconSizeProperty); }
+            set { SetValue(IconSizeProperty, value); }
+        }
+        public static readonly DependencyProperty IconSizeProperty =
+            DependencyProperty.Register("IconSize",
+                typeof(double),
+                typeof(Charts),
+                new PropertyMetadata((double)25));
+        #endregion
 
         private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -534,6 +549,7 @@ namespace UI.Controls.Charts
         private Border RadarContainer;
         private ListView _listView;
         private Canvas _typeColumnCanvas;
+        private Canvas _commonCanvas;
 
         private Dictionary<int, List<Rectangle>> _typeColValueRectMap;
         private Dictionary<int, Rectangle> _typeColBorderRectMap;
@@ -553,25 +569,6 @@ namespace UI.Controls.Charts
         public Charts()
         {
             DefaultStyleKey = typeof(Charts);
-
-
-            SizeChanged += Charts_SizeChanged;
-            Unloaded += Charts_Unloaded;
-        }
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            base.OnRender(drawingContext);
-            //_listView.Height = 1;
-
-        }
-        private void Charts_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            UpdateListViewHeight();
-        }
-
-        private void Charts_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Unloaded -= Charts_Unloaded;
         }
 
         public override void OnApplyTemplate()
@@ -582,39 +579,29 @@ namespace UI.Controls.Charts
             RadarContainer = GetTemplateChild("Radar") as Border;
             _listView = GetTemplateChild("ListView") as ListView;
             _typeATempContainer = GetTemplateChild("TypeATempContainer") as StackPanel;
+            _commonCanvas = GetTemplateChild("CommonCanvasContainer") as Canvas;
+
             if (ChartsType == ChartsType.Column)
             {
                 _typeColumnCanvas = GetTemplateChild("TypeColumnCanvas") as Canvas;
                 _typeColumnCanvas.SizeChanged += _typeColumnCanvas_SizeChanged;
             }
-
-            UpdateListViewHeight();
-
-            Render();
-
-            if (ChartsType == ChartsType.HorizontalA && IsSearch)
+            if (ChartsType == ChartsType.Pie)
             {
-                var parent = VisualTreeHelper.GetParent(this);
-                while (!(parent is System.Windows.Window))
-                {
-                    parent = VisualTreeHelper.GetParent(parent);
-                }
-                var page = parent as System.Windows.Window;
-                page.SizeChanged += Page_SizeChanged;
+                _commonCanvas.SizeChanged += _commonCanvas_SizeChanged;
             }
+            Render();
+        }
+
+
+        private void _commonCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            RenderPieStyle();
         }
 
         private void _typeColumnCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             RenderColumnStyle();
-        }
-
-        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (double.IsNaN(Height))
-            {
-                _listView.Height = 1;
-            }
         }
 
         private void Render()
@@ -639,8 +626,8 @@ namespace UI.Controls.Charts
                 {
                     switch (ChartsType)
                     {
-                        case ChartsType.HorizontalA:
-                            var item = new ChartsItemTypeA();
+                        case ChartsType.List:
+                            var item = new ChartsItemTypeList();
                             item.IsLoading = true;
                             _typeATempContainer.Children.Add(item);
                             break;
@@ -664,7 +651,7 @@ namespace UI.Controls.Charts
             //  如果设置了固定的最大值则使用，否则查找数据中的最大值
             maxValue = MaxValueLimit > 0 ? MaxValueLimit : Data.Count() > 0 ? Data.Max(m => m.Value) : 0;
 
-            if (ChartsType == ChartsType.HorizontalA)
+            if (ChartsType == ChartsType.List)
             {
                 //不允许最大值小于10，否则效果不好看
                 if (maxValue < 10)
@@ -698,6 +685,7 @@ namespace UI.Controls.Charts
             CardContainer.Children.Clear();
             MonthContainer.Children.Clear();
             _typeATempContainer.Children.Clear();
+            _commonCanvas.Children.Clear();
 
             RadarContainer.Child = null;
             ListViewBindingData = null;
@@ -707,6 +695,7 @@ namespace UI.Controls.Charts
                 CardContainer.Children.Add(new EmptyData());
                 RadarContainer.Child = new EmptyData();
                 _typeATempContainer.Children.Add(new EmptyData());
+                _commonCanvas.Children.Add(new EmptyData());
 
                 IsEmpty = true;
                 return;
@@ -719,8 +708,8 @@ namespace UI.Controls.Charts
             isRendering = true;
             switch (ChartsType)
             {
-                case ChartsType.HorizontalA:
-                    RenderHorizontalAStyle();
+                case ChartsType.List:
+                    RenderListStyle();
                     break;
                 case ChartsType.Card:
                     RenderCardStyle();
@@ -734,52 +723,15 @@ namespace UI.Controls.Charts
                 case ChartsType.Radar:
                     RenderLadarStyle();
                     break;
+                case ChartsType.Pie:
+                    RenderPieStyle();
+                    break;
             }
 
         }
 
-        #region 渲染横向样式A
-        private void UpdateListViewHeight()
-        {
-            if (ChartsType == ChartsType.HorizontalA)
-            {
-                var header = GetTemplateChild("AHeader") as Grid;
-                var h = ActualHeight - header.ActualHeight;
-
-                _listView.Height = h;
-
-                if (!IsCanScroll && double.IsNaN(Height))
-                {
-                    //  显示全部内容
-                    var item = GetChild<ChartsItemTypeA>(this) as ChartsItemTypeA;
-                    if (item != null)
-                    {
-                        double height = item.ActualHeight + item.Margin.Top + item.Margin.Bottom;
-
-                        _listView.Height = height * _listView.Items.Count;
-                    }
-                }
-            }
-        }
-        private DependencyObject GetChild<T>(DependencyObject e) where T : DependencyObject
-        {
-            if (e == null)
-            {
-                return e;
-            }
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(e); i++)
-            {
-                var c = VisualTreeHelper.GetChild(e, i);
-
-                var result = c as T ?? GetChild<T>(c);
-                if (result != null)
-                {
-                    return result;
-                }
-            }
-            return null;
-        }
-        private void RenderHorizontalAStyle()
+        #region 渲染列表样式
+        private void RenderListStyle()
         {
             ListViewBindingData = Data.OrderByDescending(x => x.Value).ToList();
             if (ShowLimit > 0)
@@ -858,33 +810,21 @@ namespace UI.Controls.Charts
                 {
                     var newListData = new List<ChartsDataModel>();
 
-
-
                     foreach (var data in Data)
                     {
-                        var log = data.Data as DailyLogModel;
-                        var app = log != null ? log.AppModel : null;
+                        string content = (data.Name + data.PopupText).ToLower();
+                        bool show = content.IndexOf(searchKey) != -1;
 
-                        if (log == null)
+                        if (!show)
                         {
-                            app = (data.Data as HoursLogModel).AppModel;
+                            show = searchKey == "忽略" && data.BadgeList.Where(m => m.Type == ChartBadgeType.Ignore).Any();
+                            if (data.BadgeList.Any())
+                            {
+                                //  搜索徽章名（分类名）
+                                show = data.BadgeList.Where(m => m.Name.ToLower().Contains(searchKey)).Any();
+                            }
                         }
 
-                        bool show = false;
-                        if (app != null)
-                        {
-                            string description = app.Description != null ? app.Description.ToLower() : string.Empty;
-
-                            show = string.IsNullOrEmpty(searchKey) || app.Name.ToLower().Contains(searchKey) || app.File.ToLower().Contains(searchKey) || description.Contains(searchKey);
-                        }
-                        if (!show && app.Category != null)
-                        {
-                            show = app.Category.Name.Contains(searchKey);
-                        }
-                        if (!show && searchKey == "忽略")
-                        {
-                            show = data.BadgeList.Where(m => m.Type == ChartBadgeType.Ignore).Any();
-                        }
                         if (show)
                         {
                             newListData.Add(data);
@@ -1498,6 +1438,27 @@ namespace UI.Controls.Charts
             radar.Data = Data.OrderBy(m => m.Values.Sum()).ToList();
             radar.MaxValue = maxValue;
             RadarContainer.Child = radar;
+
+            isRendering = false;
+        }
+        #endregion
+
+        #region 饼图
+        private void RenderPieStyle()
+        {
+            if (_commonCanvas == null)
+            {
+                isRendering = false;
+                return;
+            }
+            _commonCanvas.Children.Clear();
+            var item = new ChartsItemTypePie();
+            item.Width = _commonCanvas.ActualWidth;
+            item.Height = _commonCanvas.ActualHeight;
+            item.HorizontalAlignment = HorizontalAlignment.Left;
+            item.VerticalAlignment = VerticalAlignment.Top;
+            item.Data = Data.OrderBy(m => m.Value).ToList();
+            _commonCanvas.Children.Add(item);
 
             isRendering = false;
         }

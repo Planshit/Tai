@@ -12,9 +12,9 @@ namespace UI.Controls.Charts
     public enum ChartsType
     {
         /// <summary>
-        /// 横向A样式
+        /// 列表
         /// </summary>
-        HorizontalA = 1,
+        List = 1,
         /// <summary>
         /// 卡片
         /// </summary>
@@ -31,5 +31,9 @@ namespace UI.Controls.Charts
         /// 雷达图
         /// </summary>
         Radar = 5,
+        /// <summary>
+        /// 饼图
+        /// </summary>
+        Pie = 6
     }
 }

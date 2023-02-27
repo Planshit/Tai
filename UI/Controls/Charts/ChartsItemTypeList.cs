@@ -19,7 +19,7 @@ using UI.Controls.Charts.Model;
 
 namespace UI.Controls.Charts
 {
-    public class ChartsItemTypeA : Control
+    public class ChartsItemTypeList : Control
     {
         #region ChartsType 样式类型
         /// <summary>
@@ -33,7 +33,7 @@ namespace UI.Controls.Charts
         public static readonly DependencyProperty DataProperty =
             DependencyProperty.Register("Data",
                 typeof(ChartsDataModel),
-                typeof(ChartsItemTypeA));
+                typeof(ChartsItemTypeList));
 
 
         #endregion
@@ -50,7 +50,7 @@ namespace UI.Controls.Charts
         public static readonly DependencyProperty MaxValueProperty =
             DependencyProperty.Register("MaxValue",
                 typeof(double),
-                typeof(ChartsItemTypeA));
+                typeof(ChartsItemTypeList));
 
 
         #endregion
@@ -67,7 +67,7 @@ namespace UI.Controls.Charts
         public static readonly DependencyProperty IsLoadingProperty =
             DependencyProperty.Register("IsLoading",
                 typeof(bool),
-                typeof(ChartsItemTypeA));
+                typeof(ChartsItemTypeList));
 
 
         #endregion
@@ -84,7 +84,24 @@ namespace UI.Controls.Charts
         public static readonly DependencyProperty IsShowBadgeProperty =
             DependencyProperty.Register("IsShowBadge",
                 typeof(bool),
-                typeof(ChartsItemTypeA));
+                typeof(ChartsItemTypeList));
+
+
+        #endregion
+
+        #region 图标大小
+        /// <summary>
+        /// 图标大小
+        /// </summary>
+        public double IconSize
+        {
+            get { return (double)GetValue(IconSizeProperty); }
+            set { SetValue(IconSizeProperty, value); }
+        }
+        public static readonly DependencyProperty IconSizeProperty =
+            DependencyProperty.Register("IconSize",
+                typeof(double),
+                typeof(ChartsItemTypeList), new PropertyMetadata((double)25));
 
 
         #endregion
@@ -95,16 +112,16 @@ namespace UI.Controls.Charts
         private Image IconObj;
         private bool isRendering = false;
         private bool IsAddEvent = false;
-        public ChartsItemTypeA()
+        public ChartsItemTypeList()
         {
-            DefaultStyleKey = typeof(ChartsItemTypeA);
-            Unloaded += ChartsItemTypeA_Unloaded;
+            DefaultStyleKey = typeof(ChartsItemTypeList);
+            Unloaded += ChartsItemTypeList_Unloaded;
         }
 
-        private void ChartsItemTypeA_Unloaded(object sender, RoutedEventArgs e)
+        private void ChartsItemTypeList_Unloaded(object sender, RoutedEventArgs e)
         {
-            Unloaded -= ChartsItemTypeA_Unloaded;
-            Loaded -= ChartsItemTypeA_Loaded;
+            Unloaded -= ChartsItemTypeList_Unloaded;
+            Loaded -= ChartsItemTypeList_Loaded;
         }
 
         public override void OnApplyTemplate()
@@ -120,7 +137,7 @@ namespace UI.Controls.Charts
 
             if (!IsAddEvent)
             {
-                Loaded += ChartsItemTypeA_Loaded;
+                Loaded += ChartsItemTypeList_Loaded;
                 IsAddEvent = true;
             }
 
@@ -133,7 +150,7 @@ namespace UI.Controls.Charts
             UpdateValueBlockWidth();
         }
 
-        private void ChartsItemTypeA_Loaded(object sender, RoutedEventArgs e)
+        private void ChartsItemTypeList_Loaded(object sender, RoutedEventArgs e)
         {
             Render();
         }

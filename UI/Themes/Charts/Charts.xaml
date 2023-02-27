@@ -16,10 +16,13 @@
                         <Border x:Name="Radar"  Visibility="Collapsed">
 
                         </Border>
-                        <Grid x:Name="HorizontalA"  Visibility="Collapsed" >
+                        <Canvas x:Name="CommonCanvasContainer"  Visibility="Collapsed">
+
+                        </Canvas>
+                        <Grid x:Name="List"  Visibility="Collapsed" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <Grid x:Name="AHeader" Visibility="Collapsed">
                                 <Grid.RowDefinitions>
@@ -35,7 +38,7 @@
                             </Grid>
                             <StackPanel x:Name="TypeATempContainer" Grid.Row="1" Visibility="Collapsed"/>
                             <!--list-->
-                            <ListView x:Name="ListView" Height="1" Grid.Row="1" ItemsSource="{TemplateBinding ListViewBindingData}" VirtualizingPanel.IsVirtualizing="True" >
+                            <ListView x:Name="ListView" Grid.Row="1" ItemsSource="{TemplateBinding ListViewBindingData}" VirtualizingPanel.IsVirtualizing="True" >
                                 <ListBox.Resources>
                                     <Style TargetType="{x:Type ListView}">
                                         <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -70,7 +73,7 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border>
-                                            <local:ChartsItemTypeA Data="{Binding}" MaxValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=DataMaxValue}" IsShowBadge="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=IsShowBadge}"/>
+                                            <local:ChartsItemTypeList IconSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=IconSize}" Data="{Binding}" MaxValue="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=DataMaxValue}" IsShowBadge="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:Charts}}, Path=IsShowBadge}"/>
                                         </Border>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
@@ -296,13 +299,13 @@
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsSearch" Value="True"/>
-                                <Condition Property="ChartsType" Value="HorizontalA"/>
+                                <Condition Property="ChartsType" Value="List"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" TargetName="AHeader"/>
                         </MultiTrigger>
                         <Trigger Property="ChartsType"
-                     Value="HorizontalA">
-                            <Setter TargetName="HorizontalA" Property="Visibility" Value="Visible"/>
+                     Value="List">
+                            <Setter TargetName="List" Property="Visibility" Value="Visible"/>
                         </Trigger>
                         <Trigger Property="ChartsType"
                      Value="Card">
@@ -320,10 +323,14 @@
                      Value="Radar">
                             <Setter TargetName="Radar" Property="Visibility" Value="Visible"/>
                         </Trigger>
+                        <Trigger Property="ChartsType"
+                     Value="Pie">
+                            <Setter TargetName="CommonCanvasContainer" Property="Visibility" Value="Visible"/>
+                        </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsLoading" Value="True"/>
-                                <Condition Property="ChartsType" Value="HorizontalA"/>
+                                <Condition Property="ChartsType" Value="List"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" TargetName="TypeATempContainer"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="ListView"/>
@@ -331,7 +338,7 @@
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEmpty" Value="True"/>
-                                <Condition Property="ChartsType" Value="HorizontalA"/>
+                                <Condition Property="ChartsType" Value="List"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible" TargetName="TypeATempContainer"/>
                             <Setter Property="Visibility" Value="Collapsed" TargetName="ListView"/>

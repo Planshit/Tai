@@ -18,7 +18,7 @@
         <ResourceDictionary Source="/Tai;component/Themes/TPage.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/PageContainer.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/Charts.xaml"/>
-        <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeA.xaml"/>
+        <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeList.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeCard.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeMonth.xaml"/>
         <ResourceDictionary Source="/Tai;component/Themes/Charts/ChartsItemTypeColumn.xaml"/>

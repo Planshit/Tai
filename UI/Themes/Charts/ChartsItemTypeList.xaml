@@ -4,7 +4,7 @@
                     xmlns:base="clr-namespace:UI.Controls.Base" xmlns:converter="clr-namespace:UI.Controls.Converters">
     <converter:HextoColorConverter x:Key="HextoColorConverter"/>
 
-    <Style TargetType="{x:Type local:ChartsItemTypeA}">
+    <Style TargetType="{x:Type local:ChartsItemTypeList}">
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
 
@@ -13,7 +13,7 @@
 
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:ChartsItemTypeA}">
+                <ControlTemplate TargetType="{x:Type local:ChartsItemTypeList}">
                     <!--<Border Background="{TemplateBinding Background}">-->
                     <Grid Background="{TemplateBinding Background}">
                         <Grid x:Name="Normal">
@@ -22,7 +22,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Border Margin="0,0,10,0" x:Name="IconBorder" BorderBrush="Transparent" BorderThickness="2" Background="{DynamicResource ListItemIconBgBrush}" CornerRadius="6"  Width="50" Height="50" HorizontalAlignment="Left">
-                                <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image x:Name="IconObj" Width="{TemplateBinding IconSize}" Height="{TemplateBinding IconSize}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
 
                             <StackPanel Grid.Column="1" x:Name="ValueContainer" VerticalAlignment="Center" >
@@ -33,7 +33,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock  x:Name="NameTextObj" Foreground="{DynamicResource DefaultTextBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-                                    <ListView x:Name="BadgeListView" Visibility="Collapsed" Grid.Column="1" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ChartsItemTypeA}}, Path=Data.BadgeList}" Margin="0,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                    <ListView x:Name="BadgeListView" Visibility="Collapsed" Grid.Column="1" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ChartsItemTypeList}}, Path=Data.BadgeList}" Margin="0,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
 
                                         <ListBox.Resources>
                                             <Style TargetType="{x:Type ListView}">
@@ -93,7 +93,7 @@
                             x:Name="ValueBlockObj"
                                 RadiusX="4"
                                 RadiusY="4"
-                                Fill="#7F777777"
+                                Fill="{DynamicResource ChartTypeListProgressBarBrush}"
                                 Height="8"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Left"
