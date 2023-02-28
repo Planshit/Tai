@@ -56,5 +56,11 @@ namespace Core.Models.Config
         /// </summary>
         [Config(Options = "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20", Name = "更多显示条数", Description = "", Group = "概览页")]
         public int IndexPageMoreNum { get; set; } = 11;
+
+        /// <summary>
+        /// 是否启用网站记录功能
+        /// </summary>
+        [Config(Name = "网站浏览统计", Description = "统计浏览器的网站访问数据，支持：Google Chrome、MSEdge", Group = "功能", IsBeta = true)]
+        public bool IsWebEnabled { get; set; } = false;
     }
 }

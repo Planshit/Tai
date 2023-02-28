@@ -49,8 +49,6 @@ namespace UI.Servicers
             if (menu != null)
             {
                 menu.ContextMenuOpening -= SetCategory_ContextMenuOpening;
-
-                var test = VisualTreeHelper.GetParent(menu);
             }
             menu = new ContextMenu();
             menu.Items.Clear();

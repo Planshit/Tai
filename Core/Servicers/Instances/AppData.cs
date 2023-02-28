@@ -13,10 +13,13 @@ namespace Core.Servicers.Instances
 {
     public class AppData : IAppData
     {
-
         private List<AppModel> _apps;
 
-
+        private readonly IDatabase _databse;
+        public AppData(IDatabase databse)
+        {
+            _databse = databse;
+        }
         public List<AppModel> GetAllApps()
         {
             return _apps;
@@ -25,7 +28,7 @@ namespace Core.Servicers.Instances
         public void Load()
         {
             Debug.WriteLine("加载app开始");
-            using (var db = new TaiDbContext())
+            using (var db = _databse.GetReaderContext())
             {
                 _apps = (
                     from app in db.App
@@ -55,10 +58,11 @@ namespace Core.Servicers.Instances
         /// <param name="app"></param>
         public void UpdateApp(AppModel app)
         {
-            using (var db = new TaiDbContext())
+            using (var db = _databse.GetWriterContext())
             {
                 db.Entry(app).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
+                _databse.CloseWriter();
             }
         }
         public AppModel GetApp(string name)
@@ -76,7 +80,7 @@ namespace Core.Servicers.Instances
                 return;
             }
 
-            using (var db = new TaiDbContext())
+            using (var db = _databse.GetWriterContext())
             {
                 db.App.Add(app);
                 int res = db.SaveChanges();
@@ -84,6 +88,7 @@ namespace Core.Servicers.Instances
                 {
                     _apps.Add(app);
                 }
+                _databse.CloseWriter();
             }
         }
 

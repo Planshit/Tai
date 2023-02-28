@@ -16,5 +16,11 @@ namespace Core.Models.Config
         /// 忽略的进程列表
         /// </summary>
         public List<string> IgnoreProcessList { get; set; } = new List<string>();
+
+        [Config(IsCanImportExport = true, Name = "忽略URL", Description = "过滤不需要统计的网站或链接", Group = "忽略URL", Placeholder = "URL 支持正则表达式")]
+        /// <summary>
+        /// 忽略的进程列表
+        /// </summary>
+        public List<string> IgnoreURLList { get; set; } = new List<string>();
     }
 }

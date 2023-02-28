@@ -1,0 +1,199 @@
+﻿<c:TPage xmlns:Button="clr-namespace:UI.Controls.Button"  x:Class="UI.Views.CategoryWebSiteListPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:UI.Views" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:select="clr-namespace:UI.Controls.Select" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:input="clr-namespace:UI.Controls.Input"
+      xmlns:c="clr-namespace:UI.Controls"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="CategoryWebSiteListPage" Foreground="{DynamicResource StandardTextBrush}"  IsFillPage="True">
+
+    <Grid>
+        <!--选择应用-->
+        <Grid Visibility="{Binding ChooseVisibility}" Panel.ZIndex="2" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Border Background="Black" Opacity=".7"/>
+            <Border Background="{DynamicResource PopupBackgroundBrush}" CornerRadius="10" BorderBrush="{DynamicResource PopupBorderBrush}" BorderThickness="1" Margin="50" VerticalAlignment="Top">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="80"/>
+
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <TextBlock Text="选择站点" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        <Button:IconButton Foreground="#ccc" Icon="ChromeClose" HorizontalAlignment="Right" FontSize="12" Margin="0,0,10,0" Command="{Binding ChooseCloseCommand}"/>
+                    </Grid>
+                    <Border Grid.Row="1">
+                        <input:InputBox Placeholder="搜索" Margin="10" x:Name="SearchBox" Text="{Binding SearchInput,Mode=TwoWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="KeyUp">
+                                    <i:InvokeCommandAction Command="{Binding Path=SearchCommand}" CommandParameter="{Binding ElementName=SearchBox,Path=Text}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </input:InputBox>
+                    </Border>
+                    <ListView ItemsSource="{Binding WebSiteOptionList}" Margin="20,0" Grid.Row="2" VirtualizingPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True">
+                        <ListBox.Resources>
+                            <Style TargetType="{x:Type ListView}">
+                                <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListView}">
+                                            <ScrollViewer>
+                                                <ItemsPresenter />
+                                            </ScrollViewer>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <Border>
+                                                <ContentPresenter/>
+                                            </Border>
+
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+
+                            </Style>
+                        </ListBox.Resources>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel/>
+                                <!--<StackPanel/>-->
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <!--<VirtualizingStackPanel>-->
+                                <!--<Border  HorizontalAlignment="Stretch">-->
+                                <select:Option  HorizontalAlignment="Stretch" IsChecked="{Binding IsChecked,Mode=TwoWay}" Value="{Binding OptionValue}"/>
+
+                                <!--</Border>-->
+
+                                <!--</VirtualizingStackPanel>-->
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Button:Button Grid.Row="3" HorizontalAlignment="Right" Content="完成" Width="120" Margin="0,0,10,0" VerticalAlignment="Center" Command="{Binding ChoosedCommand}"/>
+                </Grid>
+
+            </Border>
+        </Grid>
+
+
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                <TextBlock FontSize="18"  Text="网站分类"/>
+                <base:Icon IconType="ChevronRightMed" Margin="10,0" FontSize="12" Foreground="#ccc"/>
+                <TextBlock FontSize="18"  Text="{Binding Category.Name}"/>
+
+            </StackPanel>
+            <TextBlock Grid.Row="1" Text="站点列表"/>
+
+            <Button:Button Grid.Row="1" Content="选择" HorizontalAlignment="Right" Width="150" Command="{Binding ShowChooseCommand}"/>
+            <base:View Grid.Row="2" Condition="empty" Value="{Binding CategoryWebSiteList}">
+                <base:EmptyData/>
+            </base:View>
+            <ListView  Grid.Row="2" ItemsSource="{Binding CategoryWebSiteList}" SelectedItem="{Binding SelectedItem,Mode=TwoWay}" Margin="0,20,0,0" VirtualizingPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+
+                        <MenuItem Header="从分类中移除" Command="{Binding DelCommand}" CommandParameter="{Binding SelectedItem}"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction Command="{Binding GotoDetailCommand}"
+                             CommandParameter="{Binding SelectedItem}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ListBox.Resources>
+                    <Style TargetType="{x:Type ListView}">
+                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListView}">
+                                    <ScrollViewer>
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Grid>
+                                        <Border BorderBrush="{Binding ElementName=Border,Path=BorderBrush}" BorderThickness="{Binding ElementName=Border,Path=BorderThickness}"  Background="{Binding ElementName=Border,Path=Background}" Margin="{Binding ElementName=Border,Path=Margin}" CornerRadius="{Binding ElementName=Border,Path=CornerRadius}">
+                                            <Border.Effect>
+                                                <DropShadowEffect Color="#f3f3f3" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.15" RenderingBias="Performance" ></DropShadowEffect>
+                                            </Border.Effect>
+                                        </Border>
+
+                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="{DynamicResource StandardBackgroundBrush2}" Margin="0,0,0,10" Padding="15" CornerRadius="10">
+
+                                            <ContentPresenter/>
+                                        </Border>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <!--<Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>-->
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="#2b20d9"/>
+
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                    </Style>
+                </ListBox.Resources>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Border>
+                                <base:Img Width="25" Height="25" URL="{Binding IconFile}"/>
+                            </Border>
+                            <Grid Grid.Column="1">
+                                <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"  HorizontalAlignment="Center"><Run Text="{Binding Title}"/><Run Text=" - "/><Run Text="{Binding Domain}"/>
+                                </TextBlock>
+                            </Grid>
+
+
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+
+    </Grid>
+
+</c:TPage>

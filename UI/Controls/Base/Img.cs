@@ -74,18 +74,20 @@ namespace UI.Controls.Base
 
         private void Handle(string path)
         {
-            if (path != null && path.Length > 8 && path.Substring(0, 8) == "AppIcons")
+            string defaultIconFile = "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png";
+            if (string.IsNullOrEmpty(path))
             {
-                Src = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+                Src = defaultIconFile;
+                return;
             }
-            else if (path == null || (path.IndexOf("pack://") == -1 && !File.Exists(path)))
-            {
-                Src = "pack://application:,,,/Tai;component/Resources/Icons/defaultIcon.png";
-            }
-            else
+            if (path.IndexOf("pack:") != -1)
             {
                 Src = path;
+                return;
             }
+
+            string src = path.IndexOf(":") != -1 ? path : System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+            Src = File.Exists(src) ? src : defaultIconFile;
         }
 
     }

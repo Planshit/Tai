@@ -13,12 +13,14 @@ namespace UI.Servicers
         private readonly IThemeServicer themeServicer;
         private readonly IInputServicer inputServicer;
         private readonly IAppContextMenuServicer appContextMenuServicer;
-        public MainServicer(IMain main, IThemeServicer themeServicer, IInputServicer inputServicer, IAppContextMenuServicer appContextMenuServicer)
+        private readonly IWebSiteContextMenuServicer _webSiteContext;
+        public MainServicer(IMain main, IThemeServicer themeServicer, IInputServicer inputServicer, IAppContextMenuServicer appContextMenuServicer, IWebSiteContextMenuServicer webSiteContext_)
         {
             this.main = main;
             this.themeServicer = themeServicer;
             this.inputServicer = inputServicer;
             this.appContextMenuServicer = appContextMenuServicer;
+            _webSiteContext = webSiteContext_;
         }
         public void Start()
         {
@@ -31,6 +33,7 @@ namespace UI.Servicers
             themeServicer.Init();
             inputServicer.Start();
             appContextMenuServicer.Init();
+            _webSiteContext.Init();
         }
     }
 }

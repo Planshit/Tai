@@ -5,7 +5,8 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:UI.Views"
       xmlns:Charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" x:Class="UI.Views.IndexPage"
-      mc:Ignorable="d" 
+    xmlns:base="clr-namespace:UI.Controls.Base" xmlns:select="clr-namespace:UI.Controls.Select"
+    mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="IndexPage"
     Foreground="{DynamicResource StandardTextBrush}" Background="Transparent">
@@ -30,10 +31,99 @@
             </Border>-->
         <TextBlock Text="概览" FontSize="18" Margin="0,5,0,20"/>
         <Tabbar:Tabbar Width="100" HorizontalAlignment="Left" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
-        <TextBlock Text="最为频繁" FontSize="15" Margin="0,20,0,10"/>
-        <Charts:Charts IsCanScroll="False"  Data="{Binding WeekData}" ChartsType="HorizontalA" ShowLimit="{Binding FrequentUseNum}" IsLoading="{Binding IsLoading,Mode=TwoWay}"  ClickCommand="{Binding ToDetailCommand}" ItemMenu="{Binding AppContextMenu}"/>
-        <TextBlock Text="更多" FontSize="15" Margin="0,20,0,10"/>
-        <Charts:Charts Data="{Binding WeekData}"  ItemMenu="{Binding AppContextMenu}" ChartsType="Card" ShowLimit="{Binding MoreNum}" IsLoading="{Binding IsLoading,Mode=TwoWay}" ClickCommand="{Binding ToDetailCommand}"/>
+        <TextBlock Text="最为频繁" FontSize="14" Margin="0,10,0,10" Foreground="{DynamicResource SubTextBrush}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10">
+                <base:Icon IconType="OEM" FontSize="80" Opacity=".1"/>
+            </Grid>
+            <Grid Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10">
+                <base:Icon IconType="WebSearch" FontSize="80" Opacity=".05" Foreground="{DynamicResource ThemeBrush}"/>
+            </Grid>
+            <!--应用-->
+            <Border CornerRadius="10" Padding="10">
+                <Border.Background>
+                    <SolidColorBrush Color="{DynamicResource SettingPanelBgColor}" Opacity=".7"/>
+                </Border.Background>
+                <StackPanel>
+                    <Border HorizontalAlignment="Left" Padding="10,5" CornerRadius="6">
+                        <Border.Background>
+                            <SolidColorBrush Color="{DynamicResource HoverBackgroundColor}" Opacity=".5"/>
+                        </Border.Background>
+                        <StackPanel Orientation="Horizontal" TextElement.Foreground="{DynamicResource SubTextBrush}">
+                            <base:Icon VerticalAlignment="Center" IconType="Apps"/>
+                            <TextBlock FontSize="10" VerticalAlignment="Center" Text="应用" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Charts:Charts IconSize="20" Margin="0,5,0,0" IsCanScroll="False"  Data="{Binding WeekData}" ChartsType="List" ShowLimit="{Binding FrequentUseNum}" IsLoading="{Binding IsLoading,Mode=TwoWay}"  ClickCommand="{Binding ToDetailCommand}" ItemMenu="{Binding AppContextMenu}"/>
+                </StackPanel>
+            </Border>
+            <!--网页-->
+            <Border Grid.Column="2" Padding="10" CornerRadius="10">
+                <Border.Background>
+                    <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".1"/>
+                </Border.Background>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border HorizontalAlignment="Left" Padding="10,5" CornerRadius="6">
+                        <Border.Background>
+                            <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity=".2"/>
+                        </Border.Background>
+                        <StackPanel Orientation="Horizontal" TextElement.Foreground="{DynamicResource ThemeBrush}">
+                            <base:Icon VerticalAlignment="Center" IconType="Website"/>
+                            <TextBlock FontSize="10" VerticalAlignment="Center" Text="网站" Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Charts:Charts IconSize="18" Grid.Row="1" Margin="0,5,0,0" IsCanScroll="False" ClickCommand="{Binding ToDetailCommand}" Data="{Binding WebFrequentUseData}" ChartsType="List" IsLoading="{Binding IsLoading,Mode=TwoWay}" ItemMenu="{Binding WebSiteContextMenu}">
+                        <Charts:Charts.Resources>
+                            <SolidColorBrush x:Key="ListItemIconBgBrush" Color="{StaticResource ThemeColor}" Opacity=".2"/>
+                            <SolidColorBrush x:Key="ChartTypeListProgressBarBrush" Color="{StaticResource ThemeColor}" Opacity=".6"/>
+                        </Charts:Charts.Resources>
+                    </Charts:Charts>
+                </Grid>
+            </Border>
+        </Grid>
+        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+            <TextBlock Text="更多" FontSize="14" VerticalAlignment="Center" Foreground="{DynamicResource SubTextBrush}"/>
+            <select:Select Margin="10,0,0,0" VerticalAlignment="Center" Padding="10,5"  IsShowIcon="False" SelectedItem="{Binding MoreType,Mode=TwoWay}" Options="{Binding MoreTypeOptions}"/>
+        </StackPanel>
+       
+        <TabControl 
+                SelectedIndex="{Binding MoreType.Id}"
+                BorderThickness="0"
+                Margin="0,10,0,0"
+                Padding="0"
+                Background="Transparent"
+                >
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+            </TabControl.Resources>
+            <TabItem>
+                <Charts:Charts Data="{Binding AppMoreData}"  ItemMenu="{Binding AppContextMenu}" ChartsType="Card" ShowLimit="{Binding MoreNum}" IsLoading="{Binding IsLoading,Mode=TwoWay}" ClickCommand="{Binding ToDetailCommand}"/>
+            </TabItem>
+            <TabItem>
+                <Grid>
+                    <Charts:Charts Data="{Binding WebMoreData}" ClickCommand="{Binding ToDetailCommand}" ChartsType="Card" ShowLimit="{Binding MoreNum}" IsLoading="{Binding IsLoading,Mode=TwoWay}" ItemMenu="{Binding WebSiteContextMenu}"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
 
 
     </StackPanel>

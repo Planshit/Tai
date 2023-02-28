@@ -129,6 +129,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -140,9 +141,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppState.cs" />
+    <Compile Include="Enums\BrowserType.cs" />
     <Compile Include="Enums\SleepStatus.cs" />
+    <Compile Include="Enums\WebPageInfoType.cs" />
     <Compile Include="Event\EventHandler.cs" />
+    <Compile Include="Event\BrowserObserverEventHandler.cs" />
     <Compile Include="Event\ObserverEventHandler.cs" />
+    <Compile Include="Librarys\Browser\Favicon\ChromeFaviconManager.cs" />
+    <Compile Include="Librarys\Browser\Favicon\IFaviconManager.cs" />
+    <Compile Include="Librarys\Browser\UrlHelper.cs" />
     <Compile Include="Librarys\ProcessHelper.cs" />
     <Compile Include="Librarys\RegexHelper.cs" />
     <Compile Include="Librarys\Shortcut.cs" />
@@ -154,39 +161,68 @@
     <Compile Include="Librarys\Time.cs" />
     <Compile Include="Librarys\Win32API.cs" />
     <Compile Include="Models\AppModel.cs" />
+    <Compile Include="Models\AppObserver\AppObserverEventArgs.cs" />
     <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\Config\ConfigAttribute.cs" />
     <Compile Include="Models\Config\ConfigModel.cs" />
     <Compile Include="Models\Config\BehaviorModel.cs" />
     <Compile Include="Models\Config\GeneralModel.cs" />
     <Compile Include="Models\Config\Link\LinkModel.cs" />
+    <Compile Include="Models\Data\CommonDataModel.cs" />
     <Compile Include="Models\Data\HoursDataModel.cs" />
+    <Compile Include="Models\Db\WebBrowseLogModel.cs" />
+    <Compile Include="Models\Db\WebSiteCategoryModel.cs" />
+    <Compile Include="Models\Db\WebSiteModel.cs" />
+    <Compile Include="Models\Db\WebUrlModel.cs" />
     <Compile Include="Models\HoursLogModel.cs" />
     <Compile Include="Models\DailyLogModel.cs" />
+    <Compile Include="Models\WebPage\Site.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Servicers\Instances\AppConfig.cs" />
     <Compile Include="Servicers\Instances\AppData.cs" />
+    <Compile Include="Servicers\Instances\BrowserObserver.cs" />
     <Compile Include="Servicers\Instances\Categorys.cs" />
+    <Compile Include="Servicers\Instances\MSEdgeBrowserWatch.cs" />
+    <Compile Include="Servicers\Instances\ChromeBrowserWatch.cs" />
     <Compile Include="Servicers\Instances\Data.cs" />
     <Compile Include="Librarys\Logger.cs" />
+    <Compile Include="Servicers\Instances\Database.cs" />
     <Compile Include="Servicers\Instances\DateTimeObserver.cs" />
     <Compile Include="Servicers\Instances\Main.cs" />
     <Compile Include="Servicers\Instances\AppObserver.cs" />
+    <Compile Include="Librarys\SiteCache.cs" />
     <Compile Include="Servicers\Instances\Sleepdiscover.cs" />
+    <Compile Include="Servicers\Instances\WebData.cs" />
+    <Compile Include="Servicers\Instances\WebFilter.cs" />
     <Compile Include="Servicers\Interfaces\IAppConfig.cs" />
+    <Compile Include="Servicers\Interfaces\IBrowserWatcher.cs" />
+    <Compile Include="Servicers\Interfaces\IBrowserObserver.cs" />
     <Compile Include="Servicers\Interfaces\ICategorys.cs" />
     <Compile Include="Servicers\Interfaces\IAppData.cs" />
     <Compile Include="Servicers\Interfaces\IData.cs" />
+    <Compile Include="Servicers\Interfaces\IDatabase.cs" />
     <Compile Include="Servicers\Interfaces\IDateTimeObserver.cs" />
     <Compile Include="Servicers\Interfaces\IMain.cs" />
     <Compile Include="Servicers\Interfaces\IAppObserver.cs" />
     <Compile Include="Servicers\Interfaces\ISleepdiscover.cs" />
+    <Compile Include="Servicers\Interfaces\IWebData.cs" />
+    <Compile Include="Servicers\Interfaces\IWebFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="UIAutomationClient">
+      <Guid>{944DE083-8FB8-45CF-BCB7-C477ACB2F897}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

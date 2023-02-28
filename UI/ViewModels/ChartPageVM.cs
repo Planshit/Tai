@@ -1,5 +1,6 @@
 ﻿using Core.Librarys;
 using Core.Models;
+using Core.Models.Db;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
@@ -24,20 +26,24 @@ namespace UI.ViewModels
         private readonly MainViewModel mainVM;
         private readonly IAppContextMenuServicer appContextMenuServicer;
         private readonly IInputServicer inputServicer;
+        private readonly IWebData _webData;
+        private readonly IWebSiteContextMenuServicer _webSiteContextMenu;
 
         private double totalTime_ = 0;
         private int appCount_ = 0;
         public Command ToDetailCommand { get; set; }
         public Command RefreshCommand { get; set; }
         public List<SelectItemModel> ChartDataModeOptions { get; set; }
-        public ChartPageVM(IData data, ICategorys categorys, MainViewModel mainVM, IAppContextMenuServicer appContextMenuServicer, IInputServicer inputServicer)
+
+        public ChartPageVM(IData data, ICategorys categorys, MainViewModel mainVM, IAppContextMenuServicer appContextMenuServicer, IInputServicer inputServicer, IWebData webData_, IWebSiteContextMenuServicer webSiteContextMenu_)
         {
             this.data = data;
             this.categorys = categorys;
             this.mainVM = mainVM;
             this.appContextMenuServicer = appContextMenuServicer;
             this.inputServicer = inputServicer;
-
+            _webData = webData_;
+            _webSiteContextMenu = webSiteContextMenu_;
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
             RefreshCommand = new Command(new Action<object>(OnRefreshCommand));
@@ -56,7 +62,7 @@ namespace UI.ViewModels
             {
                 Name = "上周"
             });
-
+        
             var chartDataModeOptions = new List<SelectItemModel>
             {
                 new SelectItemModel()
@@ -78,7 +84,7 @@ namespace UI.ViewModels
 
             ChartDataModeOptions = chartDataModeOptions;
             ChartDataMode = chartDataModeOptions[0];
-
+            //ShowType = ShowTypeOptions[0];
             WeekOptions = weekOptions;
             SelectedWeek = weekOptions[0];
             MonthDate = DateTime.Now;
@@ -90,8 +96,8 @@ namespace UI.ViewModels
 
             PropertyChanged += ChartPageVM_PropertyChanged;
             inputServicer.OnKeyUpInput += InputServicer_OnKeyUpInput;
-
             AppContextMenu = appContextMenuServicer.GetContextMenu();
+            WebSiteContextMenu = _webSiteContextMenu.GetContextMenu();
         }
 
 
@@ -108,20 +114,27 @@ namespace UI.ViewModels
 
             if (data != null)
             {
-                var model = data.Data as DailyLogModel;
-                var app = model != null ? model.AppModel : null;
-
-                if (model == null)
+                if (data.Data is WebSiteModel)
                 {
-                    app = (data.Data as HoursLogModel).AppModel;
+                    mainVM.Data = data.Data;
+                    mainVM.Uri = nameof(WebSiteDetailPage);
                 }
-
-                if (app != null)
+                else
                 {
-                    mainVM.Data = app;
-                    mainVM.Uri = nameof(DetailPage);
-                }
+                    var model = data.Data as DailyLogModel;
+                    var app = model != null ? model.AppModel : null;
 
+                    if (model == null)
+                    {
+                        app = (data.Data as HoursLogModel).AppModel;
+                    }
+
+                    if (app != null)
+                    {
+                        mainVM.Data = app;
+                        mainVM.Uri = nameof(DetailPage);
+                    }
+                }
             }
         }
         private void OnRefreshCommand(object obj)
@@ -177,6 +190,10 @@ namespace UI.ViewModels
                 }
                 LoadData();
             }
+            if (e.PropertyName == nameof(WebColSelectedIndex))
+            {
+                LoadWebSitesColSelectedData();
+            }
         }
 
 
@@ -212,10 +229,12 @@ namespace UI.ViewModels
         private void LoadDayData()
         {
             ColumnSelectedIndex = -1;
+            WebColSelectedIndex = -1;
+
             DataMaximum = 3600;
             Task.Run(() =>
             {
-
+                //  应用数据
                 var chartData = new List<ChartsDataModel>();
                 var sumData = new List<ChartsDataModel>();
 
@@ -275,6 +294,9 @@ namespace UI.ViewModels
                 totalTime_ = totalUse;
                 TotalHours = Time.ToHoursString(totalUse);
                 LoadTopData();
+
+                //  网页数据
+                LoadWebData(Date, Date);
             });
         }
 
@@ -284,6 +306,8 @@ namespace UI.ViewModels
         private void LoadWeekData()
         {
             ColumnSelectedIndex = -1;
+            WebColSelectedIndex = -1;
+
             DataMaximum = 0;
             Task.Run(() =>
             {
@@ -352,6 +376,9 @@ namespace UI.ViewModels
                 double totalUse = Data.Sum(m => m.Values.Sum());
                 totalTime_ = totalUse;
                 TotalHours = Time.ToHoursString(totalUse);
+
+                //  网页数据
+                LoadWebData(weekDateArr[0], weekDateArr[1]);
             });
 
 
@@ -365,6 +392,7 @@ namespace UI.ViewModels
         private void LoadMonthlyData()
         {
             ColumnSelectedIndex = -1;
+            WebColSelectedIndex = -1;
             DataMaximum = 0;
             Task.Run(() =>
             {
@@ -427,6 +455,9 @@ namespace UI.ViewModels
                 totalTime_ = totalUse;
                 TotalHours = Time.ToHoursString(totalUse);
                 LoadTopData();
+
+                //  网页数据
+                LoadWebData(dateArr[0], dateArr[1]);
             });
 
         }
@@ -437,6 +468,8 @@ namespace UI.ViewModels
         private void LoadYearData()
         {
             ColumnSelectedIndex = -1;
+            WebColSelectedIndex = -1;
+
             DataMaximum = 0;
             Task.Run(() =>
             {
@@ -509,6 +542,10 @@ namespace UI.ViewModels
                 totalTime_ = totalUse;
                 TotalHours = Time.ToHoursString(totalUse);
                 LoadTopData();
+
+                //  网页数据
+                var dateArr = Time.GetYearDate(YearDate);
+                LoadWebData(dateArr[0], dateArr[1]);
             });
         }
 
@@ -572,7 +609,6 @@ namespace UI.ViewModels
                 var weekDateArr = Time.GetLastWeekDate();
                 dateStart = weekDateArr[0];
                 dateEnd = weekDateArr[1];
-
             }
             else if (TabbarSelectedIndex == 2)
             {
@@ -631,6 +667,10 @@ namespace UI.ViewModels
                 DiffAppCountType = "0";
             }
             DiffAppCountValue = DiffAppCountType == "0" ? string.Empty : Math.Abs(diffAppCount).ToString();
+
+            LastWebTotalTime = _webData.GetBrowseDurationTotal(dateStart, dateEnd);
+            LastWebSiteCount = _webData.GetBrowseSitesTotal(dateStart, dateEnd);
+            LastWebPageCount = _webData.GetBrowsePagesTotal(dateStart, dateEnd);
         }
 
         private List<ChartsDataModel> MapToChartsData(IEnumerable<Core.Models.DailyLogModel> list)
@@ -734,5 +774,193 @@ namespace UI.ViewModels
         }
 
 
+        #region 网页数据
+        private void LoadWebData(DateTime start_, DateTime end_)
+        {
+            LoadCategoriesStatistics(start_, end_);
+            LoadWebBrowseDataStatistics(start_, end_);
+            LoadWebSitesTopData(start_, end_);
+            WebTotalTime = _webData.GetBrowseDurationTotal(start_, end_);
+            WebSiteCount = _webData.GetBrowseSitesTotal(start_, end_);
+            WebPageCount = _webData.GetBrowsePagesTotal(start_, end_);
+            WebTotalTimeText = Time.ToHoursString(WebTotalTime);
+        }
+
+        /// <summary>
+        /// 分类饼图
+        /// </summary>
+        /// <param name="start_"></param>
+        /// <param name="end_"></param>
+        private void LoadCategoriesStatistics(DateTime start_, DateTime end_)
+        {
+            Task.Run(() =>
+            {
+                var chartsDatas = new List<ChartsDataModel>();
+                var data = _webData.GetCategoriesStatistics(start_, end_);
+                foreach (var item in data)
+                {
+                    var category = _webData.GetWebSiteCategory(item.ID);
+                    var bindModel = new ChartsDataModel();
+                    bindModel.Name = item.ID == 0 ? "未分类" : item.Name;
+                    bindModel.Value = item.Value;
+                    bindModel.Data = item;
+                    bindModel.Color = item.ID == 0 ? "#ccc" : category.Color;
+                    bindModel.PopupText = bindModel.Name + " " + Time.ToString((int)item.Value);
+                    bindModel.Icon = item.ID == 0 ? "" : category.IconFile;
+                    chartsDatas.Add(bindModel);
+                }
+                WebCategoriesPieData = chartsDatas.OrderByDescending(m => m.Value).ToList();
+
+            });
+        }
+
+        private void LoadWebBrowseDataStatistics(DateTime start_, DateTime end_)
+        {
+            Task.Run(() =>
+            {
+                var chartData = new List<ChartsDataModel>();
+                var data = _webData.GetBrowseDataByCategoryStatistics(start_, end_);
+                //  转换为图表格式数据
+                var emptyCategory = new WebSiteCategoryModel()
+                {
+                    ID = 0,
+                    Name = "未分类",
+                    IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
+                };
+
+                string[] colNames = { };
+
+                if (TabbarSelectedIndex == 1)
+                {
+                    colNames = new string[] { "周一", "周二", "周三", "周四", "周五", "周六", "周日", };
+                }
+                else if (TabbarSelectedIndex == 3)
+                {
+                    colNames = new string[12];
+                    for (int i = 0; i < 12; i++)
+                    {
+                        colNames[i] = (i + 1) + "月";
+                    }
+                }
+
+                foreach (var item in data)
+                {
+                    var category = _webData.GetWebSiteCategory(item.CategoryID);
+                    if (item.CategoryID == 0)
+                    {
+                        category = emptyCategory;
+                    }
+                    if (category != null)
+                    {
+                        var dataItem = new ChartsDataModel()
+                        {
+
+                            Name = category.Name,
+                            Icon = category.IconFile,
+                            Values = item.Values,
+                            Color = category.Color,
+                            ColumnNames = colNames
+                        };
+                        if (category.ID == 0)
+                        {
+                            dataItem.Color = "#E5F7F6F2";
+                        }
+                        chartData.Add(dataItem);
+                    }
+                }
+
+                //var chartsDatas = new List<ChartsDataModel>();
+                //var bindModel = new ChartsDataModel();
+                //bindModel.Values = data.Select(m => m.Value).ToArray();
+                //bindModel.Color = StateData.ThemeColor;
+                //chartsDatas.Add(bindModel);
+                WebBrowseStatisticsData = chartData;
+            });
+        }
+
+        private void LoadWebSitesTopData(DateTime start_, DateTime end_)
+        {
+            Task.Run(() =>
+            {
+                var data = _webData.GetDateRangeWebSiteList(start_, end_, 10);
+                WebSitesTopData = MapToChartData(data);
+            });
+        }
+        private void LoadWebSitesColSelectedData()
+        {
+            if (WebColSelectedIndex < 0)
+            {
+                WebSitesColSelectedTimeText = String.Empty;
+                WebSitesColSelectedData = new List<ChartsDataModel>();
+                return;
+            }
+            Task.Run(() =>
+            {
+
+                var chartData = new List<ChartsDataModel>();
+                bool isTime = false;
+                DateTime startTime = DateTime.Now, endTime = DateTime.Now;
+                if (TabbarSelectedIndex == 0)
+                {
+                    //  天
+                    var time = new DateTime(Date.Year, Date.Month, Date.Day, WebColSelectedIndex, 0, 0);
+                    WebSitesColSelectedTimeText = time.ToString("yyyy年MM月dd日 HH点");
+                    isTime = true;
+                    startTime = endTime = time;
+                }
+                else if (TabbarSelectedIndex == 1)
+                {
+                    //  周
+                    var weekDateArr = SelectedWeek.Name == "本周" ? Time.GetThisWeekDate() : Time.GetLastWeekDate();
+                    var time = weekDateArr[0].AddDays(WebColSelectedIndex);
+                    WebSitesColSelectedTimeText = time.ToString("yyyy年MM月dd日");
+                    startTime = endTime = time;
+                }
+                else if (TabbarSelectedIndex == 2)
+                {
+                    //  月
+                    var dateArr = Time.GetMonthDate(MonthDate);
+                    var time = dateArr[0].AddDays(WebColSelectedIndex);
+                    WebSitesColSelectedTimeText = time.ToString("yyyy年MM月dd日");
+                    startTime = endTime = time;
+                }
+                else if (TabbarSelectedIndex == 3)
+                {
+                    //  年
+                    var dateStart = new DateTime(YearDate.Year, WebColSelectedIndex + 1, 1);
+                    var dateEnd = new DateTime(dateStart.Year, dateStart.Month, DateTime.DaysInMonth(dateStart.Year, dateStart.Month), 23, 59, 59);
+
+                    WebSitesColSelectedTimeText = dateStart.ToString("yyyy年MM月");
+
+                    startTime = dateStart;
+                    endTime = dateEnd;
+
+                }
+
+
+                chartData = MapToChartData(_webData.GetDateRangeWebSiteList(startTime, endTime, 0, -1, isTime));
+
+                WebSitesColSelectedData = chartData;
+            });
+        }
+        private List<ChartsDataModel> MapToChartData(IEnumerable<Core.Models.Db.WebSiteModel> list)
+        {
+            var resData = new List<ChartsDataModel>();
+
+            foreach (var item in list)
+            {
+                var bindModel = new ChartsDataModel();
+                bindModel.Data = item;
+                bindModel.Name = item.Title;
+                bindModel.Value = item.Duration;
+                bindModel.Tag = Time.ToString(item.Duration);
+                bindModel.PopupText = item.Domain;
+                bindModel.Icon = item.IconFile;
+                resData.Add(bindModel);
+            }
+
+            return resData;
+        }
+        #endregion
     }
 }

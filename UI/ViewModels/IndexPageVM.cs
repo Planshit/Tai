@@ -1,6 +1,7 @@
 ﻿using Core.Librarys;
 using Core.Librarys.Image;
 using Core.Models;
+using Core.Models.Db;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using UI.Controls;
 using UI.Controls.Charts.Model;
+using UI.Controls.Select;
 using UI.Models;
 using UI.Servicers;
 using UI.Views;
@@ -29,8 +31,18 @@ namespace UI.ViewModels
         private readonly IAppContextMenuServicer appContextMenuServicer;
         private readonly IInputServicer inputServicer;
         private readonly IAppConfig appConfig;
+        private readonly IWebData _webData;
+        private readonly IWebSiteContextMenuServicer _webSiteContextMenu;
+        public List<SelectItemModel> MoreTypeOptions { get; set; }
         public IndexPageVM(
-            IData data, MainViewModel main, IMain mainServicer, IAppContextMenuServicer appContextMenuServicer, IInputServicer inputServicer, IAppConfig appConfig)
+            IData data,
+            MainViewModel main,
+            IMain mainServicer,
+            IAppContextMenuServicer appContextMenuServicer,
+            IInputServicer inputServicer,
+            IAppConfig appConfig,
+            IWebData webData_,
+            IWebSiteContextMenuServicer webSiteContext_)
         {
             this.data = data;
             this.main = main;
@@ -38,6 +50,8 @@ namespace UI.ViewModels
             this.appContextMenuServicer = appContextMenuServicer;
             this.inputServicer = inputServicer;
             this.appConfig = appConfig;
+            _webData = webData_;
+            _webSiteContextMenu = webSiteContext_;
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
             RefreshCommand = new Command(new Action<object>(OnRefreshCommand));
@@ -65,11 +79,26 @@ namespace UI.ViewModels
 
             TabbarSelectedIndex = 0;
             AppContextMenu = appContextMenuServicer.GetContextMenu();
-
+            WebSiteContextMenu = _webSiteContextMenu.GetContextMenu();
             PropertyChanged += IndexPageVM_PropertyChanged;
             inputServicer.OnKeyUpInput += InputServicer_OnKeyUpInput;
 
             LoadData();
+
+            MoreTypeOptions = new List<SelectItemModel>()
+            {
+                new SelectItemModel()
+                {
+                    Id=0,
+                    Name="应用"
+                },
+                new SelectItemModel()
+                {
+                    Id=1,
+                    Name="网页"
+                }
+            };
+            MoreType = MoreTypeOptions[0];
         }
 
         private void InputServicer_OnKeyUpInput(object sender, System.Windows.Forms.Keys key)
@@ -87,11 +116,19 @@ namespace UI.ViewModels
 
             if (data != null)
             {
-                var model = data.Data as DailyLogModel;
-                if (model != null && model.AppModel != null)
+                if (data.Data is DailyLogModel)
                 {
-                    main.Data = model.AppModel;
-                    main.Uri = nameof(DetailPage);
+                    var model = data.Data as DailyLogModel;
+                    if (model != null && model.AppModel != null)
+                    {
+                        main.Data = model.AppModel;
+                        main.Uri = nameof(DetailPage);
+                    }
+                }
+                else if (data.Data is WebSiteModel)
+                {
+                    main.Data = data.Data;
+                    main.Uri = nameof(WebSiteDetailPage);
                 }
 
             }
@@ -120,10 +157,12 @@ namespace UI.ViewModels
             if (TabbarSelectedIndex == 0)
             {
                 LoadTodayData();
+                LoadTodayMoreData();
             }
             else if (TabbarSelectedIndex == 1)
             {
                 LoadThisWeekData();
+                LoadThisWeekMoreData();
             }
             //else
             //{
@@ -140,12 +179,26 @@ namespace UI.ViewModels
             {
                 var list = data.GetDateRangelogList(DateTime.Now.Date, DateTime.Now.Date);
                 var res = MapToChartsData(list);
+                var topWebList = _webData.GetDateRangeWebSiteList(DateTime.Now, DateTime.Now, FrequentUseNum);
+
                 IsLoading = false;
                 WeekData = res;
+                WebFrequentUseData = MapToChartsData(topWebList);
             });
+        }
 
+        private void LoadTodayMoreData()
+        {
+            IsLoading = true;
+            Task.Run(() =>
+            {
+                var appMoreData = data.GetDateRangelogList(DateTime.Now.Date, DateTime.Now.Date, MoreNum, FrequentUseNum);
+                var webMoreData = _webData.GetDateRangeWebSiteList(DateTime.Now.Date, DateTime.Now.Date, MoreNum, FrequentUseNum);
 
-
+                IsLoading = false;
+                AppMoreData = MapToChartsData(appMoreData);
+                WebMoreData = MapToChartsData(webMoreData);
+            });
         }
         #endregion
 
@@ -158,12 +211,31 @@ namespace UI.ViewModels
                {
                    var list = data.GetThisWeeklogList();
                    var res = MapToChartsData(list);
+
+                   var week = Time.GetThisWeekDate();
+                   var topWebList = _webData.GetDateRangeWebSiteList(week[0], week[1], FrequentUseNum);
+
                    IsLoading = false;
                    WeekData = res;
+                   WebFrequentUseData = MapToChartsData(topWebList);
                });
 
 
 
+        }
+        private void LoadThisWeekMoreData()
+        {
+            IsLoading = true;
+            Task.Run(() =>
+            {
+                var week = Time.GetThisWeekDate();
+                var appMoreData = data.GetDateRangelogList(week[0], week[1], MoreNum, FrequentUseNum);
+                var webMoreData = _webData.GetDateRangeWebSiteList(week[0], week[1], MoreNum, FrequentUseNum);
+
+                IsLoading = false;
+                AppMoreData = MapToChartsData(appMoreData);
+                WebMoreData = MapToChartsData(webMoreData);
+            });
         }
         #endregion
 
@@ -206,6 +278,24 @@ namespace UI.ViewModels
                 bindModel.PopupText = item.AppModel?.File;
                 bindModel.Icon = item.AppModel?.IconFile;
                 bindModel.DateTime = item.Date;
+                resData.Add(bindModel);
+            }
+
+            return resData;
+        }
+        private List<ChartsDataModel> MapToChartsData(IEnumerable<Core.Models.Db.WebSiteModel> list)
+        {
+            var resData = new List<ChartsDataModel>();
+
+            foreach (var item in list)
+            {
+                var bindModel = new ChartsDataModel();
+                bindModel.Data = item;
+                bindModel.Name = item.Title;
+                bindModel.Value = item.Duration;
+                bindModel.Tag = Time.ToString(item.Duration);
+                bindModel.PopupText = item.Domain;
+                bindModel.Icon = item.IconFile;
                 resData.Add(bindModel);
             }
 

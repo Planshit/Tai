@@ -182,20 +182,25 @@ namespace UI
         private void ConfigureServices(IServiceCollection services)
         {
             //  核心服务
+            services.AddSingleton<IDatabase, Database>();
             services.AddSingleton<IAppObserver, AppObserver>();
+            services.AddSingleton<IBrowserObserver, BrowserObserver>();
             services.AddSingleton<IMain, Main>();
             services.AddSingleton<IData, Data>();
+            services.AddSingleton<IWebData, WebData>();
             services.AddSingleton<ISleepdiscover, Sleepdiscover>();
             services.AddSingleton<IAppConfig, AppConfig>();
             services.AddSingleton<IDateTimeObserver, DateTimeObserver>();
             services.AddSingleton<IAppData, AppData>();
             services.AddSingleton<ICategorys, Categorys>();
+            services.AddSingleton<IWebFilter, WebFilter>();
 
             //  UI服务
             services.AddSingleton<IAppContextMenuServicer, AppContextMenuServicer>();
             services.AddSingleton<IThemeServicer, ThemeServicer>();
             services.AddSingleton<IMainServicer, MainServicer>();
             services.AddSingleton<IInputServicer, InputServicer>();
+            services.AddSingleton<IWebSiteContextMenuServicer, WebSiteContextMenuServicer>();
 
             //  主窗口
             services.AddSingleton<MainViewModel>();
@@ -224,10 +229,15 @@ namespace UI
             //  分类app
             services.AddTransient<CategoryAppListPage>();
             services.AddTransient<CategoryAppListPageVM>();
-
+            //  分类站点
+            services.AddTransient<CategoryWebSiteListPage>();
+            services.AddTransient<CategoryWebSiteListPageVM>();
             //  图表
             services.AddTransient<ChartPage>();
             services.AddTransient<ChartPageVM>();
+            //  网站详情
+            services.AddTransient<WebSiteDetailPage>();
+            services.AddTransient<WebSiteDetailPageVM>();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
@@ -242,7 +252,7 @@ namespace UI
             main.Start();
 
             var observer = serviceProvider.GetService<IAppObserver>();
-            observer.OnAppActive += (p, d, f) =>
+            observer.OnAppActive += (args) =>
             {
                 Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>
                 {

@@ -1,13 +1,14 @@
-﻿<Page
+﻿<control:TPage
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:UI.Views"
       xmlns:Charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:DatePickerBar="clr-namespace:UI.Controls.DatePickerBar" xmlns:select="clr-namespace:UI.Controls.Select" x:Class="UI.Views.DataPage"
+    xmlns:control="clr-namespace:UI.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="IndexPage" Foreground="{DynamicResource StandardTextBrush}">
+      Title="IndexPage" Foreground="{DynamicResource StandardTextBrush}" IsFillPage="True">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -15,8 +16,11 @@
             <RowDefinition Height="*"/>
 
         </Grid.RowDefinitions>
-        <TextBlock Text="详细" FontSize="18" Margin="0,5,0,20"/>
-
+        <!--<TextBlock Text="详细" FontSize="18" Margin="0,5,0,20"/>-->
+        <StackPanel Orientation="Horizontal" Margin="0,5,0,20" >
+            <TextBlock Text="详细" FontSize="18" VerticalAlignment="Center"/>
+            <select:Select Margin="10,0,0,0" VerticalAlignment="Top" Padding="10,5"  IsShowIcon="False" SelectedItem="{Binding ShowType,Mode=TwoWay}" Options="{Binding ShowTypeOptions}"/>
+        </StackPanel>
         <Tabbar:Tabbar Width="145" HorizontalAlignment="Left" Grid.Row="1" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
 
 
@@ -49,7 +53,7 @@
                     <select:DateSelect Date="{Binding DayDate,Mode=TwoWay}"/>
                     <!--<DatePickerBar:DatePickerBar SelectedDate="{Binding DayDate,Mode=TwoWay}" ShowType="Day"/>-->
 
-                    <Charts:Charts IsShowBadge="True"  IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding Data}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    <Charts:Charts IsShowBadge="True"  IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding Data}" ChartsType="List" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
             </TabItem>
             <TabItem>
@@ -61,7 +65,7 @@
                     </Grid.RowDefinitions>
                     <!--<DatePickerBar:DatePickerBar SelectedDate="{Binding MonthDate,Mode=TwoWay}" ShowType="Month"/>-->
                     <select:DateSelect Date="{Binding MonthDate,Mode=TwoWay}" SelectType="Month"/>
-                    <Charts:Charts IsShowBadge="True" IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding MonthData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    <Charts:Charts IsShowBadge="True" IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding MonthData}" ChartsType="List" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
             </TabItem>
             <TabItem>
@@ -74,7 +78,7 @@
                     <!--<DatePickerBar:DatePickerBar SelectedDate="{Binding YearDate,Mode=TwoWay}" ShowType="Year"/>-->
                     <select:DateSelect Date="{Binding YearDate,Mode=TwoWay}" SelectType="Year"/>
 
-                    <Charts:Charts IsShowBadge="True" IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding YearData}" ChartsType="HorizontalA" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                    <Charts:Charts IsShowBadge="True" IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding YearData}" ChartsType="List" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
             </TabItem>
         </TabControl>
@@ -82,4 +86,4 @@
 
 
     </Grid>
-</Page>
+</control:TPage>

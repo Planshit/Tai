@@ -362,9 +362,7 @@ namespace UI.Controls.SettingPanel
             };
 
             var item = new SettingPanelItem();
-            item.Name = configAttribute.Name;
-            item.Description = configAttribute.Description;
-            item.Content = control;
+            item.Init(configAttribute, control);
 
             pi.SetValue(configData, pi.GetValue(Data));
             return item;
@@ -413,9 +411,7 @@ namespace UI.Controls.SettingPanel
             //inputControl.IsChecked = (bool)pi.GetValue(Data);
 
             var item = new SettingPanelItem();
-            item.Name = configAttribute.Name;
-            item.Description = configAttribute.Description;
-            item.Content = control;
+            item.Init(configAttribute, control);
 
             pi.SetValue(configData, pi.GetValue(Data));
             return item;
@@ -435,9 +431,8 @@ namespace UI.Controls.SettingPanel
             inputControl.IsChecked = (bool)pi.GetValue(Data);
 
             var item = new SettingPanelItem();
-            item.Name = configAttribute.Name;
-            item.Description = configAttribute.Description;
-            item.Content = inputControl;
+            item.Init(configAttribute, inputControl);
+
             pi.SetValue(configData, pi.GetValue(Data));
             return item;
         }

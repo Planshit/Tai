@@ -77,8 +77,9 @@ namespace UI.Controls.Base
 
                     if (Condition.IndexOf("=") != -1)
                     {
-                        string val = Condition.Substring(Condition.IndexOf("=") + 1);
-                        isShow = val == (Value == null ? string.Empty : Value.ToString());
+                        string conditionVal = Condition.Substring(Condition.IndexOf("=") + 1);
+                        string value = (Value == null ? string.Empty : Value.ToString());
+                        isShow = Condition.Contains("!") ? conditionVal != value : conditionVal == value;
                     }
                     else if (Condition.IndexOf("not null") != -1)
                     {

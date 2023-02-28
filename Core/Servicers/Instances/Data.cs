@@ -18,11 +18,13 @@ namespace Core.Servicers.Instances
 {
     public class Data : IData
     {
-        private readonly IAppData appData;
+        private readonly IAppData _appData;
+        private readonly IDatabase _database;
         private readonly object setLock = new object();
-        public Data(IAppData appData)
+        public Data(IAppData appData_, IDatabase database_)
         {
-            this.appData = appData;
+            _appData = appData_;
+            _database = database_;
         }
         public void Set(string processName, int seconds, DateTime? time_ = null)
         {
@@ -36,7 +38,7 @@ namespace Core.Servicers.Instances
                     return;
                 }
 
-                AppModel app = appData.GetApp(processName);
+                AppModel app = _appData.GetApp(processName);
 
                 if (app == null)
                 {
@@ -44,9 +46,11 @@ namespace Core.Servicers.Instances
                 }
                 //  统计app累计使用时长
                 app.TotalTime += seconds;
-                appData.UpdateApp(app);
+                _appData.UpdateApp(app);
 
-                using (var db = new TaiDbContext())
+
+                //using (var db = _database.GetReaderContext())
+                using (var db = _database.GetWriterContext())
                 {
                     using (var transcation = db.Database.BeginTransaction())
                     {
@@ -76,6 +80,10 @@ namespace Core.Servicers.Instances
                             Logger.Error(e.ToString());
                             transcation.Rollback();
                         }
+                        finally
+                        {
+                            _database.CloseWriter();
+                        }
                     }
                 }
 
@@ -102,8 +110,8 @@ namespace Core.Servicers.Instances
             }
 
 
-
-            using (var db = new TaiDbContext())
+            //using (var db = _database.GetReaderContext())
+            using (var db = _database.GetWriterContext())
             {
                 using (var transcation = db.Database.BeginTransaction())
                 {
@@ -160,7 +168,12 @@ namespace Core.Servicers.Instances
                         Logger.Error(e.ToString());
                         transcation.Rollback();
                     }
+                    finally
+                    {
+                        _database.CloseWriter();
+                    }
                 }
+                //_database.Close();
             }
         }
         public List<DailyLogModel> GetTodaylogList()
@@ -168,7 +181,7 @@ namespace Core.Servicers.Instances
 
             //return null;
 
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 var today = DateTime.Now.Date;
                 var res = db.DailyLog.Where(m => m.Date == today && m.AppModelID != 0);
@@ -176,14 +189,14 @@ namespace Core.Servicers.Instances
             }
         }
 
-        public IEnumerable<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end, int take = -1)
+        public IEnumerable<DailyLogModel> GetDateRangelogList(DateTime start, DateTime end, int take = -1, int skip = -1)
         {
 
-            IEnumerable<AppModel> apps = appData.GetAllApps();
+            IEnumerable<AppModel> apps = _appData.GetAllApps();
 
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
-                var data = take == -1 ? db.DailyLog
+                var data = db.DailyLog
                 .Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
                 .GroupBy(m => m.AppModelID)
                 .Select(m => new
@@ -191,17 +204,37 @@ namespace Core.Servicers.Instances
                     Time = m.Sum(a => a.Time),
                     Date = m.FirstOrDefault().Date,
                     AppID = m.FirstOrDefault().AppModelID
-                }) : db.DailyLog
-                .Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
-                .GroupBy(m => m.AppModelID)
-                .Select(m => new
+                });
+                if (skip > 0 && take > 0)
                 {
-                    Time = m.Sum(a => a.Time),
-                    Date = m.FirstOrDefault().Date,
-                    AppID = m.FirstOrDefault().AppModelID
-                })
-                .OrderByDescending(m => m.Time)
-                .Take(take);
+                    data = data.OrderByDescending(m => m.Time).Skip(skip).Take(take);
+                }
+                else if (skip > 0)
+                {
+                    data = data.OrderByDescending(m => m.Time).Skip(skip);
+                }
+                else if (take > 0)
+                {
+                    data = data.OrderByDescending(m => m.Time).Take(take);
+                }
+                else
+                {
+                    data = data.OrderByDescending(m => m.Time);
+                }
+
+
+
+                //: db.DailyLog
+                //.Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
+                //.GroupBy(m => m.AppModelID)
+                //.Select(m => new
+                //{
+                //    Time = m.Sum(a => a.Time),
+                //    Date = m.FirstOrDefault().Date,
+                //    AppID = m.FirstOrDefault().AppModelID
+                //})
+                //.OrderByDescending(m => m.Time)
+                //.Take(take);
 
                 var res = data
                 .ToList()
@@ -214,7 +247,7 @@ namespace Core.Servicers.Instances
 
                 foreach (var log in res)
                 {
-                    log.AppModel = appData.GetApp(log.AppModelID);
+                    log.AppModel = _appData.GetApp(log.AppModelID);
                 }
 
                 return res;
@@ -268,7 +301,7 @@ namespace Core.Servicers.Instances
             //{
             //    return new List<DailyLogModel>();
             //}
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
 
                 var res = db.DailyLog.Include(m => m.AppModel).Where(
@@ -289,7 +322,7 @@ namespace Core.Servicers.Instances
         public void Clear(int appID, DateTime month)
         {
 
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
 
                 db.DailyLog.RemoveRange(
@@ -311,7 +344,7 @@ namespace Core.Servicers.Instances
         {
 
 
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
 
 
@@ -338,7 +371,7 @@ namespace Core.Servicers.Instances
 
         public List<ColumnDataModel> GetCategoryHoursData(DateTime date)
         {
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 //  查出有数据的分类
 
@@ -380,7 +413,7 @@ namespace Core.Servicers.Instances
 
         public List<ColumnDataModel> GetCategoryRangeData(DateTime start, DateTime end)
         {
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 //  查出有数据的分类
 
@@ -431,7 +464,7 @@ namespace Core.Servicers.Instances
 
         public List<ColumnDataModel> GetCategoryYearData(DateTime date)
         {
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 //  查出有数据的分类
 
@@ -493,7 +526,7 @@ namespace Core.Servicers.Instances
 
         public List<ColumnDataModel> GetAppDayData(int appID, DateTime date)
         {
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
 
                 var data = db.Database.SqlQuery<ColumnItemDataModel>("select sum(Time) as Total,AppModelID as AppID,DataTime as Time from HoursLogModels  where AppModelID=" + appID + " and DataTime>='" + date.Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and DataTime<= '" + date.Date.ToString("yyyy-MM-dd 23:59:59") + "' GROUP BY AppModelID,DataTime ").ToArray();
@@ -527,7 +560,7 @@ namespace Core.Servicers.Instances
 
         public List<ColumnDataModel> GetAppRangeData(int appID, DateTime start, DateTime end)
         {
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 //  查出有数据的分类
 
@@ -566,7 +599,7 @@ namespace Core.Servicers.Instances
 
         public List<ColumnDataModel> GetAppYearData(int appID, DateTime date)
         {
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 //  查出有数据的分类
 
@@ -610,7 +643,7 @@ namespace Core.Servicers.Instances
         {
             end = new DateTime(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month));
 
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 db.Database.ExecuteSqlCommand("delete from DailyLogModels  where Date>='" + start.Date.ToString("yyyy-MM-01 00:00:00") + "' and Date<= '" + end.Date.ToString("yyyy-MM-dd 23:59:59") + "'");
 
@@ -623,7 +656,7 @@ namespace Core.Servicers.Instances
             start = new DateTime(start.Year, start.Month, 1, 0, 0, 0);
             end = new DateTime(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month), 23, 59, 59);
 
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 var day = db.DailyLog.Where(m => m.Date >= start.Date && m.Date <= end.Date)
                     .Select(m => new
@@ -674,9 +707,9 @@ namespace Core.Servicers.Instances
 
         public int GetDateRangeAppCount(DateTime start, DateTime end)
         {
-            IEnumerable<AppModel> apps = appData.GetAllApps();
+            IEnumerable<AppModel> apps = _appData.GetAllApps();
 
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 var res = db.DailyLog
                 .Where(m => m.Date >= start && m.Date <= end && m.AppModelID != 0)
@@ -690,13 +723,13 @@ namespace Core.Servicers.Instances
         public IEnumerable<HoursLogModel> GetTimeRangelogList(DateTime time)
         {
             time = new DateTime(time.Year, time.Month, time.Day, time.Hour, 0, 0);
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 var res = db.HoursLog.Where(m => m.DataTime == time).ToList();
 
                 foreach (var log in res)
                 {
-                    log.AppModel = appData.GetApp(log.AppModelID);
+                    log.AppModel = _appData.GetApp(log.AppModelID);
                 }
 
                 return res;
@@ -710,7 +743,7 @@ namespace Core.Servicers.Instances
         }
         public double[] GetRangeTotalData(DateTime start, DateTime end)
         {
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 if (start.Date == end.Date)
                 {
@@ -751,7 +784,7 @@ namespace Core.Servicers.Instances
 
         public double[] GetMonthTotalData(DateTime date)
         {
-            using (var db = new TaiDbContext())
+            using (var db = _database.GetReaderContext())
             {
                 var dateArr = Time.GetYearDate(date);
                 var data = db.Database.SqlQuery<TimeDataModel>("select sum(Time) as Total,Date as Time from DailyLogModels  where   Date>='" + dateArr[0].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' and Date<= '" + dateArr[1].Date.ToString("yyyy-MM-dd HH:mm:ss") + "' GROUP BY Date").ToArray();
@@ -762,7 +795,7 @@ namespace Core.Servicers.Instances
                     string month = i < 10 ? "0" + i : i.ToString();
                     var dayArr = Time.GetMonthDate(new DateTime(date.Year, i, 1));
                     var total = data.Where(m => m.Time >= dayArr[0] && m.Time <= dayArr[1]).Sum(m => m.Total);
-                    
+
                     result[i - 1] = total;
                 }
                 return result;

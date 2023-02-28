@@ -128,6 +128,7 @@
     <Compile Include="Base\Color\Colors.cs" />
     <Compile Include="Base\Color\ColorTypes.cs" />
     <Compile Include="Base\UIHelper.cs" />
+    <Compile Include="Controls\Base\DiffValue.cs" />
     <Compile Include="Controls\Base\EmptyData.cs" />
     <Compile Include="Controls\Base\CheckBox.cs" />
     <Compile Include="Controls\Base\ColorSelect.cs" />
@@ -143,16 +144,20 @@
     <Compile Include="Controls\Button\IconButton.cs" />
     <Compile Include="Controls\Charts\ChartDataValueType.cs" />
     <Compile Include="Controls\Charts\ChartItemTypeColumn.cs" />
+    <Compile Include="Controls\Charts\ChartsItemTypePie.cs" />
     <Compile Include="Controls\Charts\ChartsItemTypeRadar.cs" />
     <Compile Include="Controls\Charts\ChartsItemTypeMonth.cs" />
     <Compile Include="Controls\Charts\ChartsItemTypeCard.cs" />
-    <Compile Include="Controls\Charts\ChartsItemTypeA.cs" />
+    <Compile Include="Controls\Charts\ChartsItemTypeList.cs" />
     <Compile Include="Controls\Charts\Charts.cs" />
     <Compile Include="Controls\Charts\ChartsType.cs" />
     <Compile Include="Controls\Charts\Model\ChartBadgeModel.cs" />
     <Compile Include="Controls\Charts\Model\ChartBadgeType.cs" />
     <Compile Include="Controls\Charts\Model\ChartColumnInfoModel.cs" />
     <Compile Include="Controls\Charts\Model\ChartsDataModel.cs" />
+    <Compile Include="Controls\Converters\DateTimeConverter.cs" />
+    <Compile Include="Controls\Converters\TimeConverter.cs" />
+    <Compile Include="Controls\Converters\GetCountConverter.cs" />
     <Compile Include="Controls\Converters\ToStringConverter.cs" />
     <Compile Include="Controls\Converters\HextoColorConverter.cs" />
     <Compile Include="Controls\DatePickerBar\DatePickerBarItem.cs" />
@@ -181,6 +186,7 @@
     <Compile Include="Controls\Window\ToastType.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Librays\Image\Imager.cs" />
+    <Compile Include="Models\CategoryWebSiteListPageModel.cs" />
     <Compile Include="Models\CategoryAppListPageModel.cs" />
     <Compile Include="Models\CategoryAppList\ChooseAppModel.cs" />
     <Compile Include="Models\CategoryPageModel.cs" />
@@ -194,7 +200,10 @@
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\SettingPageModel.cs" />
     <Compile Include="Models\UINotifyPropertyChanged.cs" />
+    <Compile Include="Models\WebSiteDetailPageModel.cs" />
+    <Compile Include="Servicers\WebSiteContextMenuServicer.cs" />
     <Compile Include="Servicers\AppContextMenuServicer.cs" />
+    <Compile Include="Servicers\IWebSiteContextMenuServicer.cs" />
     <Compile Include="Servicers\IAppContextMenuServicer.cs" />
     <Compile Include="Servicers\IInputServicer.cs" />
     <Compile Include="Servicers\IMainServicer.cs" />
@@ -204,6 +213,7 @@
     <Compile Include="Servicers\MainServicer.cs" />
     <Compile Include="Servicers\ThemeServicer.cs" />
     <Compile Include="StateData.cs" />
+    <Compile Include="ViewModels\CategoryWebSiteListPageVM.cs" />
     <Compile Include="ViewModels\CategoryAppListPageVM.cs" />
     <Compile Include="ViewModels\CategoryPageVM.cs" />
     <Compile Include="ViewModels\ChartPageVM.cs" />
@@ -212,6 +222,10 @@
     <Compile Include="ViewModels\IndexPageVM.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingPageVM.cs" />
+    <Compile Include="ViewModels\WebSiteDetailPageVM.cs" />
+    <Compile Include="Views\CategoryWebSiteListPage.xaml.cs">
+      <DependentUpon>CategoryWebSiteListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CategoryAppListPage.xaml.cs">
       <DependentUpon>CategoryAppListPage.xaml</DependentUpon>
     </Compile>
@@ -232,6 +246,9 @@
     </Compile>
     <Compile Include="Views\SettingPage.xaml.cs">
       <DependentUpon>SettingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WebSiteDetailPage.xaml.cs">
+      <DependentUpon>WebSiteDetailPage.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -322,7 +339,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\Charts\ChartsItemTypeA.xaml">
+    <Page Include="Themes\Charts\ChartsItemTypeList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -418,6 +435,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CategoryWebSiteListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\CategoryAppListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -443,6 +464,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WebSiteDetailPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

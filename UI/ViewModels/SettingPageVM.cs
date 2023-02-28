@@ -22,16 +22,18 @@ namespace UI.ViewModels
         private readonly IAppConfig appConfig;
         private readonly MainViewModel mainVM;
         private readonly IData data;
+        private readonly IWebData _webData;
         public Command OpenURL { get; set; }
         public Command CheckUpdate { get; set; }
         public Command DelDataCommand { get; set; }
         public Command ExportDataCommand { get; set; }
 
-        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data)
+        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data, IWebData webData)
         {
             this.appConfig = appConfig;
             this.mainVM = mainVM;
             this.data = data;
+            _webData = webData;
 
             OpenURL = new Command(new Action<object>(OnOpenURL));
             CheckUpdate = new Command(new Action<object>(OnCheckUpdate));
@@ -171,6 +173,7 @@ namespace UI.ViewModels
             }
 
             data.ClearRange(DelDataStartMonthDate, DelDataEndMonthDate);
+            _webData.Clear(DelDataStartMonthDate, DelDataEndMonthDate);
 
             mainVM.Toast("操作已完成", Controls.Window.ToastType.Success);
         }

@@ -1,4 +1,5 @@
 ﻿using Core.Models;
+using Core.Models.Db;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -25,6 +26,24 @@ namespace Core.Librarys.SQLite
         /// 分类
         /// </summary>
         public DbSet<CategoryModel> Categorys { get; set; }
+        /// <summary>
+        /// 网站
+        /// </summary>
+        public DbSet<WebSiteModel> WebSites{ get; set; }
+        /// <summary>
+        /// 网站分类
+        /// </summary>
+        public DbSet<WebSiteCategoryModel> WebSiteCategories { get; set; }
+        /// <summary>
+        /// 网页浏览记录（每小时）
+        /// </summary>
+        public DbSet<WebBrowseLogModel> WebBrowserLogs { get; set; }
+        /// <summary>
+        /// 网页链接
+        /// </summary>
+        public DbSet<WebUrlModel> WebUrls { get; set; }
+
+
         // public StatisticContext(string n)
         //: base("StatisticContext")
         // {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UI.Controls;
+using UI.Controls.Select;
 using UI.Models;
 using UI.Models.Category;
 using UI.Views;
@@ -17,7 +18,8 @@ namespace UI.ViewModels
         private readonly ICategorys categorys;
         private readonly MainViewModel mainVM;
         private readonly IAppData appData;
-        public Command GotoAppListCommand { get; set; }
+        private readonly IWebData _webData;
+        public Command GotoListCommand { get; set; }
         /// <summary>
         /// 打开编辑命令
         /// </summary>
@@ -34,59 +36,47 @@ namespace UI.ViewModels
         /// 删除分类
         /// </summary>
         public Command DelCommand { get; set; }
+        /// <summary>
+        /// 刷新
+        /// </summary>
+        public Command RefreshCommand { get; set; }
 
-        public CategoryPageVM(ICategorys categorys, MainViewModel mainVM, IAppData appData)
+
+        public CategoryPageVM(ICategorys categorys, MainViewModel mainVM, IAppData appData, IWebData webData_)
         {
             this.categorys = categorys;
             this.mainVM = mainVM;
             this.appData = appData;
+            _webData = webData_;
 
-            GotoAppListCommand = new Command(new Action<object>(OnGotoAppList));
+            GotoListCommand = new Command(new Action<object>(OnGotoList));
             EditCommand = new Command(new Action<object>(OnEdit));
             EditDoneCommand = new Command(new Action<object>(OnEditDone));
             EditCloseCommand = new Command(new Action<object>(OnEditClose));
             DelCommand = new Command(new Action<object>(OnDel));
-
-
+            RefreshCommand = new Command(new Action<object>(OnRefresh));
             LoadData();
 
             PropertyChanged += CategoryPageVM_PropertyChanged;
         }
 
-        public override void Dispose()
+        private void OnRefresh(object obj)
         {
-            base.Dispose();
-            PropertyChanged -= CategoryPageVM_PropertyChanged;
-            Data = null;
+            LoadData();
         }
+
+        
         private void OnDel(object obj)
         {
-            if (SelectedItem == null)
+            if (ShowType.Id == 0)
             {
-                return;
+                DelAppCategory();
             }
-            var category = categorys.GetCategory(SelectedItem.Data.ID);
-            if (category != null)
+            else if (ShowType.Id == 1)
             {
-                categorys.Delete(category);
-                var apps = appData.GetAppsByCategoryID(category.ID);
-                foreach (var app in apps)
-                {
-                    app.CategoryID = 0;
-                    app.Category = null;
-                    appData.UpdateApp(app);
-                }
-
-                //  从界面移除
-
-                Data.Remove(SelectedItem);
-                if (Data.Count == 0)
-                {
-                    Data = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
-                }
-                mainVM.Toast("分类已删除", Controls.Window.ToastType.Success);
-
+                DelWebSiteCategory();
             }
+
         }
         private void OnEditClose(object obj)
         {
@@ -94,28 +84,52 @@ namespace UI.ViewModels
         }
         private void OnEditDone(object obj)
         {
-            //var c = categorys.GetCategory(123);
+            if (ShowType.Id == 0)
+            {
+                EditAppCategoryAction();
+            }
+            else if (ShowType.Id == 1)
+            {
+                EditWebSiteCategoryAction();
+            }
+        }
+
+        #region 编辑校验
+        /// <summary>
+        /// 编辑校验
+        /// </summary>
+        private bool IsEditVerify()
+        {
             if (string.IsNullOrEmpty(EditName))
             {
                 IsEditError = true;
                 EditErrorText = "分类名称不能为空";
-                return;
+                return false;
             }
             if (string.IsNullOrEmpty(EditIconFile))
             {
                 mainVM.Toast("请选择一个分类图标", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
-                return;
+                return false;
             }
             if (string.IsNullOrEmpty(EditColor))
             {
                 mainVM.Toast("请设置一个分类颜色", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
-                return;
+                return false;
             }
             if (EditIconFile.IndexOf("pack://") == -1 && new FileInfo(EditIconFile).Length > 1000000)
             {
                 mainVM.Toast("图标文件不能超过1MB", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
-                return;
+                return false;
             }
+            return true;
+        }
+        #endregion
+
+        #region 应用分类操作
+        #region 编辑应用分类
+        private void EditAppCategoryAction()
+        {
+            if (!IsEditVerify()) return;
 
             if (IsCreate)
             {
@@ -166,17 +180,17 @@ namespace UI.ViewModels
                 //  编辑分类
 
                 //  判断重复分类名称
-                if (Data.Where(m => m.Data.Name == EditName && m.Data.ID != SelectedItem.Data.ID).Any())
+                if (Data.Where(m => m.Data.Name == EditName && m.Data.ID != SelectedAppCategoryItem.Data.ID).Any())
                 {
                     mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
                     return;
                 }
-                if (Data.Where(m => m.Data.Color == EditColor && m.Data.ID != SelectedItem.Data.ID).Any())
+                if (Data.Where(m => m.Data.Color == EditColor && m.Data.ID != SelectedAppCategoryItem.Data.ID).Any())
                 {
                     mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
                     return;
                 }
-                if (EditName == SelectedItem.Data.Name && EditIconFile == SelectedItem.Data.IconFile && EditColor == SelectedItem.Data.Color)
+                if (EditName == SelectedAppCategoryItem.Data.Name && EditIconFile == SelectedAppCategoryItem.Data.IconFile && EditColor == SelectedAppCategoryItem.Data.Color)
                 {
                     mainVM.Toast("没有修改");
                     EditVisibility = System.Windows.Visibility.Collapsed;
@@ -184,7 +198,7 @@ namespace UI.ViewModels
                 }
                 mainVM.Toast("已更新", Controls.Window.ToastType.Success);
 
-                var category = categorys.GetCategory(SelectedItem.Data.ID);
+                var category = categorys.GetCategory(SelectedAppCategoryItem.Data.ID);
                 if (category != null)
                 {
                     category.Name = EditName;
@@ -194,7 +208,7 @@ namespace UI.ViewModels
                     categorys.Update(category);
                 }
 
-                var item = Data.Where(m => m.Data.ID == SelectedItem.Data.ID).FirstOrDefault();
+                var item = Data.Where(m => m.Data.ID == SelectedAppCategoryItem.Data.ID).FirstOrDefault();
 
                 var changedItem = new CategoryModel()
                 {
@@ -217,6 +231,165 @@ namespace UI.ViewModels
                 EditVisibility = System.Windows.Visibility.Collapsed;
             }
         }
+        #endregion
+
+        #region 删除分类
+        private void DelAppCategory()
+        {
+            if (SelectedAppCategoryItem == null)
+            {
+                return;
+            }
+            var category = categorys.GetCategory(SelectedAppCategoryItem.Data.ID);
+            if (category != null)
+            {
+                categorys.Delete(category);
+                var apps = appData.GetAppsByCategoryID(category.ID);
+                foreach (var app in apps)
+                {
+                    app.CategoryID = 0;
+                    app.Category = null;
+                    appData.UpdateApp(app);
+                }
+
+                //  从界面移除
+
+                Data.Remove(SelectedAppCategoryItem);
+                if (Data.Count == 0)
+                {
+                    Data = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
+                }
+                mainVM.Toast("分类已删除", Controls.Window.ToastType.Success);
+
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region 网站分类操作
+        #region 编辑网站分类
+        private void EditWebSiteCategoryAction()
+        {
+            if (!IsEditVerify()) return;
+
+            if (IsCreate)
+            {
+                //  创建分类
+
+                //  判断重复分类名称
+                if (WebCategoryData.Where(m => m.Data.Name == EditName).Any())
+                {
+                    mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
+                    return;
+                }
+                if (WebCategoryData.Where(m => m.Data.Color == EditColor).Any())
+                {
+                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
+                    return;
+                }
+
+                var category = _webData.CreateWebSiteCategory(new Core.Models.Db.WebSiteCategoryModel()
+                {
+                    Color = EditColor,
+                    IconFile = EditIconFile,
+                    Name = EditName,
+                });
+
+                if (category != null)
+                {
+                    mainVM.Toast("创建完成", Controls.Window.ToastType.Success);
+                    EditVisibility = System.Windows.Visibility.Collapsed;
+
+                    var webCategory = new WebCategoryModel()
+                    {
+                        Count = 0,
+                        Data = category,
+                    };
+                    if (WebCategoryData.Count == 0)
+                    {
+                        WebCategoryData = new System.Collections.ObjectModel.ObservableCollection<WebCategoryModel>()
+                        {
+                            webCategory
+                        };
+                    }
+                    else
+                    {
+                        WebCategoryData.Add(webCategory);
+                    }
+
+                }
+                else
+                {
+                    mainVM.Toast("创建失败", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
+                }
+
+
+
+            }
+            else
+            {
+                //  编辑分类
+
+                //  判断重复分类名称
+                if (WebCategoryData.Where(m => m.Data.Name == EditName && m.Data.ID != SelectedWebCategoryItem.Data.ID).Any())
+                {
+                    mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
+                    return;
+                }
+                if (WebCategoryData.Where(m => m.Data.Color == EditColor && m.Data.ID != SelectedWebCategoryItem.Data.ID).Any())
+                {
+                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
+                    return;
+                }
+                if (EditName == SelectedWebCategoryItem.Data.Name && EditIconFile == SelectedWebCategoryItem.Data.IconFile && EditColor == SelectedWebCategoryItem.Data.Color)
+                {
+                    mainVM.Toast("没有修改");
+                    EditVisibility = System.Windows.Visibility.Collapsed;
+                    return;
+                }
+                mainVM.Toast("已更新", Controls.Window.ToastType.Success);
+
+                var category = SelectedWebCategoryItem.Data;
+                category.Name = EditName;
+                category.IconFile = EditIconFile;
+                category.Color = EditColor;
+
+                _webData.UpdateWebSiteCategory(category);
+
+                var item = WebCategoryData.Where(m => m.Data.ID == category.ID).FirstOrDefault();
+                var index = WebCategoryData.IndexOf(item);
+                WebCategoryData[index] = new WebCategoryModel()
+                {
+                    Count = SelectedWebCategoryItem.Count,
+                    Data = category
+                };
+                EditVisibility = System.Windows.Visibility.Collapsed;
+            }
+        }
+        #endregion
+
+        #region 删除分类
+        private void DelWebSiteCategory()
+        {
+            if (SelectedWebCategoryItem == null)
+            {
+                return;
+            }
+
+            _webData.DeleteWebSiteCategory(SelectedWebCategoryItem.Data);
+
+            //  从界面移除
+            WebCategoryData.Remove(SelectedWebCategoryItem);
+            if (WebCategoryData.Count == 0)
+            {
+                WebCategoryData = new System.Collections.ObjectModel.ObservableCollection<WebCategoryModel>();
+            }
+            mainVM.Toast("分类已删除", Controls.Window.ToastType.Success);
+
+        }
+        #endregion
+        #endregion
 
         private void OnEdit(object obj)
         {
@@ -225,10 +398,12 @@ namespace UI.ViewModels
 
             if (obj != null)
             {
-                var select = obj as CategoryModel;
-                EditName = select.Data.Name;
-                EditIconFile = select.Data.IconFile;
-                EditColor = string.IsNullOrEmpty(select.Data.Color) ? "#00FFAB" : select.Data.Color;
+                var appCategory = obj as CategoryModel;
+                var webCategory = obj as WebCategoryModel;
+
+                EditName = appCategory == null ? webCategory.Data.Name : appCategory.Data.Name;
+                EditIconFile = appCategory == null ? webCategory.Data.IconFile : appCategory.Data.IconFile;
+                EditColor = string.IsNullOrEmpty(appCategory == null ? webCategory.Data.Color : appCategory.Data.Color) ? "#00FFAB" : appCategory == null ? webCategory.Data.Color : appCategory.Data.Color;
             }
             else
             {
@@ -240,38 +415,67 @@ namespace UI.ViewModels
 
         private void CategoryPageVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SelectedItem))
+            if (e.PropertyName == nameof(SelectedAppCategoryItem))
             {
                 //GotoAppList();
             }
         }
 
-        private void OnGotoAppList(object obj)
+        private void OnGotoList(object obj)
         {
-            GotoAppList();
+            GotoList();
         }
 
         private void LoadData()
         {
-            Data = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
-            foreach (var item in categorys.GetCategories())
+            Task.Run(() =>
             {
-                Data.Add(new CategoryModel()
+                Data = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
+                foreach (var item in categorys.GetCategories())
                 {
-                    Count = appData.GetAppsByCategoryID(item.ID).Count,
-                    Data = item
-                });
+                    Data.Add(new CategoryModel()
+                    {
+                        Count = appData.GetAppsByCategoryID(item.ID).Count,
+                        Data = item
+                    });
+                }
+
+                var webCategories = _webData.GetWebSiteCategories();
+                var webCategoryData = new List<WebCategoryModel>();
+
+                foreach (var item in webCategories)
+                {
+                    webCategoryData.Add(new WebCategoryModel()
+                    {
+                        Data = item,
+                        Count = _webData.GetWebSitesCount(item.ID)
+                    });
+                }
+                WebCategoryData = new System.Collections.ObjectModel.ObservableCollection<WebCategoryModel>(webCategoryData);
+            });
+        }
+
+        private void GotoList()
+        {
+            if (ShowType.Id == 0 && SelectedAppCategoryItem != null)
+            {
+                mainVM.Data = SelectedAppCategoryItem;
+                mainVM.Uri = nameof(CategoryAppListPage);
+                SelectedAppCategoryItem = null;
+            }
+            else if (ShowType.Id == 1 && SelectedWebCategoryItem != null)
+            {
+                mainVM.Data = SelectedWebCategoryItem.Data;
+                mainVM.Uri = nameof(CategoryWebSiteListPage);
+                SelectedWebCategoryItem = null;
             }
         }
 
-        private void GotoAppList()
+        public override void Dispose()
         {
-            if (SelectedItem != null)
-            {
-                mainVM.Data = SelectedItem;
-                mainVM.Uri = nameof(CategoryAppListPage);
-                SelectedItem = null;
-            }
+            base.Dispose();
+            PropertyChanged -= CategoryPageVM_PropertyChanged;
+            Data = null;
         }
     }
 }

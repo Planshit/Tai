@@ -145,7 +145,7 @@ namespace UI.Models
         /// <summary>
         /// 时长对比上一周期变化（0无变化，1增加，-1减少）
         /// </summary>
-        public string DiffTotalTimeType { get { return DiffTotalTimeType_; } set { DiffTotalTimeType_ = value;OnPropertyChanged(); } }
+        public string DiffTotalTimeType { get { return DiffTotalTimeType_; } set { DiffTotalTimeType_ = value; OnPropertyChanged(); } }
         private string DiffAppCountType_;
         /// <summary>
         /// 应用量对比上一周期变化（0无变化，1增加，-1减少）
@@ -155,11 +155,96 @@ namespace UI.Models
         /// <summary>
         /// 时长差异值
         /// </summary>
-        public string DiffTotalTimeValue { get { return DiffTotalTimeValue_; } set { DiffTotalTimeValue_ = value;OnPropertyChanged(); } }
+        public string DiffTotalTimeValue { get { return DiffTotalTimeValue_; } set { DiffTotalTimeValue_ = value; OnPropertyChanged(); } }
         private string DiffAppCountValue_;
         /// <summary>
         /// 应用量差异值
         /// </summary>
         public string DiffAppCountValue { get { return DiffAppCountValue_; } set { DiffAppCountValue_ = value; OnPropertyChanged(); } }
+
+        //private SelectItemModel ShowType_;
+        /// <summary>
+        /// 展示数据类型（0=应用/1=网页）
+        /// </summary>
+        //public SelectItemModel ShowType { get { return ShowType_; } set { ShowType_ = value; OnPropertyChanged(); } }
+
+        private List<ChartsDataModel> WebCategoriesPieData_;
+        /// <summary>
+        /// 网页分类统计饼图数据
+        /// </summary>
+        public List<ChartsDataModel> WebCategoriesPieData { get { return WebCategoriesPieData_; } set { WebCategoriesPieData_ = value; OnPropertyChanged(); } }
+
+        private List<ChartsDataModel> WebBrowseStatisticsData_;
+        /// <summary>
+        /// 网页浏览时长统计数据（柱状图）
+        /// </summary>
+        public List<ChartsDataModel> WebBrowseStatisticsData { get { return WebBrowseStatisticsData_; } set { WebBrowseStatisticsData_ = value; OnPropertyChanged(); } }
+
+        #region 网页数据
+        private string WebTotalTimeText_;
+        /// <summary>
+        /// 网页浏览总时长
+        /// </summary>
+        public string WebTotalTimeText { get { return WebTotalTimeText_; } set { WebTotalTimeText_ = value; OnPropertyChanged(); } }
+        private double WebTotalTime_;
+        /// <summary>
+        /// 网页浏览总时长
+        /// </summary>
+        public double WebTotalTime { get { return WebTotalTime_; } set { WebTotalTime_ = value; OnPropertyChanged(); } }
+        private double WebSiteCount_;
+        /// <summary>
+        /// 站点浏览数量
+        /// </summary>
+        public double WebSiteCount { get { return WebSiteCount_; } set { WebSiteCount_ = value; OnPropertyChanged(); } }
+        private double WebPageCount_;
+        /// <summary>
+        /// 网页浏览数量
+        /// </summary>
+        public double WebPageCount { get { return WebPageCount_; } set { WebPageCount_ = value; OnPropertyChanged(); } }
+
+        private double LastWebTotalTime_;
+        /// <summary>
+        /// 上一个周期网页浏览总时长
+        /// </summary>
+        public double LastWebTotalTime { get { return LastWebTotalTime_; } set { LastWebTotalTime_ = value; OnPropertyChanged(); } }
+        private double LastWebSiteCount_;
+        /// <summary>
+        /// 上一个周期站点浏览数量
+        /// </summary>
+        public double LastWebSiteCount { get { return LastWebSiteCount_; } set { LastWebSiteCount_ = value; OnPropertyChanged(); } }
+        private double LastWebPageCount_;
+        /// <summary>
+        /// 上一个周期网页浏览数量
+        /// </summary>
+        public double LastWebPageCount { get { return LastWebPageCount_; } set { LastWebPageCount_ = value; OnPropertyChanged(); } }
+
+        private List<ChartsDataModel> WebSitesTopData_;
+        /// <summary>
+        /// 网页站点最为频繁
+        /// </summary>
+        public List<ChartsDataModel> WebSitesTopData { get { return WebSitesTopData_; } set { WebSitesTopData_ = value; OnPropertyChanged(); } }
+        private int WebColSelectedIndex_ = -1;
+        /// <summary>
+        /// 网页浏览数据柱状图选中列索引
+        /// </summary>
+        public int WebColSelectedIndex { get { return WebColSelectedIndex_; } set { WebColSelectedIndex_ = value; OnPropertyChanged(); } }
+
+        private List<ChartsDataModel> WebSitesColSelectedData_;
+        /// <summary>
+        /// 网页浏览数据柱状图选中列数据
+        /// </summary>
+        public List<ChartsDataModel> WebSitesColSelectedData { get { return WebSitesColSelectedData_; } set { WebSitesColSelectedData_ = value; OnPropertyChanged(); } }
+
+        private string WebSitesColSelectedTimeText_;
+        /// <summary>
+        /// 网页浏览数据柱状图选择列时间
+        /// </summary>
+        public string WebSitesColSelectedTimeText { get { return WebSitesColSelectedTimeText_; } set { WebSitesColSelectedTimeText_ = value; OnPropertyChanged(); } }
+        private ContextMenu WebSiteContextMenu_;
+        /// <summary>
+        /// 网站右键菜单
+        /// </summary>
+        public ContextMenu WebSiteContextMenu { get { return WebSiteContextMenu_; } set { WebSiteContextMenu_ = value; OnPropertyChanged(); } }
+        #endregion
     }
 }

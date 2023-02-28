@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using UI.Controls.Charts.Model;
+using UI.Controls.Select;
 
 namespace UI.Models
 {
@@ -63,5 +64,43 @@ namespace UI.Models
         /// </summary>
         public int MoreNum { get { return MoreNum_; } set { MoreNum_ = value; OnPropertyChanged(); } }
 
+        private List<ChartsDataModel> WebFrequentUseData_;
+        /// <summary>
+        /// 网页最为频繁数据
+        /// </summary>
+        public List<ChartsDataModel> WebFrequentUseData
+        {
+            get { return WebFrequentUseData_; }
+            set { WebFrequentUseData_ = value; OnPropertyChanged(); }
+        }
+        private SelectItemModel MoreType_;
+        /// <summary>
+        /// 更多展示数据类型（0=应用/1=网页）
+        /// </summary>
+        public SelectItemModel MoreType { get { return MoreType_; } set { MoreType_ = value; OnPropertyChanged(); } }
+
+        private List<ChartsDataModel> AppMoreData_;
+        /// <summary>
+        /// 应用更多数据
+        /// </summary>
+        public List<ChartsDataModel> AppMoreData
+        {
+            get { return AppMoreData_; }
+            set { AppMoreData_ = value; OnPropertyChanged(); }
+        }
+        private List<ChartsDataModel> WebMoreData_;
+        /// <summary>
+        /// 网页更多数据
+        /// </summary>
+        public List<ChartsDataModel> WebMoreData
+        {
+            get { return WebMoreData_; }
+            set { WebMoreData_ = value; OnPropertyChanged(); }
+        }
+        private ContextMenu WebSiteContextMenu_;
+        /// <summary>
+        /// 网站右键菜单
+        /// </summary>
+        public ContextMenu WebSiteContextMenu { get { return WebSiteContextMenu_; } set { WebSiteContextMenu_ = value; OnPropertyChanged(); } }
     }
 }

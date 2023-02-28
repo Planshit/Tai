@@ -21,12 +21,14 @@ namespace Core.Servicers.Instances
     public class Main : IMain
     {
         private readonly IAppObserver appObserver;
+        private readonly IBrowserObserver browserObserver;
         private readonly IData data;
         private readonly ISleepdiscover sleepdiscover;
         private readonly IAppConfig appConfig;
         private readonly IDateTimeObserver dateTimeObserver;
         private readonly IAppData appData;
         private readonly ICategorys categories;
+        private readonly IWebFilter _webFilter;
         //  忽略的进程
         private readonly string[] DefaultIgnoreProcess = new string[] {
             "Tai",
@@ -88,7 +90,9 @@ namespace Core.Servicers.Instances
             ISleepdiscover sleepdiscover,
             IAppConfig appConfig,
             IDateTimeObserver dateTimeObserver,
-            IAppData appData, ICategorys categories)
+            IAppData appData, ICategorys categories,
+            IBrowserObserver browserObserver,
+            IWebFilter webFilter_)
         {
             this.appObserver = appObserver;
             this.data = data;
@@ -97,16 +101,20 @@ namespace Core.Servicers.Instances
             this.dateTimeObserver = dateTimeObserver;
             this.appData = appData;
             this.categories = categories;
+            this.browserObserver = browserObserver;
+            _webFilter = webFilter_;
 
             IgnoreProcessCacheList = new List<string>();
             ConfigIgnoreProcessRegxList = new List<string>();
             ConfigIgnoreProcessList = new List<string>();
 
-            appObserver.OnAppActive += Observer_OnAppActive;
+            appObserver.OnAppActive += AppObserver_OnAppActive;
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
             appConfig.ConfigChanged += AppConfig_ConfigChanged;
             dateTimeObserver.OnDateTimeChanging += DateTimeObserver_OnDateTimeChanging;
         }
+
+
 
         private void DateTimeObserver_OnDateTimeChanging(object sender, DateTime time)
         {
@@ -130,6 +138,9 @@ namespace Core.Servicers.Instances
 
                 //  更新忽略规则
                 UpdateConfigIgnoreProcess();
+
+                //  处理web记录功能启停
+                HandleWebServiceConfig();
             }
         }
 
@@ -165,6 +176,11 @@ namespace Core.Servicers.Instances
 
             //  启动睡眠监测
             sleepdiscover.Start();
+            
+            //  初始化过滤器
+            _webFilter.Init();
+            
+            //  启动主服务
             Start();
 
             OnStarted?.Invoke(this, EventArgs.Empty);
@@ -176,6 +192,11 @@ namespace Core.Servicers.Instances
 
             dateTimeObserver.Start();
             appObserver.Start();
+
+            if (config.General.IsWebEnabled)
+            {
+                browserObserver.Start();
+            }
         }
         public void Stop()
         {
@@ -307,16 +328,16 @@ namespace Core.Servicers.Instances
             return true;
         }
 
-        private void Observer_OnAppActive(string processName, string description, string file)
+        private void AppObserver_OnAppActive(Models.AppObserver.AppObserverEventArgs args)
         {
             if (sleepStatus == SleepStatus.Sleep)
             {
                 return;
             }
 
-            bool isCheck = IsCheckApp(processName, description, file);
+            bool isCheck = IsCheckApp(args.ProcessName, args.Description, args.File);
 
-            if (activeProcess != processName)
+            if (activeProcess != args.ProcessName)
             {
                 UpdateTime();
             }
@@ -327,7 +348,7 @@ namespace Core.Servicers.Instances
                 {
                     activeStartTime = DateTime.Now;
                 }
-                activeProcess = processName;
+                activeProcess = args.ProcessName;
             }
             else
             {
@@ -419,6 +440,23 @@ namespace Core.Servicers.Instances
                 OnUpdateTime?.Invoke(this, null);
             }
         }
+
+        #region 处理网站数据记录配置项开关
+        /// <summary>
+        /// 处理网站数据记录配置项开关
+        /// </summary>
+        private void HandleWebServiceConfig()
+        {
+            if (config.General.IsWebEnabled)
+            {
+                browserObserver.Start();
+            }
+            else
+            {
+                browserObserver.Stop();
+            }
+        }
+        #endregion
 
     }
 }

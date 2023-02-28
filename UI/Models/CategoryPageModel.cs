@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Models.Db;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,8 +19,8 @@ namespace UI.Models
             set { Data_ = value; OnPropertyChanged(); }
         }
 
-        private CategoryModel SelectedItem_;
-        public CategoryModel SelectedItem { get { return SelectedItem_; } set { SelectedItem_ = value; OnPropertyChanged(); } }
+        private CategoryModel SelectedAppCategoryItem_;
+        public CategoryModel SelectedAppCategoryItem { get { return SelectedAppCategoryItem_; } set { SelectedAppCategoryItem_ = value; OnPropertyChanged(); } }
 
 
         private Visibility EditVisibility_ = Visibility.Collapsed;
@@ -58,5 +59,17 @@ namespace UI.Models
 
         private string EditColor_;
         public string EditColor { get { return EditColor_; } set { EditColor_ = value; OnPropertyChanged(); } }
+
+        public class WebCategoryModel
+        {
+            public WebSiteCategoryModel Data { get; set; }
+            public int Count { get; set; }
+        }
+
+        private ObservableCollection<WebCategoryModel> WebCategoryData_;
+        public ObservableCollection<WebCategoryModel> WebCategoryData { get { return WebCategoryData_; } set { WebCategoryData_ = value; OnPropertyChanged(); } }
+
+        private WebCategoryModel SelectedWebCategoryItem_;
+        public WebCategoryModel SelectedWebCategoryItem { get { return SelectedWebCategoryItem_; } set { SelectedWebCategoryItem_ = value; OnPropertyChanged(); } }
     }
 }

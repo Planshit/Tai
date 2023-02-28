@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.ViewModels;
 
@@ -22,7 +23,7 @@ namespace UI.Views
     /// <summary>
     /// IndexPage.xaml 的交互逻辑
     /// </summary>
-    public partial class DataPage : Page
+    public partial class DataPage : TPage
     {
         public DataPage(DataPageVM vm)
         {

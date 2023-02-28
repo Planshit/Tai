@@ -129,5 +129,30 @@ namespace UI.ViewModels
             IsShowToast = true;
 
         }
+
+        /// <summary>
+        /// 显示一条错误的提醒消息
+        /// </summary>
+        /// <param name="message_">消息内容</param>
+        public void Error(string message_)
+        {
+            Toast(message_, ToastType.Error, IconTypes.Error);
+        }
+        /// <summary>
+        /// 显示一条普通提醒消息
+        /// </summary>
+        /// <param name="message_">消息内容</param>
+        public void Info(string message_)
+        {
+            Toast(message_, ToastType.Info, IconTypes.Info);
+        }
+        /// <summary>
+        /// 显示一条成功的提醒消息
+        /// </summary>
+        /// <param name="message_">消息内容</param>
+        public void Success(string message_)
+        {
+            Toast(message_, ToastType.Success, IconTypes.Accept);
+        }
     }
 }

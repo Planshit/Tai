@@ -15,6 +15,7 @@ using UI.Controls.Charts.Model;
 using UI.Models;
 using UI.Servicers;
 using UI.Views;
+using static UI.Controls.SettingPanel.SettingPanel;
 
 namespace UI.ViewModels
 {
@@ -25,13 +26,17 @@ namespace UI.ViewModels
         private readonly MainViewModel main;
         private readonly IAppContextMenuServicer appContextMenuServicer;
         private readonly IAppConfig appConfig;
+        private readonly IWebData _webData;
+        private readonly IWebSiteContextMenuServicer _webSiteContextMenu;
 
-        public DataPageVM(IData data, MainViewModel main, IAppContextMenuServicer appContextMenuServicer, IAppConfig appConfig)
+        public DataPageVM(IData data, MainViewModel main, IAppContextMenuServicer appContextMenuServicer, IAppConfig appConfig, IWebData webData, IWebSiteContextMenuServicer webSiteContextMenu)
         {
             this.data = data;
             this.main = main;
             this.appContextMenuServicer = appContextMenuServicer;
             this.appConfig = appConfig;
+            _webData = webData;
+            _webSiteContextMenu = webSiteContextMenu;
 
             ToDetailCommand = new Command(new Action<object>(OnTodetailCommand));
 
@@ -71,6 +76,11 @@ namespace UI.ViewModels
                     main.Data = model.AppModel;
                     main.Uri = nameof(DetailPage);
                 }
+                else
+                {
+                    main.Data = data.Data as Core.Models.Db.WebSiteModel;
+                    main.Uri = nameof(WebSiteDetailPage);
+                }
             }
         }
 
@@ -81,18 +91,15 @@ namespace UI.ViewModels
             {
                 LoadData(DayDate);
             }
-
-            if (e.PropertyName == nameof(MonthDate))
+            else if (e.PropertyName == nameof(MonthDate))
             {
                 LoadData(MonthDate);
             }
-
-            if (e.PropertyName == nameof(YearDate))
+            else if (e.PropertyName == nameof(YearDate))
             {
                 LoadData(YearDate);
             }
-
-            if (e.PropertyName == nameof(TabbarSelectedIndex))
+            else if (e.PropertyName == nameof(TabbarSelectedIndex))
             {
                 if (TabbarSelectedIndex == 0)
                 {
@@ -100,10 +107,6 @@ namespace UI.ViewModels
                     {
                         DayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                     }
-                    //else
-                    //{
-                    //    LoadData(DayDate);
-                    //}
 
                 }
                 else if (TabbarSelectedIndex == 1)
@@ -112,10 +115,6 @@ namespace UI.ViewModels
                     {
                         MonthDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     }
-                    //else
-                    //{
-                    //    LoadData(MonthDate);
-                    //}
                 }
                 else if (TabbarSelectedIndex == 2)
                 {
@@ -123,10 +122,20 @@ namespace UI.ViewModels
                     {
                         YearDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     }
-                    //else
-                    //{
-                    //    LoadData(YearDate);
-                    //}
+                }
+            }
+            else if (e.PropertyName == nameof(ShowType))
+            {
+                LoadData(DayDate, 0);
+                LoadData(MonthDate, 1);
+                LoadData(YearDate, 2);
+                if (ShowType.Id == 0)
+                {
+                    AppContextMenu = appContextMenuServicer.GetContextMenu();
+                }
+                else
+                {
+                    AppContextMenu = _webSiteContextMenu.GetContextMenu();
                 }
             }
         }
@@ -138,41 +147,54 @@ namespace UI.ViewModels
 
 
 
-        private async void LoadData(DateTime date)
+        private async void LoadData(DateTime date, int dataType_ = -1)
         {
-
             await Task.Run(() =>
             {
                 DateTime dateStart = date, dateEnd = date;
-                if (TabbarSelectedIndex == 1)
+
+                dataType_ = dataType_ == -1 ? TabbarSelectedIndex : dataType_;
+
+                if (dataType_ == 1)
                 {
                     dateStart = new DateTime(date.Year, date.Month, 1);
                     dateEnd = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
                 }
-                else if (TabbarSelectedIndex == 0)
+                else if (dataType_ == 0)
                 {
                     dateStart = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
                     dateEnd = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59);
                 }
-                else if (TabbarSelectedIndex == 2)
+                else if (dataType_ == 2)
                 {
                     dateStart = new DateTime(date.Year, 1, 1, 0, 0, 0);
                     dateEnd = new DateTime(date.Year, 12, DateTime.DaysInMonth(date.Year, 12), 23, 59, 59);
                 }
 
-                var list = data.GetDateRangelogList(dateStart, dateEnd);
-
-                if (TabbarSelectedIndex == 0)
+                List<ChartsDataModel> chartData = new List<ChartsDataModel>();
+                if (ShowType.Id == 0)
                 {
-                    Data = MapToChartsData(list);
-                }
-                else if (TabbarSelectedIndex == 1)
-                {
-                    MonthData = MapToChartsData(list);
+                    var result = data.GetDateRangelogList(dateStart, dateEnd);
+                    chartData = MapToChartsData(result);
                 }
                 else
                 {
-                    YearData = MapToChartsData(list);
+                    var result = _webData.GetWebSiteLogList(dateStart, dateEnd);
+                    chartData = MapToChartsWebData(result);
+                }
+
+
+                if (dataType_ == 0)
+                {
+                    Data = chartData;
+                }
+                else if (dataType_ == 1)
+                {
+                    MonthData = chartData;
+                }
+                else
+                {
+                    YearData = chartData;
                 }
 
             });
@@ -204,6 +226,40 @@ namespace UI.ViewModels
                     });
                 }
                 if (config.Behavior.IgnoreProcessList.Contains(item.AppModel.Name))
+                {
+                    bindModel.BadgeList.Add(ChartBadgeModel.IgnoreBadge);
+                }
+                resData.Add(bindModel);
+            }
+
+            return resData;
+        }
+
+        private List<ChartsDataModel> MapToChartsWebData(IEnumerable<Core.Models.Db.WebSiteModel> list)
+        {
+            var resData = new List<ChartsDataModel>();
+            var config = appConfig.GetConfig();
+
+            foreach (var item in list)
+            {
+                var bindModel = new ChartsDataModel();
+                bindModel.Data = item;
+                bindModel.Name = item.Title;
+                bindModel.Value = item.Duration;
+                bindModel.Tag = Time.ToString(item.Duration);
+                bindModel.PopupText = item.Domain;
+                bindModel.Icon = item.IconFile;
+                bindModel.BadgeList = new List<ChartBadgeModel>();
+                if (item.Category != null)
+                {
+                    bindModel.BadgeList.Add(new ChartBadgeModel()
+                    {
+                        Name = item.Category.Name,
+                        Color = item.Category.Color,
+                        Type = ChartBadgeType.Category
+                    });
+                }
+                if (config.Behavior.IgnoreURLList.Contains(item.Domain))
                 {
                     bindModel.BadgeList.Add(ChartBadgeModel.IgnoreBadge);
                 }

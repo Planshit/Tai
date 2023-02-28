@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Media;
@@ -49,7 +50,7 @@ namespace UI.Base.Color
         {
             if (string.IsNullOrEmpty(color))
             {
-                return null;
+                color = StateData.ThemeColor;
             }
             return new SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString(color))
             {
