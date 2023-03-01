@@ -426,7 +426,7 @@ namespace UI.Controls.Navigation
         private void ScrollToActive(double animationDuration = 0.35)
         {
             //  获取选中项
-            if (SelectedItem == null)
+            if (SelectedItem == null || ItemsDictionary.Count == 0 || !ItemsDictionary.ContainsKey(SelectedItem.ID))
             {
                 return;
             }

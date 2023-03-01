@@ -226,13 +226,17 @@ namespace Core.Servicers.Instances
 
         private void Sleep()
         {
-            //  停止离开检测计时器
-            timer.Stop();
-
             if (status == SleepStatus.Sleep)
             {
                 return;
             }
+
+            //  卸载事件
+            SystemEvents.SessionSwitch -= SystemEvents_SessionSwitch;
+
+            //  停止离开检测计时器
+            timer?.Stop();
+
             status = SleepStatus.Sleep;
 
             //  设置鼠标钩子
@@ -248,6 +252,9 @@ namespace Core.Servicers.Instances
             {
                 return;
             }
+
+            //  注册事件
+            SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
 
             status = SleepStatus.Wake;
 
