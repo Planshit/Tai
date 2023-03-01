@@ -95,7 +95,7 @@ namespace UI.ViewModels
                 new SelectItemModel()
                 {
                     Id=1,
-                    Name="网页"
+                    Name="网站"
                 }
             };
             MoreType = MoreTypeOptions[0];
