@@ -13,6 +13,8 @@ using Npoi.Mapper;
 using System.IO;
 using CsvHelper;
 using System.Globalization;
+using System.Threading.Tasks;
+using NPOI.SS.Formula.Functions;
 
 namespace Core.Servicers.Instances
 {
@@ -26,156 +28,101 @@ namespace Core.Servicers.Instances
             _appData = appData_;
             _database = database_;
         }
-        public void Set(string processName, int seconds, DateTime? time_ = null)
+
+        public void SaveAppDuration(string processName_, int duration_, DateTime startDateTime_)
         {
-            lock (setLock)
+            //  过滤无效数据
+            if (string.IsNullOrEmpty(processName_) || duration_ <= 0) return;
+
+            Task.Run(() =>
             {
-                DateTime time = !time_.HasValue ? DateTime.Now : time_.Value;
-                var today = time.Date;
-
-                if (string.IsNullOrEmpty(processName) || seconds <= 0)
+                try
                 {
-                    return;
-                }
-
-                AppModel app = _appData.GetApp(processName);
-
-                if (app == null)
-                {
-                    return;
-                }
-                //  统计app累计使用时长
-                app.TotalTime += seconds;
-                _appData.UpdateApp(app);
-
-
-                //using (var db = _database.GetReaderContext())
-                using (var db = _database.GetWriterContext())
-                {
-                    using (var transcation = db.Database.BeginTransaction())
+                    if (startDateTime_.Minute == 59 && startDateTime_.Second >= 58)
                     {
-                        try
-                        {
-                            var res = db.DailyLog.SingleOrDefault(m => m.Date == today && m.AppModelID == app.ID);
-                            if (res == null)
-                            {
-                                //数据库中没有时则创建
-                                db.DailyLog.Add(new Models.DailyLogModel()
-                                {
-                                    Date = today,
-                                    AppModelID = app.ID,
-                                    Time = seconds,
-                                });
-                            }
-                            else
-                            {
-                                res.Time += seconds;
-                            }
+                        //  当记录开始时间接近59分59秒时划到下一个小时时段
+                        startDateTime_ = startDateTime_.AddSeconds(2);
+                        startDateTime_ = new DateTime(startDateTime_.Year, startDateTime_.Month, startDateTime_.Day, startDateTime_.Hour, 0, 0);
+                    }
 
-                            db.SaveChanges();
-                            transcation.Commit();
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.Error(e.ToString());
-                            transcation.Rollback();
-                        }
-                        finally
+                    using (var db = _database.GetWriterContext())
+                    {
+                        var app = db.App.Where(m => m.Name == processName_).FirstOrDefault();
+                        if (app == null)
                         {
                             _database.CloseWriter();
+                            return;
                         }
-                    }
-                }
 
-                SetHoursTime(app, seconds, time);
-            }
-        }
+                        //  当前时段最大可记录时长
+                        int nowHoursMaxDuration = (60 - startDateTime_.Minute) * 60;
+                        duration_ = duration_ > nowHoursMaxDuration ? nowHoursMaxDuration : duration_;
 
+                        //  更新app累计时长
+                        app.TotalTime += duration_;
 
-        private void SetHoursTime(AppModel app, int seconds, DateTime time)
-        {
-            string processName = app.Name;
-            //  当前时段
-            var nowtime = new DateTime(time.Year, time.Month, time.Day, time.Hour, 0, 0);
-
-            if (time.Minute == 59 && time.Second == 59)
-            {
-                SetHoursTime(app, seconds, nowtime.AddHours(1));
-                return;
-            }
-
-            if (seconds <= 0 || time > DateTime.Now)
-            {
-                return;
-            }
-
-
-            //using (var db = _database.GetReaderContext())
-            using (var db = _database.GetWriterContext())
-            {
-                using (var transcation = db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        var hourslog = db.HoursLog.SingleOrDefault(
-                            m =>
-                            m.DataTime == nowtime
-                            && m.AppModelID == app.ID
-                            );
-
-                        int overflowSeconds = 0;
-
-                        if (hourslog == null)
+                        //  更新每日数据
+                        var dailyLog = db.DailyLog.SingleOrDefault(m => m.Date == startDateTime_.Date && m.AppModelID == app.ID);
+                        if (dailyLog == null)
                         {
-                            //  没有时创建
-
-                            if (seconds > 3600)
+                            //数据库中没有时则创建
+                            db.DailyLog.Add(new DailyLogModel()
                             {
-                                overflowSeconds = seconds - 3600;
-                                seconds = 3600;
-                            }
-
-                            db.HoursLog.Add(new Models.HoursLogModel()
-                            {
-                                DataTime = nowtime,
+                                Date = startDateTime_.Date,
                                 AppModelID = app.ID,
-                                Time = seconds
+                                Time = duration_ > 86400 ? 86400 : duration_,
                             });
                         }
                         else
                         {
-                            if (hourslog.Time + seconds > 3600)
+                            if (dailyLog.Time + duration_ > 86400)
                             {
-                                hourslog.Time = 3600;
-                                overflowSeconds = hourslog.Time + seconds - 3600;
+                                dailyLog.Time = 86400;
                             }
                             else
                             {
-                                hourslog.Time += seconds;
+                                dailyLog.Time += duration_;
+                            }
+                        }
+
+                        //  更新时段数据
+                        var time = new DateTime(startDateTime_.Year, startDateTime_.Month, startDateTime_.Day, startDateTime_.Hour, 0, 0);
+                        var hoursLog = db.HoursLog.SingleOrDefault(m => m.DataTime == time && m.AppModelID == app.ID);
+                        if (hoursLog == null)
+                        {
+                            //  没有记录时创建
+                            db.HoursLog.Add(new HoursLogModel()
+                            {
+                                DataTime = time,
+                                AppModelID = app.ID,
+                                Time = duration_
+                            });
+                        }
+                        else
+                        {
+                            if (hoursLog.Time + duration_ > 3600)
+                            {
+                                hoursLog.Time = 3600;
+                            }
+                            else
+                            {
+                                hoursLog.Time += duration_;
                             }
                         }
 
                         db.SaveChanges();
-                        transcation.Commit();
-
-                        if (overflowSeconds > 0)
-                        {
-                            SetHoursTime(app, overflowSeconds, nowtime.AddHours(1));
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e.ToString());
-                        transcation.Rollback();
-                    }
-                    finally
-                    {
                         _database.CloseWriter();
+                        Logger.Info($"Save app time done.Process:{processName_},Duration:{duration_},StartDateTime:{startDateTime_},AppID:{app.ID}");
                     }
                 }
-                //_database.Close();
-            }
+                catch (Exception e)
+                {
+                    Logger.Error($"Save app time error!Process:{processName_},Duration:{duration_},StartDateTime:{startDateTime_}.\r\nError:\r\n{e.Message}");
+
+                }
+            });
         }
+
         public List<DailyLogModel> GetTodaylogList()
         {
 

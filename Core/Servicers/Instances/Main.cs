@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -148,13 +149,13 @@ namespace Core.Servicers.Instances
         {
             await Task.Run(() =>
              {
-                 Debug.WriteLine("db self check start");
+                 CreateDirectory();
+
                  //  数据库自检
                  using (var db = new TaiDbContext())
                  {
                      db.SelfCheck();
                  }
-                 Debug.WriteLine("db self check over!");
 
                  //  加载app信息
                  appData.Load();
@@ -172,14 +173,14 @@ namespace Core.Servicers.Instances
             config = appConfig.GetConfig();
             UpdateConfigIgnoreProcess();
 
-
+            
 
             //  启动睡眠监测
             sleepdiscover.Start();
-            
+
             //  初始化过滤器
             _webFilter.Init();
-            
+
             //  启动主服务
             Start();
 
@@ -208,6 +209,14 @@ namespace Core.Servicers.Instances
             appObserver?.Stop();
         }
 
+        /// <summary>
+        /// 创建程序目录
+        /// </summary>
+        private void CreateDirectory()
+        {
+            string dir = Path.Combine(FileHelper.GetRootDirectory(), "Data");
+            Directory.CreateDirectory(dir);
+        }
 
         private void UpdateConfigIgnoreProcess()
         {
@@ -335,7 +344,11 @@ namespace Core.Servicers.Instances
                 return;
             }
 
+            string lastActiveProcess = activeProcess != null ? activeProcess.ToString() : "";
+
             bool isCheck = IsCheckApp(args.ProcessName, args.Description, args.File);
+
+            Logger.Info($"Active[{isCheck}]:" + args.ProcessName + ",Last:" + lastActiveProcess + ",Time:" + activeStartTime.ToString());
 
             if (activeProcess != args.ProcessName)
             {
@@ -354,41 +367,45 @@ namespace Core.Servicers.Instances
             {
                 activeProcess = null;
             }
+
         }
 
-        private void HandleLinks(string processName, int seconds, DateTime? time = null)
+        private void HandleLinks(string processName, int seconds, DateTime time)
         {
-            try
+            Task.Run(() =>
             {
-                List<LinkModel> links = config.Links != null ? config.Links : new List<LinkModel>();
-                foreach (LinkModel link in links)
+                try
                 {
-                    if (link.ProcessList != null
-                        && link.ProcessList.Count >= 2
-                        && link.ProcessList.Contains(processName))
+                    List<LinkModel> links = config.Links != null ? config.Links : new List<LinkModel>();
+                    foreach (LinkModel link in links)
                     {
-                        //  属于关联进程
-                        foreach (string linkProcess in link.ProcessList)
+                        if (link.ProcessList != null
+                            && link.ProcessList.Count >= 2
+                            && link.ProcessList.Contains(processName))
                         {
-                            if (linkProcess != processName)
+                            //  属于关联进程
+                            foreach (string linkProcess in link.ProcessList)
                             {
-                                if (IsProcessRuning(linkProcess))
+                                if (linkProcess != processName)
                                 {
-                                    //  同步更新
-                                    data.Set(linkProcess, seconds, time);
+                                    if (IsProcessRuning(linkProcess))
+                                    {
+                                        //  同步更新
+                                        data.SaveAppDuration(linkProcess, seconds, time);
+                                    }
+
                                 }
-
                             }
+                            break;
                         }
-                        break;
                     }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.Message + "，关联进程更新错误，Process Name: " + processName + "，Time: " + seconds);
-            }
 
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.Message + "，关联进程更新错误，Process Name: " + processName + "，Time: " + seconds);
+                }
+            });
         }
 
         #region 判断进程是否在运行中
@@ -410,10 +427,10 @@ namespace Core.Servicers.Instances
 
             if (!string.IsNullOrEmpty(app))
             {
-                var time = activeStartTime;
+                var time = new DateTime(activeStartTime.Ticks);
 
                 //  更新计时
-                TimeSpan timeSpan = DateTime.Now - activeStartTime;
+                TimeSpan timeSpan = DateTime.Now - time;
 
                 int seconds = (int)timeSpan.TotalSeconds;
 
@@ -425,15 +442,12 @@ namespace Core.Servicers.Instances
 
                 if (seconds > 0)
                 {
-                    Task.Run(() =>
-                    {
-                        data.Set(app, seconds, time);
+                    data.SaveAppDuration(app, seconds, time);
 
-                        //  关联进程更新
-                        HandleLinks(app, seconds, time);
+                    //  关联进程更新
+                    HandleLinks(app, seconds, time);
 
-                        Logger.Info("status:" + sleepStatus + ",process:" + app + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
-                    });
+                    //Logger.Info("status:" + sleepStatus + ",process:" + app + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
                 }
 
                 activeStartTime = DateTime.Now;
@@ -447,6 +461,11 @@ namespace Core.Servicers.Instances
         /// </summary>
         private void HandleWebServiceConfig()
         {
+            if (config == null)
+            {
+                return;
+            }
+
             if (config.General.IsWebEnabled)
             {
                 browserObserver.Start();

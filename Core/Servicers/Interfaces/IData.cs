@@ -12,11 +12,12 @@ namespace Core.Servicers.Interfaces
     {
 
         /// <summary>
-        /// 设置进程数据
+        /// 保存APP使用时长数据
         /// </summary>
-        /// <param name="processName">进程名称</param>
-        /// <param name="seconds">时长（秒）</param>
-        void Set(string processName, int seconds, DateTime? time = null);
+        /// <param name="processName_">进程名称</param>
+        /// <param name="duration_">时长（秒）</param>
+        /// <param name="startDateTime_">记录开始时间</param>
+        void SaveAppDuration(string processName_, int duration_, DateTime startDateTime_);
 
         /// <summary>
         /// 获取今天的数据
