@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,13 +37,13 @@ namespace Core.Librarys.Browser.Favicon
             {
                 Directory.CreateDirectory(_taiFaviconsPath);
             }
-            Debug.WriteLine(_chromeFaviconsPath);
         }
         public async Task<object> GetIconDataAsync(string url)
         {
             if (string.IsNullOrEmpty(url)) { throw new ArgumentNullException("url"); }
 
             url = UrlHelper.ChromeURLEncode(url);
+
             var result = await Task.Run(() =>
               {
                   byte[] icon = { };
@@ -52,18 +54,9 @@ namespace Core.Librarys.Browser.Favicon
                       using (var con = new SQLiteConnection($"Data Source={_faviconsTempPath}"))
                       {
                           con.Open();
-                          string iconId = string.Empty;
-                          using (var cmd = new SQLiteCommand($"select * from icon_mapping where page_url like'{url}%' LIMIT 1", con))
-                          {
-                              using (SQLiteDataReader dr = cmd.ExecuteReader())
-                              {
-                                  if (dr.Read())
-                                  {
-                                      iconId = dr["icon_id"].ToString();
-                                  }
-                              }
-                              cmd.CommandText = "select * from ";
-                          }
+
+                          string iconId = GetIconId(url, con);
+
                           if (iconId != string.Empty)
                           {
                               using (var cmd = new SQLiteCommand($"select * from favicon_bitmaps where icon_id={iconId} order by width desc LIMIT 1", con))
@@ -89,6 +82,23 @@ namespace Core.Librarys.Browser.Favicon
               });
 
             return result.Length == 0 ? null : result;
+        }
+
+        private string GetIconId(string url_, SQLiteConnection con_)
+        {
+            string iconId = string.Empty;
+            string sqlStr = url_.IndexOf("://") == -1 ? $"%{url_}%" : $"{url_}%";
+            using (var cmd = new SQLiteCommand($"select * from icon_mapping where page_url like'{sqlStr}' LIMIT 1", con_))
+            {
+                using (SQLiteDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        iconId = dr["icon_id"].ToString();
+                    }
+                }
+            }
+            return iconId;
         }
 
         public async Task<string> SaveToLocalIconAsync(object data)
