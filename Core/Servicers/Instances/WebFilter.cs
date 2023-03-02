@@ -14,6 +14,8 @@ namespace Core.Servicers.Instances
     {
         private readonly IAppConfig _appConfig;
         private List<string> _ignoreURLCache;
+        //  默认忽略的规则
+        private readonly string[] _ignoreRegexArr = { "^chrome://(.*)", "^edge://(.*)" };
         public WebFilter(IAppConfig appConfig_)
         {
             _appConfig = appConfig_;
@@ -71,7 +73,9 @@ namespace Core.Servicers.Instances
             var ignoreURLList = config.Behavior.IgnoreURLList;
 
             //  从正则表达式验证过滤
-            var regexList = ignoreURLList.Where(m => Regex.IsMatch(m, @"[\*|\$|\!|\(|\)|\{|\\|\[|\^|\|]"));
+            var regexList = ignoreURLList.Where(m => Regex.IsMatch(m, @"[\*|\$|\!|\(|\)|\{|\\|\[|\^|\|]")).ToList();
+            regexList.AddRange(_ignoreRegexArr);
+
             foreach (string reg in regexList)
             {
                 if (RegexHelper.IsMatch(url_, reg))
