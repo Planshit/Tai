@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace Core.Librarys.SQLite
         /// <summary>
         /// 网站
         /// </summary>
-        public DbSet<WebSiteModel> WebSites{ get; set; }
+        public DbSet<WebSiteModel> WebSites { get; set; }
         /// <summary>
         /// 网站分类
         /// </summary>
@@ -43,18 +44,11 @@ namespace Core.Librarys.SQLite
         /// </summary>
         public DbSet<WebUrlModel> WebUrls { get; set; }
 
-
-        // public StatisticContext(string n)
-        //: base("StatisticContext")
-        // {
-        //     DbConfiguration.SetConfiguration(new SQLiteConfiguration());
-        // }
-
-
+        private static string _dbFilePath = Path.Combine(FileHelper.GetRootDirectory(), "Data", "data.db");
         public TaiDbContext()
        : base(new SQLiteConnection()
        {
-           ConnectionString = "Data Source=.\\Data\\data.db"
+           ConnectionString = $"Data Source={_dbFilePath}"
        }, true)
         {
             DbConfiguration.SetConfiguration(new SQLiteConfiguration());

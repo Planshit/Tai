@@ -150,6 +150,7 @@
     <Compile Include="Librarys\Browser\Favicon\ChromeFaviconManager.cs" />
     <Compile Include="Librarys\Browser\Favicon\IFaviconManager.cs" />
     <Compile Include="Librarys\Browser\UrlHelper.cs" />
+    <Compile Include="Librarys\FileHelper.cs" />
     <Compile Include="Librarys\ProcessHelper.cs" />
     <Compile Include="Librarys\RegexHelper.cs" />
     <Compile Include="Librarys\Shortcut.cs" />

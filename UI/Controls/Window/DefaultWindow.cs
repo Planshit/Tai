@@ -204,8 +204,8 @@ namespace UI.Controls.Window
             //  获取程序图标
             if (Icon == null)
             {
-                Icon = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(
-             System.Reflection.Assembly.GetEntryAssembly().ManifestModule.Name));
+                string exeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                Icon = ToImageSource(System.Drawing.Icon.ExtractAssociatedIcon(exeFilePath));
             }
 
             Loaded += window_Loaded;

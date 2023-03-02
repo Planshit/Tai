@@ -38,9 +38,15 @@ namespace Core.Librarys.Image
                 }
                 else
                 {
+                    if (filePath.IndexOf(":") == -1)
+                    {
+                        //  不是绝对路径
+                        filePath = Path.Combine(FileHelper.GetRootDirectory(), filePath);
+                    }
+
                     if (!File.Exists(filePath))
                     {
-                        return null;
+                        throw new FileNotFoundException(filePath);
                     }
                     byte[] imageData;
                     using (var fileStream = new FileStream(@filePath, FileMode.Open, FileAccess.Read))
