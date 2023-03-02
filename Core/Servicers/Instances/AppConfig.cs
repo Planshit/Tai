@@ -108,7 +108,7 @@ namespace Core.Servicers.Instances
 
                 File.WriteAllText(fileName, JsonConvert.SerializeObject(config));
 
-                ConfigChanged?.Invoke(oldConfig, config);
+                ConfigChanged?.Invoke(oldConfig ?? config, config);
 
                 CopyToOldConfig();
             }
