@@ -48,7 +48,7 @@ namespace Core.Librarys
 
         public static void Info(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
-            message = message + "\r\n[ Caller Info ] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
+            message = message + "\r\nLine:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
             message = Fromat(LogLevel.Info, message);
 
             loggers.Add(message);
@@ -56,14 +56,14 @@ namespace Core.Librarys
 
         public static void Warn(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
-            message = message + "\r\n[ Caller Info ] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
+            message = message + "\r\nLine:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
             message = Fromat(LogLevel.Warn, message);
 
             loggers.Add(message);
         }
         public static void Error(string message, [CallerLineNumber] int callerLineNumber = -1, [CallerFilePath] string callerFilePath = null, [CallerMemberName] string callerMemberName = null)
         {
-            message = message + "\r\n[ Caller Info ] Line:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
+            message = message + "\r\nLine:" + callerLineNumber + ",File:" + callerFilePath + ",name:" + callerMemberName;
             message = Fromat(LogLevel.Error, message);
 
             loggers.Add(message);
@@ -72,7 +72,7 @@ namespace Core.Librarys
         private static string Fromat(LogLevel logLevel, string message)
         {
             message = HandleMessage(message);
-            string logText = $"[ {logLevel.ToString()} ] [ {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} ] \r\n{message}\r\n------------------------\r\n\r\n";
+            string logText = $"[{logLevel}] {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}\r\n{message}\r\n------------------------\r\n\r\n";
             Debug.WriteLine(logText);
             return logText;
         }
@@ -106,9 +106,10 @@ namespace Core.Librarys
 
 
                     //  tai版本号
-                    clientInfo.Add(FromatItem("Tai Version", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-                    clientInfo.Add(FromatItem("WindowsOS Name", GetWindowsVersionName()));
-                    clientInfo.Add(FromatItem("Screen Size", GetScreenSize()));
+                    clientInfo.Add(FromatItem("Core Version", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+                    clientInfo.Add(FromatItem("OS Name", GetWindowsVersionName()));
+                    clientInfo.Add(FromatItem("Computer Type", GetComputerType()));
+                    clientInfo.Add(FromatItem("Screen", GetScreenSize()));
                     clientInfo.Add("\r\n++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\r\n");
 
                     File.WriteAllText(loggerName, string.Join("\r\n", clientInfo.ToArray()));
@@ -124,7 +125,7 @@ namespace Core.Librarys
 
         private static string GetScreenSize()
         {
-            return SystemInformation.VirtualScreen.Width + " × " + SystemInformation.VirtualScreen.Height;
+            return SystemInformation.VirtualScreen.Width + "*" + SystemInformation.VirtualScreen.Height;
         }
         private static string GetWindowsVersionName()
         {
@@ -150,9 +151,24 @@ namespace Core.Librarys
             return name;
         }
 
+        /// <summary>
+        /// 获取电脑设备类型
+        /// </summary>
+        /// <returns>Desktop台式机，Laptop笔记本</returns>
+        private static string GetComputerType()
+        {
+            if (SystemInformation.PowerStatus.BatteryChargeStatus == BatteryChargeStatus.NoSystemBattery)
+            {
+                return "Desktop";
+            }
+            else
+            {
+                return "Laptop";
+            }
+        }
         private static string FromatItem(string name, string text)
         {
-            return $"[ {name} ]  {text};\r\n";
+            return $"{name}:{text}";
         }
 
         private static string HandleMessage(string message)
