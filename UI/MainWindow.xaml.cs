@@ -23,20 +23,9 @@ namespace UI
     /// </summary>
     public partial class MainWindow : DefaultWindow
     {
-        private readonly IThemeServicer themeServicer;
-        public MainWindow(IThemeServicer themeServicer)
+        public MainWindow()
         {
             InitializeComponent();
-            this.themeServicer = themeServicer;
-            themeServicer.SetMainWindow(this);
-            themeServicer.UpdateWindowStyle();
-            Unloaded += Page_Unloaded;
-        }
-
-        private void Page_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Unloaded -= Page_Unloaded;
-            DataContext = null;
         }
     }
 }

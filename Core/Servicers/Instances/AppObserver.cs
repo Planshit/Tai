@@ -89,6 +89,8 @@ namespace Core.Servicers.Instances
                     int titleCapacity = Win32API.GetWindowTextLength(hwnd) * 2;
                     StringBuilder stringBuilder = new StringBuilder(titleCapacity);
                     Win32API.GetWindowText(hwnd, stringBuilder, stringBuilder.Capacity);
+
+
                     if (IsSystemProcess(processName, stringBuilder.ToString()))
                     {
                         //  过滤掉一些系统进程

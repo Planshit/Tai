@@ -201,6 +201,8 @@
     <Compile Include="Models\SettingPageModel.cs" />
     <Compile Include="Models\UINotifyPropertyChanged.cs" />
     <Compile Include="Models\WebSiteDetailPageModel.cs" />
+    <Compile Include="Servicers\IStatusBarIconServicer.cs" />
+    <Compile Include="Servicers\StatusBarIconServicer.cs" />
     <Compile Include="Servicers\WebSiteContextMenuServicer.cs" />
     <Compile Include="Servicers\AppContextMenuServicer.cs" />
     <Compile Include="Servicers\IWebSiteContextMenuServicer.cs" />

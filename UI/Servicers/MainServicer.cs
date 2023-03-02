@@ -14,16 +14,26 @@ namespace UI.Servicers
         private readonly IInputServicer inputServicer;
         private readonly IAppContextMenuServicer appContextMenuServicer;
         private readonly IWebSiteContextMenuServicer _webSiteContext;
-        public MainServicer(IMain main, IThemeServicer themeServicer, IInputServicer inputServicer, IAppContextMenuServicer appContextMenuServicer, IWebSiteContextMenuServicer webSiteContext_)
+        private readonly IStatusBarIconServicer _statusBarIconServicer;
+        public MainServicer(
+            IMain main,
+            IThemeServicer themeServicer,
+            IInputServicer inputServicer,
+            IAppContextMenuServicer appContextMenuServicer,
+            IWebSiteContextMenuServicer webSiteContext_,
+            IStatusBarIconServicer statusBarIconServicer_)
         {
             this.main = main;
             this.themeServicer = themeServicer;
             this.inputServicer = inputServicer;
             this.appContextMenuServicer = appContextMenuServicer;
             _webSiteContext = webSiteContext_;
+            _statusBarIconServicer = statusBarIconServicer_;
         }
         public void Start()
         {
+            _statusBarIconServicer.Init();
+
             main.OnStarted += Main_OnStarted;
             main.Run();
         }
