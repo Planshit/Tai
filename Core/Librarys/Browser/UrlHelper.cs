@@ -64,15 +64,30 @@ namespace Core.Librarys.Browser
 
             var arr = result.Split('.');
 
+            //  移除的字符串集合
+            string[] removeStrArr = { "www" };
+
             if (arr.Length == 2)
             {
-                return arr[0];
+                return FirstLetterToUpper(arr[0]);
             }
             else if (arr.Length >= 3)
             {
-                return $"{arr[1]} {arr[0]}";
+                return removeStrArr.Contains(arr[0]) ? FirstLetterToUpper(arr[1]) : $"{FirstLetterToUpper(arr[1])} {FirstLetterToUpper(arr[0])}";
             }
-            return result;
+            return FirstLetterToUpper(result);
+        }
+
+        /// <summary>
+        /// 将英文的首字母转为大写
+        /// </summary>
+        /// <param name="str_"></param>
+        /// <returns></returns>
+        private static string FirstLetterToUpper(string str_)
+        {
+            if (string.IsNullOrEmpty(str_)) return str_;
+
+            return str_[0].ToString().ToUpper() + str_.Substring(1);
         }
         /// <summary>
         /// 判断链接是否是域名主页
