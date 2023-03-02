@@ -49,10 +49,11 @@ namespace UI.ViewModels
                 return;
             }
 
+            string url = WebPageSelectedItem.Url.Url.IndexOf("://") == -1 ? "http://" + WebPageSelectedItem.Url.Url : WebPageSelectedItem.Url.Url;
             switch (obj.ToString())
             {
                 case "Open":
-                    Process.Start(WebPageSelectedItem.Url.Url);
+                    Process.Start(url);
                     break;
                 case "CopyURL":
                     Clipboard.SetText(WebPageSelectedItem.Url.Url);
