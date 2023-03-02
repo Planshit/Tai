@@ -6,7 +6,7 @@
         <Setter Property="Width" Value="auto"/>
         <Setter Property="Height" Value="22"/>
         <Setter Property="Cursor" Value="Hand"/>
-
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Template">
             <Setter.Value>

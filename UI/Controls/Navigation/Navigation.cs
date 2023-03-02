@@ -334,6 +334,11 @@ namespace UI.Controls.Navigation
             {
                 var navItem = new NavigationItem();
                 int id = item.ID < -1 ? CreateID() : item.ID;
+                if (ItemsDictionary.ContainsKey(id))
+                {
+                    return;
+                }
+
                 item.ID = id;
                 navItem.ID = id;
                 navItem.Title = item.Title;

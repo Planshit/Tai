@@ -8,6 +8,7 @@
           Value="true" />
         <Setter Property="MinWidth" Value="44"/>
         <Setter Property="Height" Value="auto"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="SelectedTextColor" Value="{DynamicResource ThemeColor}"/>
         <Setter Property="Template">

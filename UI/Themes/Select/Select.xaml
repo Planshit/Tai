@@ -8,7 +8,7 @@
           Value="true" />
         <Setter Property="Padding" Value="18,10"/>
         <Setter Property="Background" Value="{DynamicResource StandardBackgroundBrush}"/>
-
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Select}">

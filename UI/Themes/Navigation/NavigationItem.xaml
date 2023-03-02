@@ -9,6 +9,7 @@
         <!--<Setter Property="MinHeight" Value="44"/>-->
         <Setter Property="Height" Value="60"/>
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:NavigationItem}">

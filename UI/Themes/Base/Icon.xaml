@@ -4,7 +4,7 @@
     <Style TargetType="{x:Type local:Icon}">
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
-
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="MinWidth" Value="18"/>
         <Setter Property="MinHeight" Value="18"/>
         <Setter Property="FontSize" Value="16"/>

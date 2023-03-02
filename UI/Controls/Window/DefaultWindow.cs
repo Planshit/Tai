@@ -82,7 +82,8 @@ namespace UI.Controls.Window
 
                     that.PageContainer.OnLoadPaged += (s, v) =>
                     {
-                        that.IsCanBack = that.PageContainer.Index >= 1;
+                        var pc = s as PageContainer;
+                        that.IsCanBack = pc?.Index >= 1;
                     };
                 }
             }

@@ -20,14 +20,22 @@
     <SolidColorBrush x:Key="StandardBackgroundBrush2" Color="#3e3e3e" />
 
     <!--【窗口】-->
+    <!--窗口边框颜色-->
+    <SolidColorBrush x:Key="WindowBorderBrush" Color="#323232" />
+    
     <SolidColorBrush x:Key="StandardTextBrush" Color="#ffffff" />
     <SolidColorBrush x:Key="SubTextBrush" Color="#ccc" />
 
     <!--窗口背景颜色-->
-    <LinearGradientBrush x:Key="WindowBackground" >
+    <!--<LinearGradientBrush x:Key="WindowBackground" >
         <GradientStop Color="#161616" Offset="0"/>
         <GradientStop Color="#161616" Offset="0.8"/>
         <GradientStop Color="#FF14104A" Offset="1"/>
+    </LinearGradientBrush>-->
+    <LinearGradientBrush x:Key="WindowBackground" >
+        <GradientStop Color="#161616" Offset="0"/>
+        <GradientStop Color="#161616" Offset="0.8"/>
+        <GradientStop Color="{DynamicResource ThemeColor}" Offset="1.2"/>
     </LinearGradientBrush>
     <SolidColorBrush x:Key="WindowContentBackground" Color="#FF383636" Opacity=".5"/>
     <SolidColorBrush x:Key="WindowContentBorder" Color="#FF121010"/>

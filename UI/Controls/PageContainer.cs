@@ -266,7 +266,7 @@ namespace UI.Controls
                     }
                     else
                     {
-                        ScrollViewer.ScrollToVerticalOffset(0);
+                        ScrollViewer?.ScrollToVerticalOffset(0);
                     }
 
                     OnLoadPaged?.Invoke(this, EventArgs.Empty);

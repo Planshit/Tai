@@ -20,12 +20,20 @@
     <SolidColorBrush x:Key="StandardBackgroundBrush2" Color="#ffffff" />
 
     <!--【窗口】-->
+
+    <!--窗口边框颜色-->
+    <SolidColorBrush x:Key="WindowBorderBrush" Color="#ccc" />
+
     <SolidColorBrush x:Key="StandardTextBrush" Color="#000" />
     <SolidColorBrush x:Key="SubTextBrush" Color="#7e7e7e" />
 
     <!--窗口背景颜色-->
-    <SolidColorBrush x:Key="WindowBackground" Color="#f3f3f3" />
-
+    <!--<SolidColorBrush x:Key="WindowBackground" Color="#f3f3f3" />-->
+    <LinearGradientBrush x:Key="WindowBackground" >
+        <GradientStop Color="#f3f3f3" Offset="0"/>
+        <GradientStop Color="#f3f3f3" Offset="0.8"/>
+        <GradientStop Color="{DynamicResource ThemeColor}" Offset="2"/>
+    </LinearGradientBrush>
 
     <SolidColorBrush x:Key="WindowContentBackground" Color="#f9f9f9" />
     <SolidColorBrush x:Key="WindowContentBorder" Color="#ccc"/>
@@ -37,7 +45,7 @@
 
     <Color x:Key="NavUnselectedTextColor">#5c5c5c</Color>
     <SolidColorBrush x:Key="NavUnselectedTextBrush" Color="{StaticResource NavUnselectedTextColor}" />
-    
+
     <!--设置面板-->
     <Color x:Key="SettingPanelBgColor">#ffffff</Color>
     <SolidColorBrush x:Key="SettingPanelBgBrush" Color="{StaticResource SettingPanelBgColor}" />
@@ -53,7 +61,7 @@
     <!--默认基础文字颜色-->
     <Color x:Key="DefaultTextColor">#5c5c5c</Color>
     <SolidColorBrush x:Key="DefaultTextBrush" Color="{StaticResource DefaultTextColor}" />
-    
+
     <!--列表-->
     <Color x:Key="ListItemIconBgColor">#f3f3f3</Color>
     <SolidColorBrush x:Key="ListItemIconBgBrush" Color="{StaticResource ListItemIconBgColor}" />
@@ -65,11 +73,11 @@
     <!--日期选择控件-->
     <Color x:Key="DatePickerItemBgColor">#F9F9F9</Color>
     <SolidColorBrush x:Key="DatePickerItemBgBrush" Color="{StaticResource DatePickerItemBgColor}" />
-    
+
     <!--月热力图控件-->
     <Color x:Key="ChartMonthGridItemBgColor">#fbfafa</Color>
     <SolidColorBrush x:Key="ChartMonthGridItemBgBrush" Color="{StaticResource ChartMonthGridItemBgColor}" />
-    
+
     <!--弹出层边框-->
     <Color x:Key="PopupBorderColor">#eaeaea</Color>
     <SolidColorBrush x:Key="PopupBorderBrush" Color="{StaticResource PopupBorderColor}" />
@@ -91,7 +99,7 @@
     <!--图表边框-->
     <Color x:Key="ChartColBorderColor">#eeeef2</Color>
     <SolidColorBrush x:Key="ChartColBorderBrush" Color="{StaticResource ChartColBorderColor}" />
-    
+
     <!--分类页面-->
     <Color x:Key="CategoryAppNumBgColor">#F9F9F9</Color>
     <SolidColorBrush x:Key="CategoryAppNumBgBrush" Color="{StaticResource CategoryAppNumBgColor}" />
@@ -104,7 +112,7 @@
     <SolidColorBrush x:Key="InputBoxHoverBrush" Color="{StaticResource InputBoxHoverColor}" />
     <Color x:Key="InputBoxFocusedBgColor">#FFFFFF</Color>
     <SolidColorBrush x:Key="InputBoxFocusedBgBrush" Color="{StaticResource InputBoxFocusedBgColor}" />
-    
+
     <!--expander-->
     <Color x:Key="ExpanderBgColor">#ffffff</Color>
     <SolidColorBrush x:Key="ExpanderBgBrush" Color="{StaticResource ExpanderBgColor}" />
@@ -124,7 +132,7 @@
 
     <Color x:Key="ScrollBarColor">#8A8A8A</Color>
     <SolidColorBrush x:Key="ScrollBarBrush" Color="{StaticResource ScrollBarColor}" />
-    
+
     <!--列表图表-->
     <Color x:Key="ChartTypeListProgressBarColor">#7F777777</Color>
     <SolidColorBrush x:Key="ChartTypeListProgressBarBrush" Color="{StaticResource ChartTypeListProgressBarColor}" />
