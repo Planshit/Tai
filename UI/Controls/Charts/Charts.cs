@@ -1284,7 +1284,7 @@ namespace UI.Controls.Charts
             //  调整列值 zindex
             foreach (var item in _typeColValueRectMap)
             {
-                var rectList = item.Value.OrderByDescending(m => m.Height).ToList();
+                var rectList = IsStack ? item.Value : item.Value.OrderByDescending(m => m.Height).ToList();
                 for (int i = 0; i < rectList.Count; i++)
                 {
                     var rect = rectList[i];
