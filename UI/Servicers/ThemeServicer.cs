@@ -49,6 +49,12 @@ namespace UI.Servicers
                 LoadTheme(themeOptions[newConfig.General.Theme], true);
                 OnThemeChanged?.Invoke(this, EventArgs.Empty);
             }
+
+            if (oldConfig.General.IsSaveWindowSize != newConfig.General.IsSaveWindowSize)
+            {
+                HandleWindowSizeChangedEvent();
+            }
+
         }
         public void Init()
         {
@@ -105,7 +111,7 @@ namespace UI.Servicers
 
             MergedDictionaries.Add(themeDict);
             MergedDictionaries.Add(controlDict);
-            
+
             //if (configDict != null)
             //{
             //    //MergedDictionaries.Add(configDict);
@@ -143,25 +149,29 @@ namespace UI.Servicers
         public void SetMainWindow(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow;
-            mainWindow.SizeChanged += MainWindow_SizeChanged;
+            HandleWindowSizeChangedEvent();
+        }
+
+        private void HandleWindowSizeChangedEvent()
+        {
+            if (mainWindow == null || mainWindow.IsWindowClosed) return;
+
+            mainWindow.SizeChanged -= MainWindow_SizeChanged;
 
             var config = appConfig.GetConfig();
             if (config.General.IsSaveWindowSize)
             {
-                mainWindow.Width = config.General.WindowWidth;
-                mainWindow.Height = config.General.WindowHeight;
+                //  保存窗口大小信息
+                mainWindow.SizeChanged += MainWindow_SizeChanged;
             }
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             var config = appConfig.GetConfig();
-            if (config.General.IsSaveWindowSize)
-            {
-                config.General.WindowWidth = mainWindow.ActualWidth;
-                config.General.WindowHeight = mainWindow.ActualHeight;
-                appConfig.Save();
-            }
+            config.General.WindowWidth = mainWindow.ActualWidth;
+            config.General.WindowHeight = mainWindow.ActualHeight;
+            appConfig.Save();
         }
 
         public void UpdateWindowStyle()

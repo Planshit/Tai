@@ -40,15 +40,18 @@ namespace UI.Servicers
         private readonly IAppObserver _appObserver;
         private readonly IThemeServicer _themeServicer;
         private readonly MainViewModel _mainVM;
+        private readonly IAppConfig _appConfig;
         private MainWindow _mainWindow;
         public StatusBarIconServicer(
             IAppObserver appObserver_,
             IThemeServicer themeServicer_,
+            IAppConfig appConfig_,
             MainViewModel mainVM_
             )
         {
             _appObserver = appObserver_;
             _themeServicer = themeServicer_;
+            _appConfig = appConfig_;
             _mainVM = mainVM_;
         }
         public void Init()
@@ -156,12 +159,23 @@ namespace UI.Servicers
 
         private void ShowMainWindow()
         {
+            var config = _appConfig.GetConfig();
+            if (config == null)
+            {
+                return;
+            }
+
             if (_mainWindow == null || _mainWindow.IsWindowClosed)
             {
                 _mainWindow = new MainWindow();
                 _mainWindow.DataContext = _mainVM;
                 _mainWindow.Loaded += _mainWindow_Loaded;
                 _mainVM.LoadDefaultPage();
+            }
+            if (config.General.IsSaveWindowSize)
+            {
+                _mainWindow.Width = config.General.WindowWidth;
+                _mainWindow.Height = config.General.WindowHeight;
             }
             _mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             _mainWindow.WindowState = WindowState.Normal;
