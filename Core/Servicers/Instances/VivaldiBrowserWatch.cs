@@ -185,9 +185,9 @@ namespace Core.Servicers.Instances
                 try
                 {
                     var condtionEdit = automation.CreatePropertyCondition(30003, 50004);
-                    var condtionAccessKey = automation.CreatePropertyCondition(30011, "urlFieldInput");
+                    var condtionName = automation.CreatePropertyCondition(30011, "urlFieldInput");
                     var condtion = automation.CreateAndCondition(condtionEdit, condtionAccessKey);
-                    var addressElement = rootElement.FindFirst(TreeScope.TreeScope_Subtree, condtion);
+                    var addressElement = rootElement.FindFirst(TreeScope.TreeScope_Subtree, condtionName);
                     if (addressElement != null)
                     {
                         result = ((IUIAutomationValuePattern)addressElement.GetCurrentPattern(10002)).CurrentValue;
