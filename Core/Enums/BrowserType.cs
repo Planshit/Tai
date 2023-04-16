@@ -22,6 +22,12 @@ namespace Core.Enums
         /// <summary>
         /// Microsoft Edge
         /// </summary>
-        MSEdge
+        MSEdge,
+        /// <summary>
+        /// Vivaldi
+        /// </summary>
+        Vivaldi
+
+
     }
 }

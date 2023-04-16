@@ -208,6 +208,7 @@
     <Compile Include="Servicers\Interfaces\ISleepdiscover.cs" />
     <Compile Include="Servicers\Interfaces\IWebData.cs" />
     <Compile Include="Servicers\Interfaces\IWebFilter.cs" />
+    <Compile Include="Servicers\Instances\VivaldiBrowserWatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
