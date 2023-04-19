@@ -109,6 +109,9 @@ namespace Core.Servicers.Instances
                 case "msedge":
                     StartWatch(BrowserType.MSEdge, args.Handle);
                     break;
+                case "vivaldi":
+                    StartWatch(BrowserType.Vivaldi, args.Handle);
+                    break;
                 default:
                     StopWatch();
                     break;
@@ -124,6 +127,9 @@ namespace Core.Servicers.Instances
             {
                 case BrowserType.Chrome:
                     _browserWatcher = new ChromeBrowserWatch();
+                    break; 
+                case BrowserType.Vivaldi:
+                    _browserWatcher = new VivaldiBrowserWatch();
                     break;
                 case BrowserType.MSEdge:
                     _browserWatcher = new MSEdgeBrowserWatch();
