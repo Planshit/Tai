@@ -60,7 +60,7 @@ namespace Core.Models.Config
         /// <summary>
         /// 是否启用网站记录功能
         /// </summary>
-        [Config(Name = "网站浏览统计", Description = "统计浏览器的网站访问数据，支持：Google Chrome、MSEdge", Group = "功能", IsBeta = true)]
+        [Config(Name = "网站浏览统计", Description = "统计浏览器的网站访问数据，支持：Google Chrome、MSEdge、Vivaldi", Group = "功能", IsBeta = true)]
         public bool IsWebEnabled { get; set; } = false;
     }
 }

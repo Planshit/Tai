@@ -186,7 +186,6 @@ namespace Core.Servicers.Instances
                 {
                     var condtionEdit = automation.CreatePropertyCondition(30003, 50004);
                     var condtionName = automation.CreatePropertyCondition(30011, "urlFieldInput");
-                    var condtion = automation.CreateAndCondition(condtionEdit, condtionAccessKey);
                     var addressElement = rootElement.FindFirst(TreeScope.TreeScope_Subtree, condtionName);
                     if (addressElement != null)
                     {
@@ -209,7 +208,7 @@ namespace Core.Servicers.Instances
             {
                 this.url = url;
                 this.title = title;
-                OnSiteChanged?.Invoke(BrowserType.Chrome, new Models.WebPage.Site()
+                OnSiteChanged?.Invoke(BrowserType.Vivaldi, new Models.WebPage.Site()
                 {
                     Url = url,
                     Title = title

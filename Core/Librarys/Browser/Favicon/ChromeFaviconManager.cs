@@ -23,10 +23,19 @@ namespace Core.Librarys.Browser.Favicon
         public ChromeFaviconManager(BrowserType browserType = BrowserType.Chrome)
         {
             var localAppDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            _chromeFaviconsPath =
-                browserType == BrowserType.Chrome
-                ? Path.Combine(localAppDataDir, "Google", "Chrome", "User Data", "Default", "Favicons")
-                : Path.Combine(localAppDataDir, "Microsoft", "Edge", "User Data", "Default", "Favicons");
+
+            switch (browserType)
+            {
+                case BrowserType.Chrome:
+                    _chromeFaviconsPath = Path.Combine(localAppDataDir, "Google", "Chrome", "User Data", "Default", "Favicons");
+                    break;
+                case BrowserType.MSEdge:
+                    _chromeFaviconsPath = Path.Combine(localAppDataDir, "Microsoft", "Edge", "User Data", "Default", "Favicons");
+                    break;
+                case BrowserType.Vivaldi:
+                    _chromeFaviconsPath = Path.Combine(localAppDataDir, "Vivaldi", "User Data", "Default", "Favicons");
+                    break;
+            }
             _faviconsTempPath = $"{_chromeFaviconsPath}_tai.temp";
             _taiFaviconsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "WebFavicons");
             if (!File.Exists(_chromeFaviconsPath))

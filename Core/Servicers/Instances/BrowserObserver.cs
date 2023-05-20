@@ -127,7 +127,7 @@ namespace Core.Servicers.Instances
             {
                 case BrowserType.Chrome:
                     _browserWatcher = new ChromeBrowserWatch();
-                    break; 
+                    break;
                 case BrowserType.Vivaldi:
                     _browserWatcher = new VivaldiBrowserWatch();
                     break;
@@ -223,32 +223,37 @@ namespace Core.Servicers.Instances
             {
                 return;
             }
-            try
+
+            if (_savedIconUrls.Contains(site.Url))
             {
-                if (_savedIconUrls.Contains(site.Url))
-                {
-                    //  已经缓存的链接不再重复获取
-                    return;
-                }
+                //  已经缓存的链接不再重复获取
+                return;
+            }
 
-                if (_savedIconUrls.Count > 100)
-                {
-                    //  限制缓存链接条数
-                    _savedIconUrls.RemoveAt(0);
-                }
+            if (_savedIconUrls.Count > 100)
+            {
+                //  限制缓存链接条数
+                _savedIconUrls.RemoveAt(0);
+            }
 
-                Task.Run(async () =>
+            Task.Run(async () =>
+            {
+                try
                 {
                     //  获取favicon
                     IFaviconManager fm = null;
                     switch (browserType)
                     {
+                        //  chrome内核的用同一个图标管理器
                         case BrowserType.Chrome:
-                            fm = new ChromeFaviconManager();
-                            break;
                         case BrowserType.MSEdge:
-                            fm = new ChromeFaviconManager(BrowserType.MSEdge);
+                        case BrowserType.Vivaldi:
+                            fm = new ChromeFaviconManager(browserType);
                             break;
+                    }
+                    if (fm == null)
+                    {
+                        throw new Exception("FaviconManager is null!");
                     }
 
                     var data = await fm.GetIconDataAsync(site.Url);
@@ -280,13 +285,14 @@ namespace Core.Servicers.Instances
                             _webData.UpdateUrlFavicon(site, webSite.IconFile);
                         }
                     }
-                });
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.ToString());
+                }
+            });
 
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.ToString());
-            }
+
         }
         #endregion
 
