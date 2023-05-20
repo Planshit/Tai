@@ -1,4 +1,5 @@
-﻿using Core.Librarys.SQLite;
+﻿using Core.Librarys;
+using Core.Librarys.SQLite;
 using Core.Models;
 using Core.Servicers.Interfaces;
 using System;
@@ -16,6 +17,7 @@ namespace Core.Servicers.Instances
         private List<AppModel> _apps;
 
         private readonly IDatabase _databse;
+        private readonly object _locker = new object();
         public AppData(IDatabase databse)
         {
             _databse = databse;
@@ -56,46 +58,81 @@ namespace Core.Servicers.Instances
         /// 更新app数据，要先调用GetApp获得后更改并传回才有效
         /// </summary>
         /// <param name="app"></param>
-        public void UpdateApp(AppModel app)
+        public void UpdateApp(AppModel app_)
         {
-            using (var db = _databse.GetWriterContext())
+            try
             {
-                db.Entry(app).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-                _databse.CloseWriter();
+                using (var db = _databse.GetWriterContext())
+                {
+                    var app = db.App.FirstOrDefault(c => c.ID.Equals(app_.ID));
+                    if (app != null)
+                    {
+                        app.TotalTime = app_.TotalTime;
+                        app.IconFile = app_.IconFile;
+                        app.Name = app_.Name;
+                        app.Description = app_.Description;
+                        app.File = app_.File;
+                        app.CategoryID = app_.CategoryID;
+                        db.SaveChanges();
+                    }
+                    _databse.CloseWriter();
+                }
+            }
+            catch(Exception e)
+            {
+                Logger.Error(e.ToString());
             }
         }
         public AppModel GetApp(string name)
         {
-            return _apps.Where(m => m.Name == name).FirstOrDefault();
+            lock (_locker)
+            {
+                return _apps.Where(m => m.Name == name).FirstOrDefault();
+            }
         }
         public AppModel GetApp(int id)
         {
-            return _apps.Where(m => m.ID == id).FirstOrDefault();
+            lock (_locker)
+            {
+                return _apps.Where(m => m.ID == id).FirstOrDefault();
+            }
         }
         public void AddApp(AppModel app)
         {
-            if (_apps.Where(m => m.Name == app.Name).Any())
+            lock (_locker)
             {
-                return;
-            }
-
-            using (var db = _databse.GetWriterContext())
-            {
-                db.App.Add(app);
-                int res = db.SaveChanges();
-                if (res > 0)
+                if (_apps.Where(m => m.Name == app.Name).Any())
                 {
-                    _apps.Add(app);
+                    return;
                 }
-                _databse.CloseWriter();
+                try
+                {
+                    using (var db = _databse.GetWriterContext())
+                    {
+                        var r = db.App.Add(app);
+                        int res = db.SaveChanges();
+                        if (res > 0)
+                        {
+                            Debug.WriteLine("add done!" + r.ID);
+
+                            _apps.Add(app);
+                        }
+                        _databse.CloseWriter();
+                    }
+                }catch(Exception e)
+                {
+                    Logger.Error(e.ToString());
+                }
             }
         }
 
 
         public List<AppModel> GetAppsByCategoryID(int categoryID)
         {
-            return _apps.Where(m => m.CategoryID == categoryID).ToList();
+            lock (_locker)
+            {
+                return _apps.Where(m => m.CategoryID == categoryID).ToList();
+            }
         }
     }
 }

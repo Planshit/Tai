@@ -14,7 +14,6 @@ using System.IO;
 using CsvHelper;
 using System.Globalization;
 using System.Threading.Tasks;
-using NPOI.SS.Formula.Functions;
 
 namespace Core.Servicers.Instances
 {
@@ -111,23 +110,22 @@ namespace Core.Servicers.Instances
                         }
 
                         db.SaveChanges();
-                        _database.CloseWriter();
                         Logger.Info($"Save app time done.Process:{processName_},Duration:{duration_},StartDateTime:{startDateTime_},AppID:{app.ID}");
                     }
                 }
                 catch (Exception e)
                 {
                     Logger.Error($"Save app time error!Process:{processName_},Duration:{duration_},StartDateTime:{startDateTime_}.\r\nError:\r\n{e.Message}");
-
+                }
+                finally
+                {
+                    _database.CloseWriter();
                 }
             });
         }
 
         public List<DailyLogModel> GetTodaylogList()
         {
-
-            //return null;
-
             using (var db = _database.GetReaderContext())
             {
                 var today = DateTime.Now.Date;

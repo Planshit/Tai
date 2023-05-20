@@ -48,7 +48,8 @@ namespace Core.Librarys.SQLite
         public TaiDbContext()
        : base(new SQLiteConnection()
        {
-           ConnectionString = $"Data Source={_dbFilePath}"
+           ConnectionString = $"Data Source={_dbFilePath}",
+           BusyTimeout = 60
        }, true)
         {
             DbConfiguration.SetConfiguration(new SQLiteConfiguration());
