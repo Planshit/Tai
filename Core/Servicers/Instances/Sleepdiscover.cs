@@ -58,23 +58,34 @@ namespace Core.Servicers.Instances
 
         public void Start()
         {
-            timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 5, 0);
-#if DEBUG
-            //timer.Interval = new TimeSpan(0, 0, 10);
-#endif
-            timer.Tick += Timer_Tick;
-            timer.Start();
+            StartTimer();
 
             lastPoint = Win32API.GetCursorPosition();
-
             playSoundStartTime = DateTime.MinValue;
-
             pressKeyboardLastTime = DateTime.Now;
 
             //  设置键盘钩子
             Win32API.SetKeyboardHook(keyboardProc);
         }
+
+        private void StartTimer()
+        {
+            StopTimer();
+            timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 10);
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+
+        private void StopTimer()
+        {
+            if (timer != null)
+            {
+                timer.Tick -= Timer_Tick;
+                timer.Stop();
+            }
+        }
+
         private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
         {
             if (e.Reason == SessionSwitchReason.RemoteDisconnect || e.Reason == SessionSwitchReason.ConsoleDisconnect)
@@ -235,7 +246,7 @@ namespace Core.Servicers.Instances
             SystemEvents.SessionSwitch -= SystemEvents_SessionSwitch;
 
             //  停止离开检测计时器
-            timer?.Stop();
+            StopTimer();
 
             status = SleepStatus.Sleep;
 
@@ -252,29 +263,34 @@ namespace Core.Servicers.Instances
             {
                 return;
             }
+            try
+            {
+                //  注册事件
+                SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
 
-            //  注册事件
-            SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
+                status = SleepStatus.Wake;
 
-            status = SleepStatus.Wake;
+                //  卸载鼠标钩子
+                Win32API.UnhookWindowsHookEx(mouseHook);
 
-            //  卸载鼠标钩子
-            Win32API.UnhookWindowsHookEx(mouseHook);
-
-            //  启动离开检测
-            timer.Start();
+                //  启动离开检测
+                StartTimer();
 
 
 
-            //  重置声音播放时间
-            playSoundStartTime = DateTime.MinValue;
+                //  重置声音播放时间
+                playSoundStartTime = DateTime.MinValue;
 
-            //  重置鼠标坐标
-            lastPoint = Win32API.GetCursorPosition();
+                //  重置鼠标坐标
+                lastPoint = Win32API.GetCursorPosition();
 
-            //  状态通知
-            SleepStatusChanged?.Invoke(status);
-
+                //  状态通知
+                SleepStatusChanged?.Invoke(status);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.ToString());
+            }
         }
 
         /// <summary>
