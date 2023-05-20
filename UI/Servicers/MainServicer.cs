@@ -44,6 +44,7 @@ namespace UI.Servicers
             inputServicer.Start();
             appContextMenuServicer.Init();
             _webSiteContext.Init();
+            _statusBarIconServicer.ShowMainWindow();
         }
     }
 }

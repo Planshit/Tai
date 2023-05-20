@@ -157,7 +157,7 @@ namespace UI.Servicers
             }
         }
 
-        private void ShowMainWindow()
+        public void ShowMainWindow()
         {
             var config = _appConfig.GetConfig();
             if (config == null)
