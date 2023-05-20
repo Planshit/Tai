@@ -173,7 +173,7 @@ namespace Core.Servicers.Instances
             config = appConfig.GetConfig();
             UpdateConfigIgnoreProcess();
 
-            
+
 
             //  启动睡眠监测
             sleepdiscover.Start();
@@ -431,8 +431,14 @@ namespace Core.Servicers.Instances
 
                 //  更新计时
                 TimeSpan timeSpan = DateTime.Now - time;
-
                 int seconds = (int)timeSpan.TotalSeconds;
+
+                if (seconds > 3600)
+                {
+                    Logger.Warn($"计时异常。start:{time},process:{app},duration:{seconds},status:{sleepStatus}");
+                    activeStartTime = DateTime.Now;
+                    return;
+                }
 
                 //  如果是休眠状态要减去5分钟
                 if (sleepStatus == SleepStatus.Sleep)
@@ -446,8 +452,6 @@ namespace Core.Servicers.Instances
 
                     //  关联进程更新
                     HandleLinks(app, seconds, time);
-
-                    //Logger.Info("status:" + sleepStatus + ",process:" + app + ",seconds:" + seconds + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
                 }
 
                 activeStartTime = DateTime.Now;
