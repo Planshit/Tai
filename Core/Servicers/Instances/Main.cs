@@ -321,10 +321,10 @@ namespace Core.Servicers.Instances
                     //  更新应用信息
                     app.IconFile = Iconer.ExtractFromFile(file, processName, description);
 
-                    if (app.Description != description)
-                    {
-                        app.Description = description;
-                    }
+                    // if (app.Description != description)
+                    // {
+                    //     app.Description = description;
+                    // }
                     if (app.File != file)
                     {
                         app.File = file;
