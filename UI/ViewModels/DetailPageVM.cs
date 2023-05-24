@@ -162,7 +162,9 @@ namespace UI.ViewModels
                     }
                     break;
                 case "update description":
-                    appData.UpdateApp(App);
+                    var app = appData.GetApp(App.Name);
+                    app.Description = App.Description;
+                    appData.UpdateApp(app);
                     break;
                     //case "geticon":
                     //    string iconFile = Iconer.ExtractFromFile(App.File, App.Name, App.Description, false);
