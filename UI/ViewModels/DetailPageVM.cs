@@ -161,6 +161,9 @@ namespace UI.ViewModels
                         main.Toast("应用似乎不存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
                     }
                     break;
+                case "update description":
+                    appData.UpdateApp(App);
+                    break;
                     //case "geticon":
                     //    string iconFile = Iconer.ExtractFromFile(App.File, App.Name, App.Description, false);
                     //    if (string.IsNullOrEmpty(iconFile))
