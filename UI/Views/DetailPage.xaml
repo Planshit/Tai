@@ -9,7 +9,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="DetailPage"
     xmlns:btn="clr-namespace:UI.Controls.Button"
-    xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" Foreground="{DynamicResource StandardTextBrush}" Background="Transparent">
+    xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:viewmodels="clr-namespace:UI.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:DetailPageVM}" Foreground="{DynamicResource StandardTextBrush}" Background="Transparent">
     <Page.ContextMenu>
         <ContextMenu>
             <MenuItem Header="刷新" Command="{Binding RefreshCommand}"/>
@@ -25,6 +25,8 @@
             <Border.ContextMenu>
                 <ContextMenu>
                     <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open exe"  Header="启动应用"/>
+                    <Separator/>
+                    <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="update description"  Header="修改应用描述"/>
                     <Separator/>
                     <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制应用进程名称"/>
                     <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制应用文件路径"/>
@@ -72,7 +74,7 @@
                             </StackPanel>
                         </Border>
                     </base:View>
-                    <TextBlock ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                    <TextBox ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description,Mode=TwoWay}" BorderThickness="0" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
 
                     <TextBlock ToolTip="应用进程名称" Text="{Binding App.Name}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
                     <TextBlock ToolTip="应用文件路径"  Foreground="Gray" Text="{Binding App.File}"  Margin="0,5,0,0" TextWrapping="WrapWithOverflow"/>
