@@ -74,7 +74,7 @@
                             </StackPanel>
                         </Border>
                     </base:View>
-                    <TextBox ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description,Mode=TwoWay}" BorderThickness="0" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                    <TextBox ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description,Mode=TwoWay}" Background="{DynamicResource SettingPanelBgBrush}" Foreground="{DynamicResource TitleBarBtnBrush}" BorderThickness="0" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
 
                     <TextBlock ToolTip="应用进程名称" Text="{Binding App.Name}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
                     <TextBlock ToolTip="应用文件路径"  Foreground="Gray" Text="{Binding App.File}"  Margin="0,5,0,0" TextWrapping="WrapWithOverflow"/>
