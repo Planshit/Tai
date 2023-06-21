@@ -70,7 +70,7 @@ namespace Core.Librarys
         {
             return CreateShortcut(Path.Combine(
                      Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                     "Tai.lnk"), "");
+                     "Tai.lnk"), "--selfStart");
         }
     }
 }

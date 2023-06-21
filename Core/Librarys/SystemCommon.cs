@@ -39,7 +39,7 @@ namespace Core.Librarys
                     task.RegistrationInfo.Description = taskDescription;
                     task.Triggers.Add(new LogonTrigger { UserId = logonUser });
                     task.Principal.RunLevel = TaskRunLevel.Highest;
-                    task.Actions.Add(new ExecAction(tai, null, AppDomain.CurrentDomain.BaseDirectory));
+                    task.Actions.Add(new ExecAction(tai, "--selfStart", AppDomain.CurrentDomain.BaseDirectory));
                     task.Settings.StopIfGoingOnBatteries = false;
                     task.Settings.DisallowStartIfOnBatteries = false;
                     taskService.RootFolder.RegisterTaskDefinition(TaskName, task);

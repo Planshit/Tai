@@ -8,6 +8,6 @@ namespace UI.Servicers
 {
     public interface IMainServicer
     {
-        void Start();
+        void Start(bool isSelfStart);
     }
 }

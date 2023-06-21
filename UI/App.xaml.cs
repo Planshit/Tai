@@ -158,7 +158,16 @@ namespace UI
             }
 
             var main = serviceProvider.GetService<IMainServicer>();
-            main.Start();
+
+            bool isSelfStart = false;
+            if (e.Args.Length != 0)
+            {
+                if (e.Args[0].Equals("--selfStart"))
+                {
+                    isSelfStart = true;
+                }
+            }
+            main.Start(isSelfStart);   
 
             //  创建保活窗口
             keepaliveWindow = new HideWindow();
