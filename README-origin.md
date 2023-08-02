@@ -11,21 +11,11 @@
 
 使用之前，你的电脑可能需要安装 [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework) `4.6.1` 或更高的版本（一般Win10以上的系统不需要安装）。如果在启动 Tai 时没反应，请点击左侧链接下载安装。
 
-> P.S. UWP打包版可能需要4.8以上版本
-
 #### 使用
 
-1. 在 [releases](https://github.com/EternalTimes/Tai/releases) 中可以下载已经编译好的 UWP 可执行文件压缩包。请选择标记有 `Latest` 的版本，划到下方的 `Assets` 找到 `Tai_x.x.x.x-UWP.zip` 点击即可下载；
+1. 在 [releases](https://github.com/Planshit/Tai/releases) 中可以下载已经编译好的 exe 可执行文件压缩包。请选择标记有 `Latest` 的版本，划到下方的 `Assets` 找到 `Taix.x.x.x.zip` 点击即可下载；
 
-2. 下载压缩包后解压到合适的位置
-
-3. 进入解压后的文件夹内，找到 `Install.ps1` ，右键，选择`使用PowerShell运行`（可能需要管理员权限）
-
-> P.S. 如果以前安装过我打包的Tai，可直接双击msixbundle安装
-
-4. 成功安装并启动程序，成功启动后你将在状态栏看到 👻 图标
-
-> **建议使用管理员权限运行**（原版默认是管理员权限运行，UWP默认为普通用户权限。普通权限我没遇到问题但不排除会有。）
+2. 下载压缩包后解压到合适的位置（建议不要解压到桌面、系统盘），进入解压后的文件夹内，找到 `👻Tai.exe` ，启动程序，成功启动后你将在状态栏看到 👻 图标；
 
 #### 基本操作
 
@@ -47,9 +37,7 @@
 
 #### 数据储存和导出
 
-~~Tai 使用不加密 `SQLite` 数据库将统计数据存储在本地 `运行目录\Data\data.db` 中。可以在设置中将统计的数据以 `.xlsx` 和 `.csv` 两种文件格式导出。~~ （原版）
-
-Tai 使用不加密 `SQLite` 数据库将统计数据存储在本地 `用户文档\Tai\Data\data.db` 中。可以在设置中将统计的数据以 `.xlsx` 和 `.csv` 两种文件格式导出。
+Tai 使用不加密 `SQLite` 数据库将统计数据存储在本地 `运行目录\Data\data.db` 中。可以在设置中将统计的数据以 `.xlsx` 和 `.csv` 两种文件格式导出。
 
 #### 联网和隐私
 
