@@ -68,7 +68,7 @@ namespace UI.Models
 
         private List<ChartsDataModel> CustomDayData_;
         /// <summary>
-        ///  YearData
+        ///  CustomDayData
         /// </summary>
         public List<ChartsDataModel> CustomDayData
         {
