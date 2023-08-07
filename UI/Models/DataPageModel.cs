@@ -66,6 +66,16 @@ namespace UI.Models
             set { YearData_ = value; OnPropertyChanged(); }
         }
 
+        private List<ChartsDataModel> CustomDayData_;
+        /// <summary>
+        ///  YearData
+        /// </summary>
+        public List<ChartsDataModel> CustomDayData
+        {
+            get { return CustomDayData_; }
+            set { CustomDayData_ = value; OnPropertyChanged(); }
+        }
+
         private DateTime DayDate_;
         /// <summary>
         ///  date
@@ -94,6 +104,26 @@ namespace UI.Models
         {
             get { return YearDate_; }
             set { YearDate_ = value; OnPropertyChanged(); }
+        }
+
+        private DateTime CustomStartDayDate_;
+        /// <summary>
+        ///  date
+        /// </summary>
+        public DateTime CustomStartDayDate
+        {
+            get { return CustomStartDayDate_; }
+            set { CustomStartDayDate_ = value; OnPropertyChanged(); }
+        }
+
+        private DateTime CustomEndDayDate_;
+        /// <summary>
+        ///  date
+        /// </summary>
+        public DateTime CustomEndDayDate
+        {
+            get { return CustomEndDayDate_; }
+            set { CustomEndDayDate_ = value; OnPropertyChanged(); }
         }
 
         private ContextMenu AppContextMenu_;

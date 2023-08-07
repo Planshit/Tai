@@ -56,7 +56,7 @@ namespace UI.ViewModels
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "按天","按月","按年"
+                "按天","按月","按年","自定义"
             };
 
             TabbarSelectedIndex = 0;
@@ -99,6 +99,10 @@ namespace UI.ViewModels
             {
                 LoadData(YearDate);
             }
+            else if (e.PropertyName == nameof(CustomStartDayDate) || e.PropertyName == nameof(CustomEndDayDate))
+            {
+                LoadCustomData(CustomStartDayDate, CustomEndDayDate);
+            }
             else if (e.PropertyName == nameof(TabbarSelectedIndex))
             {
                 if (TabbarSelectedIndex == 0)
@@ -123,12 +127,24 @@ namespace UI.ViewModels
                         YearDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                     }
                 }
+                else if (TabbarSelectedIndex == 3)
+                {
+                    if (CustomStartDayDate == DateTime.MinValue)
+                    {
+                        CustomStartDayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                    }
+                    if (CustomEndDayDate == DateTime.MinValue)
+                    {
+                        CustomEndDayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                    }
+                }
             }
             else if (e.PropertyName == nameof(ShowType))
             {
                 LoadData(DayDate, 0);
                 LoadData(MonthDate, 1);
                 LoadData(YearDate, 2);
+                LoadCustomData(CustomStartDayDate, CustomEndDayDate);
                 if (ShowType.Id == 0)
                 {
                     AppContextMenu = appContextMenuServicer.GetContextMenu();
@@ -197,6 +213,32 @@ namespace UI.ViewModels
                     YearData = chartData;
                 }
 
+            });
+        }
+
+        private async void LoadCustomData(DateTime startDate, DateTime endDate)
+        {
+            await Task.Run(() =>
+            {
+                DateTime startDateTime, endDateTime;
+
+                startDateTime = new DateTime(startDate.Year, startDate.Month, startDate.Day, 0, 0, 0);
+                endDateTime = new DateTime(endDate.Year, endDate.Month, endDate.Day, 23, 59, 59);
+
+                List<ChartsDataModel> chartData = new List<ChartsDataModel>();
+                if (ShowType.Id == 0)
+                {
+                    var result = data.GetDateRangelogList(startDateTime, endDateTime);
+                    chartData = MapToChartsData(result);
+                }
+                else
+                {
+                    var result = _webData.GetWebSiteLogList(startDateTime, endDateTime);
+                    chartData = MapToChartsWebData(result);
+                }
+
+
+                CustomDayData = chartData;
             });
         }
 

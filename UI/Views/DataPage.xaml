@@ -21,7 +21,7 @@
             <TextBlock Text="详细" FontSize="18" VerticalAlignment="Center"/>
             <select:Select Margin="10,0,0,0" VerticalAlignment="Top" Padding="10,5"  IsShowIcon="False" SelectedItem="{Binding ShowType,Mode=TwoWay}" Options="{Binding ShowTypeOptions}"/>
         </StackPanel>
-        <Tabbar:Tabbar Width="145" HorizontalAlignment="Left" Grid.Row="1" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
+        <Tabbar:Tabbar Width="230" HorizontalAlignment="Left" Grid.Row="1" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
 
 
         <TabControl 
@@ -79,6 +79,24 @@
                     <select:DateSelect Date="{Binding YearDate,Mode=TwoWay}" SelectType="Year"/>
 
                     <Charts:Charts IsShowBadge="True" IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding YearData}" ChartsType="List" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                        <TextBlock Text="从" VerticalAlignment="Center"/>
+                        <select:DateSelect Date="{Binding CustomStartDayDate,Mode=TwoWay}" SelectType="Day" Margin="10,0,10,0"/>
+                        <TextBlock Text="到" VerticalAlignment="Center"/>
+                        <select:DateSelect Date="{Binding CustomEndDayDate,Mode=TwoWay}" SelectType="Day" Margin="10,0,10,0"/>
+                    </StackPanel>
+
+                    <Charts:Charts IsShowBadge="True" IsSearch="True" Grid.Row="1" ItemMenu="{Binding AppContextMenu}" Data="{Binding CustomDayData}" ChartsType="List" Margin="0,20,0,0" ClickCommand="{Binding ToDetailCommand}"/>
                 </Grid>
             </TabItem>
         </TabControl>
