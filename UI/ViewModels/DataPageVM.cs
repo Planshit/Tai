@@ -220,6 +220,21 @@ namespace UI.ViewModels
         {
             await Task.Run(() =>
             {
+                // 无法默认加载当日数据的原因：
+                // DataPageVM_PropertyChanged中初始化CustomStartDayDate和CustomEndDayDate时，
+                // CustomStartDayDate赋值触发数据加载，但CustomEndDayDate还未赋值。
+                // 查询范围变成了 “DateTime.Now 到 DateTime.MinValue”，显然这没有数据，
+                // 当这条线程后执行完成时，就出现了未加载当日数据的问题。
+                // 因此加入以下判断
+                if (startDate == DateTime.MinValue)
+                {
+                    startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                }
+                if (endDate == DateTime.MinValue)
+                {
+                    endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                }
+
                 DateTime startDateTime, endDateTime;
 
                 startDateTime = new DateTime(startDate.Year, startDate.Month, startDate.Day, 0, 0, 0);
