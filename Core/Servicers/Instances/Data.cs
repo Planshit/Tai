@@ -604,6 +604,7 @@ namespace Core.Servicers.Instances
             using (var db = _database.GetReaderContext())
             {
                 var day = db.DailyLog.Where(m => m.Date >= start.Date && m.Date <= end.Date)
+                    .ToList()
                     .Select(m => new
                     {
                         日期 = m.Date,
@@ -611,10 +612,10 @@ namespace Core.Servicers.Instances
                         描述 = m.AppModel != null ? m.AppModel.Description : "未知",
                         时长 = m.Time,
                         分类 = m.AppModel != null && m.AppModel.Category != null ? m.AppModel.Category.Name : "未知"
-                    })
-                    .ToList();
+                    });
 
                 var hours = db.HoursLog.Where(m => m.DataTime >= start && m.DataTime <= end)
+                    .ToList()
                     .Select(m => new
                     {
                         时段 = m.DataTime,
@@ -622,8 +623,7 @@ namespace Core.Servicers.Instances
                         描述 = m.AppModel != null ? m.AppModel.Description : "未知",
                         时长 = m.Time,
                         分类 = m.AppModel != null && m.AppModel.Category != null ? m.AppModel.Category.Name : "未知"
-                    })
-                    .ToList();
+                    });
                 var mapper = new Mapper();
                 mapper.Put(day, "每日");
                 mapper.Put(hours, "时段");
