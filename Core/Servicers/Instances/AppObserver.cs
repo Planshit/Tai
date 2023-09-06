@@ -31,15 +31,16 @@ namespace Core.Servicers.Instances
             winEventDelegate, 0, 0, 0);
 
             var window = Win32API.GetForegroundWindow();
-            Handle(window);
+            Handle(window, DateTime.Now.Ticks);
         }
 
         private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
-            Handle(hwnd);
+            long eventTicks = DateTime.Now.Ticks;
+            Handle(hwnd, eventTicks);
         }
 
-        private async void Handle(IntPtr hwnd)
+        private async void Handle(IntPtr hwnd, long eventTicks)
         {
             string processName = String.Empty, processFileName = String.Empty, processDescription = String.Empty;
 
@@ -104,7 +105,7 @@ namespace Core.Servicers.Instances
                 return processName;
             });
 
-            EventInvoke(processName, processDescription, processFileName, hwnd);
+            EventInvoke(processName, processDescription, processFileName, hwnd, eventTicks);
         }
 
         /// <summary>
@@ -172,9 +173,9 @@ namespace Core.Servicers.Instances
             }
             return new string[] { processName, processFileName, processID.ToString() };
         }
-        private void EventInvoke(string processName, string description, string filename, IntPtr handle)
+        private void EventInvoke(string processName, string description, string filename, IntPtr handle, long eventTicks)
         {
-            var args = new AppObserverEventArgs(processName, description, filename, handle);
+            var args = new AppObserverEventArgs(processName, description, filename, handle, eventTicks);
             OnAppActive?.Invoke(args);
         }
 

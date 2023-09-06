@@ -61,6 +61,11 @@ namespace Core.Servicers.Instances
         private SleepStatus sleepStatus;
 
         /// <summary>
+        /// 上次处理的事件的ticks
+        /// </summary>
+        private long lastHandledEventTicks = long.MinValue;
+
+        /// <summary>
         /// app config
         /// </summary>
         private ConfigModel config;
@@ -343,6 +348,13 @@ namespace Core.Servicers.Instances
             {
                 return;
             }
+
+            if (args.EventTicks < lastHandledEventTicks)
+            {
+                Logger.Info("Later event has been handled, drop this event, name:" + args.ProcessName + ", hwnd:" + args.Handle);
+                return;
+            }
+            lastHandledEventTicks = args.EventTicks;
 
             string lastActiveProcess = activeProcess != null ? activeProcess.ToString() : "";
 
