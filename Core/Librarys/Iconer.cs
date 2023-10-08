@@ -18,6 +18,7 @@ namespace Core.Librarys
 {
     public class Iconer
     {
+        private static readonly HashSet<char> InvalidCharacterSet = new HashSet<char>(Path.GetInvalidFileNameChars());
         /// <summary>
         /// 格式化图标文件名称
         /// </summary>
@@ -26,22 +27,25 @@ namespace Core.Librarys
         /// <returns>返回正确的文件名称</returns>
         private static string FromatIconFileName(string processname, string desc)
         {
-            string iconName = (processname + desc).Replace(" ", "") + ".png";
+            const string extensionName = ".png";
+            var sb = new StringBuilder(processname.Length + desc.Length + extensionName.Length);
 
             //  清除无效字符
-            iconName = iconName.Replace("/", "");
-            iconName = iconName.Replace("\\", "");
-            iconName = iconName.Replace(":", "");
-            iconName = iconName.Replace("*", "");
-            iconName = iconName.Replace("?", "");
-            iconName = iconName.Replace("\"", "");
-            iconName = iconName.Replace("'", "");
-            iconName = iconName.Replace("<", "");
-            iconName = iconName.Replace(">", "");
-            iconName = iconName.Replace("|", "");
+            AddValidString(processname);
+            AddValidString(desc);
+            sb.Append(extensionName);
 
-            return iconName;
+            return sb.ToString();
+
+            void AddValidString(string text)
+            {
+                foreach (var c in text.Where(c => !InvalidCharacterSet.Contains(c) || c != ' '))
+                {
+                    sb.Append(c);
+                }
+            }
         }
+
         public static string Get(string processname, string desc, bool isRelativePath = true)
         {
             string iconName = FromatIconFileName(processname, desc);
