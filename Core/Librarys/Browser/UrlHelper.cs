@@ -10,7 +10,7 @@ namespace Core.Librarys.Browser
 {
     public static class UrlHelper
     {
-        private static readonly Dictionary<string, string> _domainNamesDict = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> _domainNamesDict = new Dictionary<string, string>(5)
         {
             {"www.google.com","Google" },
             {"github.com","Github" },
@@ -30,13 +30,13 @@ namespace Core.Librarys.Browser
 
             ChromeURLEncode(url_);
 
-            var ph = Regex.Match(url_, @"((https|http|ftp|rtsp|mms)?:\/\/)").Value;
+            var ph = Regex.Match(url_, @"((https|http|ftp|rtsp|mms)?:\/\/)", RegexOptions.Compiled).Value;
             if (!string.IsNullOrEmpty(ph))
             {
                 url_ = url_.Replace(ph, string.Empty);
             }
 
-            int index = url_.IndexOf("/");
+            int index = url_.IndexOf('/');
             if (index != -1)
             {
                 url_ = url_.Substring(0, index);
@@ -57,9 +57,9 @@ namespace Core.Librarys.Browser
             result = GetDomain(result);
 
             //  尝试从已存储的列表中搜索
-            if (_domainNamesDict.ContainsKey(result))
+            if (_domainNamesDict.TryGetValue(result, out var name))
             {
-                return _domainNamesDict[result];
+                return name;
             }
 
             var arr = result.Split('.');
@@ -98,7 +98,7 @@ namespace Core.Librarys.Browser
         {
             url_ = url_.Replace("http://", string.Empty);
             url_ = url_.Replace("https://", string.Empty);
-            return url_.IndexOf("/") == -1;
+            return url_.IndexOf('/') == -1;
         }
 
         /// <summary>
@@ -113,36 +113,36 @@ namespace Core.Librarys.Browser
             {
                 var result = WebUtility.UrlEncode(e.Value);
                 return result;
-            });
+            }, RegexOptions.Compiled);
             //  泰语
             url_ = Regex.Replace(url_, @"[\u0E00-\u0E7F]", (e) =>
             {
                 var result = WebUtility.UrlEncode(e.Value);
                 return result;
-            });
+            }, RegexOptions.Compiled);
             //  德语
             url_ = Regex.Replace(url_, @"[äöüÄÖÜß]", (e) =>
             {
                 var result = WebUtility.UrlEncode(e.Value);
                 return result;
-            });
+            }, RegexOptions.Compiled);
             //  俄语
             url_ = Regex.Replace(url_, @"[ЁёА-я]", (e) =>
             {
                 var result = WebUtility.UrlEncode(e.Value);
                 return result;
-            });
+            }, RegexOptions.Compiled);
             //  中文标点符号
             url_ = Regex.Replace(url_, @"[\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]", (e) =>
             {
                 var result = WebUtility.UrlEncode(e.Value);
                 return result;
-            });
+            }, RegexOptions.Compiled);
             return Regex.Replace(url_, @"/[\u4e00-\u9fa5]+|[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+/u", (e) =>
-             {
-                 var result = WebUtility.UrlEncode(e.Value);
-                 return result;
-             });
+            {
+                var result = WebUtility.UrlEncode(e.Value);
+                return result;
+            }, RegexOptions.Compiled);
 
         }
     }
