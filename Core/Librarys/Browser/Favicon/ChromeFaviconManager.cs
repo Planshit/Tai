@@ -49,13 +49,13 @@ namespace Core.Librarys.Browser.Favicon
         }
         public async Task<object> GetIconDataAsync(string url)
         {
-            if (string.IsNullOrEmpty(url)) { throw new ArgumentNullException("url"); }
+            if (string.IsNullOrEmpty(url)) { throw new ArgumentNullException(nameof(url)); }
 
             url = UrlHelper.ChromeURLEncode(url);
 
             var result = await Task.Run(() =>
               {
-                  byte[] icon = { };
+                  byte[] icon = Array.Empty<byte>();
                   try
                   {
                       File.Copy(_chromeFaviconsPath, _faviconsTempPath, true);
@@ -96,7 +96,7 @@ namespace Core.Librarys.Browser.Favicon
         private string GetIconId(string url_, SQLiteConnection con_)
         {
             string iconId = string.Empty;
-            string sqlStr = url_.IndexOf("://") == -1 ? $"%{url_}%" : $"{url_}%";
+            string sqlStr = !url_.Contains("://") ? $"%{url_}%" : $"{url_}%";
             using (var cmd = new SQLiteCommand($"select * from icon_mapping where page_url like'{sqlStr}' LIMIT 1", con_))
             {
                 using (SQLiteDataReader dr = cmd.ExecuteReader())
@@ -112,7 +112,7 @@ namespace Core.Librarys.Browser.Favicon
 
         public async Task<string> SaveToLocalIconAsync(object data)
         {
-            if (data == null) { throw new ArgumentNullException("data"); }
+            if (data == null) { throw new ArgumentNullException(nameof(data)); }
             return await Task.Run(() =>
               {
                   var icon = data as byte[];
@@ -120,7 +120,7 @@ namespace Core.Librarys.Browser.Favicon
                   using (var md5 = MD5.Create())
                   {
                       var hash = md5.ComputeHash(icon);
-                      var md5Str = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                      var md5Str = BitConverter.ToString(hash).Replace("-", string.Empty).ToLowerInvariant();
 
                       iconPath = Path.Combine(_taiFaviconsPath, $"{md5Str}.png");
                       if (!File.Exists(iconPath))
