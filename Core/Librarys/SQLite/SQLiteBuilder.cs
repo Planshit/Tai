@@ -152,7 +152,7 @@ namespace Core.Librarys.SQLite
 
                     var modelInfoDb = modelInfosDb.Where(m => m.TableName == tableName);
                     //判断表是否存在
-                    if (modelInfoDb.Count() <= 0)
+                    if (!modelInfoDb.Any())
                     {
                         //不存在则重新创建表
                         string csql = GetCreateTableSQL(model);
@@ -167,7 +167,7 @@ namespace Core.Librarys.SQLite
                         //查找差异属性
                         foreach (var item in model.Properties)
                         {
-                            if (modelDb.Properties.Where(m => m.Name == item.Name).Count() <= 0)
+                            if (modelDb.Properties.Exists(m => m.Name == item.Name))
                             {
                                 string csql = GetCreateColumnSQL(tableName, item);
                                 ExecuteNonQuery(csql);
@@ -186,7 +186,7 @@ namespace Core.Librarys.SQLite
                     string tableName = dbModel.TableName;
 
                     //  查找对应的实体模型
-                    var model = modelInfos.Where(m => m.TableName == tableName).FirstOrDefault();
+                    var model = modelInfos.Find(m => m.TableName == tableName);
 
                     if (model == null)
                     {
@@ -204,7 +204,7 @@ namespace Core.Librarys.SQLite
                         foreach (var dbItem in dbModel.Properties)
                         {
                             //  判断实体模型是否有字段，没有的话需要重建表
-                            if (!model.Properties.Where(m => m.Name == dbItem.Name).Any())
+                            if (!model.Properties.Exists(m => m.Name == dbItem.Name))
                             {
                                 isDel = true;
                                 break;

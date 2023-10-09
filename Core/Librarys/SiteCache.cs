@@ -14,7 +14,7 @@ namespace Core.Librarys
         private static readonly int maxNum = 100;
         public static Site Get(string key)
         {
-            return sites.Where(m => m.Title.Equals(key)).FirstOrDefault();
+            return sites.FirstOrDefault(m => m.Title.Equals(key));
         }
 
         public static List<Site> GetAll()

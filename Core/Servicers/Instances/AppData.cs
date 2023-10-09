@@ -42,7 +42,7 @@ namespace Core.Servicers.Instances
                     .Select(m => new AppModel
                     {
                         ID = m.ID,
-                        Category = m.Category != null ? m.Category : null,
+                        Category = m.Category,
                         CategoryID = m.CategoryID,
                         Description = m.Description,
                         File = m.File,
@@ -87,21 +87,21 @@ namespace Core.Servicers.Instances
         {
             lock (_locker)
             {
-                return _apps.Where(m => m.Name == name).FirstOrDefault();
+                return _apps.Find(m => m.Name == name);
             }
         }
         public AppModel GetApp(int id)
         {
             lock (_locker)
             {
-                return _apps.Where(m => m.ID == id).FirstOrDefault();
+                return _apps.Find(m => m.ID == id);
             }
         }
         public void AddApp(AppModel app)
         {
             lock (_locker)
             {
-                if (_apps.Where(m => m.Name == app.Name).Any())
+                if (_apps.Exists(m => m.Name == app.Name))
                 {
                     return;
                 }

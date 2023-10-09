@@ -46,7 +46,7 @@ namespace Core.Servicers.Instances
 
                     using (var db = _database.GetWriterContext())
                     {
-                        var app = db.App.Where(m => m.Name == processName_).FirstOrDefault();
+                        var app = db.App.FirstOrDefault(m => m.Name == processName_);
                         if (app == null)
                         {
                             _database.CloseWriter();
@@ -345,9 +345,9 @@ namespace Core.Servicers.Instances
                     var time = date.ToString($"yyyy-MM-dd {hours}:00:00");
                     foreach (var category in categorys)
                     {
-                        var log = data.Where(m => m.CategoryID == category.CategoryID && m.Time.ToString("yyyy-MM-dd HH:00:00") == time).FirstOrDefault();
+                        var log = data.FirstOrDefault(m => m.CategoryID == category.CategoryID && m.Time.ToString("yyyy-MM-dd HH:00:00") == time);
 
-                        var item = list.Where(m => m.CategoryID == category.CategoryID).FirstOrDefault();
+                        var item = list.FirstOrDefault(m => m.CategoryID == category.CategoryID);
 
                         item.Values[i] = log.Total;
                     }
@@ -396,9 +396,9 @@ namespace Core.Servicers.Instances
                     Debug.WriteLine(time);
                     foreach (var category in categorys)
                     {
-                        var log = data.Where(m => m.CategoryID == category.CategoryID && m.Time.ToString("yyyy-MM-dd 00:00:00") == time).FirstOrDefault();
+                        var log = data.FirstOrDefault(m => m.CategoryID == category.CategoryID && m.Time.ToString("yyyy-MM-dd 00:00:00") == time);
 
-                        var item = list.Where(m => m.CategoryID == category.CategoryID).FirstOrDefault();
+                        var item = list.FirstOrDefault(m => m.CategoryID == category.CategoryID);
 
                         item.Values[i] = log.Total;
                     }
@@ -452,7 +452,7 @@ namespace Core.Servicers.Instances
                     {
                         var total = data.Where(m => m.CategoryID == category.CategoryID && m.Time >= dayArr[0] && m.Time <= dayArr[1]).Sum(m => m.Total);
 
-                        var item = list.Where(m => m.CategoryID == category.CategoryID).FirstOrDefault();
+                        var item = list.FirstOrDefault(m => m.CategoryID == category.CategoryID);
 
                         item.Values[i - 1] = total;
                     }
@@ -493,7 +493,7 @@ namespace Core.Servicers.Instances
                     string hours = i < 10 ? "0" + i : i.ToString();
                     var time = date.ToString($"yyyy-MM-dd {hours}:00:00");
 
-                    var log = data.Where(m => m.Time.ToString("yyyy-MM-dd HH:00:00") == time).FirstOrDefault();
+                    var log = data.FirstOrDefault(m => m.Time.ToString("yyyy-MM-dd HH:00:00") == time);
 
 
 
@@ -534,7 +534,7 @@ namespace Core.Servicers.Instances
                     string day = i < 10 ? "0" + i : i.ToString();
                     var time = start.AddDays(i).ToString($"yyyy-MM-dd 00:00:00");
 
-                    var log = data.Where(m => m.Time.ToString("yyyy-MM-dd 00:00:00") == time).FirstOrDefault();
+                    var log = data.FirstOrDefault(m => m.Time.ToString("yyyy-MM-dd 00:00:00") == time);
 
                     item.Values[i] = log.Total;
                 }
@@ -628,10 +628,10 @@ namespace Core.Servicers.Instances
                 mapper.Put(day, "每日");
                 mapper.Put(hours, "时段");
 
-                string name = $"Tai数据({start.ToString("yyyy年MM月")}-{end.ToString("yyyy年MM月")})";
+                string name = $"Tai数据({start:yyyy年MM月}-{end:yyyy年MM月})";
                 if (start.Year == end.Year && start.Month == end.Month)
                 {
-                    name = $"Tai数据({start.ToString("yyyy年MM月")})";
+                    name = $"Tai数据({start:yyyy年MM月})";
                 }
                 mapper.Save(Path.Combine(dir, $"{name}.xlsx"));
 
@@ -700,7 +700,7 @@ namespace Core.Servicers.Instances
                     {
                         string hours = i < 10 ? "0" + i : i.ToString();
                         var time = start.ToString($"yyyy-MM-dd {hours}:00:00");
-                        var log = data.Where(m => m.Time.ToString("yyyy-MM-dd HH:00:00") == time).FirstOrDefault();
+                        var log = data.FirstOrDefault(m => m.Time.ToString("yyyy-MM-dd HH:00:00") == time);
                         result[i] = log.Total;
                     }
                     return result;
@@ -718,7 +718,7 @@ namespace Core.Servicers.Instances
                     for (int i = 0; i < days; i++)
                     {
                         var time = start.Date.AddDays(i).ToString($"yyyy-MM-dd 00:00:00");
-                        var log = data.Where(m => m.Time.ToString("yyyy-MM-dd 00:00:00") == time).FirstOrDefault();
+                        var log = data.FirstOrDefault(m => m.Time.ToString("yyyy-MM-dd 00:00:00") == time);
                         result[i] = log.Total;
                     }
 
@@ -737,7 +737,7 @@ namespace Core.Servicers.Instances
 
                 for (int i = 1; i < 13; i++)
                 {
-                    string month = i < 10 ? "0" + i : i.ToString();
+                    //string month = i < 10 ? "0" + i : i.ToString();
                     var dayArr = Time.GetMonthDate(new DateTime(date.Year, i, 1));
                     var total = data.Where(m => m.Time >= dayArr[0] && m.Time <= dayArr[1]).Sum(m => m.Total);
 

@@ -34,7 +34,7 @@ namespace Core.Servicers.Instances
         {
             using (var db = new TaiDbContext())
             {
-                var item = db.Categorys.Where(m => m.ID == category.ID).FirstOrDefault();
+                var item = db.Categorys.FirstOrDefault(m => m.ID == category.ID);
                 if (item != null)
                 {
                     db.Categorys.Remove(item);
@@ -52,7 +52,7 @@ namespace Core.Servicers.Instances
 
         public CategoryModel GetCategory(int id)
         {
-            return _categories.Where(m => m.ID == id).FirstOrDefault();
+            return _categories.Find(m => m.ID == id);
         }
 
         public void Load()

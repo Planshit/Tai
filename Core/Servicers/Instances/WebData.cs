@@ -74,7 +74,7 @@ namespace Core.Servicers.Instances
                     {
                         //  获取站点信息
                         string domain = UrlHelper.GetDomain(site_.Url);
-                        var site = db.WebSites.Where(m => m.Domain == domain).FirstOrDefault();
+                        var site = db.WebSites.FirstOrDefault(m => m.Domain == domain);
                         Debug.WriteLine("AddUrlBrowseTime 获取站点数据");
 
                         if (site == null)
@@ -96,7 +96,7 @@ namespace Core.Servicers.Instances
                         }
 
                         //  记录
-                        var log = db.WebBrowserLogs.Where(m => m.LogTime == logTime && m.UrlId == url.ID).FirstOrDefault();
+                        var log = db.WebBrowserLogs.FirstOrDefault(m => m.LogTime == logTime && m.UrlId == url.ID);
 
                         if (log != null)
                         {
@@ -205,7 +205,7 @@ namespace Core.Servicers.Instances
 
             //using (var db = _database.GetWriterContext())
             //{
-            var site = db.WebSites.Where(m => m.Domain == domain).FirstOrDefault();
+            var site = db.WebSites.FirstOrDefault(m => m.Domain == domain);
             if (site == null)
             {
                 site = db.WebSites.Add(new WebSiteModel()
@@ -230,7 +230,7 @@ namespace Core.Servicers.Instances
         {
             lock (_createUrlLocker)
             {
-                var result = db.WebUrls.Where(m => m.Url == site_.Url).FirstOrDefault();
+                var result = db.WebUrls.FirstOrDefault(m => m.Url == site_.Url);
                 if (result == null)
                 {
                     result = db.WebUrls.Add(new Models.Db.WebUrlModel()
@@ -431,7 +431,7 @@ namespace Core.Servicers.Instances
         {
             using (var db = _database.GetReaderContext())
             {
-                var result = db.WebSiteCategories.Where(m => m.ID == categoryId_).FirstOrDefault();
+                var result = db.WebSiteCategories.FirstOrDefault(m => m.ID == categoryId_);
                 return result;
             }
         }
@@ -464,7 +464,7 @@ namespace Core.Servicers.Instances
                     for (int i = 0; i < 24; i++)
                     {
                         var time = new DateTime(start_.Year, start_.Month, start_.Day, i, 0, 0);
-                        var item = data.Where(m => m.Time == time).FirstOrDefault();
+                        var item = data.FirstOrDefault(m => m.Time == time);
                         var dataItem = new CommonDataModel()
                         {
                             ID = i,
@@ -563,10 +563,10 @@ namespace Core.Servicers.Instances
                         var time = new DateTime(start_.Year, start_.Month, start_.Day, i, 0, 0);
                         foreach (var category in categories)
                         {
-                            var log = data.Where(m => m.CategoryID == category.CategoryID && m.LogTime == time).FirstOrDefault();
+                            var log = data.FirstOrDefault(m => m.CategoryID == category.CategoryID && m.LogTime == time);
                             if (log != null)
                             {
-                                var resultItem = result.Where(m => m.CategoryID == category.CategoryID).FirstOrDefault();
+                                var resultItem = result.FirstOrDefault(m => m.CategoryID == category.CategoryID);
                                 resultItem.Values[i] = log.Duration;
                             }
                         }
@@ -598,7 +598,7 @@ namespace Core.Servicers.Instances
                             {
                                 var duration = data.Where(m => m.CategoryID == category.CategoryID && m.LogTime >= startTime && m.LogTime <= endTime).Sum(m => m.Duration);
 
-                                var resultItem = result.Where(m => m.CategoryID == category.CategoryID).FirstOrDefault();
+                                var resultItem = result.FirstOrDefault(m => m.CategoryID == category.CategoryID);
                                 resultItem.Values[i] = duration;
                             }
                         }
@@ -624,7 +624,7 @@ namespace Core.Servicers.Instances
                             {
                                 var duration = data.Where(m => m.CategoryID == category.CategoryID && m.LogTime >= startTime && m.LogTime <= endTime).Sum(m => m.Duration);
 
-                                var resultItem = result.Where(m => m.CategoryID == category.CategoryID).FirstOrDefault();
+                                var resultItem = result.FirstOrDefault(m => m.CategoryID == category.CategoryID);
                                 resultItem.Values[i] = duration;
                             }
                         }
@@ -709,7 +709,7 @@ namespace Core.Servicers.Instances
         {
             using (var db = _database.GetReaderContext())
             {
-                var result = db.WebSites.Where(m => m.ID == id_).FirstOrDefault();
+                var result = db.WebSites.FirstOrDefault(m => m.ID == id_);
                 return result;
             }
         }
@@ -718,7 +718,7 @@ namespace Core.Servicers.Instances
         {
             using (var db = _database.GetReaderContext())
             {
-                var result = db.WebSites.Where(m => m.Domain.ToLower() == domain.ToLower()).FirstOrDefault();
+                var result = db.WebSites.FirstOrDefault(m => m.Domain.ToLower() == domain.ToLower());
                 return result;
             }
         }
