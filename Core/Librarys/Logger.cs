@@ -107,7 +107,7 @@ namespace Core.Librarys
 
                     //  tai版本号
                     clientInfo.Add(FromatItem("Core Version", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-                    clientInfo.Add(FromatItem("OS Name", GetWindowsVersionName()));
+                    clientInfo.Add(FromatItem("OS Name", SystemCommon.GetWindowsVersionName()));
                     clientInfo.Add(FromatItem("Computer Type", GetComputerType()));
                     clientInfo.Add(FromatItem("Screen", GetScreenSize()));
                     clientInfo.Add("\r\n++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\r\n");
@@ -126,29 +126,6 @@ namespace Core.Librarys
         private static string GetScreenSize()
         {
             return SystemInformation.VirtualScreen.Width + "*" + SystemInformation.VirtualScreen.Height;
-        }
-        private static string GetWindowsVersionName()
-        {
-            string name = string.Empty;
-            try
-            {
-                ManagementObjectSearcher managementObjectSearcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem");
-                foreach (ManagementObject obj in managementObjectSearcher.Get())
-                {
-                    name = obj["Name"].ToString();
-                }
-
-                if (!string.IsNullOrEmpty(name) && name.IndexOf("|") != -1)
-                {
-                    name = name.Split('|')[0];
-                }
-            }
-            catch
-            {
-                return "[无法获取系统版本]";
-            }
-
-            return name;
         }
 
         /// <summary>
