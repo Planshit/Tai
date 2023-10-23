@@ -16,7 +16,7 @@ namespace Core.Librarys
 {
     public static class Logger
     {
-        private static readonly int threshold = 50;
+        private const int threshold = 50;
 
         private static readonly object writeLock = new object();
 
@@ -31,7 +31,6 @@ namespace Core.Librarys
             dispatcherTimer.Interval = new TimeSpan(0, 5, 0);
             dispatcherTimer.Tick += DispatcherTimer_Tick;
             dispatcherTimer.Start();
-
         }
 
         private static void DispatcherTimer_Tick(object sender, EventArgs e)
@@ -100,7 +99,7 @@ namespace Core.Librarys
 
                 if (!File.Exists(loggerName))
                 {
-                    List<string> clientInfo = new List<string>();
+                    List<string> clientInfo = new List<string>(5);
 
                     //  记录客户端信息
 
@@ -112,11 +111,11 @@ namespace Core.Librarys
                     clientInfo.Add(FromatItem("Screen", GetScreenSize()));
                     clientInfo.Add("\r\n++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\r\n");
 
-                    File.WriteAllText(loggerName, string.Join("\r\n", clientInfo.ToArray()));
+                    File.WriteAllText(loggerName, string.Join("\r\n", clientInfo));
                 }
 
 
-                File.AppendAllText(loggerName, string.Join("", loggers.ToArray()));
+                File.AppendAllText(loggerName, string.Join(string.Empty, loggers));
 
                 loggers.Clear();
             }
