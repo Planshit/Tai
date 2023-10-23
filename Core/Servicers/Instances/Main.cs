@@ -1,4 +1,5 @@
 ﻿using Core.Enums;
+using Core.Event;
 using Core.Librarys;
 using Core.Librarys.SQLite;
 using Core.Models;
@@ -22,14 +23,14 @@ namespace Core.Servicers.Instances
     public class Main : IMain
     {
         private readonly IAppObserver appObserver;
-        private readonly IBrowserObserver browserObserver;
         private readonly IData data;
         private readonly ISleepdiscover sleepdiscover;
         private readonly IAppConfig appConfig;
-        private readonly IDateTimeObserver dateTimeObserver;
         private readonly IAppData appData;
         private readonly ICategorys categories;
         private readonly IWebFilter _webFilter;
+        private readonly IAppTimerServicer _appTimer;
+        private readonly IWebServer _webServer;
         //  忽略的进程
         private readonly string[] DefaultIgnoreProcess = new string[] {
             "Tai",
@@ -44,16 +45,6 @@ namespace Core.Servicers.Instances
             "dwm",
             "SystemSettingsAdminFlows"
         };
-
-        /// <summary>
-        /// 当前聚焦进程
-        /// </summary>
-        private string activeProcess = null;
-
-        /// <summary>
-        /// 焦点开始时间
-        /// </summary>
-        private DateTime activeStartTime = DateTime.Now;
 
         /// <summary>
         /// 睡眠状态
@@ -92,42 +83,27 @@ namespace Core.Servicers.Instances
             IAppConfig appConfig,
             IDateTimeObserver dateTimeObserver,
             IAppData appData, ICategorys categories,
-            IBrowserObserver browserObserver,
-            IWebFilter webFilter_)
+            IWebFilter webFilter_,
+            IAppTimerServicer appTimer_, 
+            IWebServer webServer_)
         {
             this.appObserver = appObserver;
             this.data = data;
             this.sleepdiscover = sleepdiscover;
             this.appConfig = appConfig;
-            this.dateTimeObserver = dateTimeObserver;
             this.appData = appData;
             this.categories = categories;
-            this.browserObserver = browserObserver;
             _webFilter = webFilter_;
+            _appTimer = appTimer_;
+            _webServer = webServer_;
 
             IgnoreProcessCacheList = new List<string>();
             ConfigIgnoreProcessRegxList = new List<string>();
             ConfigIgnoreProcessList = new List<string>();
 
-            appObserver.OnAppActive += AppObserver_OnAppActive;
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
             appConfig.ConfigChanged += AppConfig_ConfigChanged;
-            dateTimeObserver.OnDateTimeChanging += DateTimeObserver_OnDateTimeChanging;
-        }
-
-
-
-        private void DateTimeObserver_OnDateTimeChanging(object sender, DateTime time)
-        {
-            Logger.Info("[time changed] status:" + sleepStatus + ",process:" + activeProcess + ",start:" + activeStartTime.ToString() + ",end:" + DateTime.Now.ToString() + ",time:" + time.ToString());
-            if (sleepStatus == SleepStatus.Wake)
-            {
-                UpdateTime();
-            }
-            else
-            {
-                activeStartTime = DateTime.Now;
-            }
+            _appTimer.OnAppDurationUpdated += _appTimer_OnAppDurationUpdated;
         }
 
         private void AppConfig_ConfigChanged(ConfigModel oldConfig, ConfigModel newConfig)
@@ -188,21 +164,16 @@ namespace Core.Servicers.Instances
         }
         public void Start()
         {
-            activeStartTime = DateTime.Now;
-            activeProcess = null;
-
-            dateTimeObserver.Start();
+            //  appTimer必须比Observer先启动*
+            _appTimer.Start();
             appObserver.Start();
-
-            if (config.General.IsWebEnabled)
-            {
-                browserObserver.Start();
-            }
+            _webServer.Start();
         }
         public void Stop()
         {
-            dateTimeObserver.Stop();
             appObserver.Stop();
+            _appTimer.Stop();
+            _webServer.Stop();
         }
         public void Exit()
         {
@@ -241,7 +212,7 @@ namespace Core.Servicers.Instances
         {
             this.sleepStatus = sleepStatus;
 
-            Logger.Info($"[{sleepStatus}] process:{activeProcess},start:{activeStartTime}");
+            Logger.Info($"[{sleepStatus}]");
             if (sleepStatus == SleepStatus.Sleep)
             {
                 //  进入睡眠状态
@@ -251,7 +222,7 @@ namespace Core.Servicers.Instances
                 Stop();
 
                 //  更新时间
-                UpdateTime();
+                UpdateAppDuration();
             }
             else
             {
@@ -337,39 +308,6 @@ namespace Core.Servicers.Instances
             return true;
         }
 
-        private void AppObserver_OnAppActive(Models.AppObserver.AppObserverEventArgs args)
-        {
-            if (sleepStatus == SleepStatus.Sleep)
-            {
-                return;
-            }
-
-            string lastActiveProcess = activeProcess != null ? activeProcess.ToString() : "";
-
-            bool isCheck = IsCheckApp(args.ProcessName, args.Description, args.File);
-
-            Logger.Info($"Active[{isCheck}]:" + args.ProcessName + ",Last:" + lastActiveProcess + ",Time:" + activeStartTime.ToString());
-
-            if (activeProcess != args.ProcessName)
-            {
-                UpdateTime();
-            }
-
-            if (isCheck)
-            {
-                if (activeProcess == null)
-                {
-                    activeStartTime = DateTime.Now;
-                }
-                activeProcess = args.ProcessName;
-            }
-            else
-            {
-                activeProcess = null;
-            }
-
-        }
-
         private void HandleLinks(string processName, int seconds, DateTime time)
         {
             Task.Run(() =>
@@ -391,7 +329,7 @@ namespace Core.Servicers.Instances
                                     if (IsProcessRuning(linkProcess))
                                     {
                                         //  同步更新
-                                        data.SaveAppDuration(linkProcess, seconds, time);
+                                        data.UpdateAppDuration(linkProcess, seconds, time);
                                     }
 
                                 }
@@ -421,44 +359,6 @@ namespace Core.Servicers.Instances
         }
         #endregion
 
-        private void UpdateTime()
-        {
-            string app = activeProcess != null ? activeProcess.ToString() : "";
-
-            if (!string.IsNullOrEmpty(app))
-            {
-                var time = new DateTime(activeStartTime.Ticks);
-
-                //  更新计时
-                TimeSpan timeSpan = DateTime.Now - time;
-                int seconds = (int)timeSpan.TotalSeconds;
-
-                if (seconds > 3600)
-                {
-                    Logger.Warn($"计时异常。start:{time},process:{app},duration:{seconds},status:{sleepStatus}");
-                    activeStartTime = DateTime.Now;
-                    return;
-                }
-
-                //  如果是休眠状态要减去5分钟
-                if (sleepStatus == SleepStatus.Sleep)
-                {
-                    seconds -= 300;
-                }
-
-                if (seconds > 0)
-                {
-                    data.SaveAppDuration(app, seconds, time);
-
-                    //  关联进程更新
-                    HandleLinks(app, seconds, time);
-                }
-
-                activeStartTime = DateTime.Now;
-                OnUpdateTime?.Invoke(this, null);
-            }
-        }
-
         #region 处理网站数据记录配置项开关
         /// <summary>
         /// 处理网站数据记录配置项开关
@@ -469,17 +369,36 @@ namespace Core.Servicers.Instances
             {
                 return;
             }
-
-            if (config.General.IsWebEnabled)
-            {
-                browserObserver.Start();
-            }
-            else
-            {
-                browserObserver.Stop();
-            }
         }
         #endregion
+
+        private void _appTimer_OnAppDurationUpdated(object sender, Event.AppDurationUpdatedEventArgs e)
+        {
+            UpdateAppDuration(e);
+        }
+
+        private void UpdateAppDuration()
+        {
+            UpdateAppDuration(_appTimer.GetAppDuration());
+        }
+        private void UpdateAppDuration(AppDurationUpdatedEventArgs e)
+        {
+            if (e == null) return;
+
+            var app = e.App;
+            int duration = e.Duration;
+            DateTime startTime = e.ActiveTime;
+
+            bool isCheck = IsCheckApp(app.Process, app.Description, app.ExecutablePath);
+            if (isCheck)
+            {
+                //  更新统计时长
+                data.UpdateAppDuration(app.Process, duration, startTime);
+                //  关联进程更新
+                HandleLinks(app.Process, duration, startTime);
+                OnUpdateTime?.Invoke(this, null);
+            }
+        }
 
     }
 }

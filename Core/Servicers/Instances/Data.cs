@@ -14,6 +14,7 @@ using System.IO;
 using CsvHelper;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Core.Servicers.Instances
 {
@@ -28,100 +29,149 @@ namespace Core.Servicers.Instances
             _database = database_;
         }
 
-        public void SaveAppDuration(string processName_, int duration_, DateTime startDateTime_)
+        public void UpdateAppDuration(string process_, int duration_, DateTime startTime_)
         {
-            //  过滤无效数据
-            if (string.IsNullOrEmpty(processName_) || duration_ <= 0) return;
+            //  过滤无效值
+            if (string.IsNullOrEmpty(process_) || duration_ <= 0 || startTime_ == DateTime.MinValue) return;
 
-            Task.Run(() =>
+            Logger.Info($"UpdateAppDuration,process:{process_},duration:{duration_},start:{startTime_}");
+            //  开始时间剩余最大统计时长
+            int startTimeMaxHoursDuration = (59 - startTime_.Minute) * 60 + (60 - startTime_.Second);
+            //  开始时间使用时长
+            int startTimeHoursDuration = duration_ > startTimeMaxHoursDuration ? startTimeMaxHoursDuration : duration_;
+            //  剩余时长
+            int outHoursDuration = duration_ - startTimeHoursDuration;
+            //  结束时间
+            DateTime endTime = new DateTime(startTime_.Year, startTime_.Month, startTime_.Day, startTime_.Hour, 0, 0);
+            //  时段使用数据
+            Dictionary<DateTime, int> durationHoursData = new Dictionary<DateTime, int>
             {
-                try
+                { endTime, startTimeHoursDuration }
+            };
+            //  计算时段数据
+            if (outHoursDuration > 0)
+            {
+                int outHours = outHoursDuration / 3600;
+
+                DateTime outStartTime = new DateTime(startTime_.Year, startTime_.Month, startTime_.Day, startTime_.Hour, 0, 0);
+                for (int i = 0; i < outHours; i++)
                 {
-                    if (startDateTime_.Minute == 59 && startDateTime_.Second >= 58)
+                    outStartTime = outStartTime.AddHours(1);
+                    int duration = 3600;
+                    durationHoursData.Add(outStartTime, duration);
+                }
+                if (outHoursDuration % 3600 > 0)
+                {
+                    outStartTime = outStartTime.AddHours(1);
+                    int duration = outHoursDuration - outHours * 3600;
+                    durationHoursData.Add(outStartTime, duration);
+                }
+                endTime = outStartTime;
+            }
+
+            //  计算每日统计数据
+            DateTime nextDayTime = new DateTime(startTime_.Year, startTime_.Month, startTime_.Day, 0, 0, 0).AddDays(1);
+            int startTimeMaxDayDuration = (int)(nextDayTime - startTime_).TotalSeconds;
+            //  开始时间使用时长
+            int startTimeDayDuration = duration_ > startTimeMaxDayDuration ? startTimeMaxDayDuration : duration_;
+            //  剩余时长
+            int outDayDuration = duration_ - startTimeDayDuration;
+            //  结束时间
+            DateTime endDayTime = startTime_.Date;
+            //  每日使用数据
+            Dictionary<DateTime, int> durationDayData = new Dictionary<DateTime, int>
+            {
+                { startTime_.Date, startTimeDayDuration }
+            };
+            if (outDayDuration > 0)
+            {
+                int outDays = outDayDuration / 86400;
+
+                DateTime outStartTime = new DateTime(startTime_.Year, startTime_.Month, startTime_.Day, 0, 0, 0);
+                for (int i = 0; i < outDays; i++)
+                {
+                    outStartTime = outStartTime.AddDays(1);
+                    int duration = 86400;
+                    durationDayData.Add(outStartTime, duration);
+                }
+                if (outDayDuration % 86400 > 0)
+                {
+                    outStartTime = outStartTime.AddDays(1);
+                    int duration = outDayDuration - outDays * 86400;
+                    durationDayData.Add(outStartTime, duration);
+                }
+                endDayTime = outStartTime.Date;
+            }
+
+            //  开始写入数据
+            try
+            {
+                using (var db = _database.GetWriterContext())
+                {
+                    var app = db.App.Where(m => m.Name == process_).FirstOrDefault();
+                    if (app == null)
                     {
-                        //  当记录开始时间接近59分59秒时划到下一个小时时段
-                        startDateTime_ = startDateTime_.AddSeconds(2);
-                        startDateTime_ = new DateTime(startDateTime_.Year, startDateTime_.Month, startDateTime_.Day, startDateTime_.Hour, 0, 0);
+                        _database.CloseWriter();
+                        return;
                     }
 
-                    using (var db = _database.GetWriterContext())
+                    //  更新app累计总时长
+                    app.TotalTime += duration_;
+
+                    //  更新每日数据
+                    var dailyLogs = db.DailyLog.Where(m => m.Date >= startTime_.Date && m.Date <= endDayTime && m.AppModelID == app.ID).ToList();
+                    foreach (var item in durationDayData)
                     {
-                        var app = db.App.Where(m => m.Name == processName_).FirstOrDefault();
-                        if (app == null)
-                        {
-                            _database.CloseWriter();
-                            return;
-                        }
-
-                        //  当前时段最大可记录时长
-                        int nowHoursMaxDuration = (60 - startDateTime_.Minute) * 60;
-                        duration_ = duration_ > nowHoursMaxDuration ? nowHoursMaxDuration : duration_;
-
-                        //  更新app累计时长
-                        app.TotalTime += duration_;
-
-                        //  更新每日数据
-                        var dailyLog = db.DailyLog.SingleOrDefault(m => m.Date == startDateTime_.Date && m.AppModelID == app.ID);
-                        if (dailyLog == null)
+                        var log = dailyLogs.Where(m => m.Date == item.Key).FirstOrDefault();
+                        if (log == null)
                         {
                             //数据库中没有时则创建
                             db.DailyLog.Add(new DailyLogModel()
                             {
-                                Date = startDateTime_.Date,
+                                Date = item.Key,
                                 AppModelID = app.ID,
-                                Time = duration_ > 86400 ? 86400 : duration_,
+                                Time = item.Value,
                             });
                         }
                         else
                         {
-                            if (dailyLog.Time + duration_ > 86400)
-                            {
-                                dailyLog.Time = 86400;
-                            }
-                            else
-                            {
-                                dailyLog.Time += duration_;
-                            }
+                            int time = log.Time + item.Value;
+                            log.Time = time > 86400 ? 86400 : time;
                         }
-
-                        //  更新时段数据
-                        var time = new DateTime(startDateTime_.Year, startDateTime_.Month, startDateTime_.Day, startDateTime_.Hour, 0, 0);
-                        var hoursLog = db.HoursLog.SingleOrDefault(m => m.DataTime == time && m.AppModelID == app.ID);
-                        if (hoursLog == null)
+                    }
+                    //  更新时段数据
+                    var startDataTime = new DateTime(startTime_.Year, startTime_.Month, startTime_.Day, startTime_.Hour, 0, 0);
+                    var hoursLogs = db.HoursLog.Where(m => m.DataTime >= startDataTime && startDataTime <= endTime && m.AppModelID == app.ID).ToList();
+                    foreach (var item in durationHoursData)
+                    {
+                        var log = hoursLogs.Where(m => startDataTime == item.Key).FirstOrDefault();
+                        if (log == null)
                         {
                             //  没有记录时创建
                             db.HoursLog.Add(new HoursLogModel()
                             {
-                                DataTime = time,
+                                DataTime = item.Key,
                                 AppModelID = app.ID,
-                                Time = duration_
+                                Time = item.Value
                             });
                         }
                         else
                         {
-                            if (hoursLog.Time + duration_ > 3600)
-                            {
-                                hoursLog.Time = 3600;
-                            }
-                            else
-                            {
-                                hoursLog.Time += duration_;
-                            }
+                            int time = log.Time + item.Value;
+                            log.Time = time > 3600 ? 3600 : time;
                         }
-
-                        db.SaveChanges();
-                        Logger.Info($"Save app time done.Process:{processName_},Duration:{duration_},StartDateTime:{startDateTime_},AppID:{app.ID}");
                     }
+                    db.SaveChanges();
                 }
-                catch (Exception e)
-                {
-                    Logger.Error($"Save app time error!Process:{processName_},Duration:{duration_},StartDateTime:{startDateTime_}.\r\nError:\r\n{e.Message}");
-                }
-                finally
-                {
-                    _database.CloseWriter();
-                }
-            });
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"UpdateAppDuration error!Process:{process_},Duration:{duration_},StartDateTime:{startTime_}.\r\nError:\r\n{e.Message}");
+            }
+            finally
+            {
+                _database.CloseWriter();
+            }
         }
 
         public List<DailyLogModel> GetTodaylogList()

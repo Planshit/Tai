@@ -24,6 +24,6 @@ namespace Core.Servicers.Interfaces
         /// <summary>
         /// 切换活跃APP时发生
         /// </summary>
-        event ObserverEventHandler OnAppActive;
+        event AppObserverEventHandler OnAppActiveChanged;
     }
 }

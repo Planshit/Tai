@@ -38,7 +38,8 @@ namespace Core.Librarys
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool CloseHandle(UIntPtr hObject);
-
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
 
         internal struct WINDOWINFO
@@ -318,12 +319,44 @@ namespace Core.Librarys
             }
 
         }
+        public static RECT GetWindowRect(IntPtr handle_)
+        {
+            try
+            {
+                GetWindowRect(handle_, out RECT rect);
+                return rect;
 
+            }
+            catch (Exception e)
+            {
+                return new RECT()
+                {
+                    Left = 0,
+                    Bottom = 0,
+                    Right = 0,
+                    Top = 0
+                };
+            }
+        }
         #endregion
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowTextLength(IntPtr hWnd);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        public static string GetWindowClassName(IntPtr handle_)
+        {
+            try
+            {
+                StringBuilder stringBuilder = new StringBuilder(256);
+                GetClassName(handle_, stringBuilder, stringBuilder.Capacity);
+
+                return stringBuilder.ToString();
+            }
+            catch (Exception e)
+            {
+                return string.Empty;
+            }
+        }
     }
 }

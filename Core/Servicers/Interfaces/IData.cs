@@ -17,7 +17,7 @@ namespace Core.Servicers.Interfaces
         /// <param name="processName_">进程名称</param>
         /// <param name="duration_">时长（秒）</param>
         /// <param name="startDateTime_">记录开始时间</param>
-        void SaveAppDuration(string processName_, int duration_, DateTime startDateTime_);
+        void UpdateAppDuration(string processName_, int duration_, DateTime startDateTime_);
 
         /// <summary>
         /// 获取今天的数据

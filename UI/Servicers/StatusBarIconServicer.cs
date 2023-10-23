@@ -67,11 +67,12 @@ namespace UI.Servicers
 
             WatchStateAsync();
 
-            _appObserver.OnAppActive += _appObserver_OnAppActive;
+            _appObserver.OnAppActiveChanged += _appObserver_OnAppActiveChanged; ;
             _themeServicer.OnThemeChanged += _themeServicer_OnThemeChanged;
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
         }
 
+        
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             _statusBarIcon.Visible = false;
@@ -83,7 +84,7 @@ namespace UI.Servicers
             _contextMenu.UpdateDefaultStyle();
         }
 
-        private void _appObserver_OnAppActive(Core.Models.AppObserver.AppObserverEventArgs args)
+        private void _appObserver_OnAppActiveChanged(object sender, Core.Event.AppActiveChangedEventArgs e)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {

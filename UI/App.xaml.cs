@@ -92,8 +92,11 @@ namespace UI
         {
             //  核心服务
             services.AddSingleton<IDatabase, Database>();
+            services.AddSingleton<IAppManager, AppManager>();
+            services.AddSingleton<IWindowManager, WindowManager>();
+            services.AddSingleton<IAppTimerServicer, AppTimerServicer>();
             services.AddSingleton<IAppObserver, AppObserver>();
-            services.AddSingleton<IBrowserObserver, BrowserObserver>();
+            services.AddSingleton<IWebServer, WebServer>();
             services.AddSingleton<IMain, Main>();
             services.AddSingleton<IData, Data>();
             services.AddSingleton<IWebData, WebData>();
@@ -167,7 +170,7 @@ namespace UI
                     isSelfStart = true;
                 }
             }
-            main.Start(isSelfStart);   
+            main.Start(isSelfStart);
 
             //  创建保活窗口
             keepaliveWindow = new HideWindow();
