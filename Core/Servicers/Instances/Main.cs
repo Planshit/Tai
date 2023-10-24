@@ -1,6 +1,8 @@
 ﻿using Core.Enums;
 using Core.Event;
 using Core.Librarys;
+using Core.Librarys.Browser;
+using Core.Librarys.Browser.Favicon;
 using Core.Librarys.SQLite;
 using Core.Models;
 using Core.Models.Config;
@@ -10,10 +12,13 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Threading;
@@ -31,6 +36,7 @@ namespace Core.Servicers.Instances
         private readonly IWebFilter _webFilter;
         private readonly IAppTimerServicer _appTimer;
         private readonly IWebServer _webServer;
+        private readonly IWebData _webData;
         //  忽略的进程
         private readonly string[] DefaultIgnoreProcess = new string[] {
             "Tai",
@@ -84,8 +90,9 @@ namespace Core.Servicers.Instances
             IDateTimeObserver dateTimeObserver,
             IAppData appData, ICategorys categories,
             IWebFilter webFilter_,
-            IAppTimerServicer appTimer_, 
-            IWebServer webServer_)
+            IAppTimerServicer appTimer_,
+            IWebServer webServer_,
+            IWebData webData_)
         {
             this.appObserver = appObserver;
             this.data = data;
@@ -96,6 +103,7 @@ namespace Core.Servicers.Instances
             _webFilter = webFilter_;
             _appTimer = appTimer_;
             _webServer = webServer_;
+            _webData = webData_;
 
             IgnoreProcessCacheList = new List<string>();
             ConfigIgnoreProcessRegxList = new List<string>();
@@ -104,6 +112,7 @@ namespace Core.Servicers.Instances
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
             appConfig.ConfigChanged += AppConfig_ConfigChanged;
             _appTimer.OnAppDurationUpdated += _appTimer_OnAppDurationUpdated;
+            WebSocketEvent.OnWebLog += WebSocketEvent_OnWebLog;
         }
 
         private void AppConfig_ConfigChanged(ConfigModel oldConfig, ConfigModel newConfig)
@@ -167,7 +176,10 @@ namespace Core.Servicers.Instances
             //  appTimer必须比Observer先启动*
             _appTimer.Start();
             appObserver.Start();
-            _webServer.Start();
+            if (config.General.IsWebEnabled)
+            {
+                _webServer.Start();
+            }
         }
         public void Stop()
         {
@@ -218,6 +230,8 @@ namespace Core.Servicers.Instances
                 //  进入睡眠状态
                 Debug.WriteLine("进入睡眠状态");
 
+                //  通知sokcet客户端
+                _webServer.SendMsg("sleep");
                 //  停止服务
                 Stop();
 
@@ -228,6 +242,9 @@ namespace Core.Servicers.Instances
             {
                 //  从睡眠状态唤醒
                 Debug.WriteLine("从睡眠状态唤醒");
+
+                _webServer.SendMsg("wake");
+
                 Start();
             }
         }
@@ -369,6 +386,15 @@ namespace Core.Servicers.Instances
             {
                 return;
             }
+
+            if (config.General.IsWebEnabled)
+            {
+                _webServer.Start();
+            }
+            else
+            {
+                _webServer.Stop();
+            }
         }
         #endregion
 
@@ -400,5 +426,33 @@ namespace Core.Servicers.Instances
             }
         }
 
+        #region 浏览器记录
+        private void WebSocketEvent_OnWebLog(Models.WebPage.NotifyWeb args)
+        {
+            if (_webFilter.IsIgnore(args.Url))
+            {
+                Debug.WriteLine($"URL已被过滤，{args.Url}");
+                return;
+            }
+
+            //  记录数据
+            var site = new Models.WebPage.Site()
+            {
+                Url = args.Url,
+                Title = args.Title
+            };
+
+            _webData.AddUrlBrowseTime(site, args.Duration, args.ActiveDateTime);
+
+            //  处理图标
+            Task.Run(async () =>
+            {
+                string saveName = UrlHelper.GetName(args.Url) + DateTime.Now.ToString("yyyyMM") + ".ico";
+                string path = await FaviconDownloader.DownloadAsync(args.Icon, saveName);
+                _webData.UpdateUrlFavicon(site, path);
+            });
+
+        }
+        #endregion
     }
 }

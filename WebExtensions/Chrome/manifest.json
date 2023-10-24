@@ -1,0 +1,17 @@
+{
+    "name": "Tai Sentry",
+    "description": "Tai网页浏览数据统计拓展",
+    "version": "0.1",
+    "manifest_version": 3,
+    "minimum_chrome_version": "116",
+    "action": {
+        "default_icon": "icons/socket-inactive.png"
+    },
+    "background": {
+        "service_worker": "service-worker.js",
+        "type": "module"
+    },
+    "permissions": [
+        "tabs"
+    ]
+}

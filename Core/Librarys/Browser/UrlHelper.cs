@@ -98,7 +98,7 @@ namespace Core.Librarys.Browser
         {
             url_ = url_.Replace("http://", string.Empty);
             url_ = url_.Replace("https://", string.Empty);
-            return url_.IndexOf("/") == -1;
+            return url_.IndexOf("/") == -1 || url_.Last() == '/';
         }
 
         /// <summary>

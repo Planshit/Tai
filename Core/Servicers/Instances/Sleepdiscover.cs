@@ -73,6 +73,7 @@ namespace Core.Servicers.Instances
             StopTimer();
             timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 10);
+            //timer.Interval = new TimeSpan(0, 5, 0);
             timer.Tick += Timer_Tick;
             timer.Start();
         }
@@ -223,6 +224,7 @@ namespace Core.Servicers.Instances
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
+            Debug.WriteLine("检测");
             timer.Stop();
             bool isSleep = await IsSleepAsync();
             if (isSleep)
@@ -369,7 +371,7 @@ namespace Core.Servicers.Instances
         {
             TimeSpan timeSpan = DateTime.Now - pressKeyboardLastTime;
 #if DEBUG
-            //return timeSpan.TotalSeconds >= 10;
+            return timeSpan.TotalSeconds >= 10;
 #endif
             return timeSpan.TotalMinutes >= 10;
         }

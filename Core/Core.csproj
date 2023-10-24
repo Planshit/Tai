@@ -16,7 +16,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Core</RootNamespace>
     <AssemblyName>Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -137,19 +137,28 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="websocket-sharp, Version=1.0.2.59611, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebSocketSharp.1.0.3-rc11\lib\websocket-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppState.cs" />
+    <Compile Include="Enums\AppType.cs" />
     <Compile Include="Enums\BrowserType.cs" />
     <Compile Include="Enums\SleepStatus.cs" />
     <Compile Include="Enums\WebPageInfoType.cs" />
+    <Compile Include="Event\AppActiveChangedEventArgs.cs" />
+    <Compile Include="Event\AppDurationUpdatedEventArgs.cs" />
+    <Compile Include="Event\AppObserverEventHandler.cs" />
+    <Compile Include="Event\AppTimerEventHandler.cs" />
     <Compile Include="Event\EventHandler.cs" />
     <Compile Include="Event\BrowserObserverEventHandler.cs" />
+    <Compile Include="Event\WebServerEventHandler.cs" />
     <Compile Include="Event\ObserverEventHandler.cs" />
-    <Compile Include="Librarys\Browser\Favicon\ChromeFaviconManager.cs" />
-    <Compile Include="Librarys\Browser\Favicon\IFaviconManager.cs" />
+    <Compile Include="Librarys\Browser\Favicon\FaviconDownloader.cs" />
     <Compile Include="Librarys\Browser\UrlHelper.cs" />
+    <Compile Include="Librarys\Browser\WebSocketEvent.cs" />
     <Compile Include="Librarys\FileHelper.cs" />
     <Compile Include="Librarys\ProcessHelper.cs" />
     <Compile Include="Librarys\RegexHelper.cs" />
@@ -162,7 +171,9 @@
     <Compile Include="Librarys\Time.cs" />
     <Compile Include="Librarys\Win32API.cs" />
     <Compile Include="Models\AppModel.cs" />
+    <Compile Include="Models\AppObserver\AppInfo.cs" />
     <Compile Include="Models\AppObserver\AppObserverEventArgs.cs" />
+    <Compile Include="Models\AppObserver\WindowInfo.cs" />
     <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\Config\ConfigAttribute.cs" />
     <Compile Include="Models\Config\ConfigModel.cs" />
@@ -177,14 +188,14 @@
     <Compile Include="Models\Db\WebUrlModel.cs" />
     <Compile Include="Models\HoursLogModel.cs" />
     <Compile Include="Models\DailyLogModel.cs" />
+    <Compile Include="Models\WebPage\NotifyWeb.cs" />
     <Compile Include="Models\WebPage\Site.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Servicers\Instances\AppConfig.cs" />
     <Compile Include="Servicers\Instances\AppData.cs" />
-    <Compile Include="Servicers\Instances\BrowserObserver.cs" />
+    <Compile Include="Servicers\Instances\AppManager.cs" />
+    <Compile Include="Servicers\Instances\AppTimerServicer.cs" />
     <Compile Include="Servicers\Instances\Categorys.cs" />
-    <Compile Include="Servicers\Instances\MSEdgeBrowserWatch.cs" />
-    <Compile Include="Servicers\Instances\ChromeBrowserWatch.cs" />
     <Compile Include="Servicers\Instances\Data.cs" />
     <Compile Include="Librarys\Logger.cs" />
     <Compile Include="Servicers\Instances\Database.cs" />
@@ -195,9 +206,11 @@
     <Compile Include="Servicers\Instances\Sleepdiscover.cs" />
     <Compile Include="Servicers\Instances\WebData.cs" />
     <Compile Include="Servicers\Instances\WebFilter.cs" />
+    <Compile Include="Servicers\Instances\WebServer.cs" />
+    <Compile Include="Servicers\Instances\WindowManager.cs" />
     <Compile Include="Servicers\Interfaces\IAppConfig.cs" />
-    <Compile Include="Servicers\Interfaces\IBrowserWatcher.cs" />
-    <Compile Include="Servicers\Interfaces\IBrowserObserver.cs" />
+    <Compile Include="Servicers\Interfaces\IAppManager.cs" />
+    <Compile Include="Servicers\Interfaces\IAppTimerServicer.cs" />
     <Compile Include="Servicers\Interfaces\ICategorys.cs" />
     <Compile Include="Servicers\Interfaces\IAppData.cs" />
     <Compile Include="Servicers\Interfaces\IData.cs" />
@@ -208,7 +221,8 @@
     <Compile Include="Servicers\Interfaces\ISleepdiscover.cs" />
     <Compile Include="Servicers\Interfaces\IWebData.cs" />
     <Compile Include="Servicers\Interfaces\IWebFilter.cs" />
-    <Compile Include="Servicers\Instances\VivaldiBrowserWatch.cs" />
+    <Compile Include="Servicers\Interfaces\IWebServer.cs" />
+    <Compile Include="Servicers\Interfaces\IWindowManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -225,6 +239,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

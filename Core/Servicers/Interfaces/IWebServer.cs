@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Core.Servicers.Interfaces
 {
-    public interface IBrowserWatcher
+    public interface IWebServer
     {
-        event BrowserObserverEventHandler OnSiteChanged;
-        void StartWatch(IntPtr handle);
-        void StopWatch();
+        void Start();
+        void Stop();
+        void SendMsg(string msg_);
     }
 }

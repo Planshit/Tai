@@ -31,7 +31,7 @@
 
                                     </StackPanel>
                                     <base:View Value="{TemplateBinding Description}" Condition="not empty">
-                                        <TextBlock Text="{TemplateBinding Description}" FontSize="12" Margin="0,4,0,0" Foreground="{DynamicResource SubTextBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{TemplateBinding Description}" FontSize="12" Margin="0,4,0,0" Foreground="{DynamicResource SubTextBrush}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
                                     </base:View>
                                 </StackPanel>
                             </Grid>

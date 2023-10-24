@@ -15,7 +15,7 @@ namespace Core.Servicers.Instances
         private readonly IAppConfig _appConfig;
         private List<string> _ignoreURLCache;
         //  默认忽略的规则
-        private readonly string[] _ignoreRegexArr = { "^chrome://(.*)", "^edge://(.*)" };
+        private readonly string[] _ignoreRegexArr = { "^chrome://(.*)", "^edge://(.*)", "^view-source:(.*)" };
         public WebFilter(IAppConfig appConfig_)
         {
             _appConfig = appConfig_;
@@ -37,6 +37,11 @@ namespace Core.Servicers.Instances
 
         public bool IsIgnore(string url_)
         {
+            if (string.IsNullOrEmpty(url_))
+            {
+                return true;
+            }
+
             if (_ignoreURLCache.Contains(url_))
             {
                 return true;
