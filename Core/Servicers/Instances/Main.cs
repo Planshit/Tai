@@ -158,11 +158,6 @@ namespace Core.Servicers.Instances
             config = appConfig.GetConfig();
             UpdateConfigIgnoreProcess();
 
-
-
-            //  启动睡眠监测
-            sleepdiscover.Start();
-
             //  初始化过滤器
             _webFilter.Init();
 
@@ -179,6 +174,11 @@ namespace Core.Servicers.Instances
             if (config.General.IsWebEnabled)
             {
                 _webServer.Start();
+            }
+            if (config.Behavior.IsSleepWatch)
+            {
+                //  启动睡眠监测
+                sleepdiscover.Start();
             }
         }
         public void Stop()

@@ -46,6 +46,11 @@ namespace Core.Models.Config
         /// </summary>
         [Config(Options = "概览|统计|详细|分类", Name = "启动页", Description = "设置打开主界面时显示的页面", Group = "基础")]
         public int StartPage { get; set; } = 0;
+        [Config(Name = "启动软件时显示主界面", Description = "在开机自启动时此选项无效", Group = "基础")]
+        /// <summary>
+        /// 启动软件时显示主界面
+        /// </summary>
+        public bool IsStartupShowMainWindow { get; set; } = true;
         /// <summary>
         /// 概览页最为频繁显示条数
         /// </summary>

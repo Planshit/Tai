@@ -204,32 +204,39 @@ namespace UI.ViewModels
         private List<ChartsDataModel> MapToChartsData(IEnumerable<Core.Models.DailyLogModel> list)
         {
             var resData = new List<ChartsDataModel>();
-            var config = appConfig.GetConfig();
-
-            foreach (var item in list)
+            try
             {
-                var bindModel = new ChartsDataModel();
-                bindModel.Data = item;
-                bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
-                bindModel.Value = item.Time;
-                bindModel.Tag = Time.ToString(item.Time);
-                bindModel.PopupText = item.AppModel?.File;
-                bindModel.Icon = item.AppModel?.IconFile;
-                bindModel.BadgeList = new List<ChartBadgeModel>();
-                if (item.AppModel.Category != null)
+                var config = appConfig.GetConfig();
+
+                foreach (var item in list)
                 {
-                    bindModel.BadgeList.Add(new ChartBadgeModel()
+                    var bindModel = new ChartsDataModel();
+                    bindModel.Data = item;
+                    bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
+                    bindModel.Value = item.Time;
+                    bindModel.Tag = Time.ToString(item.Time);
+                    bindModel.PopupText = item.AppModel?.File;
+                    bindModel.Icon = item.AppModel?.IconFile;
+                    bindModel.BadgeList = new List<ChartBadgeModel>();
+                    if (item.AppModel.Category != null)
                     {
-                        Name = item.AppModel.Category.Name,
-                        Color = item.AppModel.Category.Color,
-                        Type = ChartBadgeType.Category
-                    });
+                        bindModel.BadgeList.Add(new ChartBadgeModel()
+                        {
+                            Name = item.AppModel.Category.Name,
+                            Color = item.AppModel.Category.Color,
+                            Type = ChartBadgeType.Category
+                        });
+                    }
+                    if (config.Behavior.IgnoreProcessList.Contains(item.AppModel.Name))
+                    {
+                        bindModel.BadgeList.Add(ChartBadgeModel.IgnoreBadge);
+                    }
+                    resData.Add(bindModel);
                 }
-                if (config.Behavior.IgnoreProcessList.Contains(item.AppModel.Name))
-                {
-                    bindModel.BadgeList.Add(ChartBadgeModel.IgnoreBadge);
-                }
-                resData.Add(bindModel);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.ToString());
             }
 
             return resData;
@@ -238,34 +245,40 @@ namespace UI.ViewModels
         private List<ChartsDataModel> MapToChartsWebData(IEnumerable<Core.Models.Db.WebSiteModel> list)
         {
             var resData = new List<ChartsDataModel>();
-            var config = appConfig.GetConfig();
-
-            foreach (var item in list)
+            try
             {
-                var bindModel = new ChartsDataModel();
-                bindModel.Data = item;
-                bindModel.Name = item.Title;
-                bindModel.Value = item.Duration;
-                bindModel.Tag = Time.ToString(item.Duration);
-                bindModel.PopupText = item.Domain;
-                bindModel.Icon = item.IconFile;
-                bindModel.BadgeList = new List<ChartBadgeModel>();
-                if (item.Category != null)
-                {
-                    bindModel.BadgeList.Add(new ChartBadgeModel()
-                    {
-                        Name = item.Category.Name,
-                        Color = item.Category.Color,
-                        Type = ChartBadgeType.Category
-                    });
-                }
-                if (config.Behavior.IgnoreURLList.Contains(item.Domain))
-                {
-                    bindModel.BadgeList.Add(ChartBadgeModel.IgnoreBadge);
-                }
-                resData.Add(bindModel);
-            }
+                var config = appConfig.GetConfig();
 
+                foreach (var item in list)
+                {
+                    var bindModel = new ChartsDataModel();
+                    bindModel.Data = item;
+                    bindModel.Name = item.Title;
+                    bindModel.Value = item.Duration;
+                    bindModel.Tag = Time.ToString(item.Duration);
+                    bindModel.PopupText = item.Domain;
+                    bindModel.Icon = item.IconFile;
+                    bindModel.BadgeList = new List<ChartBadgeModel>();
+                    if (item.Category != null)
+                    {
+                        bindModel.BadgeList.Add(new ChartBadgeModel()
+                        {
+                            Name = item.Category.Name,
+                            Color = item.Category.Color,
+                            Type = ChartBadgeType.Category
+                        });
+                    }
+                    if (config.Behavior.IgnoreURLList.Contains(item.Domain))
+                    {
+                        bindModel.BadgeList.Add(ChartBadgeModel.IgnoreBadge);
+                    }
+                    resData.Add(bindModel);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.ToString());
+            }
             return resData;
         }
         #endregion

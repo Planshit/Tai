@@ -68,6 +68,11 @@ namespace Core.Servicers.Instances
             Win32API.SetKeyboardHook(keyboardProc);
         }
 
+        public void Stop()
+        {
+            StopTimer();
+        }
+
         private void StartTimer()
         {
             StopTimer();

@@ -13,6 +13,10 @@ namespace Core.Servicers.Interfaces
         /// 启动
         /// </summary>
         void Start();
+        /// <summary>
+        /// 停止
+        /// </summary>
+        void Stop();
 
         /// <summary>
         /// 休眠状态发生更改
