@@ -108,6 +108,7 @@ namespace UI
             services.AddSingleton<IWebFilter, WebFilter>();
 
             //  UI服务
+            services.AddSingleton<IUIServicer, UIServicer>();
             services.AddSingleton<IAppContextMenuServicer, AppContextMenuServicer>();
             services.AddSingleton<IThemeServicer, ThemeServicer>();
             services.AddSingleton<IMainServicer, MainServicer>();

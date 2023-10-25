@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using UI.Controls;
 using UI.Models;
+using UI.Servicers;
 
 namespace UI.ViewModels
 {
@@ -23,17 +24,19 @@ namespace UI.ViewModels
         private readonly MainViewModel mainVM;
         private readonly IData data;
         private readonly IWebData _webData;
+        private readonly IUIServicer _uiServicer;
         public Command OpenURL { get; set; }
         public Command CheckUpdate { get; set; }
         public Command DelDataCommand { get; set; }
         public Command ExportDataCommand { get; set; }
 
-        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data, IWebData webData)
+        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data, IWebData webData, IUIServicer uiServicer_)
         {
             this.appConfig = appConfig;
             this.mainVM = mainVM;
             this.data = data;
             _webData = webData;
+            _uiServicer = uiServicer_;
 
             OpenURL = new Command(new Action<object>(OnOpenURL));
             CheckUpdate = new Command(new Action<object>(OnCheckUpdate));
@@ -164,7 +167,7 @@ namespace UI.ViewModels
             }
         }
 
-        private void OnDelData(object obj)
+        private async void OnDelData(object obj)
         {
             if (DelDataStartMonthDate > DelDataEndMonthDate)
             {
@@ -172,10 +175,13 @@ namespace UI.ViewModels
                 return;
             }
 
-            data.ClearRange(DelDataStartMonthDate, DelDataEndMonthDate);
-            _webData.Clear(DelDataStartMonthDate, DelDataEndMonthDate);
-
-            mainVM.Toast("操作已完成", Controls.Window.ToastType.Success);
+            bool isConfirm = await _uiServicer.ShowConfirmDialogAsync("删除确认", "是否执行此操作？");
+            if (isConfirm)
+            {
+                data.ClearRange(DelDataStartMonthDate, DelDataEndMonthDate);
+                _webData.Clear(DelDataStartMonthDate, DelDataEndMonthDate);
+                mainVM.Toast("操作已完成", Controls.Window.ToastType.Success);
+            }
         }
 
         private void OnExportData(object obj)

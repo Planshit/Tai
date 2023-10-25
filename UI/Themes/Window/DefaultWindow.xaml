@@ -112,7 +112,7 @@
                                                 <Image Source="{TemplateBinding Icon}" VerticalAlignment="Center" Stretch="Uniform" Width="18"/>
                                                 <TextBlock VerticalAlignment="Center" Text="{TemplateBinding Title}" IsEnabled="{TemplateBinding IsActive}" Foreground="{DynamicResource DefaultTextBrush}" Margin="15,0,0,0"/>
                                             </StackPanel>
-                                          
+
 
                                         </Grid>
                                         <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -195,6 +195,34 @@
                                                 </Grid.ColumnDefinitions>
                                                 <base:Icon IconType="{TemplateBinding ToastIcon}" VerticalAlignment="Top" Margin="0,0,10,0" x:Name="ToastIcon"/>
                                                 <TextBlock x:Name="ToastText" Grid.Column="1" Text="{TemplateBinding ToastContent}" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"/>
+                                            </Grid>
+                                        </Border>
+                                        <!--Dialog-->
+                                        <Border 
+     Padding="15,15"
+     CornerRadius="10"
+     Width="300"
+     x:Name="DialogBorder" Background="White" HorizontalAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="1000">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <TranslateTransform Y="-150"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="10" Color="Black" Opacity=".1"/>
+                                            </Border.Effect>
+                                            <Grid >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="40"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{TemplateBinding DialogTitle}" FontSize="16" FontWeight="Bold"/>
+                                                <TextBlock Grid.Row="1" Text="{TemplateBinding DialogMessage}" VerticalAlignment="Top" TextWrapping="WrapWithOverflow"/>
+                                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                                                    <button:Button x:Name="CancelBtn" Width="100">取消</button:Button>
+                                                    <button:Button x:Name="ConfirmBtn" Background="{DynamicResource ThemeBrush}" Foreground="White" Width="100" Margin="10,0,0,0">确定</button:Button>
+                                                </StackPanel>
                                             </Grid>
                                         </Border>
                                         <!--遮罩层-->
