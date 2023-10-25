@@ -2,6 +2,10 @@
     "name": "Tai Sentry",
     "description": "Tai网页浏览数据统计拓展",
     "version": "0.1",
+    "icons": {
+        "48": "icon48.png",
+        "128": "icon128.png"
+    },
     "manifest_version": 3,
     "minimum_chrome_version": "116",
     "action": {
