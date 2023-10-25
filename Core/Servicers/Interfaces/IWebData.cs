@@ -156,5 +156,10 @@ namespace Core.Servicers.Interfaces
         void Clear(DateTime start_, DateTime end_);
 
         List<WebSiteModel> GetWebSiteLogList(DateTime start_, DateTime end_);
+        /// <summary>
+        /// 清空所有统计数据
+        /// </summary>
+        /// <param name="siteId_">站点ID</param>
+        void Clear(int siteId_);
     }
 }

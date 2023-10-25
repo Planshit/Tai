@@ -782,5 +782,14 @@ namespace Core.Servicers.Instances
                 return result;
             }
         }
+
+        public void Clear(int siteId_)
+        {
+            using (var db = _database.GetReaderContext())
+            {
+                db.Database.ExecuteSqlCommand("delete from WebBrowseLogModels  where SiteId = " + siteId_);
+                db.Database.ExecuteSqlCommand("update WebSiteModels set Duration = 0  where ID = " + siteId_);
+            }
+        }
     }
 }

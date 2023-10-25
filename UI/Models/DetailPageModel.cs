@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
 
@@ -166,5 +167,10 @@ namespace UI.Models
         /// 是否已被正则忽略
         /// </summary>
         public bool IsRegexIgnore { get { return IsRegexIgnore_; } set { IsRegexIgnore_ = value; OnPropertyChanged(); } }
+        private ContextMenu AppContextMenu_;
+        /// <summary>
+        /// 应用右键菜单
+        /// </summary>
+        public ContextMenu AppContextMenu { get { return AppContextMenu_; } set { AppContextMenu_ = value; OnPropertyChanged(); } }
     }
 }

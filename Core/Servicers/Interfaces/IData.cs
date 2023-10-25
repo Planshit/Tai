@@ -125,7 +125,10 @@ namespace Core.Servicers.Interfaces
         /// <param name="year"></param>
         /// <returns></returns>
         double[] GetMonthTotalData(DateTime year);
-
-
+        /// <summary>
+        /// 清空所有统计数据
+        /// </summary>
+        /// <param name="appID_">应用ID</param>
+        void Clear(int appID_);
     }
 }

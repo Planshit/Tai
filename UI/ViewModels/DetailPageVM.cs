@@ -1,6 +1,7 @@
 ﻿using Core.Librarys;
 using Core.Models;
 using Core.Models.Config;
+using Core.Servicers.Instances;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using UI.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
@@ -26,15 +28,21 @@ namespace UI.ViewModels
         private readonly ICategorys categories;
         private readonly IAppData appData;
         private readonly IInputServicer inputServicer;
+        private readonly IUIServicer _uIServicer;
 
         private ConfigModel config;
         public Command BlockActionCommand { get; set; }
         public Command ClearSelectMonthDataCommand { get; set; }
-        public Command InfoMenuActionCommand { get; set; }
         public Command RefreshCommand { get; set; }
-
+        private MenuItem _setCategoryMenuItem;
         public DetailPageVM(
-            IData data, MainViewModel main, IAppConfig appConfig, ICategorys categories, IAppData appData, IInputServicer inputServicer)
+            IData data,
+            MainViewModel main,
+            IAppConfig appConfig,
+            ICategorys categories,
+            IAppData appData,
+            IInputServicer inputServicer,
+            IUIServicer uIServicer_)
         {
             this.data = data;
             this.main = main;
@@ -42,10 +50,10 @@ namespace UI.ViewModels
             this.categories = categories;
             this.appData = appData;
             this.inputServicer = inputServicer;
+            _uIServicer = uIServicer_;
 
             BlockActionCommand = new Command(new Action<object>(OnBlockActionCommand));
             ClearSelectMonthDataCommand = new Command(new Action<object>(OnClearSelectMonthDataCommand));
-            InfoMenuActionCommand = new Command(new Action<object>(OnInfoMenuActionCommand));
             RefreshCommand = new Command(new Action<object>(OnRefreshCommand));
 
             Init();
@@ -110,8 +118,118 @@ namespace UI.ViewModels
                     break;
                 }
             }
+
+            CreateContextMenu();
         }
 
+        private void CreateContextMenu()
+        {
+            AppContextMenu = new System.Windows.Controls.ContextMenu();
+            AppContextMenu.Opened += AppContextMenu_Opened;
+            MenuItem open = new MenuItem();
+            open.Header = "启动应用";
+            open.Click += (e, c) =>
+            {
+                OnInfoMenuActionCommand("open exe");
+            };
+
+            MenuItem copyProcessName = new MenuItem();
+            copyProcessName.Header = "复制应用进程名称";
+            copyProcessName.Click += (e, c) =>
+            {
+                OnInfoMenuActionCommand("copy processname");
+            };
+
+            MenuItem copyProcessFile = new MenuItem();
+            copyProcessFile.Header = "复制应用文件路径";
+            copyProcessFile.Click += (e, c) =>
+            {
+                OnInfoMenuActionCommand("copy process file");
+            };
+
+            MenuItem openDir = new MenuItem();
+            openDir.Header = "打开应用所在目录";
+            openDir.Click += (e, c) =>
+            {
+                OnInfoMenuActionCommand("open dir");
+            };
+
+            MenuItem reLoadData = new MenuItem();
+            reLoadData.Header = "刷新";
+            reLoadData.Click += async (e, c) =>
+            {
+                LoadChartData();
+                await LoadData();
+            };
+
+            MenuItem clear = new MenuItem();
+            clear.Header = "清空统计";
+            clear.Click += ClearAppData_Click;
+
+            _setCategoryMenuItem = new MenuItem();
+            _setCategoryMenuItem.Header = "设置分类";
+
+
+            AppContextMenu.Items.Add(open);
+            AppContextMenu.Items.Add(new Separator());
+            AppContextMenu.Items.Add(reLoadData);
+            AppContextMenu.Items.Add(new Separator());
+            AppContextMenu.Items.Add(_setCategoryMenuItem);
+            AppContextMenu.Items.Add(new Separator());
+            AppContextMenu.Items.Add(copyProcessName);
+            AppContextMenu.Items.Add(copyProcessFile);
+            AppContextMenu.Items.Add(openDir);
+            AppContextMenu.Items.Add(new Separator());
+            AppContextMenu.Items.Add(clear);
+        }
+
+        private async void ClearAppData_Click(object sender, RoutedEventArgs e)
+        {
+            bool isConfirm = await _uIServicer.ShowConfirmDialogAsync("清空确认", "是否确定清空此应用的所有统计数据？");
+            if (isConfirm)
+            {
+                data.Clear(App.ID);
+                LoadChartData();
+                await LoadData();
+                main.Toast("操作已执行", Controls.Window.ToastType.Success, Controls.Base.IconTypes.Accept);
+            }
+        }
+
+        private void AppContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            _setCategoryMenuItem.Items.Clear();
+
+            foreach (var category in categories.GetCategories())
+            {
+                var categoryMenu = new MenuItem();
+                categoryMenu.Header = category.Name;
+                categoryMenu.IsChecked = App.CategoryID == category.ID;
+                categoryMenu.Click += (s, ea) =>
+                {
+                    UpdateCategory(category);
+                };
+                _setCategoryMenuItem.Items.Add(categoryMenu);
+            }
+        }
+
+        /// <summary>
+        /// 更新分类
+        /// </summary>
+        private void UpdateCategory(CategoryModel category_)
+        {
+            Task.Run(() =>
+            {
+                var app = appData.GetApp(App.ID);
+                app.CategoryID = category_.ID;
+                app.Category = category_;
+                appData.UpdateApp(app);
+
+                if (Category == null || category_.ID != Category.Id)
+                {
+                    Category = Categorys.Where(m => m.Id == category_.ID).FirstOrDefault();
+                }
+            });
+        }
 
         private async void InputServicer_OnKeyUpInput(object sender, System.Windows.Forms.Keys key)
         {
@@ -130,9 +248,9 @@ namespace UI.ViewModels
             await LoadData();
         }
 
-        private void OnInfoMenuActionCommand(object obj)
+        private void OnInfoMenuActionCommand(string action_)
         {
-            switch (obj.ToString())
+            switch (action_)
             {
                 case "copy processname":
                     Clipboard.SetText(App.Name);
@@ -284,6 +402,7 @@ namespace UI.ViewModels
             {
                 var option = new SelectItemModel()
                 {
+                    Id = item.ID,
                     Data = item,
                     Img = item.IconFile,
                     Name = item.Name,

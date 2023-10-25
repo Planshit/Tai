@@ -796,5 +796,15 @@ namespace Core.Servicers.Instances
                 return result;
             }
         }
+
+        public void Clear(int appID_)
+        {
+            using (var db = _database.GetReaderContext())
+            {
+                db.Database.ExecuteSqlCommand("delete from DailyLogModels  where AppModelID = " + appID_);
+                db.Database.ExecuteSqlCommand("delete from HoursLogModels  where AppModelID = " + appID_);
+                db.Database.ExecuteSqlCommand("update AppModels set TotalTime = 0  where ID = " + appID_);
+            }
+        }
     }
 }

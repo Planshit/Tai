@@ -21,19 +21,8 @@
         <Border
                 Background="{DynamicResource SettingPanelBgBrush}"
                 CornerRadius="12"
-                Padding="0,20">
-            <Border.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open exe"  Header="启动应用"/>
-                    <Separator/>
-                    <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy processname" Header="复制应用进程名称"/>
-                    <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="copy process file"  Header="复制应用文件路径"/>
-                    <MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="open dir"  Header="打开应用所在目录"/>
-                    <!--<Separator/>-->
-                    <!--<MenuItem Command="{Binding InfoMenuActionCommand}" CommandParameter="geticon"  Header="重新获取图标"/>-->
-
-                </ContextMenu>
-            </Border.ContextMenu>
+                Padding="0,20"
+            ContextMenu="{Binding AppContextMenu}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
@@ -88,7 +77,6 @@
 
                     <base:View Condition="not null" Value="{Binding Category}" HorizontalAlignment="Left">
                         <Select:Select Margin="0,10,0,0" ToolTip="分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categorys}"  Padding="10,0" Height="30"/>
-
                     </base:View>
 
 
@@ -141,7 +129,7 @@
         <WrapPanel Margin="-10">
             <StackPanel Margin="10,10,0,0">
                 <TextBlock Text="时长统计" Foreground="#5c5c5c" FontSize="14" Margin="0,20,0,0"/>
-                
+
                 <Border Margin="0,10,0,0"  Width="680" HorizontalAlignment="Left" Background="{DynamicResource SettingPanelBgBrush}" Padding="20" CornerRadius="10">
                     <StackPanel>
                         <Tabbar:Tabbar Margin="0,-10,0,0" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
