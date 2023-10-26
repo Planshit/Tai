@@ -161,5 +161,12 @@ namespace Core.Servicers.Interfaces
         /// </summary>
         /// <param name="siteId_">站点ID</param>
         void Clear(int siteId_);
+        /// <summary>
+        /// 导出数据
+        /// </summary>
+        /// <param name="dir_">导出目录</param>
+        /// <param name="start_">开始时间</param>
+        /// <param name="end_">结束时间</param>
+        void Export(string dir_, DateTime start_, DateTime end_);
     }
 }

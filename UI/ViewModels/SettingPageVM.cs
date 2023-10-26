@@ -1,6 +1,7 @@
 ﻿using Core.Librarys;
 using Core.Models.Config;
 using Core.Models.Config.Link;
+using Core.Servicers.Instances;
 using Core.Servicers.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -193,6 +194,7 @@ namespace UI.ViewModels
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     data.ExportToExcel(dialog.SelectedPath, ExportDataStartMonthDate, ExportDataEndMonthDate);
+                    _webData.Export(dialog.SelectedPath, ExportDataStartMonthDate, ExportDataEndMonthDate);
                     mainVM.Toast("导出数据完成", Controls.Window.ToastType.Success);
                 }
             }
