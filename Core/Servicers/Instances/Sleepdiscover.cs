@@ -77,8 +77,8 @@ namespace Core.Servicers.Instances
         {
             StopTimer();
             timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 10);
-            //timer.Interval = new TimeSpan(0, 5, 0);
+            //timer.Interval = new TimeSpan(0, 0, 10);
+            timer.Interval = new TimeSpan(0, 5, 0);
             timer.Tick += Timer_Tick;
             timer.Start();
         }

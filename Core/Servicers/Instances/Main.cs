@@ -251,7 +251,7 @@ namespace Core.Servicers.Instances
                 Debug.WriteLine("进入睡眠状态");
 
                 //  通知sokcet客户端
-                _webServer.SendMsg("sleep");
+                _webServer?.SendMsg("sleep");
                 //  停止服务
                 Stop();
 
@@ -263,7 +263,7 @@ namespace Core.Servicers.Instances
                 //  从睡眠状态唤醒
                 Debug.WriteLine("从睡眠状态唤醒");
 
-                _webServer.SendMsg("wake");
+                _webServer?.SendMsg("wake");
 
                 Start();
             }
@@ -457,47 +457,59 @@ namespace Core.Servicers.Instances
         {
             if (e == null) return;
 
-            var app = e.App;
-            int duration = e.Duration;
-            DateTime startTime = e.ActiveTime;
-
-            bool isCheck = IsCheckApp(app.Process, app.Description, app.ExecutablePath);
-            if (isCheck)
+            try
             {
-                //  更新统计时长
-                data.UpdateAppDuration(app.Process, duration, startTime);
-                //  关联进程更新
-                HandleLinks(app.Process, duration, startTime);
-                OnUpdateTime?.Invoke(this, null);
+                var app = e.App;
+                int duration = e.Duration;
+                DateTime startTime = e.ActiveTime;
+
+                bool isCheck = IsCheckApp(app.Process, app.Description, app.ExecutablePath);
+                if (isCheck)
+                {
+                    //  更新统计时长
+                    data.UpdateAppDuration(app.Process, duration, startTime);
+                    //  关联进程更新
+                    HandleLinks(app.Process, duration, startTime);
+                    OnUpdateTime?.Invoke(this, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.ToString());
             }
         }
 
         #region 浏览器记录
         private void WebSocketEvent_OnWebLog(Models.WebPage.NotifyWeb args)
         {
-            if (_webFilter.IsIgnore(args.Url))
+            try
             {
-                Debug.WriteLine($"URL已被过滤，{args.Url}");
-                return;
+                if (_webFilter.IsIgnore(args.Url))
+                {
+                    Debug.WriteLine($"URL已被过滤，{args.Url}");
+                    return;
+                }
+
+                //  记录数据
+                var site = new Models.WebPage.Site()
+                {
+                    Url = args.Url,
+                    Title = args.Title
+                };
+
+                _webData.AddUrlBrowseTime(site, args.Duration, args.ActiveDateTime);
+
+                //  处理图标
+                Task.Run(async () =>
+                {
+                    string saveName = UrlHelper.GetName(args.Url) + DateTime.Now.ToString("yyyyMM") + ".ico";
+                    string path = await FaviconDownloader.DownloadAsync(args.Icon, saveName);
+                    _webData.UpdateUrlFavicon(site, path);
+                });
+            }catch(Exception ex)
+            {
+                Logger.Error(ex.ToString());
             }
-
-            //  记录数据
-            var site = new Models.WebPage.Site()
-            {
-                Url = args.Url,
-                Title = args.Title
-            };
-
-            _webData.AddUrlBrowseTime(site, args.Duration, args.ActiveDateTime);
-
-            //  处理图标
-            Task.Run(async () =>
-            {
-                string saveName = UrlHelper.GetName(args.Url) + DateTime.Now.ToString("yyyyMM") + ".ico";
-                string path = await FaviconDownloader.DownloadAsync(args.Icon, saveName);
-                _webData.UpdateUrlFavicon(site, path);
-            });
-
         }
         #endregion
     }
