@@ -35,6 +35,7 @@ namespace UI.ViewModels
         public Command ClearSelectMonthDataCommand { get; set; }
         public Command RefreshCommand { get; set; }
         private MenuItem _setCategoryMenuItem;
+        private MenuItem _whiteListMenuItem;
         public DetailPageVM(
             IData data,
             MainViewModel main,
@@ -169,6 +170,20 @@ namespace UI.ViewModels
             _setCategoryMenuItem = new MenuItem();
             _setCategoryMenuItem.Header = "设置分类";
 
+            _whiteListMenuItem = new MenuItem();
+            _whiteListMenuItem.Click += (e, c) =>
+            {
+                if (config.Behavior.ProcessWhiteList.Contains(App.Name))
+                {
+                    config.Behavior.ProcessWhiteList.Remove(App.Name);
+                    main.Toast($"已从白名单移除此应用 {App.Description}", Controls.Window.ToastType.Success);
+                }
+                else
+                {
+                    config.Behavior.ProcessWhiteList.Add(App.Name);
+                    main.Toast($"已添加至白名单 {App.Description}", Controls.Window.ToastType.Success);
+                }
+            };
 
             AppContextMenu.Items.Add(open);
             AppContextMenu.Items.Add(new Separator());
@@ -181,6 +196,7 @@ namespace UI.ViewModels
             AppContextMenu.Items.Add(openDir);
             AppContextMenu.Items.Add(new Separator());
             AppContextMenu.Items.Add(clear);
+            AppContextMenu.Items.Add(_whiteListMenuItem);
         }
 
         private async void ClearAppData_Click(object sender, RoutedEventArgs e)
@@ -209,6 +225,15 @@ namespace UI.ViewModels
                     UpdateCategory(category);
                 };
                 _setCategoryMenuItem.Items.Add(categoryMenu);
+            }
+
+            if (config.Behavior.ProcessWhiteList.Contains(App.Name))
+            {
+                _whiteListMenuItem.Header = "从白名单移除";
+            }
+            else
+            {
+                _whiteListMenuItem.Header = "添加到白名单";
             }
         }
 
@@ -300,7 +325,11 @@ namespace UI.ViewModels
 
         private async void OnClearSelectMonthDataCommand(object obj)
         {
-            await Clear();
+            bool isConfirm = await _uIServicer.ShowConfirmDialogAsync("清空确认", $"是否确定清空此应用 {Date.Year}年{Date.Month}月 的数据？");
+            if (isConfirm)
+            {
+                await Clear();
+            }
         }
 
         private void OnBlockActionCommand(object obj)

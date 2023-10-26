@@ -177,7 +177,7 @@
                         <Grid>
                             <DatePickerBar:DatePickerBar ShowType="Month" HorizontalAlignment="Left" SelectedDate="{Binding Date,Mode=TwoWay}"/>
 
-                            <btn:Button ToolTip="清空此应用在该月的统计数据" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#f51837" Foreground="White" Width="120" Margin="0" Icon="Delete" Command="{Binding ClearSelectMonthDataCommand}">清空统计</btn:Button>
+                            <btn:Button ToolTip="清空此应用在该月的统计数据" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#f51837" Foreground="White" Width="120" Margin="0" Icon="Delete" Command="{Binding ClearSelectMonthDataCommand}">清空该月统计</btn:Button>
 
                         </Grid>
                         <Grid  Margin="0,20,0,0">

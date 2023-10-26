@@ -82,6 +82,7 @@ namespace Core.Servicers.Instances
         private DateTime updadteAppDateTime_ = DateTime.Now.Date;
         //  已经更新过的应用列表
         private List<string> updatedAppList = new List<string>();
+        private List<string> _configProcessNameWhiteList, _configProcessRegexWhiteList;
         public Main(
             IAppObserver appObserver,
             IData data,
@@ -108,6 +109,8 @@ namespace Core.Servicers.Instances
             IgnoreProcessCacheList = new List<string>();
             ConfigIgnoreProcessRegxList = new List<string>();
             ConfigIgnoreProcessList = new List<string>();
+            _configProcessNameWhiteList = new List<string>();
+            _configProcessRegexWhiteList = new List<string>();
 
             sleepdiscover.SleepStatusChanged += Sleepdiscover_SleepStatusChanged;
             appConfig.ConfigChanged += AppConfig_ConfigChanged;
@@ -124,6 +127,9 @@ namespace Core.Servicers.Instances
 
                 //  更新忽略规则
                 UpdateConfigIgnoreProcess();
+
+                //  更新白名单
+                UpdateConfigProcessWhiteList();
 
                 //  处理web记录功能启停
                 HandleWebServiceConfig();
@@ -157,6 +163,7 @@ namespace Core.Servicers.Instances
             appConfig.Load();
             config = appConfig.GetConfig();
             UpdateConfigIgnoreProcess();
+            UpdateConfigProcessWhiteList();
 
             //  初始化过滤器
             _webFilter.Init();
@@ -213,6 +220,19 @@ namespace Core.Servicers.Instances
 
             ConfigIgnoreProcessList = config.Behavior.IgnoreProcessList.Where(m => !IsRegex(m)).ToList();
             ConfigIgnoreProcessRegxList = config.Behavior.IgnoreProcessList.Where(m => IsRegex(m)).ToList();
+        }
+
+        private void UpdateConfigProcessWhiteList()
+        {
+            if (config == null)
+            {
+                return;
+            }
+            _configProcessNameWhiteList.Clear();
+            _configProcessRegexWhiteList.Clear();
+
+            _configProcessNameWhiteList = config.Behavior.ProcessWhiteList.Where(m => !IsRegex(m)).ToList();
+            _configProcessRegexWhiteList = config.Behavior.ProcessWhiteList.Where(m => IsRegex(m)).ToList();
         }
 
         private bool IsRegex(string str)
@@ -277,6 +297,32 @@ namespace Core.Servicers.Instances
                     IgnoreProcessCacheList.Add(processName);
                     return false;
                 }
+            }
+
+            //  应用白名单过滤
+            if (config.Behavior.ProcessWhiteList.Count > 0)
+            {
+                bool isWhite = false;
+                //  通过进程名称判断
+                if (_configProcessNameWhiteList.Contains(processName))
+                {
+                    isWhite = true;
+                }
+                else
+                {
+                    //  进程名称中匹配不到时尝试正则表达式
+                    foreach (string reg in _configProcessRegexWhiteList)
+                    {
+                        if (RegexHelper.IsMatch(processName, reg) || RegexHelper.IsMatch(file, reg))
+                        {
+                            isWhite = true;
+                            break;
+                        }
+                    }
+                }
+                //  白名单中找不到时不统计
+                Debug.WriteLine("白名单过滤结果：" + processName + " -> " + isWhite);
+                if (!isWhite) return false;
             }
 
             AppModel app = appData.GetApp(processName);

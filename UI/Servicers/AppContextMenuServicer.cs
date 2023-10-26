@@ -26,6 +26,7 @@ namespace UI.Servicers
         private MenuItem setCategory;
         private MenuItem setLink;
         MenuItem block = new MenuItem();
+        MenuItem _whiteList = new MenuItem();
 
 
         public AppContextMenuServicer(MainViewModel main, ICategorys categorys, IAppData appData, IAppConfig appConfig, IThemeServicer theme)
@@ -70,6 +71,9 @@ namespace UI.Servicers
             block.Header = "忽略此应用";
             block.Click += Block_Click;
 
+            _whiteList.Header = "添加到白名单";
+            _whiteList.Click += _whiteList_Click;
+
             menu.Items.Add(run);
             menu.Items.Add(new Separator());
             menu.Items.Add(setCategory);
@@ -78,11 +82,33 @@ namespace UI.Servicers
 
             menu.Items.Add(openDir);
             menu.Items.Add(block);
+            menu.Items.Add(_whiteList);
 
             menu.ContextMenuOpening += SetCategory_ContextMenuOpening;
         }
 
-      
+        private void _whiteList_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var data = menu.Tag as ChartsDataModel;
+            var log = data.Data as DailyLogModel;
+            var app = log != null ? log.AppModel : null;
+
+            if (log == null)
+            {
+                app = (data.Data as HoursLogModel).AppModel;
+            }
+            var config = appConfig.GetConfig();
+            if (config.Behavior.ProcessWhiteList.Contains(app.Name))
+            {
+                config.Behavior.ProcessWhiteList.Remove(app.Name);
+                main.Toast($"已从白名单移除此应用 {app.Description}", Controls.Window.ToastType.Success);
+            }
+            else
+            {
+                config.Behavior.ProcessWhiteList.Add(app.Name);
+                main.Toast($"已添加至白名单 {app.Description}", Controls.Window.ToastType.Success);
+            }
+        }
 
         private void Theme_OnThemeChanged(object sender, EventArgs e)
         {
@@ -146,6 +172,15 @@ namespace UI.Servicers
             else
             {
                 block.Header = "忽略此应用";
+            }
+
+            if (config.Behavior.ProcessWhiteList.Contains(app.Name))
+            {
+                _whiteList.Header = "从白名单移除";
+            }
+            else
+            {
+                _whiteList.Header = "添加到白名单";
             }
 
             UpdateCategory();
