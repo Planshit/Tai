@@ -244,6 +244,14 @@ namespace Core.Servicers.Instances
                     });
                     db.SaveChanges();
                 }
+                else
+                {
+                    if (result.Title != site_.Title)
+                    {
+                        result.Title = site_.Title;
+                        db.SaveChanges();
+                    }
+                }
                 return result;
 
             }

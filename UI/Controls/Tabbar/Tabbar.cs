@@ -158,8 +158,8 @@ namespace UI.Controls.Tabbar
         {
             storyboard = new Storyboard();
             scrollAnimation = new DoubleAnimation();
-            scrollAnimation.EasingFunction = new BackEase() { EasingMode = EasingMode.EaseOut, Amplitude = .8 };
-            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.38));
+            //scrollAnimation.EasingFunction = new BackEase() { EasingMode = EasingMode.EaseOut, Amplitude = .8 };
+            scrollAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
 
             Storyboard.SetTarget(scrollAnimation, ActiveBlock);
             Storyboard.SetTargetProperty(scrollAnimation, new PropertyPath("RenderTransform.Children[0].X"));
