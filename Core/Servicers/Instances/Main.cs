@@ -300,7 +300,7 @@ namespace Core.Servicers.Instances
             }
 
             //  应用白名单过滤
-            if (config.Behavior.ProcessWhiteList.Count > 0)
+            if (config.Behavior.IsWhiteList && config.Behavior.ProcessWhiteList.Count > 0)
             {
                 bool isWhite = false;
                 //  通过进程名称判断
