@@ -34,7 +34,7 @@
                                         VerticalAlignment="Center"
                                            Margin="0"
                                             RenderTransformOrigin="0.5,0.5"
-                                            Fill="#ff305b"
+                                            Fill="{DynamicResource ThemeBrush}"
                                             
                             >
                                         <!--<Rectangle.Effect>
@@ -58,7 +58,7 @@
 
                                     <Border VerticalAlignment="Top" CornerRadius="5" Padding="5" HorizontalAlignment="Left" Margin="10" >
                                         <Border.Background>
-                                            <SolidColorBrush Color="#ff305b" Opacity="0.7"/>
+                                            <SolidColorBrush Color="{DynamicResource ThemeColor}" Opacity="0.7"/>
                                         </Border.Background>
                                         <TextBlock x:Name="ValueTextObj" Foreground="White" FontSize="12" />
 

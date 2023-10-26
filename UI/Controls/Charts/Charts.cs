@@ -1215,7 +1215,9 @@ namespace UI.Controls.Charts
                 for (int di = 0; di < columnCount; di++)
                 {
                     var item = list[di];
-                    string colColor = item.Color == null ? UI.Base.Color.Colors.MainColors[di] : item.Color;
+                    //string colColor = item.Color == null ? UI.Base.Color.Colors.MainColors[di] : item.Color;
+                    string themeColor = ((System.Windows.Media.Color)Application.Current.Resources["ThemeColor"]).ToString();
+                    string colColor = item.Color == null ? themeColor : item.Color;
                     double value = item.Values[i];
 
 

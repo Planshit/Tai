@@ -41,7 +41,7 @@
                                             <Rectangle.Fill>
                                                 <LinearGradientBrush EndPoint="2,1" StartPoint="-2,0">
                                                     <GradientStop Color="Transparent"/>
-                                                    <GradientStop Color="#ff305b" Offset="1"/>
+                                                    <GradientStop Color="{DynamicResource ThemeColor}" Offset="1"/>
                                                 </LinearGradientBrush>
                                             </Rectangle.Fill>
                                         </Rectangle>
