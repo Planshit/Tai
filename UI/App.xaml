@@ -15,7 +15,15 @@
             <Style TargetType="{x:Type Control}" x:Key="fontStyling">
                 <Setter Property="FontFamily" Value="Segoe UI, Microsoft YaHei UI" />
             </Style>
-            
+
+            <Style TargetType="{x:Type ScrollViewer}">
+                <EventSetter Event="PreviewMouseWheel" Handler="ScrollViewer_PreviewMouseWheel"/>
+                <Setter Property="PanningMode" Value="VerticalFirst"/>
+                
+                <!--阻止触摸拉到尽头时的弹簧效果-->
+                <EventSetter Event="ManipulationBoundaryFeedback" Handler="ScrollViewer_ManipulationBoundaryFeedback"/>
+            </Style>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Tai;component/Resources/Themes/Light.xaml"/>
                 <ResourceDictionary Source="/Tai;component/Resources/Themes/Common.xaml"/>
