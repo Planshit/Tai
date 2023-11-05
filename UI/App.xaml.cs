@@ -176,5 +176,28 @@ namespace UI
             //  创建保活窗口
             keepaliveWindow = new HideWindow();
         }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            try
+            {
+                if (System.Windows.Forms.SystemInformation.MouseWheelScrollLines == -1)
+                {
+                    e.Handled = false;
+                }
+                else
+                {
+                    System.Windows.Controls.ScrollViewer SenderScrollViewer = (System.Windows.Controls.ScrollViewer)sender;
+                    SenderScrollViewer.ScrollToVerticalOffset(SenderScrollViewer.VerticalOffset - e.Delta * 10 * System.Windows.Forms.SystemInformation.MouseWheelScrollLines / (double)120);
+                    e.Handled = true;
+                }
+            }
+            catch { }
+        }
+
+        private void ScrollViewer_ManipulationBoundaryFeedback(object sender, System.Windows.Input.ManipulationBoundaryFeedbackEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }
