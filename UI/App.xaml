@@ -4,9 +4,18 @@
              xmlns:local="clr-namespace:UI"
              Startup="OnStartup"
              xmlns:base="clr-namespace:UI.Controls.Base"
+             xmlns:c="clr-namespace:UI.Controls"
              >
     <Application.Resources>
         <ResourceDictionary>
+            <!--指定字体以修复非简中环境下的字体问题-->
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="FontFamily" Value="Segoe UI, Microsoft YaHei UI" />
+            </Style>
+            <Style TargetType="{x:Type Control}" x:Key="fontStyling">
+                <Setter Property="FontFamily" Value="Segoe UI, Microsoft YaHei UI" />
+            </Style>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Tai;component/Resources/Themes/Light.xaml"/>
                 <ResourceDictionary Source="/Tai;component/Resources/Themes/Common.xaml"/>
