@@ -118,7 +118,11 @@ namespace UI.ViewModels
                 dialog.Description = "选择匹配目录";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    string path = dialog.SelectedPath + "\\";
+                    string path = dialog.SelectedPath;
+                    if (path.Last() != '\\')
+                    {
+                        path += "\\";
+                    }
                     if (EditDirectories.Contains(path))
                     {
                         mainVM.Toast("目录已存在", Controls.Window.ToastType.Error);
