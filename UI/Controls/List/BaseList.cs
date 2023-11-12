@@ -22,6 +22,7 @@ namespace UI.Controls.List
             if (e.NewValue != e.OldValue)
             {
                 control.Render();
+                control.AddCollectionChangedHandler();
             }
         }
 
@@ -52,6 +53,14 @@ namespace UI.Controls.List
             DefaultStyleKey = typeof(BaseList);
             Items = new ObservableCollection<string>();
             ItemsMap = new List<BaseListItem>();
+            AddCollectionChangedHandler();
+        }
+
+        private void AddCollectionChangedHandler()
+        {
+            if (Items == null) return;
+
+            Items.CollectionChanged -= Items_CollectionChanged;
             Items.CollectionChanged += Items_CollectionChanged;
         }
 

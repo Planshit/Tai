@@ -471,6 +471,8 @@ namespace Core.Servicers.Instances
                     //  关联进程更新
                     HandleLinks(app.Process, duration, startTime);
                     OnUpdateTime?.Invoke(this, null);
+                    //  自动分类
+                    DispatchCateogry(app.Process, app.ExecutablePath);
                 }
             }
             catch (Exception ex)
@@ -506,7 +508,56 @@ namespace Core.Servicers.Instances
                     string path = await FaviconDownloader.DownloadAsync(args.Icon, saveName);
                     _webData.UpdateUrlFavicon(site, path);
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.ToString());
+            }
+        }
+        #endregion
+
+        #region 自动分类
+        /// <summary>
+        /// 自动分类
+        /// </summary>
+        /// <param name="processName_">进程名称</param>
+        private void DispatchCateogry(string processName_, string executablePath_)
+        {
+            try
+            {
+                AppModel app = appData.GetApp(processName_);
+                if (app != null)
+                {
+                    var categoryList = categories.GetCategories().Where(c => c.IsDirectoryMath && c.DirectoryList.Count > 0).ToList();
+                    CategoryModel mathCategory = null;
+                    foreach (var category in categoryList)
+                    {
+                        if (mathCategory != null)
+                        {
+                            break;
+                        }
+                        foreach (var item in category.DirectoryList)
+                        {
+                            string path = item.Replace("\\", "\\\\");
+                            if (Regex.IsMatch(executablePath_, @"^" + path))
+                            {
+                                mathCategory = category;
+                                Debug.WriteLine("匹配成功：" + category.Name);
+                                break;
+                            }
+                        }
+
+                    }
+                    if (mathCategory != null)
+                    {
+                        //  匹配成功
+                        app.Category = mathCategory;
+                        app.CategoryID = mathCategory.ID;
+                        appData.UpdateApp(app);
+                    }
+                }
+            }
+            catch (Exception ex)
             {
                 Logger.Error(ex.ToString());
             }

@@ -14,18 +14,22 @@
                     <Border x:Name="Border"  Background="{TemplateBinding Background}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"  CornerRadius="4" Margin="{TemplateBinding Margin}">
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="50"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <Border x:Name="Button" Background="#f5f5f5" CornerRadius="10" Padding="5">
+                            <Border x:Name="Button" Grid.Column="1" Background="#f5f5f5" CornerRadius="10" Padding="5">
                                 <Border x:Name="Mark" Width="12" Height="12" CornerRadius="15" Background="#5d5d5d" VerticalAlignment="Center" HorizontalAlignment="Left">
                                     <Border.RenderTransform>
                                         <TranslateTransform X="0"/>
                                     </Border.RenderTransform>
                                 </Border>
                             </Border>
-                            <TextBlock x:Name="OnText" Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0" Text="{TemplateBinding OnText}"/>
-                            <TextBlock x:Name="OffText" Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0" Text="{TemplateBinding OffText}"/>
+                            <Grid x:Name="TextContainer" Grid.Column="2" Margin="10,0,0,0">
+                                <TextBlock x:Name="OnText" VerticalAlignment="Center" Text="{TemplateBinding OnText}"/>
+                                <TextBlock x:Name="OffText" VerticalAlignment="Center" Text="{TemplateBinding OffText}"/>
+                            </Grid>
+
 
                         </Grid>
 
@@ -79,13 +83,21 @@
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.RenderTransform).
-               (TranslateTransform.X)"
-                                          Storyboard.TargetName="Mark">
-                                            <EasingDoubleKeyFrame KeyTime="00:00:0"
-                                   Value="28" />
-                                        </DoubleAnimationUsingKeyFrames>
-                                       
+                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).
+(TranslateTransform.X)"
+                           Storyboard.TargetName="Mark" To="28" Duration="0"></DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).
+(TranslateTransform.X)"
+                           Storyboard.TargetName="Mark" To="0" Duration="0"></DoubleAnimation>
+
                                     </Storyboard>
                                 </BeginStoryboard>
                             </DataTrigger.EnterActions>
@@ -97,6 +109,14 @@
                         <Trigger Property="IsChecked" Value="False">
                             <Setter TargetName="OffText" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="OnText" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="OffText" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="OnText" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="TextPosition" Value="Left">
+                            <Setter TargetName="TextContainer" Property="Grid.Column" Value="0"/>
+                            <Setter TargetName="TextContainer" Property="Margin" Value="0,0,10,0"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
 

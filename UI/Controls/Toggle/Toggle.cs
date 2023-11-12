@@ -23,10 +23,16 @@ namespace UI.Controls.Toggle
         private static void OnIsCheckedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as Toggle;
-          
+
             VisualStateManager.GoToState(control, control.IsChecked ? "On" : "Off", true);
         }
-
+        public ToggleTextPosition TextPosition
+        {
+            get { return (ToggleTextPosition)GetValue(TextPositionProperty); }
+            set { SetValue(TextPositionProperty, value); }
+        }
+        public static readonly DependencyProperty TextPositionProperty =
+            DependencyProperty.Register("TextPosition", typeof(ToggleTextPosition), typeof(Toggle), new PropertyMetadata(ToggleTextPosition.Right));
         public string OnText
         {
             get { return (string)GetValue(OnTextProperty); }
@@ -59,7 +65,7 @@ namespace UI.Controls.Toggle
         {
             base.OnApplyTemplate();
         }
-        
+
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);

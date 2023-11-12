@@ -8,7 +8,8 @@
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:converter="clr-namespace:UI.Controls.Converters"
       xmlns:c="clr-namespace:UI.Controls"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="CategoryPage" Foreground="{DynamicResource StandardTextBrush}" IsFillPage="True">
+      Title="CategoryPage" Foreground="{DynamicResource StandardTextBrush}" IsFillPage="True"
+         xmlns:toggle="clr-namespace:UI.Controls.Toggle" xmlns:list="clr-namespace:UI.Controls.List">
 
 
     <Grid>
@@ -53,9 +54,29 @@
 
                                 <input:InputBox Grid.Column="1" Error="{Binding EditErrorText}" IsShowError="{Binding IsEditError,Mode=TwoWay}" Text="{Binding EditName,Mode=TwoWay}" MaxLength="10" Margin="5,10,0,0" Placeholder="请输入分类名称"/>
                             </Grid>
-
                             <TextBlock Text="图标" Margin="0,10,0,0"/>
                             <base:IconSelect  URL="{Binding EditIconFile,Mode=TwoWay}" HorizontalAlignment="Left" Margin="0,10,0,0" />
+                            <base:View Condition="=0" Value="{Binding ShowType.Id}">
+                                <StackPanel>
+                                    <Border Margin="0,10,0,0">
+                                        <toggle:Toggle IsChecked="{Binding EditIsDirectoryMath,Mode=TwoWay}" TextPosition="Left" OnText="目录匹配" OffText="目录匹配"></toggle:Toggle>
+                                    </Border>
+                                    <base:View Condition="True" Value="{Binding EditIsDirectoryMath}">
+                                        <StackPanel Margin="0,10,0,0">
+                                            <Button:Button HorizontalAlignment="Right" Width="100" Command="{Binding AddDirectoryCommand}">添加目录</Button:Button>
+                                            <list:BaseList Items="{Binding EditDirectories}" SelectedItem="{Binding EditSelectedDirectory,Mode=TwoWay}">
+                                                <list:BaseList.ContextMenu>
+                                                    <ContextMenu>
+                                                        <MenuItem Header="移除" Command="{Binding DirectoriesCommand}" CommandParameter="remove"/>
+                                                    </ContextMenu>
+                                                </list:BaseList.ContextMenu>
+                                            </list:BaseList>
+                                        </StackPanel>
+                                    </base:View>
+                                </StackPanel>
+                            </base:View>
+
+
                         </StackPanel>
                     </ScrollViewer>
                     <Button:Button Grid.Row="2" HorizontalAlignment="Right" Text="?创建:更新" Value="{Binding IsCreate}" Width="120" Margin="0,0,10,0" VerticalAlignment="Center" Command="{Binding EditDoneCommand}">
@@ -112,121 +133,130 @@
                 </TabControl.Resources>
                 <TabItem>
                     <!--应用分类-->
-                    <ScrollViewer>
-                        <StackPanel>
-                            <base:View Condition="empty" Value="{Binding Data}">
-                                <base:EmptyData/>
-                            </base:View>
+                    <!--<ScrollViewer>-->
+                    <!--<StackPanel>-->
+                    <Grid>
+                        <base:View Condition="empty" Value="{Binding Data}">
+                            <base:EmptyData/>
+                        </base:View>
 
-                            <ListView Margin="10,20,10,0" ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedAppCategoryItem,Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                                        <i:InvokeCommandAction Command="{Binding GotoListCommand}"
+                        <ListView Margin="10,20,10,0" ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedAppCategoryItem,Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction Command="{Binding GotoListCommand}"
                              CommandParameter="{Binding SelectedAppCategoryItem}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
 
-                                <ListView.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="查看分类应用列表" Command="{Binding GotoListCommand}" CommandParameter="{Binding SelectedAppCategoryItem}"/>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="查看分类应用列表" Command="{Binding GotoListCommand}" CommandParameter="{Binding SelectedAppCategoryItem}"/>
 
-                                        <MenuItem Header="编辑" Command="{Binding EditCommand}" CommandParameter="{Binding SelectedAppCategoryItem}"/>
-                                        <MenuItem Header="删除分类" Command="{Binding DelCommand}" CommandParameter="{Binding SelectedAppCategoryItem}"/>
-                                    </ContextMenu>
-                                </ListView.ContextMenu>
-                                <ListBox.Resources>
-                                    <converter:HextoColorConverter x:Key="HextoColorConverter"/>
+                                    <MenuItem Header="编辑" Command="{Binding EditCommand}" CommandParameter="{Binding SelectedAppCategoryItem}"/>
+                                    <MenuItem Header="删除分类" Command="{Binding DelCommand}" CommandParameter="{Binding SelectedAppCategoryItem}"/>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListBox.Resources>
+                                <converter:HextoColorConverter x:Key="HextoColorConverter"/>
 
-                                    <Style TargetType="{x:Type ListView}">
-                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                <Style TargetType="{x:Type ListView}">
+                                    <Setter Property="OverridesDefaultStyle" Value="True"/>
 
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type ListView}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListView}">
+                                                <ScrollViewer>
                                                     <Border>
                                                         <ItemsPresenter />
                                                     </Border>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                    <Style TargetType="{x:Type ListViewItem}">
-                                        <Setter Property="OverridesDefaultStyle" Value="True"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                    <Grid>
-                                                        <Border BorderBrush="{Binding ElementName=Border,Path=BorderBrush}" BorderThickness="{Binding ElementName=Border,Path=BorderThickness}"  Margin="{Binding ElementName=Border,Path=Margin}" CornerRadius="{Binding ElementName=Border,Path=CornerRadius}">
-                                                            <Border.Effect>
-                                                                <DropShadowEffect Color="#d8d2d2" BlurRadius="10" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
-                                                            </Border.Effect>
-                                                        </Border>
-                                                        <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="{DynamicResource StandardBackgroundBrush}" Margin="5" CornerRadius="20">
-                                                            <ContentPresenter/>
-                                                        </Border>
-                                                    </Grid>
-
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <!--<Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>-->
-                                                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ThemeBrush}"/>
-
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-
-                                    </Style>
-                                </ListBox.Resources>
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel/>
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-
-
-                                        <WrapPanel Orientation="Vertical">
-                                            <Border Width="150" Height="150">
-
+                                                </ScrollViewer>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListViewItem}">
                                                 <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="40"/>
+                                                    <Border BorderBrush="{Binding ElementName=Border,Path=BorderBrush}" BorderThickness="{Binding ElementName=Border,Path=BorderThickness}"  Margin="{Binding ElementName=Border,Path=Margin}" CornerRadius="{Binding ElementName=Border,Path=CornerRadius}">
+                                                        <Border.Effect>
+                                                            <DropShadowEffect Color="#d8d2d2" BlurRadius="10" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
+                                                        </Border.Effect>
+                                                    </Border>
+                                                    <Border BorderBrush="Transparent" BorderThickness="2" x:Name="Border" Background="{DynamicResource StandardBackgroundBrush}" Margin="5" CornerRadius="20">
+                                                        <ContentPresenter/>
+                                                    </Border>
+                                                </Grid>
 
-                                                        <RowDefinition Height="40"/>
-                                                        <RowDefinition Height="30"/>
-                                                        <RowDefinition Height="*"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <!--<Setter TargetName="Border" Property="Background" Value="#FFE8E6FF"/>-->
+                                                        <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ThemeBrush}"/>
 
-                                                    </Grid.RowDefinitions>
-                                                    <Rectangle HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"  RadiusX="20" RadiusY="20" Width="15" Height="15" Fill="{Binding Data.Color,Converter={StaticResource HextoColorConverter}}"/>
-                                                    <Grid Grid.Row="1">
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
 
-                                                        <base:Img Radius="8" Width="40" Height="40" URL="{Binding Data.IconFile}"/>
-                                                    </Grid>
-                                                    <TextBlock Foreground="{DynamicResource StandardTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Text="{Binding Data.Name}"  FontSize="14"/>
+                                </Style>
+                            </ListBox.Resources>
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
 
-                                                    <Border Grid.Row="3" >
-                                                        <Border Margin="10,0,10,0" CornerRadius="10" Background="{DynamicResource CategoryAppNumBgBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10,5">
-                                                            <TextBlock Foreground="{DynamicResource DefaultTextBrush}">
+
+                                    <WrapPanel Orientation="Vertical">
+                                        <Border Width="160" Height="160">
+
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="50"/>
+
+                                                    <RowDefinition Height="40"/>
+                                                    <RowDefinition Height="30"/>
+                                                    <RowDefinition Height="*"/>
+
+                                                </Grid.RowDefinitions>
+                                                <Rectangle HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top"  RadiusX="20" RadiusY="20" Width="15" Height="15" Fill="{Binding Data.Color,Converter={StaticResource HextoColorConverter}}"/>
+                                                <base:View Value="{Binding Data.IsDirectoryMath}">
+                                                    <Border Background="{DynamicResource ThemeBrush}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10" Padding="8,0" CornerRadius="10" Height="20">
+                                                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" Foreground="White" Text="目录匹配"></TextBlock>
+                                                    </Border>
+                                                </base:View>
+                                                <Grid Grid.Row="1">
+
+                                                    <base:Img Radius="8" Width="40" Height="40" URL="{Binding Data.IconFile}"/>
+                                                </Grid>
+                                                <TextBlock Foreground="{DynamicResource StandardTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Text="{Binding Data.Name}"  FontSize="14" FontWeight="Bold"/>
+
+                                                <Border Grid.Row="3" >
+                                                    <Border Margin="10,0,10,0" CornerRadius="10" Background="{DynamicResource CategoryAppNumBgBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10,5" ToolTip="分类应用数量">
+                                                        <TextBlock Foreground="{DynamicResource DefaultTextBrush}">
                                                 <Run Text="×"/>
                                                 
                                                 <Run Text="{Binding Count}"/>
-                                                            </TextBlock>
-
-                                                        </Border>
+                                                        </TextBlock>
 
                                                     </Border>
-                                                </Grid>
-                                            </Border>
 
-                                        </WrapPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </StackPanel>
-                    </ScrollViewer>
+                                                </Border>
+                                            </Grid>
+                                        </Border>
+
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                    <!--</StackPanel>-->
+                    <!--</ScrollViewer>-->
                 </TabItem>
                 <TabItem>
                     <!--网页分类-->

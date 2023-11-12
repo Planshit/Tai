@@ -1,10 +1,15 @@
-﻿using Core.Servicers.Interfaces;
+﻿using Core.Librarys;
+using Core.Servicers.Instances;
+using Core.Servicers.Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using UI.Controls;
 using UI.Controls.Select;
 using UI.Models;
@@ -40,6 +45,14 @@ namespace UI.ViewModels
         /// 刷新
         /// </summary>
         public Command RefreshCommand { get; set; }
+        /// <summary>
+        /// 添加目录
+        /// </summary>
+        public Command AddDirectoryCommand { get; set; }
+        /// <summary>
+        /// 目录菜单命令
+        /// </summary>
+        public Command DirectoriesCommand { get; set; }
 
 
         public CategoryPageVM(ICategorys categorys, MainViewModel mainVM, IAppData appData, IWebData webData_)
@@ -55,6 +68,9 @@ namespace UI.ViewModels
             EditCloseCommand = new Command(new Action<object>(OnEditClose));
             DelCommand = new Command(new Action<object>(OnDel));
             RefreshCommand = new Command(new Action<object>(OnRefresh));
+            AddDirectoryCommand = new Command(OnAddDirectory);
+            DirectoriesCommand = new Command(OnDirectoriesCommand);
+
             LoadData();
 
             PropertyChanged += CategoryPageVM_PropertyChanged;
@@ -65,7 +81,7 @@ namespace UI.ViewModels
             LoadData();
         }
 
-        
+
         private void OnDel(object obj)
         {
             if (ShowType.Id == 0)
@@ -91,6 +107,44 @@ namespace UI.ViewModels
             else if (ShowType.Id == 1)
             {
                 EditWebSiteCategoryAction();
+            }
+        }
+
+        private void OnAddDirectory(object obj)
+        {
+            try
+            {
+                FolderBrowserDialog dialog = new FolderBrowserDialog();
+                dialog.Description = "选择匹配目录";
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string path = dialog.SelectedPath + "\\";
+                    if (EditDirectories.Contains(path))
+                    {
+                        mainVM.Toast("目录已存在", Controls.Window.ToastType.Error);
+                        return;
+                    }
+                    EditDirectories.Add(path);
+                    mainVM.Toast("已添加", Controls.Window.ToastType.Success);
+                }
+            }
+            catch (Exception ec)
+            {
+                Logger.Error(ec.ToString());
+                mainVM.Toast("添加失败，请重试", Controls.Window.ToastType.Error);
+            }
+        }
+
+        private void OnDirectoriesCommand(object obj)
+        {
+            string action = obj.ToString();
+            switch (action)
+            {
+                case "remove":
+                    if (string.IsNullOrEmpty(EditSelectedDirectory)) return;
+
+                    EditDirectories.Remove(EditSelectedDirectory);
+                    break;
             }
         }
 
@@ -129,106 +183,121 @@ namespace UI.ViewModels
         #region 编辑应用分类
         private void EditAppCategoryAction()
         {
-            if (!IsEditVerify()) return;
-
-            if (IsCreate)
+            try
             {
-                //  创建分类
+                if (!IsEditVerify()) return;
 
-                //  判断重复分类名称
-                if (Data.Where(m => m.Data.Name == EditName).Any())
-                {
-                    mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
-                    return;
-                }
-                if (Data.Where(m => m.Data.Color == EditColor).Any())
-                {
-                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
-                    return;
-                }
-                mainVM.Toast("创建完成", Controls.Window.ToastType.Success);
+                string directoriesStr = JsonConvert.SerializeObject(EditDirectories.ToList());
 
-                EditVisibility = System.Windows.Visibility.Collapsed;
+                if (IsCreate)
+                {
+                    //  创建分类
 
-                var res = categorys.Create(new Core.Models.CategoryModel()
-                {
-                    Name = EditName,
-                    IconFile = EditIconFile,
-                    Color = EditColor,
-                });
+                    //  判断重复分类名称
+                    if (Data.Where(m => m.Data.Name == EditName).Any())
+                    {
+                        mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
+                        return;
+                    }
+                    //if (Data.Where(m => m.Data.Color == EditColor).Any())
+                    //{
+                    //    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
+                    //    return;
+                    //}
+                    mainVM.Toast("创建完成", Controls.Window.ToastType.Success);
 
-                var item = new CategoryModel()
-                {
-                    Data = res,
-                    Count = 0
-                };
-                if (Data.Count == 0)
-                {
-                    //Data=new System.Collections.ObjectModel.ObservableCollection<CategoryModel>()
-                    var list = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
-                    list.Add(item);
-                    Data = list;
+                    EditVisibility = System.Windows.Visibility.Collapsed;
+
+                    var res = categorys.Create(new Core.Models.CategoryModel()
+                    {
+                        Name = EditName,
+                        IconFile = EditIconFile,
+                        Color = EditColor,
+                        IsDirectoryMath = EditIsDirectoryMath,
+                        Directories = directoriesStr,
+                    });
+
+                    var item = new CategoryModel()
+                    {
+                        Data = res,
+                        Count = 0
+                    };
+                    if (Data.Count == 0)
+                    {
+                        //Data=new System.Collections.ObjectModel.ObservableCollection<CategoryModel>()
+                        var list = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
+                        list.Add(item);
+                        Data = list;
+                    }
+                    else
+                    {
+                        Data.Add(item);
+                    }
+
                 }
                 else
                 {
-                    Data.Add(item);
-                }
+                    //  编辑分类
 
-            }
-            else
-            {
-                //  编辑分类
-
-                //  判断重复分类名称
-                if (Data.Where(m => m.Data.Name == EditName && m.Data.ID != SelectedAppCategoryItem.Data.ID).Any())
-                {
-                    mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
-                    return;
-                }
-                if (Data.Where(m => m.Data.Color == EditColor && m.Data.ID != SelectedAppCategoryItem.Data.ID).Any())
-                {
-                    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
-                    return;
-                }
-                if (EditName == SelectedAppCategoryItem.Data.Name && EditIconFile == SelectedAppCategoryItem.Data.IconFile && EditColor == SelectedAppCategoryItem.Data.Color)
-                {
-                    mainVM.Toast("没有修改");
-                    EditVisibility = System.Windows.Visibility.Collapsed;
-                    return;
-                }
-                mainVM.Toast("已更新", Controls.Window.ToastType.Success);
-
-                var category = categorys.GetCategory(SelectedAppCategoryItem.Data.ID);
-                if (category != null)
-                {
-                    category.Name = EditName;
-                    category.IconFile = EditIconFile;
-                    category.Color = EditColor;
-
-                    categorys.Update(category);
-                }
-
-                var item = Data.Where(m => m.Data.ID == SelectedAppCategoryItem.Data.ID).FirstOrDefault();
-
-                var changedItem = new CategoryModel()
-                {
-                    Count = item.Count,
-                    Data = new Core.Models.CategoryModel()
+                    //  判断重复分类名称
+                    if (Data.Where(m => m.Data.Name == EditName && m.Data.ID != SelectedAppCategoryItem.Data.ID).Any())
                     {
-                        ID = item.Data.ID,
-                        Name = EditName,
-                        IconFile = EditIconFile,
-                        Color = EditColor
+                        mainVM.Toast("分类名称已存在", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
+                        return;
                     }
-                };
+                    //if (Data.Where(m => m.Data.Color == EditColor && m.Data.ID != SelectedAppCategoryItem.Data.ID).Any())
+                    //{
+                    //    mainVM.Toast("颜色已存在，请重新选择", Controls.Window.ToastType.Error, Controls.Base.IconTypes.ImportantBadge12);
+                    //    return;
+                    //}
+                    //if (EditName == SelectedAppCategoryItem.Data.Name && EditIconFile == SelectedAppCategoryItem.Data.IconFile && EditColor == SelectedAppCategoryItem.Data.Color)
+                    //{
+                    //    mainVM.Toast("没有修改");
+                    //    EditVisibility = System.Windows.Visibility.Collapsed;
+                    //    return;
+                    //}
+                    mainVM.Toast("已更新", Controls.Window.ToastType.Success);
+                    var category = categorys.GetCategory(SelectedAppCategoryItem.Data.ID);
+                    if (category != null)
+                    {
+                        category.Name = EditName;
+                        category.IconFile = EditIconFile;
+                        category.Color = EditColor;
+                        category.IsDirectoryMath = EditIsDirectoryMath;
+                        category.Directories = directoriesStr;
 
-                int editItemIndex = Data.IndexOf(item);
-                if (editItemIndex != -1)
-                {
-                    Data[editItemIndex] = changedItem;
+                        categorys.Update(category);
+                    }
+
+                    var item = Data.Where(m => m.Data.ID == SelectedAppCategoryItem.Data.ID).FirstOrDefault();
+
+                    var changedItem = new CategoryModel()
+                    {
+                        Count = item.Count,
+                        Data = new Core.Models.CategoryModel()
+                        {
+                            ID = item.Data.ID,
+                            Name = EditName,
+                            IconFile = EditIconFile,
+                            Color = EditColor,
+                            IsDirectoryMath = EditIsDirectoryMath,
+                            Directories = directoriesStr
+                        }
+                    };
+
+                    int editItemIndex = Data.IndexOf(item);
+                    if (editItemIndex != -1)
+                    {
+                        Data[editItemIndex] = changedItem;
+                    }
+
+                    EditVisibility = System.Windows.Visibility.Collapsed;
                 }
-
-                EditVisibility = System.Windows.Visibility.Collapsed;
+            }
+            catch (Exception ec)
+            {
+                Logger.Error(ec.ToString());
+                mainVM.Toast("操作失败，请重试", Controls.Window.ToastType.Error);
             }
         }
         #endregion
@@ -404,12 +473,26 @@ namespace UI.ViewModels
                 EditName = appCategory == null ? webCategory.Data.Name : appCategory.Data.Name;
                 EditIconFile = appCategory == null ? webCategory.Data.IconFile : appCategory.Data.IconFile;
                 EditColor = string.IsNullOrEmpty(appCategory == null ? webCategory.Data.Color : appCategory.Data.Color) ? "#00FFAB" : appCategory == null ? webCategory.Data.Color : appCategory.Data.Color;
+                if (ShowType.Id == 0)
+                {
+                    EditIsDirectoryMath = appCategory.Data.IsDirectoryMath;
+                    if (appCategory.Data.Directories != null)
+                    {
+                        EditDirectories = new System.Collections.ObjectModel.ObservableCollection<string>(appCategory.Data.DirectoryList);
+                    }
+                    else
+                    {
+                        EditDirectories = new System.Collections.ObjectModel.ObservableCollection<string>();
+                    }
+                }
             }
             else
             {
                 EditName = "";
                 EditIconFile = "pack://application:,,,/Tai;component/Resources/Emoji/(1).png";
                 EditColor = "#00FFAB";
+                EditIsDirectoryMath = false;
+                EditDirectories = new System.Collections.ObjectModel.ObservableCollection<string>();
             }
         }
 

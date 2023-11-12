@@ -184,6 +184,7 @@
     <Compile Include="Controls\SettingPanel\SettingPanel.cs" />
     <Compile Include="Controls\Tabbar\Tabbar.cs" />
     <Compile Include="Controls\Toggle\Toggle.cs" />
+    <Compile Include="Controls\Toggle\ToggleTextPosition.cs" />
     <Compile Include="Controls\TPage.cs" />
     <Compile Include="Controls\Window\ToastType.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
