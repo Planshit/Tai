@@ -14,6 +14,7 @@ using UI.Controls;
 using UI.Controls.Select;
 using UI.Models;
 using UI.Models.Category;
+using UI.Servicers;
 using UI.Views;
 
 namespace UI.ViewModels
@@ -24,6 +25,8 @@ namespace UI.ViewModels
         private readonly MainViewModel mainVM;
         private readonly IAppData appData;
         private readonly IWebData _webData;
+        private readonly IUIServicer _uiServicer;
+
         public Command GotoListCommand { get; set; }
         /// <summary>
         /// 打开编辑命令
@@ -55,12 +58,13 @@ namespace UI.ViewModels
         public Command DirectoriesCommand { get; set; }
 
 
-        public CategoryPageVM(ICategorys categorys, MainViewModel mainVM, IAppData appData, IWebData webData_)
+        public CategoryPageVM(ICategorys categorys, MainViewModel mainVM, IAppData appData, IWebData webData_, IUIServicer uIServicer_)
         {
             this.categorys = categorys;
             this.mainVM = mainVM;
             this.appData = appData;
             _webData = webData_;
+            _uiServicer = uIServicer_;
 
             GotoListCommand = new Command(new Action<object>(OnGotoList));
             EditCommand = new Command(new Action<object>(OnEdit));
@@ -307,33 +311,37 @@ namespace UI.ViewModels
         #endregion
 
         #region 删除分类
-        private void DelAppCategory()
+        private async void DelAppCategory()
         {
             if (SelectedAppCategoryItem == null)
             {
                 return;
             }
-            var category = categorys.GetCategory(SelectedAppCategoryItem.Data.ID);
-            if (category != null)
+            bool isConfirm = await _uiServicer.ShowConfirmDialogAsync("删除分类", "是否确认删除该分类？");
+            if (isConfirm)
             {
-                categorys.Delete(category);
-                var apps = appData.GetAppsByCategoryID(category.ID);
-                foreach (var app in apps)
+                var category = categorys.GetCategory(SelectedAppCategoryItem.Data.ID);
+                if (category != null)
                 {
-                    app.CategoryID = 0;
-                    app.Category = null;
-                    appData.UpdateApp(app);
+                    categorys.Delete(category);
+                    var apps = appData.GetAppsByCategoryID(category.ID);
+                    foreach (var app in apps)
+                    {
+                        app.CategoryID = 0;
+                        app.Category = null;
+                        appData.UpdateApp(app);
+                    }
+
+                    //  从界面移除
+
+                    Data.Remove(SelectedAppCategoryItem);
+                    if (Data.Count == 0)
+                    {
+                        Data = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
+                    }
+                    mainVM.Toast("分类已删除", Controls.Window.ToastType.Success);
+
                 }
-
-                //  从界面移除
-
-                Data.Remove(SelectedAppCategoryItem);
-                if (Data.Count == 0)
-                {
-                    Data = new System.Collections.ObjectModel.ObservableCollection<CategoryModel>();
-                }
-                mainVM.Toast("分类已删除", Controls.Window.ToastType.Success);
-
             }
         }
         #endregion
@@ -443,23 +451,25 @@ namespace UI.ViewModels
         #endregion
 
         #region 删除分类
-        private void DelWebSiteCategory()
+        private async void DelWebSiteCategory()
         {
             if (SelectedWebCategoryItem == null)
             {
                 return;
             }
-
-            _webData.DeleteWebSiteCategory(SelectedWebCategoryItem.Data);
-
-            //  从界面移除
-            WebCategoryData.Remove(SelectedWebCategoryItem);
-            if (WebCategoryData.Count == 0)
+            bool isConfirm = await _uiServicer.ShowConfirmDialogAsync("删除分类", "是否确认删除该分类？");
+            if (isConfirm)
             {
-                WebCategoryData = new System.Collections.ObjectModel.ObservableCollection<WebCategoryModel>();
-            }
-            mainVM.Toast("分类已删除", Controls.Window.ToastType.Success);
+                _webData.DeleteWebSiteCategory(SelectedWebCategoryItem.Data);
 
+                //  从界面移除
+                WebCategoryData.Remove(SelectedWebCategoryItem);
+                if (WebCategoryData.Count == 0)
+                {
+                    WebCategoryData = new System.Collections.ObjectModel.ObservableCollection<WebCategoryModel>();
+                }
+                mainVM.Toast("分类已删除", Controls.Window.ToastType.Success);
+            }
         }
         #endregion
         #endregion
