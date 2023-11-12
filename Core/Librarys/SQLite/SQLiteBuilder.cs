@@ -47,7 +47,8 @@ namespace Core.Librarys.SQLite
         INTEGER,
         datetime,
         nvarchar,
-        @int
+        @int,
+        bit
     }
 
     /// <summary>
@@ -309,11 +310,18 @@ namespace Core.Librarys.SQLite
         private string GetCreateColumnSQL(string tableName, IModelProperties properties)
         {
             string typeDefault = !properties.PK ? properties.Type == DbType.@int ? "NULL DEFAULT 0" : "NULL DEFAULT ''" : "";
+            
+            if(properties.Type == DbType.bit)
+            {
+                typeDefault = " DEFAULT 0";
+                properties.Type = DbType.INTEGER;
+            }
 
             if (properties.PK)
             {
                 properties.Type = DbType.INTEGER;
             }
+
             return $"ALTER table {tableName} ADD COLUMN  [{properties.Name}] {properties.Type} {typeDefault}";
         }
         #endregion
@@ -332,6 +340,13 @@ namespace Core.Librarys.SQLite
             foreach (var p in model.Properties)
             {
                 string typeDefault = p.Type == DbType.@int ? " NULL DEFAULT 0" : " NULL DEFAULT ''";
+
+                if (p.Type == DbType.bit)
+                {
+                    typeDefault = " DEFAULT 0";
+                    p.Type = DbType.INTEGER;
+                }
+
                 if (p.PK)
                 {
                     typeDefault = "";
