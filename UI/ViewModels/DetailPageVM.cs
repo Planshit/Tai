@@ -169,6 +169,9 @@ namespace UI.ViewModels
 
             _setCategoryMenuItem = new MenuItem();
             _setCategoryMenuItem.Header = "设置分类";
+            MenuItem editAlias = new MenuItem();
+            editAlias.Header = "编辑别名";
+            editAlias.Click += EditAlias_ClickAsync;
 
             _whiteListMenuItem = new MenuItem();
             _whiteListMenuItem.Click += (e, c) =>
@@ -190,6 +193,7 @@ namespace UI.ViewModels
             AppContextMenu.Items.Add(reLoadData);
             AppContextMenu.Items.Add(new Separator());
             AppContextMenu.Items.Add(_setCategoryMenuItem);
+            AppContextMenu.Items.Add(editAlias);
             AppContextMenu.Items.Add(new Separator());
             AppContextMenu.Items.Add(copyProcessName);
             AppContextMenu.Items.Add(copyProcessFile);
@@ -198,6 +202,40 @@ namespace UI.ViewModels
             AppContextMenu.Items.Add(clear);
             AppContextMenu.Items.Add(_whiteListMenuItem);
         }
+
+        private async void EditAlias_ClickAsync(object sender, RoutedEventArgs e)
+        {
+            var app = appData.GetApp(App.ID);
+            try
+            {
+                string input = await _uIServicer.ShowInputModalAsync("修改别名", "请输入别名", app.Alias, (val) =>
+                {
+                    if (string.IsNullOrEmpty(val))
+                    {
+                        main.Error("请输入别名");
+                        return false;
+                    }
+                    else if (val.Length > 10)
+                    {
+                        main.Error("别名最大长度为10位字符");
+                        return false;
+                    }
+                    return true;
+                });
+
+                //  开始更新别名
+                app.Alias = input;
+                appData.UpdateApp(app);
+                App = app;
+
+                main.Success("别名已更新");
+            }
+            catch
+            {
+                //  输入取消，无需处理异常
+            }
+        }
+
 
         private async void ClearAppData_Click(object sender, RoutedEventArgs e)
         {
@@ -226,6 +264,8 @@ namespace UI.ViewModels
                 };
                 _setCategoryMenuItem.Items.Add(categoryMenu);
             }
+
+            _setCategoryMenuItem.IsEnabled = _setCategoryMenuItem.Items.Count > 0;
 
             if (config.Behavior.ProcessWhiteList.Contains(App.Name))
             {
@@ -541,7 +581,7 @@ namespace UI.ViewModels
             {
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
+                bindModel.Name = !string.IsNullOrEmpty(item.AppModel?.Alias) ? item.AppModel.Alias : string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Time.ToString(item.Time);
                 bindModel.PopupText = item.AppModel.File;

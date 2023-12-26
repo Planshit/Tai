@@ -278,11 +278,12 @@ namespace Core.Servicers.Instances
               .GroupBy(m => m.SiteId)
               .Select(s => new
               {
-                  Title = s.FirstOrDefault().Site.Title,
-                  Domain = s.FirstOrDefault().Site.Domain,
-                  CategoryID = s.FirstOrDefault().Site.CategoryID,
-                  IconFile = s.FirstOrDefault().Site.IconFile,
-                  ID = s.FirstOrDefault().Site.ID,
+                  //Title = s.FirstOrDefault().Site.Title,
+                  //Domain = s.FirstOrDefault().Site.Domain,
+                  //CategoryID = s.FirstOrDefault().Site.CategoryID,
+                  //IconFile = s.FirstOrDefault().Site.IconFile,
+                  //ID = s.FirstOrDefault().Site.ID,
+                  Site = s.FirstOrDefault().Site,
                   Duration = s.Sum(m => m.Duration),
               });
 
@@ -302,7 +303,18 @@ namespace Core.Servicers.Instances
                 {
                     data = data.OrderByDescending(m => m.Duration);
                 }
-                var result = JsonConvert.DeserializeObject<List<WebSiteModel>>(JsonConvert.SerializeObject(data.ToList()));
+                var list = data.Select(s => new
+                {
+                    Alias = s.Site.Alias,
+                    Title = s.Site.Title,
+                    Domain = s.Site.Domain,
+                    CategoryID = s.Site.CategoryID,
+                    IconFile = s.Site.IconFile,
+                    ID = s.Site.ID,
+                    Duration = s.Duration,
+                }).ToList();
+
+                var result = JsonConvert.DeserializeObject<List<WebSiteModel>>(JsonConvert.SerializeObject(list));
                 return result;
             }
         }
@@ -777,6 +789,7 @@ namespace Core.Servicers.Instances
                     IconFile = s.FirstOrDefault().Site.IconFile,
                     CategoryID = s.FirstOrDefault().Site.CategoryID,
                     Category = s.FirstOrDefault().Category,
+                    Alias = s.FirstOrDefault().Site.Alias,
                 }).ToList();
 
                 //var result = query.Select(s => new WebSiteModel
@@ -838,6 +851,26 @@ namespace Core.Servicers.Instances
                 {
                     csv.WriteRecords(webSiteData);
                 }
+            }
+        }
+
+        public WebSiteModel Update(WebSiteModel website_)
+        {
+            using (var db = _database.GetWriterContext())
+            {
+                var website = db.WebSites.FirstOrDefault(m => m.ID == website_.ID);
+                if (website != null)
+                {
+                    website.Alias = website_.Alias;
+                    website.Domain = website_.Domain;
+                    website.Title = website_.Title;
+                    db.SaveChanges();
+                    _database.CloseWriter();
+                }
+                return website;
+                //string sql = $"update WebSiteModels set CategoryID={categoryId_} where ID in ({string.Join(",", siteIds_)})";
+                //db.Database.ExecuteSqlCommand(sql);
+                //db.SaveChanges();
             }
         }
     }

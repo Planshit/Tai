@@ -120,7 +120,7 @@ namespace UI.Controls.Charts
             isRendering = true;
 
             //对部分程序未获取程序名的程序使用路径中名字作为程序名
-            NameTextObj.Text = Data.Name;
+            //NameTextObj.Text = Data.Name;
             //if (Data.Name.Trim() == "" && Data.PopupText.Trim() != "")
             //{
             //    FileInfo fi = new FileInfo(Data.PopupText);

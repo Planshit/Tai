@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -24,6 +25,8 @@ namespace UI.Servicers
         private readonly IAppConfig _appConfig;
         private readonly IThemeServicer _theme;
         private readonly IWebData _webData;
+        private readonly IUIServicer _uIServicer;
+
         private ContextMenu _menu;
         private MenuItem _setCategory;
         private MenuItem _block;
@@ -34,12 +37,14 @@ namespace UI.Servicers
             MainViewModel main_,
             IAppConfig appConfig_,
             IThemeServicer theme_,
-            IWebData webData_)
+            IWebData webData_,
+             IUIServicer uIServicer_)
         {
             _main = main_;
             _appConfig = appConfig_;
             _theme = theme_;
             _webData = webData_;
+            _uIServicer = uIServicer_;
         }
 
         public void Init()
@@ -65,6 +70,10 @@ namespace UI.Servicers
             _setCategory = new MenuItem();
             _setCategory.Header = "设置分类";
 
+            MenuItem editAlias = new MenuItem();
+            editAlias.Header = "编辑别名";
+            editAlias.Click += EditAlias_ClickAsync;
+
             _block = new MenuItem();
             _block.Header = "忽略此网站";
             _block.Click += Block_Click;
@@ -76,9 +85,48 @@ namespace UI.Servicers
             _menu.Items.Add(open);
             _menu.Items.Add(new Separator());
             _menu.Items.Add(_setCategory);
+            _menu.Items.Add(editAlias);
             _menu.Items.Add(new Separator());
             _menu.Items.Add(_block);
             _menu.ContextMenuOpening += _menu_ContextMenuOpening;
+        }
+
+        private async void EditAlias_ClickAsync(object sender, RoutedEventArgs e)
+        {
+            var data = _menu.Tag as ChartsDataModel;
+            var site = data.Data as WebSiteModel;
+
+            try
+            {
+                string input = await _uIServicer.ShowInputModalAsync("修改别名", "请输入别名", site.Alias, (val) =>
+                {
+                    if (string.IsNullOrEmpty(val))
+                    {
+                        _main.Error("请输入别名");
+                        return false;
+                    }
+                    else if (val.Length > 10)
+                    {
+                        _main.Error("别名最大长度为10位字符");
+                        return false;
+                    }
+                    return true;
+                });
+
+                //  开始更新别名
+
+                data.Name = input;
+                site.Alias = input;
+
+                _webData.Update(site);
+
+                _main.Success("别名已更新");
+                Debug.WriteLine("输入内容：" + input);
+            }
+            catch
+            {
+                //  输入取消，无需处理异常
+            }
         }
 
         private void _menu_ContextMenuOpening(object sender, ContextMenuEventArgs e)

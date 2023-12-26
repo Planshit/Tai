@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using UI.Controls.Charts.Model;
@@ -22,6 +23,7 @@ namespace UI.Servicers
         private readonly IAppData appData;
         private readonly IAppConfig appConfig;
         private readonly IThemeServicer theme;
+        private readonly IUIServicer _uIServicer;
         private ContextMenu menu;
         private MenuItem setCategory;
         private MenuItem setLink;
@@ -29,13 +31,20 @@ namespace UI.Servicers
         MenuItem _whiteList = new MenuItem();
 
 
-        public AppContextMenuServicer(MainViewModel main, ICategorys categorys, IAppData appData, IAppConfig appConfig, IThemeServicer theme)
+        public AppContextMenuServicer(
+            MainViewModel main,
+            ICategorys categorys,
+            IAppData appData,
+            IAppConfig appConfig,
+            IThemeServicer theme,
+            IUIServicer uIServicer_)
         {
             this.main = main;
             this.categorys = categorys;
             this.appData = appData;
             this.appConfig = appConfig;
             this.theme = theme;
+            this._uIServicer = uIServicer_;
 
         }
 
@@ -65,6 +74,10 @@ namespace UI.Servicers
             setCategory = new MenuItem();
             setCategory.Header = "设置分类";
 
+            MenuItem editAlias = new MenuItem();
+            editAlias.Header = "编辑别名";
+            editAlias.Click += EditAlias_ClickAsync;
+
             setLink = new MenuItem();
             setLink.Header = "添加关联";
 
@@ -78,6 +91,7 @@ namespace UI.Servicers
             menu.Items.Add(new Separator());
             menu.Items.Add(setCategory);
             menu.Items.Add(setLink);
+            menu.Items.Add(editAlias);
             menu.Items.Add(new Separator());
 
             menu.Items.Add(openDir);
@@ -85,6 +99,49 @@ namespace UI.Servicers
             menu.Items.Add(_whiteList);
 
             menu.ContextMenuOpening += SetCategory_ContextMenuOpening;
+        }
+
+        private async void EditAlias_ClickAsync(object sender, RoutedEventArgs e)
+        {
+            var data = menu.Tag as ChartsDataModel;
+            var log = data.Data as DailyLogModel;
+            var app = log != null ? log.AppModel : null;
+
+            if (log == null)
+            {
+                app = (data.Data as HoursLogModel).AppModel;
+            }
+
+            try
+            {
+                string input = await _uIServicer.ShowInputModalAsync("修改别名", "请输入别名", app.Alias, (val) =>
+                 {
+                     if (string.IsNullOrEmpty(val))
+                     {
+                         main.Error("请输入别名");
+                         return false;
+                     }
+                     else if (val.Length > 10)
+                     {
+                         main.Error("别名最大长度为10位字符");
+                         return false;
+                     }
+                     return true;
+                 });
+
+                //  开始更新别名
+                var editApp = appData.GetApp(app.ID);
+                editApp.Alias = input;
+                appData.UpdateApp(editApp);
+                data.Name = input;
+
+                main.Success("别名已更新");
+                Debug.WriteLine("输入内容：" + input);
+            }
+            catch
+            {
+                //  输入取消，无需处理异常
+            }
         }
 
         private void _whiteList_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -214,6 +271,8 @@ namespace UI.Servicers
                 };
                 setCategory.Items.Add(categoryMenu);
             }
+
+            setCategory.IsEnabled = setCategory.Items.Count > 0;
 
         }
 

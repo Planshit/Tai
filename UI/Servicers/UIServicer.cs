@@ -24,5 +24,11 @@ namespace UI.Servicers
         {
             return _window.ShowConfirmDialogAsync(title_, message_);
         }
+
+        public Task<string> ShowInputModalAsync(string title_, string placeholder_, string value_ = null, Func<string, bool> validFnc_ = null)
+        {
+            return _window.ShowInputModalAsync(title_, placeholder_, value_, validFnc_);
+
+        }
     }
 }

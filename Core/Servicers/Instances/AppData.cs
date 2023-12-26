@@ -48,6 +48,7 @@ namespace Core.Servicers.Instances
                         File = m.File,
                         IconFile = m.IconFile,
                         Name = m.Name,
+                        Alias = m.Alias,
                         TotalTime = m.TotalTime
                     })
                     .ToList();
@@ -73,12 +74,13 @@ namespace Core.Servicers.Instances
                         app.Description = app_.Description;
                         app.File = app_.File;
                         app.CategoryID = app_.CategoryID;
+                        app.Alias = app_.Alias;
                         db.SaveChanges();
                     }
                     _databse.CloseWriter();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Error(e.ToString());
             }
@@ -119,7 +121,8 @@ namespace Core.Servicers.Instances
                         }
                         _databse.CloseWriter();
                     }
-                }catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     Logger.Error(e.ToString());
                 }

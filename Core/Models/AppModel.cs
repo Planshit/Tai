@@ -22,6 +22,10 @@ namespace Core.Models
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// 别名
+        /// </summary>
+        public string Alias { get; set; }
+        /// <summary>
         /// 描述
         /// </summary>
         public string Description { get; set; }

@@ -150,6 +150,10 @@ namespace UI.ViewModels
             _setCategoryMenuItem = new MenuItem();
             _setCategoryMenuItem.Header = "设置分类";
 
+            MenuItem editAlias = new MenuItem();
+            editAlias.Header = "编辑别名";
+            editAlias.Click += EditAlias_ClickAsync;
+
             _blockMenuItem = new MenuItem();
             _blockMenuItem.Header = "忽略此网站";
             _blockMenuItem.Click += _blockMenuItem_Click;
@@ -157,11 +161,48 @@ namespace UI.ViewModels
             WebSiteContextMenu.Items.Add(reLoadData);
             WebSiteContextMenu.Items.Add(new Separator());
             WebSiteContextMenu.Items.Add(_setCategoryMenuItem);
+            WebSiteContextMenu.Items.Add(editAlias);
             WebSiteContextMenu.Items.Add(new Separator());
             WebSiteContextMenu.Items.Add(_blockMenuItem);
             WebSiteContextMenu.Items.Add(clear);
 
         }
+
+        private async void EditAlias_ClickAsync(object sender, RoutedEventArgs e)
+        {
+
+
+            try
+            {
+                string input = await _uIServicer.ShowInputModalAsync("修改别名", "请输入别名", WebSite.Alias, (val) =>
+                {
+                    if (string.IsNullOrEmpty(val))
+                    {
+                        _mainVM.Error("请输入别名");
+                        return false;
+                    }
+                    else if (val.Length > 10)
+                    {
+                        _mainVM.Error("别名最大长度为10位字符");
+                        return false;
+                    }
+                    return true;
+                });
+
+                //  开始更新别名
+
+                WebSite.Alias = input;
+                WebSite = _webData.Update(WebSite);
+
+                _mainVM.Success("别名已更新");
+                Debug.WriteLine("输入内容：" + input);
+            }
+            catch
+            {
+                //  输入取消，无需处理异常
+            }
+        }
+
         private async void ClearData_Click(object sender, RoutedEventArgs e)
         {
             bool isConfirm = await _uIServicer.ShowConfirmDialogAsync("清空确认", "是否确定清空此站点的所有统计数据？");
@@ -293,7 +334,7 @@ namespace UI.ViewModels
                 {
                     new ChartsDataModel()
                     {
-                        Name =WebSite.Title,
+                        Name =!string.IsNullOrEmpty(WebSite.Alias) ? WebSite.Alias :WebSite.Title,
                         Values = list.Select(m=>m.Value).ToArray(),
                         ColumnNames= colNames,
                         Color=StateData.ThemeColor

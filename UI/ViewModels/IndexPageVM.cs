@@ -272,7 +272,7 @@ namespace UI.ViewModels
             {
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
+                bindModel.Name = !string.IsNullOrEmpty(item.AppModel?.Alias) ? item.AppModel.Alias : string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                 bindModel.Value = item.Time;
                 bindModel.Tag = Time.ToString(item.Time);
                 bindModel.PopupText = item.AppModel?.File;
@@ -291,7 +291,7 @@ namespace UI.ViewModels
             {
                 var bindModel = new ChartsDataModel();
                 bindModel.Data = item;
-                bindModel.Name = item.Title;
+                bindModel.Name = !string.IsNullOrEmpty(item.Alias) ? item.Alias : item.Title;
                 bindModel.Value = item.Duration;
                 bindModel.Tag = Time.ToString(item.Duration);
                 bindModel.PopupText = item.Domain;

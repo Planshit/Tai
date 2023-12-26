@@ -162,7 +162,7 @@ namespace UI.Controls.Charts
                 return;
             }
             isRendering = true;
-            NameTextObj.Text = Data.Name;
+            //NameTextObj.Text = Data.Name;
             //对部分程序未获取程序名的程序使用路径中名字作为程序名
             //if (Data.Name.Trim() == "" && Data.PopupText.Trim() != "")
             //{

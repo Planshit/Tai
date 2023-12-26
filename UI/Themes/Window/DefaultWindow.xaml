@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:w="clr-namespace:UI.Controls.Window" xmlns:button="clr-namespace:UI.Controls.Button"
-                    xmlns:base="clr-namespace:UI.Controls.Base">
+                    xmlns:base="clr-namespace:UI.Controls.Base"
+                    xmlns:input="clr-namespace:UI.Controls.Input">
     <Style x:Key="WindowSystemButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -178,7 +179,7 @@
                                             Padding="15,15"
                                             CornerRadius="12"
                                             MaxWidth="320"
-                                            x:Name="ToastBorder" Background="White" HorizontalAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="1000">
+                                            x:Name="ToastBorder" Background="White" HorizontalAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="99999">
                                             <Border.RenderTransform>
                                                 <TransformGroup>
                                                     <TranslateTransform Y="-150"/>
@@ -222,6 +223,36 @@
                                                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                                                     <button:Button x:Name="CancelBtn" Width="100">取消</button:Button>
                                                     <button:Button x:Name="ConfirmBtn" Background="{DynamicResource ThemeBrush}" Foreground="White" Width="100" Margin="10,0,0,0">确定</button:Button>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                        <!--Dialog-->
+                                        <Border 
+     Padding="15,15"
+     CornerRadius="10"
+     Width="350"
+     x:Name="InputModalBorder" Background="White" HorizontalAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="1000">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <TranslateTransform Y="-150"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="10" Color="Black" Opacity=".1"/>
+                                            </Border.Effect>
+                                            <Grid >
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="40"/>
+                                                    <RowDefinition Height="auto"/>
+                                                    <RowDefinition Height="auto"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{TemplateBinding DialogTitle}" FontSize="16" FontWeight="Bold"/>
+                                                <Border Grid.Row="1">
+                                                    <input:InputBox x:Name="InputModalInputBox" Placeholder="{TemplateBinding DialogMessage}"></input:InputBox>
+                                                </Border>
+                                                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                                    <button:Button x:Name="InputModalCancelBtn" Width="100">取消</button:Button>
+                                                    <button:Button x:Name="InputModalConfirmBtn" Background="{DynamicResource ThemeBrush}" Foreground="White" Width="100" Margin="10,0,0,0">确定</button:Button>
                                                 </StackPanel>
                                             </Grid>
                                         </Border>

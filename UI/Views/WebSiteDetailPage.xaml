@@ -37,9 +37,25 @@
                                 </StackPanel>
                             </Border>
                         </base:View>
-                        
-                        <TextBlock ToolTip="网站名称" Text="{Binding WebSite.Title}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                        <TextBlock ToolTip="域名" Text="{Binding WebSite.Domain}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                        <base:View Value="{Binding WebSite.Alias}" Condition="not empty">
+                            <StackPanel>
+                                <TextBlock ToolTip="别名" Grid.Column="1" Text="{Binding WebSite.Alias}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                                <TextBlock FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0">
+                               <Run ToolTip="域名" Text="{Binding WebSite.Domain}"></Run>
+                                <Run>(</Run>
+                               <Run ToolTip="网站名称" Text="{Binding WebSite.Title}"></Run>
+                                <Run>)</Run>
+
+                                </TextBlock>
+                            </StackPanel>
+                        </base:View>
+                        <base:View Value="{Binding WebSite.Alias}" Condition="empty">
+                            <StackPanel>
+                                <TextBlock ToolTip="网站名称" Text="{Binding WebSite.Title}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                                <TextBlock ToolTip="域名" Text="{Binding WebSite.Domain}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                            </StackPanel>
+                        </base:View>
+                       
                         <base:View Condition="not null" Value="{Binding Category}" HorizontalAlignment="Left">
                             <select:Select Margin="0,10,0,0" ToolTip="网站分类" SelectedItem="{Binding Category,Mode=TwoWay}" Options="{Binding Categories}"  Padding="10,0" Height="30"/>
 

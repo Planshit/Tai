@@ -31,7 +31,7 @@
                                         <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock  x:Name="NameTextObj" Foreground="{DynamicResource DefaultTextBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                    <TextBlock  x:Name="NameTextObj" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ChartsItemTypeList}}, Path=Data.Name}" Foreground="{DynamicResource DefaultTextBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
                                     <ListView x:Name="BadgeListView" Visibility="Collapsed" Grid.Column="1" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ChartsItemTypeList}}, Path=Data.BadgeList}" Margin="0,0,0,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
 

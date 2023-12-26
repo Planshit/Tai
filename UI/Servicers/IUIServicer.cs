@@ -11,5 +11,7 @@ namespace UI.Servicers
     {
         Task<bool> ShowConfirmDialogAsync(string title_, string message_);
         void InitWindow(DefaultWindow window_);
+        Task<string> ShowInputModalAsync(string title_, string placeholder_, string value_ = null, Func<string, bool> validFnc_ = null);
+
     }
 }

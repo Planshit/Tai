@@ -9,10 +9,11 @@ namespace UI.Controls.Charts.Model
 {
     public class ChartsDataModel : UINotifyPropertyChanged
     {
+        private string Name_;
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get { return Name_; } set { Name_ = value; OnPropertyChanged(); } }
 
         /// <summary>
         /// 值

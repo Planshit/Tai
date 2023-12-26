@@ -61,9 +61,26 @@
                             </StackPanel>
                         </Border>
                     </base:View>
-                    <TextBlock ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                    <base:View Value="{Binding App.Alias}" Condition="not empty">
+                        <StackPanel>
+                            <TextBlock ToolTip="别名" Grid.Column="1" Text="{Binding App.Alias}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0">
+                               <Run ToolTip="应用进程名称" Text="{Binding App.Name}"></Run>
+                                <Run>(</Run>
+                               <Run ToolTip="应用描述" Text="{Binding App.Description}"></Run>
+                                <Run>)</Run>
 
-                    <TextBlock ToolTip="应用进程名称" Text="{Binding App.Name}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </base:View>
+                    <base:View Value="{Binding App.Alias}" Condition="empty">
+                        <StackPanel>
+                            <TextBlock ToolTip="应用描述" Grid.Column="1" Text="{Binding App.Description}" FontSize="18" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+
+                            <TextBlock ToolTip="应用进程名称" Text="{Binding App.Name}" FontSize="12" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </base:View>
+
                     <TextBlock ToolTip="应用文件路径"  Foreground="Gray" Text="{Binding App.File}"  Margin="0,5,0,0" TextWrapping="WrapWithOverflow"/>
                     <!--分类-->
 

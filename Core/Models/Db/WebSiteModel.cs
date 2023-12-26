@@ -25,6 +25,10 @@ namespace Core.Models.Db
         /// </summary>
         public string Domain { get; set; }
         /// <summary>
+        /// 别名
+        /// </summary>
+        public string Alias { get; set; }
+        /// <summary>
         /// 分类ID
         /// </summary>
         public int CategoryID { get; set; }

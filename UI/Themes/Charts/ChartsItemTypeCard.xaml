@@ -54,7 +54,7 @@
                                     <Image x:Name="IconObj" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="LowQuality"/>
                                     <!--</Border>-->
 
-                                    <TextBlock x:Name="NameTextObj" Foreground="{DynamicResource WhiteBgTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10"/>
+                                    <TextBlock x:Name="NameTextObj" Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ChartsItemTypeCard}}, Path=Data.Name}" Foreground="{DynamicResource WhiteBgTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10"/>
 
                                     <Border VerticalAlignment="Top" CornerRadius="5" Padding="5" HorizontalAlignment="Left" Margin="10" >
                                         <Border.Background>
