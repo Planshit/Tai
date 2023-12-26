@@ -87,37 +87,51 @@ namespace Core.Librarys
                 return;
             }
 
-            string loggerName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                         "Log", DateTime.Now.ToString("yyyy-MM-dd") + ".log");
-            lock (writeLock)
+            try
             {
-                string dir = Path.GetDirectoryName(loggerName);
-                if (!Directory.Exists(dir))
-                {
-                    Directory.CreateDirectory(dir);
-                }
-
-                if (!File.Exists(loggerName))
-                {
-                    List<string> clientInfo = new List<string>(5);
-
-                    //  记录客户端信息
-
-
-                    //  tai版本号
-                    clientInfo.Add(FromatItem("Core Version", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-                    clientInfo.Add(FromatItem("OS Name", SystemCommon.GetWindowsVersionName()));
-                    clientInfo.Add(FromatItem("Computer Type", GetComputerType()));
-                    clientInfo.Add(FromatItem("Screen", GetScreenSize()));
-                    clientInfo.Add("\r\n++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\r\n");
-
-                    File.WriteAllText(loggerName, string.Join("\r\n", clientInfo));
-                }
-
-
-                File.AppendAllText(loggerName, string.Join(string.Empty, loggers));
-
+                Write(string.Join(string.Empty, loggers));
                 loggers.Clear();
+            }
+            catch (Exception ec)
+            {
+                Error(ec.ToString());
+            }
+        }
+
+        private static void Write(string log_)
+        {
+            try
+            {
+                lock (writeLock)
+                {
+                    string loggerName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                 "Log", DateTime.Now.ToString("yyyy-MM-dd") + ".log");
+                    string dir = Path.GetDirectoryName(loggerName);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+
+                    if (!File.Exists(loggerName))
+                    {
+                        List<string> clientInfo = new List<string>(5);
+
+                        //  记录客户端信息
+                        clientInfo.Add(FromatItem("Core Version", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+                        clientInfo.Add(FromatItem("OS Name", SystemCommon.GetWindowsVersionName()));
+                        clientInfo.Add(FromatItem("Computer Type", GetComputerType()));
+                        clientInfo.Add(FromatItem("Screen", GetScreenSize()));
+                        clientInfo.Add("\r\n++++++++++++++++++++++++++++++++++++++++++++++++++\r\n\r\n");
+
+                        File.WriteAllText(loggerName, string.Join("\r\n", clientInfo), Encoding.UTF8);
+                    }
+                    File.AppendAllText(loggerName, log_, Encoding.UTF8);
+                }
+            }
+            catch (Exception ec)
+            {
+                loggers.Add(log_);
+                Error(ec.ToString());
             }
         }
 
