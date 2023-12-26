@@ -65,7 +65,7 @@ namespace Core.Models.Config
         /// <summary>
         /// 是否启用网站记录功能
         /// </summary>
-        [Config(Name = "网站浏览统计", Description = "统计浏览器的网站访问数据，支持：Google Chrome、MSEdge或任何能够安装Chrome拓展的浏览器。在浏览器拓展管理中启用开发模式，选择加载已解压插件，选择Tai浏览器插件。", Group = "功能", IsBeta = true)]
+        [Config(Name = "网站浏览统计", Description = "统计浏览器的网站访问数据，支持：Google Chrome、MSEdge或任何能够安装Chrome拓展的浏览器。请点击 “关于 > 浏览器统计插件” 了解如何安装和使用此功能。", Group = "功能")]
         public bool IsWebEnabled { get; set; } = false;
     }
 }

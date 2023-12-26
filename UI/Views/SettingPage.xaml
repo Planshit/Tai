@@ -84,11 +84,15 @@
                             <Btn:Button Visibility="{Binding CheckUpdateBtnVisibility}" Command="{Binding CheckUpdate}" Margin="20,0,0,0" VerticalAlignment="Center" Width="120" Icon="SetlockScreen" Content="检查更新"/>
                         </StackPanel>
                         <TextBlock Margin="0,30,0,0">
+                                <Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai/discussions/279">浏览器统计插件</Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="0,15,0,0">
                                 <Run Text="开源 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai">https://github.com/Planshit/Tai</Hyperlink>
                         </TextBlock>
                         <TextBlock Margin="0,5,0,0">
                                 <Run Text="讨论 "/><Hyperlink Command="{Binding OpenURL}" CommandParameter="https://github.com/Planshit/Tai/discussions">https://github.com/Planshit/Tai/discussions</Hyperlink>
                         </TextBlock>
+                        
                         <TextBlock Margin="0,10,0,0">
                                 <Run Text="外部资源声明 "/>
                         </TextBlock>
