@@ -634,6 +634,10 @@ namespace UI.Controls.Window
             opacityAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.15));
             storyboard.Children.Add(scrollAnimation);
             storyboard.Children.Add(opacityAnimation);
+            storyboard.Completed += (e, c) =>
+            {
+                InputModalInputBox.Focus();
+            };
             storyboard.Begin();
 
             return Task.Run(() =>

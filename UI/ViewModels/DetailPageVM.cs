@@ -210,14 +210,9 @@ namespace UI.ViewModels
             {
                 string input = await _uIServicer.ShowInputModalAsync("修改别名", "请输入别名", app.Alias, (val) =>
                 {
-                    if (string.IsNullOrEmpty(val))
+                    if (val.Length > 15)
                     {
-                        main.Error("请输入别名");
-                        return false;
-                    }
-                    else if (val.Length > 10)
-                    {
-                        main.Error("别名最大长度为10位字符");
+                        main.Error("别名最大长度为15位字符");
                         return false;
                     }
                     return true;

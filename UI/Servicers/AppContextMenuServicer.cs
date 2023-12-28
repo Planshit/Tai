@@ -116,14 +116,9 @@ namespace UI.Servicers
             {
                 string input = await _uIServicer.ShowInputModalAsync("修改别名", "请输入别名", app.Alias, (val) =>
                  {
-                     if (string.IsNullOrEmpty(val))
+                     if (val.Length > 15)
                      {
-                         main.Error("请输入别名");
-                         return false;
-                     }
-                     else if (val.Length > 10)
-                     {
-                         main.Error("别名最大长度为10位字符");
+                         main.Error("别名最大长度为15位字符");
                          return false;
                      }
                      return true;
@@ -133,7 +128,7 @@ namespace UI.Servicers
                 var editApp = appData.GetApp(app.ID);
                 editApp.Alias = input;
                 appData.UpdateApp(editApp);
-                data.Name = input;
+                data.Name = string.IsNullOrEmpty(input) ? editApp.Description : input;
 
                 main.Success("别名已更新");
                 Debug.WriteLine("输入内容：" + input);
