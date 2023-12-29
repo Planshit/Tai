@@ -7,7 +7,7 @@
         "128": "icon128.png"
     },
     "manifest_version": 3,
-    "minimum_chrome_version": "116",
+    "minimum_chrome_version": "1",
     "action": {
         "default_icon": "icons/socket-inactive.png"
     },
