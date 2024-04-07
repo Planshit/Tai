@@ -152,6 +152,7 @@ namespace UI.Controls.Select
         public Command ShowSelectCommand { get; set; }
         public Command SetYearCommand { get; set; }
         public Command SetMonthCommand { get; set; }
+        public Command SwitchDateCommand { get; set; }
         public Command DoneCommand { get; set; }
 
         private bool IsFirstClick = false;
@@ -164,6 +165,7 @@ namespace UI.Controls.Select
             ShowSelectCommand = new Command(new Action<object>(OnShowSelect));
             SetYearCommand = new Command(new Action<object>(OnSetYear));
             SetMonthCommand = new Command(new Action<object>(OnSetMonth));
+            SwitchDateCommand = new Command(new Action<object>(OnSwitchDate));
             DoneCommand = new Command(new Action<object>(OnDone));
 
 
@@ -247,6 +249,30 @@ namespace UI.Controls.Select
             UpdateDateStr();
 
             IsOpen = false;
+        }
+
+        private void OnSwitchDate(object obj)
+        {
+            var newDate = Day != null ? Day.Day : new DateTime(Year, Month, 1);
+            if (SelectType == DateSelectType.Day)
+            {
+                newDate = newDate.AddDays(int.Parse(obj.ToString()));
+            }
+            else if (SelectType == DateSelectType.Month)
+            {
+                newDate = newDate.AddMonths(int.Parse(obj.ToString()));
+            }
+            else if (SelectType == DateSelectType.Year)
+            {
+                newDate = newDate.AddYears(int.Parse(obj.ToString()));
+            }
+            Year = newDate.Year;
+            Month = newDate.Month;
+            Date = newDate;
+            SelectedDay = newDate;
+
+            UpdateDays();
+            UpdateDateStr();
         }
 
         private void OnSetMonth(object obj)

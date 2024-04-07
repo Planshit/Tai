@@ -22,16 +22,20 @@
                                     <DropShadowEffect Color="#d8d2d2" BlurRadius="1" Direction="300" ShadowDepth="4" Opacity="0.1" RenderingBias="Performance" ></DropShadowEffect>
                                 </Border.Effect>
                             </Border>
-                            <Border x:Name="Main" Margin="0,0,0,0" Background="{DynamicResource StandardBackgroundBrush}" HorizontalAlignment="Left" Padding="18,10" CornerRadius="5">
-                                <Border.InputBindings>
-                                    <MouseBinding Gesture="LeftClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=ShowSelectCommand}"/>
-                                </Border.InputBindings>
+                            <StackPanel Orientation="Horizontal">
+                                <button:IconButton Icon="ChevronLeft" FontSize="12" VerticalAlignment="Center" Margin="0,0,5,0" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SwitchDateCommand}" CommandParameter="-1"/>
+                                <Border x:Name="Main" Margin="0,0,0,0" Background="{DynamicResource StandardBackgroundBrush}" HorizontalAlignment="Left" Padding="18,10" CornerRadius="5">
+                                    <Border.InputBindings>
+                                        <MouseBinding Gesture="LeftClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=ShowSelectCommand}"/>
+                                    </Border.InputBindings>
 
-                                <StackPanel Orientation="Horizontal">
-                                    <base:Icon x:Name="Icon" IconType="Calendar"  Foreground="{DynamicResource StandardTextBrush}"/>
-                                    <TextBlock Foreground="{DynamicResource StandardTextBrush}" Text="{TemplateBinding DateStr}" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                                </StackPanel>
-                            </Border>
+                                    <StackPanel Orientation="Horizontal">
+                                        <base:Icon x:Name="Icon" IconType="Calendar"  Foreground="{DynamicResource StandardTextBrush}"/>
+                                        <TextBlock Foreground="{DynamicResource StandardTextBrush}" Text="{TemplateBinding DateStr}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                                <button:IconButton Icon="ChevronRight" FontSize="12" VerticalAlignment="Center" Margin="5,0,0,0" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:DateSelect}}, Path=SwitchDateCommand}" CommandParameter="1"/>
+                            </StackPanel>
 
                             <!--选择-->
                             <Popup 
