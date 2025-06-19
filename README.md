@@ -3,6 +3,8 @@
 
 <img src="index.jpg" width=600 />
 
+广告位出售，联系方式：bmFjYXQ0YjEx （ base64 添加请备注来意
+
 ## 开始使用
 
 #### 环境
