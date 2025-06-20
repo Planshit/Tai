@@ -43,6 +43,7 @@ namespace Core.Librarys
                     task.Actions.Add(new ExecAction(tai, "--selfStart", AppDomain.CurrentDomain.BaseDirectory));
                     task.Settings.StopIfGoingOnBatteries = false;
                     task.Settings.DisallowStartIfOnBatteries = false;
+                    task.Settings.ExecutionTimeLimit = TimeSpan.Zero; // Run indefinitely
                     taskService.RootFolder.RegisterTaskDefinition(TaskName, task);
                 }
             }
