@@ -1,0 +1,62 @@
+name: Build Tai
+
+on:
+  push:
+    branches: [ main, develop, feat/*, hotfix/* ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET Framework
+      uses: microsoft/setup-dotnet@v3
+      with:
+        dotnet-version: '4.8.x'
+        
+    - name: Restore NuGet packages
+      run: |
+        nuget restore Tai.sln
+        
+    - name: Build Core project
+      run: |
+        msbuild Core/Core.csproj /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
+        
+    - name: Build UI project
+      run: |
+        msbuild UI/UI.csproj /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
+        
+    - name: Build TaiBug project
+      run: |
+        msbuild TaiBug/TaiBug.csproj /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
+        
+    - name: Build Updater project
+      run: |
+        msbuild Updater/Updater.csproj /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
+        
+    - name: Create artifacts directory
+      run: |
+        mkdir -p artifacts
+        
+    - name: Copy build outputs
+      run: |
+        xcopy /E /I /Y "UI\bin\Release\*" "artifacts\"
+        xcopy /E /I /Y "Core\bin\Release\*" "artifacts\"
+        xcopy /E /I /Y "TaiBug\bin\Release\*" "artifacts\"
+        xcopy /E /I /Y "Updater\bin\Release\*" "artifacts\"
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: tai-build-artifacts
+        path: artifacts/
+        
+    - name: Build summary
+      run: |
+        echo "Build completed successfully!"
+        echo "Artifacts are available in the artifacts directory" 

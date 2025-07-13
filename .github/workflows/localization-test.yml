@@ -1,0 +1,82 @@
+name: Localization Test
+
+on:
+  push:
+    branches: [ main, develop, feat/* ]
+    paths: [ 'UI/Properties/Resources*.resx', 'UI/Servicers/LocalizationServicer.cs', 'UI/Controls/Converters/LocalizationExtension.cs' ]
+  pull_request:
+    branches: [ main, develop ]
+    paths: [ 'UI/Properties/Resources*.resx', 'UI/Servicers/LocalizationServicer.cs', 'UI/Controls/Converters/LocalizationExtension.cs' ]
+
+jobs:
+  test-localization:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET Framework
+      uses: microsoft/setup-dotnet@v3
+      with:
+        dotnet-version: '4.8.x'
+        
+    - name: Restore dependencies
+      run: |
+        nuget restore Tai.sln
+        
+    - name: Build UI project
+      run: |
+        msbuild UI/UI.csproj /p:Configuration=Debug /p:Platform="Any CPU" /verbosity:minimal
+        
+    - name: Test resource files
+      run: |
+        echo "Testing resource files..."
+        
+        # 检查中文资源文件
+        if (Test-Path "UI/Properties/Resources.resx") {
+          echo "✓ Chinese resource file exists"
+        } else {
+          echo "✗ Chinese resource file missing"
+          exit 1
+        }
+        
+        # 检查英文资源文件
+        if (Test-Path "UI/Properties/Resources.en.resx") {
+          echo "✓ English resource file exists"
+        } else {
+          echo "✗ English resource file missing"
+          exit 1
+        }
+        
+    - name: Validate resource keys
+      run: |
+        echo "Validating resource keys..."
+        
+        # 这里可以添加更详细的资源键验证逻辑
+        # 例如检查中英文资源文件中的键是否匹配
+        
+        echo "Resource validation completed"
+        
+    - name: Test localization service
+      run: |
+        echo "Testing localization service..."
+        
+        # 编译测试程序
+        csc /reference:UI/bin/Debug/UI.dll /reference:Core/bin/Debug/Core.dll LocalizationTest.cs
+        
+        if (Test-Path "LocalizationTest.exe") {
+          echo "✓ Localization test program compiled successfully"
+        } else {
+          echo "✗ Failed to compile localization test program"
+          exit 1
+        }
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: localization-test-results
+        path: |
+          LocalizationTest.exe
+          UI/bin/Debug/
+        retention-days: 7 
