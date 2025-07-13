@@ -17,6 +17,7 @@ namespace UI.ViewModels
     {
         private readonly IServiceProvider serviceProvider;
         private readonly IAppConfig appConfig;
+        private readonly ILocalizationServicer localizationServicer;
         public Command OnSelectedCommand { get; set; }
         public Command GotoPageCommand { get; set; }
 
@@ -24,11 +25,13 @@ namespace UI.ViewModels
         public MainViewModel(
             IServiceProvider serviceProvider,
             IAppConfig appConfig,
-            IMain main
+            IMain main,
+            ILocalizationServicer localizationServicer
             )
         {
             this.serviceProvider = serviceProvider;
             this.appConfig = appConfig;
+            this.localizationServicer = localizationServicer;
 
             ServiceProvider = serviceProvider;
 
@@ -41,6 +44,9 @@ namespace UI.ViewModels
             PropertyChanged += MainViewModel_PropertyChanged;
 
             InitNavigation();
+            
+            // 订阅文化改变事件
+            localizationServicer.CultureChanged += LocalizationServicer_CultureChanged;
         }
 
 
@@ -86,7 +92,7 @@ namespace UI.ViewModels
             {
                 UnSelectedIcon = Controls.Base.IconTypes.Home,
                 SelectedIcon = IconTypes.HomeSolid,
-                Title = "概览",
+                Title = localizationServicer.GetString("Navigation_Overview"),
                 Uri = nameof(IndexPage),
                 ID = -1
 
@@ -95,7 +101,7 @@ namespace UI.ViewModels
             {
                 UnSelectedIcon = Controls.Base.IconTypes.ZeroBars,
                 SelectedIcon = IconTypes.FourBars,
-                Title = "统计",
+                Title = localizationServicer.GetString("Navigation_Statistics"),
                 ID = 1,
                 Uri = nameof(ChartPage),
 
@@ -105,7 +111,7 @@ namespace UI.ViewModels
                 UnSelectedIcon = Controls.Base.IconTypes.Calendar,
                 SelectedIcon = IconTypes.CalendarSolid,
                 //Icon = Controls.Base.IconTypes.BIDashboard,
-                Title = "详细",
+                Title = localizationServicer.GetString("Navigation_Details"),
                 ID = 2,
                 Uri = nameof(DataPage),
 
@@ -114,7 +120,7 @@ namespace UI.ViewModels
             {
                 UnSelectedIcon = Controls.Base.IconTypes.EndPoint,
                 SelectedIcon = IconTypes.EndPointSolid,
-                Title = "分类",
+                Title = localizationServicer.GetString("Navigation_Categories"),
                 ID = 3,
                 Uri = nameof(CategoryPage),
 
@@ -153,6 +159,13 @@ namespace UI.ViewModels
         public void Success(string message_)
         {
             Toast(message_, ToastType.Success, IconTypes.Accept);
+        }
+        
+        private void LocalizationServicer_CultureChanged(object sender, EventArgs e)
+        {
+            // 重新初始化导航项以更新语言
+            Items.Clear();
+            InitNavigation();
         }
     }
 }

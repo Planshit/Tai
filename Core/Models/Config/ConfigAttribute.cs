@@ -37,6 +37,18 @@ namespace Core.Models.Config
             Options = string.Empty;
             IsBeta = false;
         }
+        
+        public ConfigAttribute(string toggleTrueText, string toggleFalseText)
+        {
+            ToggleTrueText = toggleTrueText;
+            ToggleFalseText = toggleFalseText;
+            IsCanRepeat = true;
+            Index = 0;
+            IsName = false;
+            IsCanImportExport = false;
+            Options = string.Empty;
+            IsBeta = false;
+        }
 
 
     }

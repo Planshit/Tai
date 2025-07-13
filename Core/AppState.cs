@@ -21,5 +21,14 @@ namespace Core
         public static int ProcessValue { get; set; } = 0;
 
         public static string ActionText { get; set; } = "加载中，请稍后...";
+        
+        /// <summary>
+        /// 设置操作文本（本地化）
+        /// </summary>
+        /// <param name="text">本地化键</param>
+        public static void SetActionText(string text)
+        {
+            ActionText = text;
+        }
     }
 }
