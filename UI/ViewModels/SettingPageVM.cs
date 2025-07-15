@@ -26,18 +26,20 @@ namespace UI.ViewModels
         private readonly IData data;
         private readonly IWebData _webData;
         private readonly IUIServicer _uiServicer;
+        private readonly ILocalizationServicer localizationServicer;
         public Command OpenURL { get; set; }
         public Command CheckUpdate { get; set; }
         public Command DelDataCommand { get; set; }
         public Command ExportDataCommand { get; set; }
 
-        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data, IWebData webData, IUIServicer uiServicer_)
+        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data, IWebData webData, IUIServicer uiServicer_, ILocalizationServicer localizationServicer)
         {
             this.appConfig = appConfig;
             this.mainVM = mainVM;
             this.data = data;
             _webData = webData;
             _uiServicer = uiServicer_;
+            this.localizationServicer = localizationServicer;
 
             OpenURL = new Command(new Action<object>(OnOpenURL));
             CheckUpdate = new Command(new Action<object>(OnCheckUpdate));
@@ -68,7 +70,7 @@ namespace UI.ViewModels
 
                 if (!File.Exists(updaterExePath))
                 {
-                    mainVM.Toast("升级程序似乎已被删除，请手动前往发布页查看新版本", Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
+                    mainVM.Toast(localizationServicer.GetString("Message_UpdateProgramDeleted"), Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
                     return;
                 }
                 File.Copy(updaterExePath, updaterCacheExePath, true);
@@ -85,7 +87,7 @@ namespace UI.ViewModels
                 CheckUpdateBtnVisibility = System.Windows.Visibility.Visible;
 
                 Logger.Error(ex.Message);
-                mainVM.Toast("无法正确启动检查更新程序", Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
+                mainVM.Toast(localizationServicer.GetString("Message_CannotStartUpdater"), Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
             }
         }
 
@@ -102,7 +104,11 @@ namespace UI.ViewModels
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "常规","关联","行为","数据","关于"
+                localizationServicer.GetString("Settings_General"),
+                localizationServicer.GetString("Settings_Associations"),
+                localizationServicer.GetString("Settings_Behavior"),
+                localizationServicer.GetString("Settings_Data"),
+                localizationServicer.GetString("Settings_About")
             };
 
             PropertyChanged += SettingPageVM_PropertyChanged;
@@ -172,16 +178,18 @@ namespace UI.ViewModels
         {
             if (DelDataStartMonthDate > DelDataEndMonthDate)
             {
-                mainVM.Toast("时间范围选择错误", Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
+                mainVM.Toast(localizationServicer.GetString("Message_TimeRangeError"), Controls.Window.ToastType.Error, Controls.Base.IconTypes.IncidentTriangle);
                 return;
             }
 
-            bool isConfirm = await _uiServicer.ShowConfirmDialogAsync("删除确认", "是否执行此操作？");
+            bool isConfirm = await _uiServicer.ShowConfirmDialogAsync(
+                localizationServicer.GetString("Message_DeleteConfirm"), 
+                localizationServicer.GetString("Message_DeleteConfirmText"));
             if (isConfirm)
             {
                 data.ClearRange(DelDataStartMonthDate, DelDataEndMonthDate);
                 _webData.Clear(DelDataStartMonthDate, DelDataEndMonthDate);
-                mainVM.Toast("操作已完成", Controls.Window.ToastType.Success);
+                mainVM.Toast(localizationServicer.GetString("Message_OperationCompleted"), Controls.Window.ToastType.Success);
             }
         }
 
@@ -190,12 +198,12 @@ namespace UI.ViewModels
             try
             {
                 FolderBrowserDialog dialog = new FolderBrowserDialog();
-                dialog.Description = "请选择导出位置";
+                dialog.Description = localizationServicer.GetString("Data_SelectExportLocation");
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     data.ExportToExcel(dialog.SelectedPath, ExportDataStartMonthDate, ExportDataEndMonthDate);
                     _webData.Export(dialog.SelectedPath, ExportDataStartMonthDate, ExportDataEndMonthDate);
-                    mainVM.Toast("导出数据完成", Controls.Window.ToastType.Success);
+                    mainVM.Toast(localizationServicer.GetString("Message_ExportCompleted"), Controls.Window.ToastType.Success);
                 }
             }
             catch (Exception ec)

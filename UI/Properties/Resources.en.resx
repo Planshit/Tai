@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -119,137 +119,146 @@
   
   <!-- Navigation -->
   <data name="Navigation_Overview" xml:space="preserve">
-    <value>概览</value>
+    <value>Overview</value>
   </data>
   <data name="Navigation_Statistics" xml:space="preserve">
-    <value>统计</value>
+    <value>Statistics</value>
   </data>
   <data name="Navigation_Details" xml:space="preserve">
-    <value>详细</value>
+    <value>Details</value>
   </data>
   <data name="Navigation_Categories" xml:space="preserve">
-    <value>分类</value>
+    <value>Categories</value>
   </data>
   
   <!-- Settings -->
   <data name="Settings_Title" xml:space="preserve">
-    <value>设置</value>
+    <value>Settings</value>
   </data>
   <data name="Settings_General" xml:space="preserve">
-    <value>常规</value>
+    <value>General</value>
   </data>
   <data name="Settings_Associations" xml:space="preserve">
-    <value>关联</value>
+    <value>Associations</value>
   </data>
   <data name="Settings_Behavior" xml:space="preserve">
-    <value>行为</value>
+    <value>Behavior</value>
   </data>
   <data name="Settings_Data" xml:space="preserve">
-    <value>数据</value>
+    <value>Data</value>
   </data>
   <data name="Settings_About" xml:space="preserve">
-    <value>关于</value>
+    <value>About</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings_LanguageDescription" xml:space="preserve">
+    <value>Select the display language for the application</value>
+  </data>
+  <data name="Settings_LanguageNote" xml:space="preserve">
+    <value>Note: Changing the language requires restarting the application to take full effect</value>
   </data>
   
   <!-- Website Details -->
   <data name="Website_Title" xml:space="preserve">
-    <value>网站</value>
+    <value>Website</value>
   </data>
   <data name="Website_BasicInfo" xml:space="preserve">
-    <value>基本信息</value>
+    <value>Basic Information</value>
   </data>
   <data name="Website_Ignored" xml:space="preserve">
-    <value>已被忽略</value>
+    <value>Ignored</value>
   </data>
   <data name="Website_Alias" xml:space="preserve">
-    <value>别名</value>
+    <value>Alias</value>
   </data>
   <data name="Website_Domain" xml:space="preserve">
-    <value>域名</value>
+    <value>Domain</value>
   </data>
   <data name="Website_Name" xml:space="preserve">
-    <value>网站名称</value>
+    <value>Website Name</value>
   </data>
   <data name="Website_Category" xml:space="preserve">
-    <value>网站分类</value>
+    <value>Website Category</value>
   </data>
   <data name="Website_TimeStatistics" xml:space="preserve">
-    <value>时长统计</value>
+    <value>Time Statistics</value>
   </data>
   <data name="Website_BrowseDetails" xml:space="preserve">
-    <value>浏览详情</value>
+    <value>Browse Details</value>
   </data>
   <data name="Website_Pages" xml:space="preserve">
-    <value>个网页</value>
+    <value>pages</value>
   </data>
   <data name="Website_OpenPage" xml:space="preserve">
-    <value>打开网页</value>
+    <value>Open Page</value>
   </data>
   <data name="Website_CopyLink" xml:space="preserve">
-    <value>复制链接</value>
+    <value>Copy Link</value>
   </data>
   <data name="Website_CopyTitle" xml:space="preserve">
-    <value>复制标题</value>
+    <value>Copy Title</value>
   </data>
   <data name="Website_VisitTime" xml:space="preserve">
-    <value>访问时间</value>
+    <value>Visit Time</value>
   </data>
   <data name="Website_BrowseTime" xml:space="preserve">
-    <value>浏览时长</value>
+    <value>Browse Time</value>
   </data>
   
   <!-- Data Management -->
   <data name="Data_DeleteData" xml:space="preserve">
-    <value>删除数据</value>
+    <value>Delete Data</value>
   </data>
   <data name="Data_From" xml:space="preserve">
-    <value>从</value>
+    <value>From</value>
   </data>
   <data name="Data_To" xml:space="preserve">
-    <value>到</value>
+    <value>To</value>
   </data>
   <data name="Data_Execute" xml:space="preserve">
-    <value>执行</value>
+    <value>Execute</value>
   </data>
   <data name="Data_ExportData" xml:space="preserve">
-    <value>导出数据</value>
+    <value>Export Data</value>
   </data>
   <data name="Data_SelectExportLocation" xml:space="preserve">
-    <value>请选择导出位置</value>
+    <value>Please select export location</value>
   </data>
   
   <!-- Messages -->
   <data name="Message_Loading" xml:space="preserve">
-    <value>加载中，请稍后...</value>
+    <value>Loading, please wait...</value>
   </data>
   <data name="Message_TimeRangeError" xml:space="preserve">
-    <value>时间范围选择错误</value>
+    <value>Time range selection error</value>
   </data>
   <data name="Message_DeleteConfirm" xml:space="preserve">
-    <value>删除确认</value>
+    <value>Delete Confirmation</value>
   </data>
   <data name="Message_DeleteConfirmText" xml:space="preserve">
-    <value>是否执行此操作？</value>
+    <value>Do you want to execute this operation?</value>
   </data>
   <data name="Message_OperationCompleted" xml:space="preserve">
-    <value>操作已完成</value>
+    <value>Operation completed</value>
   </data>
   <data name="Message_ExportCompleted" xml:space="preserve">
-    <value>导出数据完成</value>
+    <value>Data export completed</value>
   </data>
   <data name="Message_UpdateProgramDeleted" xml:space="preserve">
-    <value>升级程序似乎已被删除，请手动前往发布页查看新版本</value>
+    <value>The update program seems to have been deleted, please manually check the release page for new versions</value>
   </data>
   <data name="Message_CannotStartUpdater" xml:space="preserve">
-    <value>无法正确启动检查更新程序</value>
+    <value>Cannot start the update checker correctly</value>
   </data>
   
   <!-- Config Attributes -->
   <data name="Config_On" xml:space="preserve">
-    <value>开</value>
+    <value>On</value>
   </data>
   <data name="Config_Off" xml:space="preserve">
-    <value>关</value>
+    <value>Off</value>
   </data>
   
   <!-- File Dialogs -->
@@ -259,52 +268,41 @@
   
   <!-- Time Units -->
   <data name="Time_Day" xml:space="preserve">
-    <value>按天</value>
+    <value>By Day</value>
   </data>
   <data name="Time_Week" xml:space="preserve">
-    <value>按周</value>
+    <value>By Week</value>
   </data>
   <data name="Time_Month" xml:space="preserve">
-    <value>按月</value>
+    <value>By Month</value>
   </data>
   <data name="Time_Year" xml:space="preserve">
-    <value>按年</value>
+    <value>By Year</value>
   </data>
   
   <!-- Update -->
   <data name="Update_Downloading" xml:space="preserve">
-    <value>正在下载新版本文件...</value>
+    <value>Downloading new version files...</value>
   </data>
   <data name="Update_ConfirmSaveDirectory" xml:space="preserve">
-    <value>确认保存目录</value>
+    <value>Confirm save directory</value>
   </data>
   <data name="Update_ProgressCalculation" xml:space="preserve">
-    <value>进度计算</value>
+    <value>Progress calculation</value>
   </data>
   <data name="Update_CloseResources" xml:space="preserve">
-    <value>关闭资源</value>
+    <value>Close resources</value>
   </data>
   <data name="Update_Preparing" xml:space="preserve">
-    <value>准备更新</value>
+    <value>Preparing update</value>
   </data>
   <data name="Update_DownloadComplete" xml:space="preserve">
-    <value>下载完成，正在解压请勿关闭此窗口...</value>
+    <value>Download complete, extracting please do not close this window...</value>
   </data>
   <data name="Update_Complete" xml:space="preserve">
-    <value>更新完成！</value>
+    <value>Update complete!</value>
   </data>
   <data name="Update_ExtractError" xml:space="preserve">
-    <value>解压文件时发生异常，请重试！通常情况可能是因为Tai主程序尚未退出。</value>
+    <value>An exception occurred while extracting files, please try again! Usually this may be because the Tai main program has not exited yet.</value>
   </data>
-  
-  <!-- Language Settings -->
-  <data name="Settings_Language" xml:space="preserve">
-    <value>语言</value>
-  </data>
-  <data name="Settings_LanguageDescription" xml:space="preserve">
-    <value>选择应用程序的显示语言</value>
-  </data>
-  <data name="Settings_LanguageNote" xml:space="preserve">
-    <value>注意：更改语言后需要重启应用程序才能完全生效</value>
-  </data>
-</root>
+</root> 

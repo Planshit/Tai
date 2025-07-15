@@ -230,6 +230,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SettingPageVM.cs" />
     <Compile Include="ViewModels\WebSiteDetailPageVM.cs" />
+    <Compile Include="ViewModels\LanguageSettingPageVM.cs" />
     <Compile Include="Views\CategoryWebSiteListPage.xaml.cs">
       <DependentUpon>CategoryWebSiteListPage.xaml</DependentUpon>
     </Compile>
@@ -256,6 +257,9 @@
     </Compile>
     <Compile Include="Views\WebSiteDetailPage.xaml.cs">
       <DependentUpon>WebSiteDetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LanguageSettingPage.xaml.cs">
+      <DependentUpon>LanguageSettingPage.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -475,6 +479,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\WebSiteDetailPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LanguageSettingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

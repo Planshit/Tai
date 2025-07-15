@@ -32,6 +32,8 @@ namespace UI
         private System.Threading.Mutex mutex;
         //  保活窗口
         private HideWindow keepaliveWindow;
+        
+        public ServiceProvider ServiceProvider => serviceProvider;
 
         public App()
         {
@@ -115,6 +117,9 @@ namespace UI
             services.AddSingleton<IInputServicer, InputServicer>();
             services.AddSingleton<IWebSiteContextMenuServicer, WebSiteContextMenuServicer>();
             services.AddSingleton<IStatusBarIconServicer, StatusBarIconServicer>();
+            
+            //  本地化服务
+            services.AddSingleton<ILocalizationServicer, LocalizationServicer>();
 
             //  主窗口
             services.AddSingleton<MainViewModel>();
@@ -130,6 +135,10 @@ namespace UI
             //  设置页
             services.AddTransient<SettingPage>();
             services.AddTransient<SettingPageVM>();
+            
+            //  语言设置页
+            services.AddTransient<LanguageSettingPage>();
+            services.AddTransient<LanguageSettingPageVM>();
 
             //  详情页
             services.AddTransient<DetailPage>();
