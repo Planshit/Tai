@@ -21,11 +21,12 @@ namespace Core.Librarys
                 return "0";
             }
         }
-        public static string ToString(int seconds)
+        
+        public static object[] ToString(int seconds)
         {
             if (seconds < 60)
             {
-                return seconds + "秒";
+                return new Object[]{"time.seconds", seconds};
             }
             else
             {
@@ -36,10 +37,13 @@ namespace Core.Librarys
                     {
                         double pointNumber = minutes - (int)minutes;
                         int seconds_ = (int)(pointNumber * 60);
-                        return (int)minutes + "分钟" + (seconds_ > 0 ? seconds_ + "秒" : "");
+                        if (seconds_ > 0)
+                        {
+                            return new Object[]{"time.minutesWithSeconds", (int) minutes, seconds_};
+                        }
                     }
 
-                    return minutes + "分钟";
+                    return new Object[]{"time.minutes", (int) minutes};
                 }
                 else
                 {
@@ -48,9 +52,13 @@ namespace Core.Librarys
                     {
                         double pointNumber = hours - (int)hours;
                         int minutes_ = (int)(pointNumber * 60);
-                        return (int)hours + "小时" + (minutes_ > 0 ? minutes_ + "分" : "");
+                        if (minutes_ > 0)
+                        {
+                            return new Object[]{"time.hoursWithMinutes", (int) hours, minutes_};
+                        }
                     }
-                    return hours + "小时";
+                    
+                    return new Object[]{"time.hours", (int) hours};
                 }
             }
         }

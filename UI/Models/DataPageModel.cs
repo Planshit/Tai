@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.DatePickerBar;
+using UI.Servicers;
 
 namespace UI.Models
 {
@@ -98,5 +99,7 @@ namespace UI.Models
 
         private ContextMenu AppContextMenu_;
         public ContextMenu AppContextMenu { get { return AppContextMenu_; } set { AppContextMenu_ = value; OnPropertyChanged(); } }
+
+        protected DataPageModel(ILocalizationServicer localizationServicer) : base(localizationServicer) {}
     }
 }

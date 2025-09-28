@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:UI.Views"
+      xmlns:loc="clr-namespace:UI.Markup"
       xmlns:Charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:DatePickerBar="clr-namespace:UI.Controls.DatePickerBar" xmlns:select="clr-namespace:UI.Controls.Select" x:Class="UI.Views.DataPage"
     xmlns:control="clr-namespace:UI.Controls"
       mc:Ignorable="d" 
@@ -18,10 +19,10 @@
         </Grid.RowDefinitions>
         <!--<TextBlock Text="详细" FontSize="18" Margin="0,5,0,20"/>-->
         <StackPanel Orientation="Horizontal" Margin="0,5,0,20" >
-            <TextBlock Text="详细" FontSize="18" VerticalAlignment="Center"/>
+            <TextBlock Text="{loc:Localization Key=main.details}" FontSize="18" VerticalAlignment="Center"/>
             <select:Select Margin="10,0,0,0" VerticalAlignment="Top" Padding="10,5"  IsShowIcon="False" SelectedItem="{Binding ShowType,Mode=TwoWay}" Options="{Binding ShowTypeOptions}"/>
         </StackPanel>
-        <Tabbar:Tabbar Width="145" HorizontalAlignment="Left" Grid.Row="1" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
+        <Tabbar:Tabbar MinWidth="145" HorizontalAlignment="Left" Grid.Row="1" Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}"/>
 
 
         <TabControl 

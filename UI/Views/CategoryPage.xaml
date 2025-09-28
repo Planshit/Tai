@@ -4,14 +4,13 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:UI.Views" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:Button="clr-namespace:UI.Controls.Button" xmlns:input="clr-namespace:UI.Controls.Input" xmlns:select="clr-namespace:UI.Controls.Select"
+      xmlns:loc="clr-namespace:UI.Markup"
       mc:Ignorable="d" 
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:converter="clr-namespace:UI.Controls.Converters"
       xmlns:c="clr-namespace:UI.Controls"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="CategoryPage" Foreground="{DynamicResource StandardTextBrush}" IsFillPage="True"
-         xmlns:toggle="clr-namespace:UI.Controls.Toggle" xmlns:list="clr-namespace:UI.Controls.List">
-
-
+      xmlns:toggle="clr-namespace:UI.Controls.Toggle" xmlns:list="clr-namespace:UI.Controls.List">
     <Grid>
 
         <!--编辑-->
@@ -105,7 +104,7 @@
             </Grid.ContextMenu>
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,5,0,20" >
-                    <TextBlock Text="分类" FontSize="18" VerticalAlignment="Center"/>
+                    <TextBlock Text="{loc:Localization Key=main.categories}" FontSize="18" VerticalAlignment="Center"/>
                     <select:Select Margin="10,0,0,0" VerticalAlignment="Top" Padding="10,5"  IsShowIcon="False" SelectedItem="{Binding ShowType,Mode=TwoWay}" Options="{Binding ShowTypeOptions}"/>
                 </StackPanel>
                 <!--<TextBlock Text="管理所有应用分类"/>-->

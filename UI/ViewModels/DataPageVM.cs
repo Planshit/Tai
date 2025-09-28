@@ -29,7 +29,14 @@ namespace UI.ViewModels
         private readonly IWebData _webData;
         private readonly IWebSiteContextMenuServicer _webSiteContextMenu;
 
-        public DataPageVM(IData data, MainViewModel main, IAppContextMenuServicer appContextMenuServicer, IAppConfig appConfig, IWebData webData, IWebSiteContextMenuServicer webSiteContextMenu)
+        public DataPageVM(
+            ILocalizationServicer localizationServicer,
+            IData data,
+            MainViewModel main,
+            IAppContextMenuServicer appContextMenuServicer,
+            IAppConfig appConfig,
+            IWebData webData,
+            IWebSiteContextMenuServicer webSiteContextMenu) : base(localizationServicer)
         {
             this.data = data;
             this.main = main;
@@ -56,7 +63,9 @@ namespace UI.ViewModels
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "按天","按月","按年"
+                Translated("time.daily"),
+                Translated("time.monthly"),
+                Translated("time.yearly")
             };
 
             TabbarSelectedIndex = 0;
@@ -214,7 +223,7 @@ namespace UI.ViewModels
                     bindModel.Data = item;
                     bindModel.Name = !string.IsNullOrEmpty(item.AppModel?.Alias) ? item.AppModel.Alias : string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                     bindModel.Value = item.Time;
-                    bindModel.Tag = Time.ToString(item.Time);
+                    bindModel.Tag = Translated(Time.ToString(item.Time));
                     bindModel.PopupText = item.AppModel?.File;
                     bindModel.Icon = item.AppModel?.IconFile;
                     bindModel.BadgeList = new List<ChartBadgeModel>();
@@ -255,7 +264,7 @@ namespace UI.ViewModels
                     bindModel.Data = item;
                     bindModel.Name = !string.IsNullOrEmpty(item.Alias) ? item.Alias : item.Title;
                     bindModel.Value = item.Duration;
-                    bindModel.Tag = Time.ToString(item.Duration);
+                    bindModel.Tag = Translated(Time.ToString(item.Duration));
                     bindModel.PopupText = item.Domain;
                     bindModel.Icon = item.IconFile;
                     bindModel.BadgeList = new List<ChartBadgeModel>();

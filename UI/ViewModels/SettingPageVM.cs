@@ -31,7 +31,13 @@ namespace UI.ViewModels
         public Command DelDataCommand { get; set; }
         public Command ExportDataCommand { get; set; }
 
-        public SettingPageVM(IAppConfig appConfig, MainViewModel mainVM, IData data, IWebData webData, IUIServicer uiServicer_)
+        public SettingPageVM(
+            ILocalizationServicer localizationServicer,
+            IAppConfig appConfig,
+            MainViewModel mainVM,
+            IData data,
+            IWebData webData,
+            IUIServicer uiServicer_) : base(localizationServicer)
         {
             this.appConfig = appConfig;
             this.mainVM = mainVM;
@@ -68,7 +74,7 @@ namespace UI.ViewModels
 
                 if (!File.Exists(updaterExePath))
                 {
-                    mainVM.Toast("升级程序似乎已被删除，请手动前往发布页查看新版本", Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
+                    mainVM.Toast(Translated("page.settings.updaterRemoved"), Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
                     return;
                 }
                 File.Copy(updaterExePath, updaterCacheExePath, true);
@@ -85,7 +91,7 @@ namespace UI.ViewModels
                 CheckUpdateBtnVisibility = System.Windows.Visibility.Visible;
 
                 Logger.Error(ex.Message);
-                mainVM.Toast("无法正确启动检查更新程序", Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
+                mainVM.Toast(Translated("page.settings.updaterError"), Controls.Window.ToastType.Error, Controls.Base.IconTypes.None);
             }
         }
 
@@ -102,7 +108,11 @@ namespace UI.ViewModels
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "常规","关联","行为","数据","关于"
+                Translated("page.settings.category.general"),
+                Translated("page.settings.category.associations"),
+                Translated("page.settings.category.behavior"),
+                Translated("page.settings.category.data"),
+                Translated("page.settings.category.about")
             };
 
             PropertyChanged += SettingPageVM_PropertyChanged;

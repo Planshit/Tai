@@ -18,6 +18,7 @@ using UI.Controls.Button;
 using UI.Controls.Input;
 using UI.Controls.List;
 using UI.Controls.Select;
+using UI.Servicers;
 
 namespace UI.Controls.SettingPanel
 {
@@ -299,7 +300,7 @@ namespace UI.Controls.SettingPanel
             if (groupName != null)
             {
                 var groupNameControl = new TextBlock();
-                groupNameControl.Text = groupName;
+                groupNameControl.Text = LocalizationServicer.Instance.Translated(groupName);
                 groupNameControl.FontSize = 14;
                 groupNameControl.Margin = new Thickness(0, 0, 0, 10);
                 container.Children.Add(groupNameControl);
@@ -377,7 +378,7 @@ namespace UI.Controls.SettingPanel
         private UIElement RenderOptionsConfigControl(ConfigAttribute configAttribute, PropertyInfo pi)
         {
             var control = new Select.Select();
-            var optionsArr = configAttribute.Options.Split('|');
+            var optionsArr = LocalizationServicer.Instance.Translated(configAttribute.Options).Split('|');
 
             var options = new List<SelectItemModel>();
             for (int i = 0; i < optionsArr.Length; i++)
@@ -493,7 +494,7 @@ namespace UI.Controls.SettingPanel
 
             //  添加输入框
             var addInputBox = new InputBox();
-            addInputBox.Placeholder = configAttribute.Placeholder;
+            addInputBox.Placeholder = LocalizationServicer.Instance.Translated(configAttribute.Placeholder);
             addInputBox.Margin = new Thickness(0, 0, 10, 0);
 
 
@@ -635,7 +636,7 @@ namespace UI.Controls.SettingPanel
             //  标题和说明
 
             var description = new TextBlock();
-            description.Text = configAttribute.Description;
+            description.Text = LocalizationServicer.Instance.Translated(configAttribute.Description);
             description.Margin = new Thickness(10, 10, 10, 0);
             description.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#989CA1"));
             var container = new StackPanel();

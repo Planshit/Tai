@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
+using UI.Servicers;
 
 namespace UI.Models
 {
@@ -102,5 +103,7 @@ namespace UI.Models
         /// 网站右键菜单
         /// </summary>
         public ContextMenu WebSiteContextMenu { get { return WebSiteContextMenu_; } set { WebSiteContextMenu_ = value; OnPropertyChanged(); } }
+
+        protected IndexPageModel(ILocalizationServicer localizationServicer) : base(localizationServicer) {}
     }
 }

@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using UI.Servicers;
 
 namespace UI.Models
 {
-    public class SettingPageModel : UINotifyPropertyChanged
+    public class SettingPageModel : LocalizedView
     {
         private object data;
         public object Data { get { return data; } set { data = value; OnPropertyChanged(); } }
@@ -47,5 +48,7 @@ namespace UI.Models
 
         private DateTime ExportDataEndMonthDate_;
         public DateTime ExportDataEndMonthDate { get { return ExportDataEndMonthDate_; } set { ExportDataEndMonthDate_ = value; OnPropertyChanged(); } }
+
+        public SettingPageModel(ILocalizationServicer localization) : base(localization) {}
     }
 }

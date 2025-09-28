@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using UI.Models.Category;
+using UI.Servicers;
 
 namespace UI.Models
 {
@@ -85,5 +86,7 @@ namespace UI.Models
 
         private WebCategoryModel SelectedWebCategoryItem_;
         public WebCategoryModel SelectedWebCategoryItem { get { return SelectedWebCategoryItem_; } set { SelectedWebCategoryItem_ = value; OnPropertyChanged(); } }
+
+        protected CategoryPageModel(ILocalizationServicer localizationServicer) : base(localizationServicer) {}
     }
 }

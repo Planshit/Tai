@@ -37,13 +37,14 @@ namespace UI.ViewModels
         private MenuItem _setCategoryMenuItem;
         private MenuItem _whiteListMenuItem;
         public DetailPageVM(
+            ILocalizationServicer localization,
             IData data,
             MainViewModel main,
             IAppConfig appConfig,
             ICategorys categories,
             IAppData appData,
             IInputServicer inputServicer,
-            IUIServicer uIServicer_)
+            IUIServicer uIServicer_) : base(localization)
         {
             this.data = data;
             this.main = main;
@@ -128,35 +129,35 @@ namespace UI.ViewModels
             AppContextMenu = new System.Windows.Controls.ContextMenu();
             AppContextMenu.Opened += AppContextMenu_Opened;
             MenuItem open = new MenuItem();
-            open.Header = "启动应用";
+            open.Header = Translated("page.detail.launchApp");
             open.Click += (e, c) =>
             {
                 OnInfoMenuActionCommand("open exe");
             };
 
             MenuItem copyProcessName = new MenuItem();
-            copyProcessName.Header = "复制应用进程名称";
+            copyProcessName.Header = Translated("page.detail.copyProcessname");
             copyProcessName.Click += (e, c) =>
             {
                 OnInfoMenuActionCommand("copy processname");
             };
 
             MenuItem copyProcessFile = new MenuItem();
-            copyProcessFile.Header = "复制应用文件路径";
+            copyProcessFile.Header = Translated("page.detail.copyPath");
             copyProcessFile.Click += (e, c) =>
             {
                 OnInfoMenuActionCommand("copy process file");
             };
 
             MenuItem openDir = new MenuItem();
-            openDir.Header = "打开应用所在目录";
+            openDir.Header = Translated("page.detail.openDir");
             openDir.Click += (e, c) =>
             {
                 OnInfoMenuActionCommand("open dir");
             };
 
             MenuItem reLoadData = new MenuItem();
-            reLoadData.Header = "刷新";
+            reLoadData.Header = Translated("page.detail.reload");
             reLoadData.Click += async (e, c) =>
             {
                 LoadChartData();
@@ -164,13 +165,13 @@ namespace UI.ViewModels
             };
 
             MenuItem clear = new MenuItem();
-            clear.Header = "清空统计";
+            clear.Header = Translated("page.detail.clearAppData");
             clear.Click += ClearAppData_Click;
 
             _setCategoryMenuItem = new MenuItem();
-            _setCategoryMenuItem.Header = "设置分类";
+            _setCategoryMenuItem.Header = Translated("page.detail.setCategory");
             MenuItem editAlias = new MenuItem();
-            editAlias.Header = "编辑别名";
+            editAlias.Header = Translated("page.detail.editAlias");
             editAlias.Click += EditAlias_ClickAsync;
 
             _whiteListMenuItem = new MenuItem();
@@ -179,12 +180,12 @@ namespace UI.ViewModels
                 if (config.Behavior.ProcessWhiteList.Contains(App.Name))
                 {
                     config.Behavior.ProcessWhiteList.Remove(App.Name);
-                    main.Toast($"已从白名单移除此应用 {App.Description}", Controls.Window.ToastType.Success);
+                    main.Toast(Translated("page.detail.removedFromWhitelist", App.Description), Controls.Window.ToastType.Success);
                 }
                 else
                 {
                     config.Behavior.ProcessWhiteList.Add(App.Name);
-                    main.Toast($"已添加至白名单 {App.Description}", Controls.Window.ToastType.Success);
+                    main.Toast(Translated("page.detail.addedToWhitelist", App.Description), Controls.Window.ToastType.Success);
                 }
             };
 
@@ -264,11 +265,11 @@ namespace UI.ViewModels
 
             if (config.Behavior.ProcessWhiteList.Contains(App.Name))
             {
-                _whiteListMenuItem.Header = "从白名单移除";
+                _whiteListMenuItem.Header = Translated("page.detail.removeFromWhitelist");
             }
             else
             {
-                _whiteListMenuItem.Header = "添加到白名单";
+                _whiteListMenuItem.Header = Translated("page.detail.addToWhitelist");
             }
         }
 
@@ -514,7 +515,7 @@ namespace UI.ViewModels
 
                     var monthData = data.GetProcessMonthLogList(App.ID, Date);
                     int monthTotal = monthData.Sum(m => m.Time);
-                    Total = Time.ToString(monthTotal);
+                    Total = Translated(Time.ToString(monthTotal));
 
                     DateTime start = new DateTime(Date.Year, Date.Month, 1);
                     DateTime end = new DateTime(Date.Year, Date.Month, DateTime.DaysInMonth(Date.Year, Date.Month));
@@ -524,7 +525,7 @@ namespace UI.ViewModels
                     if (monthData.Count > 0)
                     {
                         var longDayData = monthData.OrderByDescending(m => m.Time).FirstOrDefault();
-                        LongDay = longDayData.Date.ToString("最长一天是在 dd 号，使用了 " + Time.ToString(longDayData.Time));
+                        LongDay = longDayData.Date.ToString("最长一天是在 dd 号，使用了 " + Translated(Time.ToString(longDayData.Time)));
 
                     }
 
@@ -578,7 +579,7 @@ namespace UI.ViewModels
                 bindModel.Data = item;
                 bindModel.Name = !string.IsNullOrEmpty(item.AppModel?.Alias) ? item.AppModel.Alias : string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                 bindModel.Value = item.Time;
-                bindModel.Tag = Time.ToString(item.Time);
+                bindModel.Tag = Translated(Time.ToString(item.Time));
                 bindModel.PopupText = item.AppModel.File;
                 bindModel.Icon = item.AppModel.IconFile;
                 bindModel.DateTime = item.Date;

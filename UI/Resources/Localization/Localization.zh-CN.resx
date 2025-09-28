@@ -1,0 +1,372 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <data name="time.seconds" xml:space="preserve">
+                <value>{0}秒</value>
+            </data>
+            <data name="time.minutes" xml:space="preserve">
+                <value>{0}分钟</value>
+            </data>
+            <data name="time.minutesWithSeconds" xml:space="preserve">
+                <value>{0}分钟{1}秒</value>
+            </data>
+            <data name="time.hours" xml:space="preserve">
+                <value>{0}小时</value>
+            </data>
+            <data name="time.hoursWithMinutes" xml:space="preserve">
+                <value>{0}小时{1}分</value>
+            </data>
+            <data name="time.daily" xml:space="preserve">
+                <value>按天</value>
+            </data>
+            <data name="time.weekly" xml:space="preserve">
+                <value>按周</value>
+            </data>
+            <data name="time.monthly" xml:space="preserve">
+                <value>按月</value>
+            </data>
+            <data name="time.yearly" xml:space="preserve">
+                <value>按年</value>
+            </data>
+            <data name="page.refresh" xml:space="preserve">
+                <value>刷新</value>
+            </data>
+            <data name="page.top" xml:space="preserve">
+                <value>最为频繁</value>
+            </data>
+            <data name="page.apps" xml:space="preserve">
+                <value>应用</value>
+            </data>
+            <data name="page.websites" xml:space="preserve">
+                <value>网站</value>
+            </data>
+            
+            <!-- IndexPageVM.cs -->
+            <data name="page.index.time.today" xml:space="preserve">
+                <value>今日</value>
+            </data>
+            <data name="page.index.time.week" xml:space="preserve">
+                <value>本周</value>
+            </data>
+            
+            <!-- IndexPage.xaml -->
+            <data name="page.index.more" xml:space="preserve">
+                <value>更多</value>
+            </data>
+
+            <!-- MainViewModel.cs -->
+            <data name="main.details" xml:space="preserve">
+                <value>详细</value>
+            </data>
+            <data name="main.statistics" xml:space="preserve">
+                <value>统计</value>
+            </data>
+            <data name="main.overview" xml:space="preserve">
+                <value>概览</value>
+            </data>
+            <data name="main.categories" xml:space="preserve">
+                <value>分类</value>
+            </data>
+            
+            <!-- MainWindow.xaml -->
+            <data name="main.settings" xml:space="preserve">
+                <value>设置</value>
+            </data>
+
+            <!-- DetailPageVM.cs -->
+            <data name="page.detail.launchApp" xml:space="preserve">
+                <value>启动应用</value>
+            </data>
+            <data name="page.detail.copyProcessname" xml:space="preserve">
+                <value>复制应用进程名称</value>
+            </data>
+            <data name="page.detail.copyPath" xml:space="preserve">
+                <value>复制应用文件路径</value>
+            </data>
+            <data name="page.detail.openDir" xml:space="preserve">
+                <value>打开应用所在目录</value>
+            </data>
+            <data name="page.detail.reload" xml:space="preserve">
+                <value>刷新</value>
+            </data>
+            <data name="page.detail.clearAppData" xml:space="preserve">
+                <value>清空统计</value>
+            </data>
+            <data name="page.detail.setCategory" xml:space="preserve">
+                <value>设置分类</value>
+            </data>
+            <data name="page.detail.editAlias" xml:space="preserve">
+                <value>编辑别名</value>
+            </data>
+            <data name="page.detail.removeFromWhitelist" xml:space="preserve">
+                <value>从白名单移除</value>
+            </data>
+            <data name="page.detail.addToWhitelist" xml:space="preserve">
+                <value>添加到白名单</value>
+            </data>
+
+            <data name="page.detail.removedFromWhitelist" xml:space="preserve">
+                <value>已从白名单移除此应用 {0}</value>
+            </data>
+            <data name="page.detail.addedToWhitelist" xml:space="preserve">
+                <value>已添加至白名单 {0}</value>
+            </data>
+
+            <!-- SettingPageVM.cs -->
+            <data name="page.settings.updaterRemoved" xml:space="preserve">
+                <value>升级程序似乎已被删除，请手动前往发布页查看新版本</value>
+            </data>
+            <data name="page.settings.updaterError" xml:space="preserve">
+                <value>无法正确启动检查更新程序</value>
+            </data>
+
+            <data name="page.settings.category.general" xml:space="preserve">
+                <value>常规</value>
+            </data>
+            <data name="page.settings.category.associations" xml:space="preserve">
+                <value>关联</value>
+            </data>
+            <data name="page.settings.category.behavior" xml:space="preserve">
+                <value>行为</value>
+            </data>
+            <data name="page.settings.category.data" xml:space="preserve">
+                <value>数据</value>
+            </data>
+            <data name="page.settings.category.about" xml:space="preserve">
+                <value>关于</value>
+            </data>
+            
+            <!-- ChartPageVM.cs -->
+            <data name="page.chart.thisWeek" xml:space="preserve">
+                <value>本周</value>
+            </data>
+            <data name="page.chart.lastWeek" xml:space="preserve">
+                <value>上周</value>
+            </data>
+            <data name="page.chart.view.default" xml:space="preserve">
+                <value>默认视图</value>
+            </data>
+            <data name="page.chart.view.summary" xml:space="preserve">
+                <value>汇总视图</value>
+            </data>
+            <data name="page.chart.view.categories" xml:space="preserve">
+                <value>分类视图</value>
+            </data>
+            <data name="page.chart.uncategorized" xml:space="preserve">
+                <value>未分类</value>
+            </data>
+            
+            <!-- ChartPage.xaml -->
+            <data name="page.chart.hours" xml:space="preserve">
+                <value>小时</value>
+            </data>
+            <data name="page.chart.total" xml:space="preserve">
+                <value>总计</value>
+            </data>
+            <data name="page.chart.unique" xml:space="preserve">
+                <value>个</value>
+            </data>
+            <data name="page.chart.numberOfApps" xml:space="preserve">
+                <value>应用量</value>
+            </data>
+            <data name="page.chart.longestUsage" xml:space="preserve">
+                <value>最长使用</value>
+            </data>
+            <data name="page.chart.categories" xml:space="preserve">
+                <value>分类</value>
+            </data>
+            
+            <!-- SettingPage.xaml -->
+            <data name="page.settings.about.version" xml:space="preserve">
+                <value>Tai 版本号</value>
+            </data>
+
+            <!-- LinkModel.cs -->
+            <data name="config.linkMode.name.name" xml:space="preserve">
+                <value>名称</value>
+            </data>
+            <data name="config.linkMode.name.description" xml:space="preserve">
+                <value>设置一个名称用于识别该关联</value>
+            </data>
+            <data name="config.linkMode.processList.name" xml:space="preserve">
+                <value>关联进程</value>
+            </data>
+            <data name="config.linkMode.processList.description" xml:space="preserve">
+                <value>将需要关联的进程名称（不带.exe）添加到此，至少两个。</value>
+            </data>
+
+            <!-- BehaviorModel.cs -->
+            <data name="config.behaviorModel.isSleepWatch.name" xml:space="preserve">
+                <value>睡眠监测</value>
+            </data>
+            <data name="config.behaviorModel.isSleepWatch.description" xml:space="preserve">
+                <value>离开电脑时自动停止统计，重启软件生效。（一般情况不建议关闭）</value>
+            </data>
+            <data name="config.behaviorModel.group.isSleepWatch" xml:space="preserve">
+                <value>偏好</value>
+            </data>
+
+            <data name="config.behaviorModel.ignoreProcessList.name" xml:space="preserve">
+                <value>忽略应用</value>
+            </data>
+            <data name="config.behaviorModel.ignoreProcessList.description" xml:space="preserve">
+                <value>可以通过进程名称或者正则表达式进行匹配。当使用正则表达式时可以匹配程序路径</value>
+            </data>
+            <data name="config.behaviorModel.ignoreProcessList.placeholder" xml:space="preserve">
+                <value>进程名称，不需要输入.exe。支持正则表达式</value>
+            </data>
+            <data name="config.behaviorModel.group.ignoreProcess" xml:space="preserve">
+                <value>忽略应用</value>
+            </data>
+
+            <data name="config.behaviorModel.ignoreURLList.name" xml:space="preserve">
+                <value>忽略URL</value>
+            </data>
+            <data name="config.behaviorModel.ignoreURLList.description" xml:space="preserve">
+                <value>过滤不需要统计的网站或链接</value>
+            </data>
+            <data name="config.behaviorModel.ignoreURLList.placeholder" xml:space="preserve">
+                <value>URL 支持正则表达式</value>
+            </data>
+            <data name="config.behaviorModel.group.ignoreURL" xml:space="preserve">
+                <value>忽略URL</value>
+            </data>
+
+            <data name="config.behaviorModel.isWhiteList.name" xml:space="preserve">
+                <value>应用白名单</value>
+            </data>
+            <data name="config.behaviorModel.isWhiteList.description" xml:space="preserve">
+                <value>仅统计白名单内的应用</value>
+            </data>
+            <data name="config.behaviorModel.group.whiteList" xml:space="preserve">
+                <value>应用白名单</value>
+            </data>
+
+            <data name="config.behaviorModel.processWhiteList.name" xml:space="preserve">
+                <value>应用白名单</value>
+            </data>
+            <data name="config.behaviorModel.processWhiteList.description" xml:space="preserve">
+                <value>可以通过进程名称或者正则表达式进行匹配，当使用正则表达式时可以匹配程序路径</value>
+            </data>
+            <data name="config.behaviorModel.processWhiteList.placeholder" xml:space="preserve">
+                <value>进程名称，不需要输入.exe。支持正则表达式</value>
+            </data>
+            
+            <!-- GeneralModel.resx -->
+            <data name="config.general.group.basic" xml:space="preserve">
+                <value>基础</value>
+            </data>
+            <data name="config.general.group.appearance" xml:space="preserve">
+                <value>外观</value>
+            </data>
+            <data name="config.general.group.overview" xml:space="preserve">
+                <value>概览页</value>
+            </data>
+            <data name="config.general.group.feature" xml:space="preserve">
+                <value>功能</value>
+            </data>
+            
+            <data name="config.general.isStartAtBoot.name" xml:space="preserve">
+                <value>开机自启动</value>
+            </data>
+            <data name="config.general.isStartAtBoot.description" xml:space="preserve">
+                <value>在电脑启动时自动运行 Tai</value>
+            </data>
+            
+            <data name="config.general.theme.name" xml:space="preserve">
+                <value>主题模式</value>
+            </data>
+            <data name="config.general.theme.description" xml:space="preserve">
+                <value>设置以浅色或深色模式显示</value>
+            </data>
+            <data name="config.general.theme.options" xml:space="preserve">
+                <value>浅色|深色</value>
+            </data>
+            
+            <data name="config.general.themeColor.name" xml:space="preserve">
+                <value>主题颜色</value>
+            </data>
+            <data name="config.general.themeColor.description" xml:space="preserve">
+                <value></value>
+            </data>
+            
+            <data name="config.general.isSaveWindowSize.name" xml:space="preserve">
+                <value>保留窗口大小</value>
+            </data>
+            <data name="config.general.isSaveWindowSize.description" xml:space="preserve">
+                <value>保留当前的窗口大小，而非使用系统默认尺寸</value>
+            </data>
+            
+            <data name="config.general.startPage.name" xml:space="preserve">
+                <value>启动页</value>
+            </data>
+            <data name="config.general.startPage.description" xml:space="preserve">
+                <value>设置打开主界面时显示的页面</value>
+            </data>
+            <data name="config.general.startPage.options" xml:space="preserve">
+                <value>概览|统计|详细|分类</value>
+            </data>
+            
+            <data name="config.general.isStartupShowMainWindow.name" xml:space="preserve">
+                <value>启动软件时显示主界面</value>
+            </data>
+            <data name="config.general.isStartupShowMainWindow.description" xml:space="preserve">
+                <value>在开机自启动时此选项无效</value>
+            </data>
+            
+            <data name="config.general.indexPageFrequentUseNum.name" xml:space="preserve">
+                <value>最为频繁显示条数</value>
+            </data>
+            <data name="config.general.indexPageFrequentUseNum.description" xml:space="preserve">
+                <value></value>
+            </data>
+            <data name="config.general.indexPageFrequentUseNum.options" xml:space="preserve">
+                <value>1|2|3|4|5|6|7|8|9|10</value>
+            </data>
+            
+            <data name="config.general.indexPageMoreNum.name" xml:space="preserve">
+                <value>更多显示条数</value>
+            </data>
+            <data name="config.general.indexPageMoreNum.description" xml:space="preserve">
+                <value></value>
+            </data>
+            <data name="config.general.indexPageMoreNum.options" xml:space="preserve">
+                <value>1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20</value>
+            </data>
+            
+            <data name="config.general.isWebEnabled.name" xml:space="preserve">
+                <value>网站浏览统计</value>
+            </data>
+            <data name="config.general.isWebEnabled.description" xml:space="preserve">
+                <value>统计浏览器的网站访问数据，支持：Google Chrome、MSEdge或任何能够安装Chrome拓展的浏览器。请点击 “关于 &gt; 浏览器统计插件” 了解如何安装和使用此功能。</value>
+            </data>
+            
+            <!-- EmptyData.xaml -->
+            <data name="emptyData.noData" xml:space="preserve">
+                <value>暂时没有数据</value>
+            </data>
+            <data name="emptyData.tooltip" xml:space="preserve">
+                <value>什么都没有</value>
+            </data>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+</root>

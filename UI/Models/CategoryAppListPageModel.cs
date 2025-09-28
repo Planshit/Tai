@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using UI.Models.CategoryAppList;
+using UI.Servicers;
 
 namespace UI.Models
 {
@@ -31,5 +32,7 @@ namespace UI.Models
 
         private string SearchInput_;
         public string SearchInput { get { return SearchInput_; } set { SearchInput_ = value; OnPropertyChanged(); } }
+
+        protected CategoryAppListPageModel(ILocalizationServicer localizationServicer) : base(localizationServicer) {}
     }
 }

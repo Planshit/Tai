@@ -10,6 +10,7 @@ using UI.Controls;
 using UI.Models;
 using UI.Models.Category;
 using UI.Models.CategoryAppList;
+using UI.Servicers;
 using UI.Views;
 
 namespace UI.ViewModels
@@ -25,7 +26,7 @@ namespace UI.ViewModels
         public Command SearchCommand { get; set; }
         public Command ChooseCloseCommand { get; set; }
         public Command DelCommand { get; set; }
-        public CategoryAppListPageVM(IAppData appData, MainViewModel mainVM)
+        public CategoryAppListPageVM(ILocalizationServicer localizationServicer, IAppData appData, MainViewModel mainVM) : base(localizationServicer)
         {
             this.appData = appData;
             this.mainVM = mainVM;

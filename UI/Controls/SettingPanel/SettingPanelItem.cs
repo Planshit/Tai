@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using UI.Servicers;
 
 namespace UI.Controls.SettingPanel
 {
@@ -29,6 +30,9 @@ namespace UI.Controls.SettingPanel
         public bool IsBeta { get { return (bool)GetValue(IsBetaProperty); } set { SetValue(IsBetaProperty, value); } }
         public static readonly DependencyProperty IsBetaProperty = DependencyProperty.Register("IsBeta", typeof(bool), typeof(SettingPanelItem));
 
+        public string DisplayName { get { return (string)GetValue(DisplayNameProperty); } set { SetValue(DisplayNameProperty, value); } }
+        public static readonly DependencyProperty DisplayNameProperty = DependencyProperty.Register("DisplayName", typeof(string), typeof(SettingPanelItem));
+        
         public SettingPanelItem()
         {
             DefaultStyleKey = typeof(SettingPanelItem);
@@ -36,8 +40,9 @@ namespace UI.Controls.SettingPanel
 
         public void Init(ConfigAttribute configAttribute_, object content_)
         {
-            Name = configAttribute_.Name;
-            Description = configAttribute_.Description;
+            Name = configAttribute_.Name.Replace(".", "_");
+            DisplayName = LocalizationServicer.Instance.Translated(configAttribute_.Name);
+            Description = LocalizationServicer.Instance.Translated(configAttribute_.Description);
             IsBeta = configAttribute_.IsBeta;
             Content = content_;
         }

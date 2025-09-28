@@ -189,6 +189,7 @@
     <Compile Include="Controls\Window\ToastType.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Librays\Image\Imager.cs" />
+    <Compile Include="Markup\LocalizationExtension.cs" />
     <Compile Include="Models\CategoryWebSiteListPageModel.cs" />
     <Compile Include="Models\CategoryAppListPageModel.cs" />
     <Compile Include="Models\CategoryAppList\ChooseAppModel.cs" />
@@ -199,13 +200,26 @@
     <Compile Include="Models\DataPageModel.cs" />
     <Compile Include="Models\DetailPageModel.cs" />
     <Compile Include="Models\IndexPageModel.cs" />
+    <Compile Include="Models\LocalizedView.cs" />
     <Compile Include="Models\MainWindowModel.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\SettingPageModel.cs" />
     <Compile Include="Models\UINotifyPropertyChanged.cs" />
     <Compile Include="Models\WebSiteDetailPageModel.cs" />
+    <Compile Include="Resources\Localization\Localization.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Localization.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Localization\Localization.zh-CN.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Localization.zh-CN.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Servicers\ILocalizationServicer.cs" />
     <Compile Include="Servicers\IStatusBarIconServicer.cs" />
     <Compile Include="Servicers\IUIServicer.cs" />
+    <Compile Include="Servicers\LocalizationServicer.cs" />
     <Compile Include="Servicers\StatusBarIconServicer.cs" />
     <Compile Include="Servicers\UIServicer.cs" />
     <Compile Include="Servicers\WebSiteContextMenuServicer.cs" />
@@ -497,6 +511,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Localization\Localization.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Localization\Localization.zh-CN.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Localization.zh-CN.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
@@ -585,7 +607,6 @@
     <Resource Include="Resources\Emoji\%288%29.png" />
     <Resource Include="Resources\Emoji\%289%29.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PathMap>$(MSBuildProjectDirectory)=Tai</PathMap>

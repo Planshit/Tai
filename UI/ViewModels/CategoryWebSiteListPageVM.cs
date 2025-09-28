@@ -12,6 +12,7 @@ using UI.Controls;
 using UI.Models;
 using UI.Models.Category;
 using UI.Models.CategoryAppList;
+using UI.Servicers;
 using UI.Views;
 
 namespace UI.ViewModels
@@ -27,7 +28,10 @@ namespace UI.ViewModels
         public Command ChooseCloseCommand { get; set; }
         public Command DelCommand { get; set; }
         private List<OptionModel> _webSiteOptionsTemp;
-        public CategoryWebSiteListPageVM(MainViewModel mainVM_, IWebData webData_)
+        public CategoryWebSiteListPageVM(
+            ILocalizationServicer localizationServicer,
+            MainViewModel mainVM_,
+            IWebData webData_) : base(localizationServicer)
         {
             _mainVM = mainVM_;
             _webData = webData_;

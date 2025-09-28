@@ -9,6 +9,7 @@ using UI.Controls.Base;
 using UI.Controls.Navigation.Models;
 using UI.Controls.Window;
 using UI.Models;
+using UI.Servicers;
 using UI.Views;
 
 namespace UI.ViewModels
@@ -22,10 +23,11 @@ namespace UI.ViewModels
 
         private string[] pages = { nameof(IndexPage), nameof(ChartPage), nameof(DataPage), nameof(CategoryPage) };
         public MainViewModel(
+            ILocalizationServicer localizationServicer,
             IServiceProvider serviceProvider,
             IAppConfig appConfig,
             IMain main
-            )
+            ) : base(localizationServicer)
         {
             this.serviceProvider = serviceProvider;
             this.appConfig = appConfig;
@@ -86,7 +88,7 @@ namespace UI.ViewModels
             {
                 UnSelectedIcon = Controls.Base.IconTypes.Home,
                 SelectedIcon = IconTypes.HomeSolid,
-                Title = "概览",
+                Title = Translated("main.overview"),
                 Uri = nameof(IndexPage),
                 ID = -1
 
@@ -95,7 +97,7 @@ namespace UI.ViewModels
             {
                 UnSelectedIcon = Controls.Base.IconTypes.ZeroBars,
                 SelectedIcon = IconTypes.FourBars,
-                Title = "统计",
+                Title = Translated("main.statistics"),
                 ID = 1,
                 Uri = nameof(ChartPage),
 
@@ -105,7 +107,7 @@ namespace UI.ViewModels
                 UnSelectedIcon = Controls.Base.IconTypes.Calendar,
                 SelectedIcon = IconTypes.CalendarSolid,
                 //Icon = Controls.Base.IconTypes.BIDashboard,
-                Title = "详细",
+                Title = Translated("main.details"),
                 ID = 2,
                 Uri = nameof(DataPage),
 
@@ -114,7 +116,7 @@ namespace UI.ViewModels
             {
                 UnSelectedIcon = Controls.Base.IconTypes.EndPoint,
                 SelectedIcon = IconTypes.EndPointSolid,
-                Title = "分类",
+                Title = Translated("main.categories"),
                 ID = 3,
                 Uri = nameof(CategoryPage),
 

@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UI.Controls.Charts.Model;
+using UI.Servicers;
 
 namespace UI.Controls.Charts
 {
@@ -176,7 +177,7 @@ namespace UI.Controls.Charts
                 font.Text = Data[i].Name.Length > 4 ? Data[i].Name.Substring(0, 4) : Data[i].Name;
                 font.Foreground = UI.Base.Color.Colors.GetFromString("#7f7f7f");
                 font.FontSize = 12;
-                font.ToolTip = $"{Data[i].Name} {Time.ToString((int)Data[i].Values.Sum())}";
+                font.ToolTip = $"{Data[i].Name} {LocalizationServicer.Instance.Translated(Time.ToString((int)Data[i].Values.Sum()))}";
 
                 var textSize = MeasureString(font);
                 Debug.WriteLine(font.Text + " -> " + angle * i);

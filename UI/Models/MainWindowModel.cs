@@ -8,11 +8,14 @@ using UI.Controls;
 using UI.Controls.Base;
 using UI.Controls.Navigation.Models;
 using UI.Controls.Window;
+using UI.Servicers;
 
 namespace UI.Models
 {
-    public class MainWindowModel : UINotifyPropertyChanged
+    public class MainWindowModel : LocalizedView
     {
+        protected MainWindowModel(ILocalizationServicer localization) : base(localization) {}
+
         private IServiceProvider ServiceProvider_;
         public IServiceProvider ServiceProvider
         {

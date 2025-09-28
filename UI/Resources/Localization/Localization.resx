@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- The default ui names - should be en_US -->
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <data name="time.seconds" xml:space="preserve">
+                <value>{0}sec</value>
+            </data>
+            <data name="time.minutes" xml:space="preserve">
+                <value>{0}min</value>
+            </data>
+            <data name="time.minutesWithSeconds" xml:space="preserve">
+                <value>{0}min {1}sec</value>
+            </data>
+            <data name="time.hours" xml:space="preserve">
+                <value>{0}h</value>
+            </data>
+            <data name="time.hoursWithMinutes" xml:space="preserve">
+                <value>{0}h {1}min</value>
+            </data>
+            <data name="time.daily" xml:space="preserve">
+                <value>Daily</value>
+            </data>
+            <data name="time.weekly" xml:space="preserve">
+                <value>Weekly</value>
+            </data>
+            <data name="time.monthly" xml:space="preserve">
+                <value>Monthly</value>
+            </data>
+            <data name="time.yearly" xml:space="preserve">
+                <value>Yearly</value>
+            </data>
+            <data name="page.refresh" xml:space="preserve">
+                <value>Refresh</value>
+            </data>
+            <data name="page.top" xml:space="preserve">
+                <value>Top</value>
+            </data>
+            <data name="page.apps" xml:space="preserve">
+                <value>Apps</value>
+            </data>
+            <data name="page.websites" xml:space="preserve">
+                <value>Websites</value>
+            </data>
+            
+            <!-- IndexPageVM.cs -->
+            <data name="page.index.time.today" xml:space="preserve">
+                <value>Today</value>
+            </data>
+            <data name="page.index.time.week" xml:space="preserve">
+                <value>This Week</value>
+            </data>
+            
+            <!-- IndexPage.xaml -->
+            <data name="page.index.more" xml:space="preserve">
+                <value>Other</value>
+            </data>
+            
+            <!-- MainViewModel.cs -->
+            <data name="main.details" xml:space="preserve">
+                <value>Details</value>
+            </data>
+            <data name="main.statistics" xml:space="preserve">
+                <value>Statistics</value>
+            </data>
+            <data name="main.overview" xml:space="preserve">
+                <value>Overview</value>
+            </data>
+            <data name="main.categories" xml:space="preserve">
+                <value>Categories</value>
+            </data>
+            
+            <!-- MainWindow.xaml -->
+            <data name="main.settings" xml:space="preserve">
+                <value>Settings</value>
+            </data>
+            
+            <!-- DetailPageVM.cs -->
+            <data name="page.detail.launchApp" xml:space="preserve">
+                <value>Open app</value>
+            </data>
+            <data name="page.detail.copyProcessname" xml:space="preserve">
+                <value>Copy name</value>
+            </data>
+            <data name="page.detail.copyPath" xml:space="preserve">
+                <value>Copy path</value>
+            </data>
+            <data name="page.detail.openDir" xml:space="preserve">
+                <value>Open folder</value>
+            </data>
+            <data name="page.detail.reload" xml:space="preserve">
+                <value>Reload</value>
+            </data>
+            <data name="page.detail.clearAppData" xml:space="preserve">
+                <value>Clear statistics</value>
+            </data>
+            <data name="page.detail.setCategory" xml:space="preserve">
+                <value>Set category</value>
+            </data>
+            <data name="page.detail.editAlias" xml:space="preserve">
+                <value>Edit alias</value>
+            </data>
+            <data name="page.detail.removeFromWhitelist" xml:space="preserve">
+                <value>Remove from whitelist</value>
+            </data>
+            <data name="page.detail.addToWhitelist" xml:space="preserve">
+                <value>Add to whitelist</value>
+            </data>
+            
+            <data name="page.detail.removedFromWhitelist" xml:space="preserve">
+                <value>{0} removed from whitelist</value>
+            </data>
+            <data name="page.detail.addedToWhitelist" xml:space="preserve">
+                <value>{0} added to whitelist</value>
+            </data>
+            
+            <!-- SettingPageVM.cs -->
+            <data name="page.settings.updaterRemoved" xml:space="preserve">
+                <value>It seems like the updater was removed. Please download new versions manually on the release page.</value>
+            </data>
+            <data name="page.settings.updaterError" xml:space="preserve">
+                <value>There was an error executing the updater!</value>
+            </data>
+            <data name="page.settings.updaterError" xml:space="preserve">
+                <value>There was an error executing the updater!</value>
+            </data>
+            
+            <data name="page.settings.category.general" xml:space="preserve">
+                <value>General</value>
+            </data>
+            <data name="page.settings.category.associations" xml:space="preserve">
+                <value>Associations</value>
+            </data>
+            <data name="page.settings.category.behavior" xml:space="preserve">
+                <value>Behavior</value>
+            </data>
+            <data name="page.settings.category.data" xml:space="preserve">
+                <value>Data</value>
+            </data>
+            <data name="page.settings.category.about" xml:space="preserve">
+                <value>About</value>
+            </data>
+            
+            <!-- ChartPageVM.cs -->
+            <data name="page.chart.thisWeek" xml:space="preserve">
+                <value>This Week</value>
+            </data>
+            <data name="page.chart.lastWeek" xml:space="preserve">
+                <value>Last Week</value>
+            </data>
+            <data name="page.chart.view.default" xml:space="preserve">
+                <value>Default</value>
+            </data>
+            <data name="page.chart.view.summary" xml:space="preserve">
+                <value>Summary</value>
+            </data>
+            <data name="page.chart.view.categories" xml:space="preserve">
+                <value>Categories</value>
+            </data>
+            <data name="page.chart.uncategorized" xml:space="preserve">
+                <value>Uncategorized</value>
+            </data>
+            
+            <!-- ChartPage.xaml -->
+            <data name="page.chart.hours" xml:space="preserve">
+                <value>hours</value>
+            </data>
+            <data name="page.chart.total" xml:space="preserve">
+                <value>Total time</value>
+            </data>
+            <data name="page.chart.unique" xml:space="preserve">
+                <value>total</value>
+            </data>
+            <data name="page.chart.numberOfApps" xml:space="preserve">
+                <value>Unique apps</value>
+            </data>
+            <data name="page.chart.longestUsage" xml:space="preserve">
+                <value>Longest usage</value>
+            </data>
+            <data name="page.chart.categories" xml:space="preserve">
+                <value>Categories</value>
+            </data>
+            
+            <!-- SettingPage.xaml -->
+            <data name="page.settings.about.version" xml:space="preserve">
+                <value>Tai Version:</value>
+            </data>
+            
+            <!-- LinkModel.cs -->
+            <data name="config.linkMode.name.name" xml:space="preserve">
+                <value>Name</value>
+            </data>
+            <data name="config.linkMode.name.description" xml:space="preserve">
+                <value>设置一个名称用于识别该关联</value>
+            </data>
+            <data name="config.linkMode.processList.name" xml:space="preserve">
+                <value>关联进程</value>
+            </data>
+            <data name="config.linkMode.processList.description" xml:space="preserve">
+                <value>将需要关联的进程名称（不带.exe）添加到此，至少两个。</value>
+            </data>
+
+            <!-- BehaviorModel.cs -->
+            <data name="config.behaviorModel.isSleepWatch.name" xml:space="preserve">
+                <value>Sleep Monitoring</value>
+            </data>
+            <data name="config.behaviorModel.isSleepWatch.description" xml:space="preserve">
+                <value>Automatically stops tracking when away from the computer. Takes effect after restarting the software. (Not recommended to disable)</value>
+            </data>
+            <data name="config.behaviorModel.group.isSleepWatch" xml:space="preserve">
+                <value>Preferences</value>
+            </data>
+
+            <data name="config.behaviorModel.ignoreProcessList.name" xml:space="preserve">
+                <value>Ignored Apps</value>
+            </data>
+            <data name="config.behaviorModel.ignoreProcessList.description" xml:space="preserve">
+                <value>Match by process name or regex. Regexes can match program paths.</value>
+            </data>
+            <data name="config.behaviorModel.ignoreProcessList.placeholder" xml:space="preserve">
+                <value>Process name (no ".exe" needed). Supports regular expressions</value>
+            </data>
+            <data name="config.behaviorModel.group.ignoreProcess" xml:space="preserve">
+                <value>Ignored Apps</value>
+            </data>
+
+            <data name="config.behaviorModel.ignoreURLList.name" xml:space="preserve">
+                <value>Ignored URLs</value>
+            </data>
+            <data name="config.behaviorModel.ignoreURLList.description" xml:space="preserve">
+                <value>Filter websites or links that should not be tracked.</value>
+            </data>
+            <data name="config.behaviorModel.ignoreURLList.placeholder" xml:space="preserve">
+                <value>Supports regexes</value>
+            </data>
+            <data name="config.behaviorModel.group.ignoreURL" xml:space="preserve">
+                <value>Ignored URLs</value>
+            </data>
+
+            <data name="config.behaviorModel.isWhiteList.name" xml:space="preserve">
+                <value>Application Whitelist</value>
+            </data>
+            <data name="config.behaviorModel.isWhiteList.description" xml:space="preserve">
+                <value>Only track applications in the whitelist</value>
+            </data>
+            <data name="config.behaviorModel.group.whiteList" xml:space="preserve">
+                <value>Application Whitelist</value>
+            </data>
+
+            <data name="config.behaviorModel.processWhiteList.name" xml:space="preserve">
+                <value>Application Whitelist</value>
+            </data>
+            <data name="config.behaviorModel.processWhiteList.description" xml:space="preserve">
+                <value>Match by process name or regex. Regexes can match program paths.</value>
+            </data>
+            <data name="config.behaviorModel.processWhiteList.placeholder" xml:space="preserve">
+                <value>Process name (no ".exe" needed). Supports regular expressions</value>
+            </data>
+            
+            <!-- GeneralModel.resx -->
+            <data name="config.general.group.basic" xml:space="preserve">
+                <value>Basic</value>
+            </data>
+            <data name="config.general.group.appearance" xml:space="preserve">
+                <value>Appearance</value>
+            </data>
+            <data name="config.general.group.overview" xml:space="preserve">
+                <value>Overview Page</value>
+            </data>
+            <data name="config.general.group.feature" xml:space="preserve">
+                <value>Features</value>
+            </data>
+            
+            <data name="config.general.isStartAtBoot.name" xml:space="preserve">
+                <value>Autostart</value>
+            </data>
+            <data name="config.general.isStartAtBoot.description" xml:space="preserve">
+                <value>Automatically run Tai when the computer starts</value>
+            </data>
+            
+            <data name="config.general.theme.name" xml:space="preserve">
+                <value>Theme Mode</value>
+            </data>
+            <data name="config.general.theme.description" xml:space="preserve">
+                <value>Choose between light or dark mode</value>
+            </data>
+            <data name="config.general.theme.options" xml:space="preserve">
+                <value>Light|Dark</value>
+            </data>
+            
+            <data name="config.general.themeColor.name" xml:space="preserve">
+                <value>Theme Color</value>
+            </data>
+            <data name="config.general.themeColor.description" xml:space="preserve">
+                <value></value>
+            </data>
+            
+            <data name="config.general.isSaveWindowSize.name" xml:space="preserve">
+                <value>Remember Window Size</value>
+            </data>
+            <data name="config.general.isSaveWindowSize.description" xml:space="preserve">
+                <value>Keep the current window size instead of using the default</value>
+            </data>
+            
+            <data name="config.general.startPage.name" xml:space="preserve">
+                <value>Startup Page</value>
+            </data>
+            <data name="config.general.startPage.description" xml:space="preserve">
+                <value>Select which page is shown when the app is opened</value>
+            </data>
+            <data name="config.general.startPage.options" xml:space="preserve">
+                <value>Overview|Statistics|Details|Categories</value>
+            </data>
+            
+            <data name="config.general.isStartupShowMainWindow.name" xml:space="preserve">
+                <value>Show Main Window on Startup</value>
+            </data>
+            <data name="config.general.isStartupShowMainWindow.description" xml:space="preserve">
+                <value>This option has no effect when auto-starting with the system</value>
+            </data>
+            
+            <data name="config.general.indexPageFrequentUseNum.name" xml:space="preserve">
+                <value>Frequent Items Count</value>
+            </data>
+            <data name="config.general.indexPageFrequentUseNum.description" xml:space="preserve">
+                <value></value>
+            </data>
+            <data name="config.general.indexPageFrequentUseNum.options" xml:space="preserve">
+                <value>1|2|3|4|5|6|7|8|9|10</value>
+            </data>
+            
+            <data name="config.general.indexPageMoreNum.name" xml:space="preserve">
+                <value>More Items Count</value>
+            </data>
+            <data name="config.general.indexPageMoreNum.description" xml:space="preserve">
+                <value></value>
+            </data>
+            <data name="config.general.indexPageMoreNum.options" xml:space="preserve">
+                <value>1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20</value>
+            </data>
+            
+            <data name="config.general.isWebEnabled.name" xml:space="preserve">
+                <value>Website Activity Tracking</value>
+            </data>
+            <data name="config.general.isWebEnabled.description" xml:space="preserve">
+                <value>Track website visits in supported browsers: Google Chrome, MS Edge, or any browser supporting Chrome extensions. Go to “About &gt; Browser Tracking Plugin” for installation and usage instructions.</value>
+            </data>
+            
+            <!-- EmptyData.xaml -->
+            <data name="emptyData.noData" xml:space="preserve">
+                <value>No data available</value>
+            </data>
+            <data name="emptyData.tooltip" xml:space="preserve">
+                <value>Nothing</value>
+            </data>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+</root>

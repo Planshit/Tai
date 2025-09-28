@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
+using UI.Servicers;
 
 namespace UI.Models
 {
@@ -246,5 +247,7 @@ namespace UI.Models
         /// </summary>
         public ContextMenu WebSiteContextMenu { get { return WebSiteContextMenu_; } set { WebSiteContextMenu_ = value; OnPropertyChanged(); } }
         #endregion
+
+        protected ChartPageModel(ILocalizationServicer localizationServicer) : base(localizationServicer) {}
     }
 }

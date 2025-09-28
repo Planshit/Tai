@@ -21,6 +21,8 @@ using UI.Controls.Base;
 using UI.Controls.Charts.Model;
 using UI.Controls.Input;
 using UI.Extensions;
+using UI.Models;
+using UI.Servicers;
 
 namespace UI.Controls.Charts
 {
@@ -1470,7 +1472,7 @@ namespace UI.Controls.Charts
         {
             if (DataValueType == ChartDataValueType.Seconds)
             {
-                return Time.ToString((int)value);
+                return LocalizationServicer.Instance.Translated(Time.ToString((int)value));
             }
             else
             {

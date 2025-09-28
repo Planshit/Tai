@@ -58,7 +58,13 @@ namespace UI.ViewModels
         public Command DirectoriesCommand { get; set; }
 
 
-        public CategoryPageVM(ICategorys categorys, MainViewModel mainVM, IAppData appData, IWebData webData_, IUIServicer uIServicer_)
+        public CategoryPageVM(
+            ILocalizationServicer localizationServicer,
+            ICategorys categorys,
+            MainViewModel mainVM,
+            IAppData appData,
+            IWebData webData_,
+            IUIServicer uIServicer_) : base(localizationServicer)
         {
             this.categorys = categorys;
             this.mainVM = mainVM;

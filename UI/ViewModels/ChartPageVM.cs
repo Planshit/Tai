@@ -35,7 +35,15 @@ namespace UI.ViewModels
         public Command RefreshCommand { get; set; }
         public List<SelectItemModel> ChartDataModeOptions { get; set; }
 
-        public ChartPageVM(IData data, ICategorys categorys, MainViewModel mainVM, IAppContextMenuServicer appContextMenuServicer, IInputServicer inputServicer, IWebData webData_, IWebSiteContextMenuServicer webSiteContextMenu_)
+        public ChartPageVM(
+            ILocalizationServicer localizationServicer,
+            IData data,
+            ICategorys categorys,
+            MainViewModel mainVM,
+            IAppContextMenuServicer appContextMenuServicer,
+            IInputServicer inputServicer,
+            IWebData webData_,
+            IWebSiteContextMenuServicer webSiteContextMenu_) : base(localizationServicer)
         {
             this.data = data;
             this.categorys = categorys;
@@ -50,17 +58,20 @@ namespace UI.ViewModels
 
             TabbarData = new System.Collections.ObjectModel.ObservableCollection<string>()
             {
-                "按天","按周","按月","按年"
+                Translated("time.daily"),
+                Translated("time.weekly"),
+                Translated("time.monthly"),
+                Translated("time.yearly")
             };
 
             var weekOptions = new List<SelectItemModel>();
             weekOptions.Add(new SelectItemModel()
             {
-                Name = "本周"
+                Name = Translated("page.chart.thisWeek")
             });
             weekOptions.Add(new SelectItemModel()
             {
-                Name = "上周"
+                Name = Translated("page.chart.lastWeek")
             });
 
             var chartDataModeOptions = new List<SelectItemModel>
@@ -68,17 +79,17 @@ namespace UI.ViewModels
                 new SelectItemModel()
                 {
                     Id = 1,
-                    Name = "默认视图",
+                    Name = Translated("page.chart.view.default")
                 },
                 new SelectItemModel()
                 {
                     Id = 2,
-                    Name = "汇总视图"
+                    Name = Translated("page.chart.view.summary")
                 },
                 new SelectItemModel()
                 {
                     Id = 3,
-                    Name = "分类视图"
+                    Name = Translated("page.chart.view.categories")
                 }
             };
 
@@ -242,7 +253,7 @@ namespace UI.ViewModels
                 var nullCategory = new CategoryModel()
                 {
                     ID = 0,
-                    Name = "未分类",
+                    Name = Translated("page.chart.uncategorized"),
                     IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
                 };
                 foreach (var item in list)
@@ -321,7 +332,7 @@ namespace UI.ViewModels
                 var nullCategory = new CategoryModel()
                 {
                     ID = 0,
-                    Name = "未分类",
+                    Name = Translated("page.chart.uncategorized"),
                     IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
 
                 };
@@ -405,7 +416,7 @@ namespace UI.ViewModels
                 var nullCategory = new CategoryModel()
                 {
                     ID = 0,
-                    Name = "未分类",
+                    Name = Translated("page.chart.uncategorized"),
                     IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
                 };
 
@@ -485,7 +496,7 @@ namespace UI.ViewModels
                 var nullCategory = new CategoryModel()
                 {
                     ID = 0,
-                    Name = "未分类",
+                    Name = Translated("page.chart.uncategorized"),
                     IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
                 };
 
@@ -684,7 +695,7 @@ namespace UI.ViewModels
                 bindModel.Data = item;
                 bindModel.Name = !string.IsNullOrEmpty(item.AppModel?.Alias) ? item.AppModel.Alias : string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                 bindModel.Value = item.Time;
-                bindModel.Tag = Time.ToString(item.Time);
+                bindModel.Tag = Translated(Time.ToString(item.Time));
                 bindModel.PopupText = item.AppModel?.File;
                 bindModel.Icon = item.AppModel?.IconFile;
                 resData.Add(bindModel);
@@ -748,7 +759,7 @@ namespace UI.ViewModels
                         bindModel.Data = item;
                         bindModel.Name = !string.IsNullOrEmpty(item.AppModel?.Alias) ? item.AppModel.Alias : string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                         bindModel.Value = item.Time;
-                        bindModel.Tag = Time.ToString(item.Time);
+                        bindModel.Tag = Translated(Time.ToString(item.Time));
                         bindModel.PopupText = item.AppModel?.File;
                         bindModel.Icon = item.AppModel?.IconFile;
                         chartsDatas.Add(bindModel);
@@ -762,7 +773,7 @@ namespace UI.ViewModels
                         bindModel.Data = item;
                         bindModel.Name = !string.IsNullOrEmpty(item.AppModel?.Alias) ? item.AppModel.Alias : string.IsNullOrEmpty(item.AppModel?.Description) ? item.AppModel.Name : item.AppModel.Description;
                         bindModel.Value = item.Time;
-                        bindModel.Tag = Time.ToString(item.Time);
+                        bindModel.Tag = Translated(Time.ToString(item.Time));
                         bindModel.PopupText = item.AppModel?.File;
                         bindModel.Icon = item.AppModel?.IconFile;
                         chartsDatas.Add(bindModel);
@@ -801,11 +812,11 @@ namespace UI.ViewModels
                 {
                     var category = _webData.GetWebSiteCategory(item.ID);
                     var bindModel = new ChartsDataModel();
-                    bindModel.Name = item.ID == 0 ? "未分类" : item.Name;
+                    bindModel.Name = item.ID == 0 ? Translated("page.chart.uncategorized") : item.Name;
                     bindModel.Value = item.Value;
                     bindModel.Data = item;
                     bindModel.Color = item.ID == 0 ? "#ccc" : category.Color;
-                    bindModel.PopupText = bindModel.Name + " " + Time.ToString((int)item.Value);
+                    bindModel.PopupText = bindModel.Name + " " + Translated(Time.ToString((int)item.Value));
                     bindModel.Icon = item.ID == 0 ? "" : category.IconFile;
                     chartsDatas.Add(bindModel);
                 }
@@ -824,7 +835,7 @@ namespace UI.ViewModels
                 var emptyCategory = new WebSiteCategoryModel()
                 {
                     ID = 0,
-                    Name = "未分类",
+                    Name = Translated("page.chart.uncategorized"),
                     IconFile = "pack://application:,,,/Tai;component/Resources/Icons/tai32.ico"
                 };
 
@@ -953,7 +964,7 @@ namespace UI.ViewModels
                 bindModel.Data = item;
                 bindModel.Name = !string.IsNullOrEmpty(item.Alias) ? item.Alias : item.Title;
                 bindModel.Value = item.Duration;
-                bindModel.Tag = Time.ToString(item.Duration);
+                bindModel.Tag = Translated(Time.ToString(item.Duration));
                 bindModel.PopupText = item.Domain;
                 bindModel.Icon = item.IconFile;
                 resData.Add(bindModel);

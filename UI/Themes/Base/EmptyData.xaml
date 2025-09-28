@@ -1,13 +1,14 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:UI.Controls.Base">
+                    xmlns:local="clr-namespace:UI.Controls.Base"
+                    xmlns:loc="clr-namespace:UI.Markup">
     <Style TargetType="{x:Type local:EmptyData}">
         <Setter Property="SnapsToDevicePixels"
           Value="true" />
         <Setter Property="HorizontalAlignment"
           Value="Left" />
         <Setter Property="ToolTip"
-          Value="什么都没有" />
+          Value="{loc:Localization Key=emptyData.tooltip}" />
 
         <Setter Property="Template">
             <Setter.Value>
@@ -43,7 +44,7 @@
                                         <Border Background="#f0f0f0" BorderThickness="4" CornerRadius="6" Height="30" Margin="5,0">
                                             <TextBlock Foreground="Gray" Opacity=".4" Text="Tai" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                         </Border>
-                                        <TextBlock VerticalAlignment="Center" Text="暂时没有数据" FontSize="10" Margin="0,5" HorizontalAlignment="Center" Foreground="Gray" Opacity=".7"/>
+                                        <TextBlock VerticalAlignment="Center" Text="{loc:Localization Key=emptyData.noData}" FontSize="10" Margin="0,5" HorizontalAlignment="Center" Foreground="Gray" Opacity=".7"/>
                                     </StackPanel>
 
                                 </Border>

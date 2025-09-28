@@ -4,20 +4,21 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:UI.Views" xmlns:charts="clr-namespace:UI.Controls.Charts" xmlns:Tabbar="clr-namespace:UI.Controls.Tabbar" xmlns:select="clr-namespace:UI.Controls.Select" xmlns:base="clr-namespace:UI.Controls.Base" xmlns:DatePickerBar="clr-namespace:UI.Controls.DatePickerBar" xmlns:converter="clr-namespace:UI.Controls.Converters"
+      xmlns:loc="clr-namespace:UI.Markup"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ChartPage" Foreground="{DynamicResource StandardTextBrush}" Background="Transparent">
     <Page.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="刷新" Command="{Binding RefreshCommand}"/>
+            <MenuItem Header="{loc:Localization Key=page.refresh}" Command="{Binding RefreshCommand}"/>
         </ContextMenu>
     </Page.ContextMenu>
     <StackPanel Margin="20">
         <StackPanel Orientation="Horizontal" Margin="0,5,0,20" >
-            <TextBlock Text="统计" FontSize="18" VerticalAlignment="Center"/>
+            <TextBlock Text="{loc:Localization Key=main.statistics}" FontSize="18" VerticalAlignment="Center"/>
             <select:Select Margin="10,0,0,0" VerticalAlignment="Top" Padding="10,5"  IsShowIcon="False" SelectedItem="{Binding ShowType,Mode=TwoWay}" Options="{Binding ShowTypeOptions}"/>
         </StackPanel>
-        <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" Width="180" HorizontalAlignment="Left"/>
+        <Tabbar:Tabbar  Data="{Binding TabbarData}" SelectedIndex="{Binding TabbarSelectedIndex,Mode=TwoWay}" MinWidth="180" HorizontalAlignment="Left"/>
         <Border Margin="0,15,0,0">
             <Grid>
                 <!--按天-->
@@ -96,9 +97,9 @@
                                     </Grid.RowDefinitions>
                                     <TextBlock >
                             <Run Text="{Binding TotalHours}" FontSize="20" Foreground="{DynamicResource DefaultTextBrush}"/>
-                            <Run Text="小时" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
+                            <Run Text="{loc:Localization Key=page.chart.hours}" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
                                     </TextBlock>
-                                    <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="总计" Foreground="{DynamicResource SubTextBrush}"/>
+                                    <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="{loc:Localization Key=page.chart.total}" Foreground="{DynamicResource SubTextBrush}"/>
 
                                 </Grid>
                                 <Border Grid.Column="2" VerticalAlignment="Bottom">
@@ -140,9 +141,9 @@
                                     </Grid.RowDefinitions>
                                     <TextBlock >
                             <Run Text="{Binding AppCount}" FontSize="20" Foreground="{DynamicResource DefaultTextBrush}"/>
-                            <Run Text="个" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
+                            <Run Text="{loc:Localization Key=page.chart.unique}" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
                                     </TextBlock>
-                                    <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="应用量" Foreground="{DynamicResource SubTextBrush}"/>
+                                    <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="{loc:Localization Key=page.chart.numberOfApps}" Foreground="{DynamicResource SubTextBrush}"/>
 
 
                                 </Grid>
@@ -187,9 +188,9 @@
 
                                     <TextBlock>
                             <Run Text="{Binding TopHours}" FontSize="20" Foreground="{DynamicResource DefaultTextBrush}"/>
-                            <Run Text="小时" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
+                            <Run Text="{loc:Localization Key=page.chart.hours}" FontSize="12" Foreground="{DynamicResource SubTextBrush}"/>
                                     </TextBlock>
-                                    <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="最长使用" Foreground="{DynamicResource SubTextBrush}"/>
+                                    <TextBlock Grid.Row="1" Margin="0,3,0,0" Text="{loc:Localization Key=page.chart.longestUsage}" Foreground="{DynamicResource SubTextBrush}"/>
                                 </Grid>
                                 <Border Grid.Column="2">
                                     <!--<Border Width="16" Height="16">
@@ -256,7 +257,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Text="分类" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
+                            <TextBlock Text="{loc:Localization Key=page.chart.categories}" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
                             <Border Margin="0,5,0,0" Grid.Row="1"  Background="{DynamicResource SettingPanelBgBrush}" Padding="20" CornerRadius="10">
                                 <charts:Charts Margin="10,20,10,10" Height="230" Width="230" ChartsType="Radar" Data="{Binding RadarData}"/>
 
@@ -270,7 +271,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Text="最为频繁" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
+                            <TextBlock Text="{loc:Localization Key=page.top}" Foreground="#5c5c5c" FontSize="15" Margin="0,20,0,5"/>
                             <Border Grid.Row="1" Margin="0,5,0,0"  Background="{DynamicResource SettingPanelBgBrush}" Padding="20" CornerRadius="10">
                                 <charts:Charts ItemMenu="{Binding AppContextMenu}" Data="{Binding TopData}" ChartsType="List"  ClickCommand="{Binding ToDetailCommand}" IsCanScroll="False"/>
                             </Border>
@@ -537,7 +538,7 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Text="最为频繁" FontSize="14" />
+                                <TextBlock Text="{loc:Localization Key=page.top}" FontSize="14" />
 
                                 <charts:Charts IconSize="18" Grid.Row="1" Margin="0,10,0,0"  Data="{Binding WebSitesTopData}" ChartsType="List"  ClickCommand="{Binding ToDetailCommand}" ItemMenu="{Binding WebSiteContextMenu}"/>
 

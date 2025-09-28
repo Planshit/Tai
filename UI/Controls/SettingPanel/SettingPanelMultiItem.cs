@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using UI.Controls.Button;
 using UI.Controls.Input;
 using UI.Controls.List;
+using UI.Servicers;
 
 namespace UI.Controls.SettingPanel
 {
@@ -117,8 +118,8 @@ namespace UI.Controls.SettingPanel
         private void RenderStringList(ConfigAttribute attribute, PropertyInfo pi)
         {
             var title = new SettingPanelItem();
-            title.Name = attribute.Name;
-            title.Description = attribute.Description;
+            title.Name = LocalizationServicer.Instance.Translated(attribute.Name);
+            title.Description = LocalizationServicer.Instance.Translated(attribute.Description);
 
             Container.Children.Add(title);
 
@@ -319,8 +320,8 @@ namespace UI.Controls.SettingPanel
 
             };
             var item = new SettingPanelItem();
-            item.Name = attribute.Name;
-            item.Description = attribute.Description;
+            item.Name = LocalizationServicer.Instance.Translated(attribute.Name);
+            item.Description = LocalizationServicer.Instance.Translated(attribute.Description);
             item.Content = textBox;
             pi.SetValue(configData, textBox.Text);
             if (attribute.IsName)

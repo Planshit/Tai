@@ -9,10 +9,11 @@ using System.Windows;
 using System.Windows.Controls;
 using UI.Controls.Charts.Model;
 using UI.Controls.Select;
+using UI.Servicers;
 
 namespace UI.Models
 {
-    public class DetailPageModel : UINotifyPropertyChanged
+    public class DetailPageModel : LocalizedView
     {
 
         private List<ChartsDataModel> Data_;
@@ -172,5 +173,7 @@ namespace UI.Models
         /// 应用右键菜单
         /// </summary>
         public ContextMenu AppContextMenu { get { return AppContextMenu_; } set { AppContextMenu_ = value; OnPropertyChanged(); } }
+        
+        protected DetailPageModel(ILocalizationServicer localization) : base(localization) {}
     }
 }

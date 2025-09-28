@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using UI.Controls.Select;
 using UI.Models.CategoryAppList;
+using UI.Servicers;
 
 namespace UI.Models
 {
@@ -46,5 +47,7 @@ namespace UI.Models
         /// 站点可选列表
         /// </summary>
         public List<OptionModel> WebSiteOptionList { get { return WebSiteOptionList_; } set { WebSiteOptionList_ = value; OnPropertyChanged(); } }
+
+        protected CategoryWebSiteListPageModel(ILocalizationServicer localizationServicer) : base(localizationServicer) {}
     }
 }

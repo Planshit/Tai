@@ -53,3 +53,6 @@ using System.Windows;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.5.0.6")]
 [assembly: AssemblyFileVersion("1.5.0.6")]
+
+// Sets english as the default app language if the other localization isn't available
+[assembly: NeutralResourcesLanguage("en-US")]

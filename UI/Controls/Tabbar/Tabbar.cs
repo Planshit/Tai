@@ -199,15 +199,11 @@ namespace UI.Controls.Tabbar
             var oldSelectedItem = ItemsDictionary[oldSelectedIndex];
 
             //  选中项的坐标
-            Point relativePoint = item.TransformToAncestor(this).Transform(new Point(0, 0));
+            double leftOffset = item.TransformToAncestor(ItemsContainer).Transform(new Point(0, 0)).X;
 
-            double scrollX = relativePoint.X;
-
-            scrollX = scrollX < 0 ? 0 : scrollX;
-            scrollAnimation.To = scrollX;
-
-
-
+            scrollAnimation.To = leftOffset;
+            
+            ActiveBlock.Width = item.ActualWidth;
 
 
             //  文字颜色动画

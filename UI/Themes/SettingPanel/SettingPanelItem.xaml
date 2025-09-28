@@ -22,7 +22,7 @@
                             <Grid>
                                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
                                     <StackPanel Orientation="Horizontal" >
-                                        <TextBlock Text="{TemplateBinding Name}" FontSize="14" Foreground="{DynamicResource StandardTextBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{TemplateBinding DisplayName}" FontSize="14" Foreground="{DynamicResource StandardTextBrush}" VerticalAlignment="Center"/>
                                         <base:View Value="{TemplateBinding IsBeta}" VerticalAlignment="Center">
                                             <Border ToolTip="该功能或选项处于测试阶段，可能会出现预料之外的问题" Cursor="Help" Background="{DynamicResource WarningBrush}" CornerRadius="8" Padding="10,3" Margin="5,0,0,0">
                                                 <TextBlock Text="Beta" FontSize="10"  Foreground="White" VerticalAlignment="Center"/>

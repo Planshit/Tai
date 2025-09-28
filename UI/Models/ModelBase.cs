@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UI.Controls.Select;
+using UI.Servicers;
 
 namespace UI.Models
 {
-    public class ModelBase : UINotifyPropertyChanged
+    public class ModelBase : LocalizedView
     {
         private SelectItemModel ShowType_;
         /// <summary>
@@ -24,18 +25,20 @@ namespace UI.Models
             new SelectItemModel()
                 {
                     Id=0,
-                    Name="应用"
+                    Name=LocalizationServicer.Instance.Translated("page.apps")
                 },
                 new SelectItemModel()
                 {
                     Id=1,
-                    Name="网站"
+                    Name=LocalizationServicer.Instance.Translated("page.websites")
                 }
         };
-        public ModelBase()
+        
+        protected ModelBase(ILocalizationServicer localizationServicer) : base(localizationServicer)
         {
             ShowType = ShowTypeOptions[0];
         }
+        
         public virtual void Dispose() { }
     }
 }
