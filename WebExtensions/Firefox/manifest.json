@@ -1,0 +1,31 @@
+{
+  "name": "Tai Sentry",
+  "description": "Tai网页浏览数据统计拓展",
+  "version": "0.1",
+  "manifest_version": 2,
+
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+
+  "browser_action": {
+    "default_icon": "icons/socket-inactive.png"
+  },
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "permissions": ["tabs"],
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "me@goodfish.site",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}
